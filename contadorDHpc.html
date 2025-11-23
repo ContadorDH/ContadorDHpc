@@ -32,14 +32,46 @@
   }
 
  .panel {
-  padding: 15px;
-  margin-top: 20px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 12px;
+  background: #0a5c30;
   display: flex;
   gap: 10px;
   justify-content: center;
   flex-wrap: wrap;
-  position: relative;
+  z-index: 9999;
+  box-shadow: 0 -4px 15px rgba(0,0,0,0.25);
 }
+
+.panel button,
+.panel select {
+  padding: 10px 14px;
+  font-size: 15px;
+  border-radius: 8px;
+}
+
+.panel button {
+  background: #ffffff;
+  color: #0a5c30;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.panel button:hover {
+  background: #c0ffd9;
+}
+
+.panel select {
+  background: #fff;
+  border: 2px solid #0a5c30;
+  color: #0a5c30;
+  font-weight: bold;
+}
+
 
   button {
     padding: 10px 15px;
@@ -169,6 +201,9 @@
   <thead></thead>
   <tbody></tbody>
 </table>
+
+  <div style="height: 120px;"></div>
+
 
 <script>
 const URL = "https://script.google.com/macros/s/AKfycbwuad6LbOg5k2TFzphjhPTm-NwMJwURzhfFPsEb8a5oB9KXuXIhWxe5QzrR2xLnDjYVlA/exec";
@@ -542,6 +577,7 @@ window.addEventListener("load", detectarPantallas);
 </script>
 </body>
 </html>
+
 
 
 
