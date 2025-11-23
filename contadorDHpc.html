@@ -312,39 +312,38 @@ async function proyectar() {
   // ============================
   // FECHA EXACTA DE LA FILA
   // ============================
-  // ============================================================
-// Convertir fecha "DD/MM/YYYY HH:mm:ss p. m."
-// a "sábado 1 de noviembre de 2025"
-// ============================================================
-function formatearFechaLarga(fechaTexto) {
-  try {
-    // Extraer solo la parte de fecha "DD/MM/YYYY"
-    let soloFecha = fechaTexto.split(" ")[0];
-    let [dia, mes, anio] = soloFecha.split("/").map(n => parseInt(n));
+  let fechaFila = valores[1] ? valores[1].trim() : "Fecha no disponible";
 
-    const meses = [
-      "enero","febrero","marzo","abril","mayo","junio",
-      "julio","agosto","septiembre","octubre","noviembre","diciembre"
-    ];
+  // -----------------------------------------------------
+  // FORMATEAR A: "sábado 1 de noviembre de 2025"
+  // -----------------------------------------------------
+  function formatearFechaLarga(fechaTexto) {
+    try {
+      // tomar solo "DD/MM/YYYY"
+      let soloFecha = fechaTexto.split(" ")[0];
+      let [dia, mes, anio] = soloFecha.split("/").map(n => parseInt(n));
 
-    const diasSemana = [
-      "domingo","lunes","martes","miércoles","jueves","viernes","sábado"
-    ];
+      const meses = [
+        "enero","febrero","marzo","abril","mayo","junio",
+        "julio","agosto","septiembre","octubre","noviembre","diciembre"
+      ];
 
-    const fechaObj = new Date(anio, mes - 1, dia);
+      const diasSemana = [
+        "domingo","lunes","martes","miércoles","jueves","viernes","sábado"
+      ];
 
-    let nombreDia = diasSemana[fechaObj.getDay()];
-    let nombreMes = meses[mes - 1];
+      const fechaObj = new Date(anio, mes - 1, dia);
 
-    return `${nombreDia} ${dia} de ${nombreMes} de ${anio}`;
-  } catch (e) {
-    return fechaTexto; // Si algo falla, mostrar original
+      let nombreDia = diasSemana[fechaObj.getDay()];
+      let nombreMes = meses[mes - 1];
+
+      return `${nombreDia} ${dia} de ${nombreMes} de ${anio}`;
+    } catch (e) {
+      return fechaTexto;
+    }
   }
-}
 
-// Reemplazar fecha original con formato largo
-fechaFila = formatearFechaLarga(fechaFila);
-
+  fechaFila = formatearFechaLarga(fechaFila);
 
   // ============================
   // HTML PROYECTADO
@@ -494,6 +493,7 @@ window.addEventListener("load", detectarPantallas);
 </script>
 </body>
 </html>
+
 
 
 
