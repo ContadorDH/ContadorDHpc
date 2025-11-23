@@ -79,16 +79,15 @@
     background-color: #c7ffd1 !important;
   }
 
-
 .boton-detener {
   background: red !important;
-  animation: parpadeo 1s infinite ease-in-out;
+  animation: fadeRojo 1.6s infinite ease-in-out;
 }
 
-@keyframes parpadeo {
-  0% { background: rgba(255, 0, 0, 0.6); }
-  50% { background: red; }
-  100% { background: rgba(255, 0, 0, 0.6); }
+@keyframes fadeRojo {
+  0%   { background: rgba(255, 0, 0, 0.50); }
+  50%  { background: rgba(255, 0, 0, 1); }
+  100% { background: rgba(255, 0, 0, 0.50); }
 }
 
 
@@ -273,14 +272,13 @@ async function proyectar() {
     ventanaProyeccion.close();
     ventanaProyeccion = null;
 
-    // restaurar botón
     btn.textContent = "Proyectar";
     btn.classList.remove("boton-detener");
     return;
   }
 
   // =============================
-  // SI NO SE HA SELECCIONADO FILA
+  // VALIDAR FILA
   // =============================
   if (!filaSeleccionada) {
     alert("Selecciona una fila antes de proyectar.");
@@ -292,6 +290,9 @@ async function proyectar() {
     return;
   }
 
+  // =============================
+  // ABRIR EN PANTALLA SELECCIONADA
+  // =============================
   const details = await window.getScreenDetails();
   const indexPantalla = parseInt(document.getElementById("pantallaSelect").value);
   const scr = details.screens[indexPantalla];
@@ -302,52 +303,91 @@ async function proyectar() {
     `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height}`
   );
 
-  const celdas = [...filaSeleccionada.querySelectorAll("td")].map(td => td.innerText);
+  let headers = [...document.querySelectorAll("#tabla thead th")].map(th => th.innerText);
+  let celdas = [...filaSeleccionada.querySelectorAll("td")].map(td => td.innerText);
 
+  // =============================
+  // DISEÑO PROFESIONAL FULL HD HORIZONTAL
+  // =============================
   ventanaProyeccion.document.body.innerHTML = `
     <style>
       body {
         margin: 0;
         padding: 0;
+        width: 100vw;
+        height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh;
-        font-family: Arial, sans-serif;
-        background: linear-gradient(135deg, #003d23, #0fbf6a);
-        color: white;
+        background: #002a18;
+        font-family: 'Segoe UI', sans-serif;
+        overflow: hidden;
       }
 
       .contenedor {
-        text-align: center;
-        background: rgba(255,255,255,0.2);
-        padding: 60px 90px;
-        border-radius: 30px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 0 35px rgba(0,0,0,0.4);
+        width: 90%;
+        padding: 40px;
+        background: rgba(255,255,255,0.08);
+        border-radius: 25px;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 0 45px rgba(0,0,0,0.5);
+        color: white;
         animation: fadeIn 0.8s ease-out;
       }
 
       h1 {
-        font-size: 70px;
-        margin-bottom: 20px;
+        font-size: 55px;
+        margin-bottom: 35px;
+        text-align: center;
+        letter-spacing: 2px;
+        font-weight: 700;
+      }
+
+      .fila {
+        display: grid;
+        grid-template-columns: repeat(${headers.length}, 1fr);
+        gap: 20px;
+      }
+
+      .item {
+        text-align: center;
+        padding: 25px;
+        background: rgba(255,255,255,0.15);
+        border-radius: 18px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.25);
+      }
+
+      .titulo {
+        font-size: 36px;
+        margin-bottom: 10px;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+
+      .valor {
+        font-size: 48px;
         font-weight: bold;
       }
 
-      .dato {
-        font-size: 50px;
-        margin: 15px 0;
-      }
-
       @keyframes fadeIn {
-        from {opacity: 0; transform: scale(0.9);}
-        to   {opacity: 1; transform: scale(1);}
+        from { opacity: 0; transform: scale(0.90); }
+        to   { opacity: 1; transform: scale(1); }
       }
     </style>
 
     <div class="contenedor">
-      <h1>Asistencia del Día</h1>
-      ${celdas.map(c => `<div class="dato">${c}</div>`).join("")}
+      <h1>Asistencia Registrada</h1>
+
+      <div class="fila">
+        ${
+          headers.map((h,i)=>`
+            <div class="item">
+              <div class="titulo">${h}</div>
+              <div class="valor">${celdas[i]}</div>
+            </div>
+          `).join("")
+        }
+      </div>
     </div>
   `;
 
@@ -357,7 +397,7 @@ async function proyectar() {
   btn.textContent = "Detener";
   btn.classList.add("boton-detener");
 
-  // Detecta si la ventana se cierra manualmente
+  // Detectar cierre manual
   let timer = setInterval(() => {
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       clearInterval(timer);
@@ -368,7 +408,6 @@ async function proyectar() {
   }, 500);
 }
 
-
 // ============================================================
 // Auto cargar pantallas
 // ============================================================
@@ -377,4 +416,5 @@ window.addEventListener("load", detectarPantallas);
 </script>
 </body>
 </html>
+
 
