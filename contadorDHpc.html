@@ -75,14 +75,8 @@
     font-weight: bold;
   }
 
-  /* Fila seleccionada */
   .filaSel {
     background-color: #c7ffd1 !important;
-  }
-
-  /* Celda seleccionada */
-  .celdaSel {
-    background-color: #fff3b0 !important;
   }
 </style>
 </head>
@@ -118,9 +112,7 @@ const meses = [
   "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
 ];
 
-let ventanaProyeccion = null;
 let filaSeleccionada = null;
-let celdaSeleccionada = null;
 
 // ============================================================
 // 🔵 DETECTAR PANTALLAS
@@ -186,7 +178,6 @@ function pintarTabla(data) {
   tbody.innerHTML = "";
 
   filaSeleccionada = null;
-  celdaSeleccionada = null;
 
   if (!data || data.length === 0) {
     tbody.innerHTML = "<tr><td colspan='8'>Sin datos</td></tr>";
@@ -205,23 +196,19 @@ function pintarTabla(data) {
 }
 
 // ============================================================
-// Seleccionar SOLO FILA COMPLETA
+// Seleccionar fila completa
 // ============================================================
 document.getElementById("tabla").addEventListener("click", (e) => {
   const tr = e.target.closest("tr");
 
   if (!tr || tr.querySelector("th")) return;
 
-  // Quitar selección anterior
   document.querySelectorAll(".filaSel").forEach(r => r.classList.remove("filaSel"));
 
-  // Guardar selección
   filaSeleccionada = tr;
 
-  // Pintar selección
   tr.classList.add("filaSel");
 });
-
 
 // ============================================================
 // Ver Mes Actual
@@ -256,7 +243,7 @@ function buscarMes() {
 }
 
 // ============================================================
-// PROYECCIÓN MODERNA – PROYECTA LA FILA COMPLETA
+// PROYECCIÓN MODERNA – FILA COMPLETA
 // ============================================================
 async function proyectar() {
   if (!filaSeleccionada) {
@@ -279,10 +266,8 @@ async function proyectar() {
     `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height}`
   );
 
-  // Obtener datos de la fila seleccionada (sin HTML)
   const celdas = [...filaSeleccionada.querySelectorAll("td")].map(td => td.innerText);
 
-  // Plantilla elegante
   win.document.body.innerHTML = `
     <style>
       body {
@@ -331,17 +316,11 @@ async function proyectar() {
   `;
 }
 
-
 // ============================================================
 // Auto cargar pantallas
 // ============================================================
 window.addEventListener("load", detectarPantallas);
 
-
 </script>
 </body>
 </html>
-
-
-
-
