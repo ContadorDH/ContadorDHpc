@@ -456,11 +456,11 @@ function buscarMes() {
 }
 
 // ============================================================
-// PROYECCIÓN MODERNA – FILA COMPLETA (AHORA CON AUTO-SELECCIÓN CUANDO HAY UNA SOLA)
+// PROYECCIÓN MODERNA – CON AUTO-SELECCIÓN CUANDO HAY UNA SOLA FILA
 // ============================================================
 async function proyectar() {
   const btn = document.querySelector("button[onclick='proyectar()']");
-  
+
   // Si ya está proyectando → detener
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
     ventanaProyeccion.close();
@@ -470,32 +470,30 @@ async function proyectar() {
     return;
   }
 
-  // Contar filas reales de datos (excluyendo header)
+  // === NUEVO: detectar si hay solo una fila de datos ===
   const filasDatos = document.querySelectorAll("#tabla tbody tr");
-  if (filasDatos.length === 0) {
-    alert("No hay datos para proyectar.");
-    return;
-  }
-
-  // Caso 1: Solo hay una fila → usarla automáticamente
   if (filasDatos.length === 1) {
     filaSeleccionada = filasDatos[0];
-    filasDatos[0].classList.add("filaSel"); // opcional: resaltar visualmente
-  } 
-  // Caso 2: Varias filas → exigir selección manual
-  else if (!filaSeleccionada) {
+    filasDatos[0].classList.add("filaSel"); // opcional: resaltar
+  }
+  // === FIN NUEVO ===
+
+  // Si no hay fila seleccionada (y no es el caso de una sola fila)
+  if (!filaSeleccionada) {
     alert("Selecciona una fila antes de proyectar.");
     return;
   }
 
-  // === A partir de aquí es igual que antes ===
+  // === Todo lo demás queda 100% igual que tenías ===
   let scr = null;
   if ("getScreenDetails" in window) {
     try {
       const details = await window.getScreenDetails();
       const indexPantalla = parseInt(document.getElementById("pantallaSelect").value);
-      if (!isNaN(indexPantalla)) scr = details.screens[indexPantalla];
-    } catch(e) { /* ignorar si no tiene permiso */ }
+      if (!isNaN(indexPantalla) && details.screens[indexPantalla]) {
+        scr = details.screens[indexPantalla];
+      }
+    } catch (e) { /* permiso denegado → se ignora */ }
   }
 
   const features = scr
@@ -514,6 +512,7 @@ async function proyectar() {
   const valoresSinTotal = valores.slice(inicio, fin);
 
   let fechaFila = valores[1] ? valores[1].trim() : "Fecha no disponible";
+
   function formatearFechaLarga(fechaTexto) {
     try {
       let soloFecha = fechaTexto.split(" ")[0];
@@ -530,38 +529,25 @@ async function proyectar() {
 
   ventanaProyeccion.document.body.innerHTML = `
     <style>
-      html, body { margin:0; padding:0; width:100vw; height:100vh; overflow:hidden;
-        background: linear-gradient(90deg,#061b0f,#00321a 60%); font-family:'Segoe UI',sans-serif; color:#fff; }
-      .wrap { width:100%; height:100%; display:flex; justify-content:center; align-items:center; }
-      .contenedor { width:96%; height:86%; padding:28px; background:rgba(255,255,255,0.05);
-        border-radius:20px; backdrop-filter:blur(8px); box-shadow:0 12px 50px rgba(0,0,0,0.6);
-        display:flex; flex-direction:column; align-items:center; }
-      h1 { margin:0 0 18px 0; font-size:calc(20px + 2.6vw); font-weight:700; text-align:center; letter-spacing:1px; }
-      .grid { width:100%; display:grid; grid-template-columns:repeat(${headersSinTotal.length},1fr); gap:20px; }
-      .card { background:rgba(255,255,255,0.08); border-radius:14px; padding:18px;
-        display:flex; flex-direction:column; align-items:center; justify-content:center;
-        min-height:160px; box-shadow:0 8px 20px rgba(0,0,0,0.35); }
-      .titulo { font-size:calc(12px + 1.0vw); text-transform:uppercase; font-weight:600; margin-bottom:8px; opacity:0.95; }
-      .valor { font-size:calc(24px + 2.8vw); font-weight:800; line-height:1; }
-      .total-final { margin-top:40px; padding:20px 50px; font-size:calc(26px + 3vw); font-weight:900;
-        background:rgba(255,255,255,0.15); border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.45); text-align:center; }
-      @keyframes fadeIn { from {opacity:0; transform:translateY(6px) scale(0.98);} to {opacity:1; transform:translateY(0) scale(1);} }
-      .contenedor { animation:fadeIn .5s ease-out; }
+      html,body{margin:0;padding:0;width:100vw;height:100vh;overflow:hidden;background:linear-gradient(90deg,#061b0f,#00321a 60%);font-family:'Segoe UI',sans-serif;color:#fff}
+      .wrap{width:100%;height:100%;display:flex;justify-content:center;align-items:center}
+      .contenedor{width:96%;height:86%;padding:28px;background:rgba(255,255,255,0.05);border-radius:20px;backdrop-filter:blur(8px);box-shadow:0 12px 50px rgba(0,0,0,0.6);display:flex;flex-direction:column;align-items:center}
+      h1{margin:0 0 18px 0;font-size:calc(20px + 2.6vw);font-weight:700;text-align:center;letter-spacing:1px}
+      .grid{width:100%;display:grid;grid-template-columns:repeat(${headersSinTotal.length},1fr);gap:20px}
+      .card{background:rgba(255,255,255,0.08);border-radius:14px;padding:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:160px;box-shadow:0 8px 20px rgba(0,0,0,0.35)}
+      .titulo{font-size:calc(12px + 1.0vw);text-transform:uppercase;font-weight:600;margin-bottom:8px;opacity:0.95}
+      .valor{font-size:calc(24px + 2.8vw);font-weight:800;line-height:1}
+      .total-final{margin-top:40px;padding:20px 50px;font-size:calc(26px + 3vw);font-weight:900;background:rgba(255,255,255,0.15);border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,0.45);text-align:center}
+      @keyframes fadeIn{from{opacity:0;transform:translateY(6px) scale(0.98)}to{opacity:1;transform:none}}
+      .contenedor{animation:fadeIn .5s ease-out}
     </style>
-    <div class="wrap">
-      <div class="contenedor">
-        <h1>${fechaFila}</h1>
-        <div class="grid">
-          ${headersSinTotal.map((h,i) => `
-            <div class="card">
-              <div class="titulo">${h}</div>
-              <div class="valor">${valoresSinTotal[i]}</div>
-            </div>
-          `).join("")}
-        </div>
-        <div class="total-final">Total: ${totalAsistencia}</div>
+    <div class="wrap"><div class="contenedor">
+      <h1>${fechaFila}</h1>
+      <div class="grid">
+        ${headersSinTotal.map((h,i) => `<div class="card"><div class="titulo">${h}</div><div class="valor">${valoresSinTotal[i]}</div></div>`).join("")}
       </div>
-    </div>
+      <div class="total-final">Total: ${totalAsistencia}</div>
+    </div></div>
   `;
 
   btn.textContent = "Detener";
@@ -570,12 +556,6 @@ async function proyectar() {
   const timer = setInterval(() => {
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       clearInterval(timer);
-      ventanaProyeccion = null;
-      btn.textContent = "Proyectar";
-      btn.classList.remove("boton-detener");
-    }
-  }, 500);
-}rval(timer);
       ventanaProyeccion = null;
       btn.textContent = "Proyectar";
       btn.classList.remove("boton-detener");
