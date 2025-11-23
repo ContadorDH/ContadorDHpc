@@ -77,6 +77,10 @@
     font-weight: bold;
   }
 
+  /* Fila seleccionada */
+  .seleccionada {
+    background-color: #f0f7f0 !important;
+  }
 </style>
 </head>
 <body>
@@ -113,6 +117,7 @@ const meses = [
 ];
 
 let ventanaProyeccion = null;
+let filaSeleccionada = null; // fila seleccionada
 
 // ============================================================
 // 🔵 DETECTAR PANTALLAS REALES (auto al cargar y botón)
@@ -185,6 +190,7 @@ function pintarTabla(data) {
 
   thead.innerHTML = "";
   tbody.innerHTML = "";
+  filaSeleccionada = null; // reset selección al cargar
 
   if (!data || data.length === 0) {
     tbody.innerHTML = "<tr><td colspan='8'>Sin datos</td></tr>";
@@ -204,6 +210,25 @@ function pintarTabla(data) {
     tbody.innerHTML += row;
   }
 }
+
+// ============================================================
+// Selección de fila al hacer click
+// ============================================================
+const tabla = document.getElementById("tabla");
+tabla.addEventListener("click", (e) => {
+  const tr = e.target.closest("tr");
+  if (!tr || tr.querySelectorAll("th").length) return; // ignorar encabezados
+
+  // Toggle selección
+  if (tr === filaSeleccionada) {
+    tr.classList.remove("seleccionada");
+    filaSeleccionada = null;
+  } else {
+    tabla.querySelectorAll("tr").forEach(r => r.classList.remove("seleccionada"));
+    tr.classList.add("seleccionada");
+    filaSeleccionada = tr;
+  }
+});
 
 // ============================================================
 // Botón: Ver Mes Actual
@@ -241,9 +266,14 @@ function buscarMes() {
 }
 
 // ============================================================
-// PROYECTAR EN PANTALLA REAL
+// PROYECTAR EN PANTALLA REAL (solo fila seleccionada)
 // ============================================================
 async function proyectar() {
+  if (!filaSeleccionada) {
+    alert("Selecciona una fila antes de proyectar.");
+    return;
+  }
+
   if (!("getScreenDetails" in window)) {
     alert("Tu navegador no soporta pantallas extendidas. Activa chrome://flags");
     return;
@@ -251,8 +281,7 @@ async function proyectar() {
 
   const details = await window.getScreenDetails();
   const indexPantalla = parseInt(document.getElementById("pantallaSelect").value, 10);
-
-  const scr = details.screens[indexPantalla]; // Usamos índice
+  const scr = details.screens[indexPantalla];
   if (!scr) {
     alert("Pantalla no encontrada.");
     return;
@@ -264,25 +293,31 @@ async function proyectar() {
     `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height}`
   );
 
+  // Clonar encabezado y solo la fila seleccionada
+  const tablaClon = document.createElement("table");
+  tablaClon.innerHTML = `
+    <thead>${document.querySelector("#tabla thead").innerHTML}</thead>
+    <tbody>${filaSeleccionada.outerHTML}</tbody>
+  `;
+
   win.document.body.innerHTML = `
     <style>
       body { background:white; font-family:Arial; }
       h1 { text-align:center; margin-top:20px; }
       table { width:95%; margin:auto; border-collapse: collapse; }
-      th, td { border:1px solid #ccc; padding:8px; }
+      th, td { border:1px solid #ccc; padding:8px; text-align:center; }
       th { background:#d9ead3; }
     </style>
 
     <h1>Asistencia ${document.getElementById("mesActual").textContent}</h1>
-    ${document.getElementById("tabla").outerHTML}
   `;
+  win.document.body.appendChild(tablaClon);
 }
 
 // 🔹 Ejecutar detección automáticamente al cargar
 window.addEventListener("load", detectarPantallas);
 
-
-  if ("serviceWorker" in navigator) {
+if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js")
     .then(() => console.log("Service Worker registrado"))
     .catch(err => console.error("Error registrando SW:", err));
@@ -291,4 +326,3 @@ window.addEventListener("load", detectarPantallas);
 
 </body>
 </html>
-
