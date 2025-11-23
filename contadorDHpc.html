@@ -281,7 +281,14 @@ async function proyectar() {
 // 🔹 Ejecutar detección automáticamente al cargar
 window.addEventListener("load", detectarPantallas);
 
+
+  if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js")
+    .then(() => console.log("Service Worker registrado"))
+    .catch(err => console.error("Error registrando SW:", err));
+}
 </script>
 
 </body>
 </html>
+
