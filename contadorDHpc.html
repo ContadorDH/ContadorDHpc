@@ -296,12 +296,19 @@ let ventanaProyeccion = null;
 // ============================================================
 // 🔵 DETECTAR PANTALLAS
 // ============================================================
+// ============================================================
+// DETECTAR PANTALLAS (mejorado sin afectar nada más)
+// ============================================================
 async function detectarPantallas() {
   const combo = document.getElementById("pantallaSelect");
+
+  // Oculto mientras carga
+  combo.style.visibility = "hidden";
   combo.innerHTML = "<option>Cargando...</option>";
 
   if (!("getScreenDetails" in window)) {
     combo.innerHTML = "<option>No compatible (activa chrome://flags)</option>";
+    combo.style.visibility = "visible";
     return;
   }
 
@@ -309,13 +316,22 @@ async function detectarPantallas() {
     const details = await window.getScreenDetails();
     combo.innerHTML = "";
 
-    details.screens.forEach((screen, index) => {
+    // Ordenar: principal primero
+    const pantallasOrdenadas = [...details.screens].sort((a, b) => {
+      if (a.isPrimary) return -1;
+      if (b.isPrimary) return 1;
+      return 0;
+    });
+
+    let indexSeleccion = 0;
+
+    pantallasOrdenadas.forEach((screen, index) => {
       const opt = document.createElement("option");
       opt.value = index;
 
-      // Nombre sin resolución
       if (screen.isPrimary) {
         opt.textContent = "Pantalla Principal";
+        indexSeleccion = index;
       } else {
         opt.textContent = `Pantalla ${index + 1}`;
       }
@@ -323,8 +339,14 @@ async function detectarPantallas() {
       combo.appendChild(opt);
     });
 
+    combo.selectedIndex = indexSeleccion;
+
+    // Mostrar ya listo
+    combo.style.visibility = "visible";
+
   } catch (error) {
     combo.innerHTML = "<option>Error: No autorizado</option>";
+    combo.style.visibility = "visible";
   }
 }
 
@@ -660,6 +682,7 @@ window.addEventListener("load", detectarPantallas);
 </script>
 </body>
 </html>
+
 
 
 
