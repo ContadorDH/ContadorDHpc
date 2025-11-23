@@ -31,13 +31,15 @@
     font-weight: bold;
   }
 
-  .panel {
-    padding: 15px;
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
+ .panel {
+  padding: 15px;
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  position: relative;
+}
 
   button {
     padding: 10px 15px;
@@ -93,17 +95,62 @@
     0%   { background: rgba(255, 0, 0, 0.50); }
     50%  { background: rgba(255, 0, 0, 1); }
     100% { background: rgba(255, 0, 0, 0.50); }
-  }
+  
+}
+
+.subtitulo-moderno {
+  margin-top: 12px;
+  text-align: center;
+  font-weight: 700;
+  font-size: clamp(22px, 3vw, 34px);   /* automático según pantalla */
+  color: #0a5c30;
+  letter-spacing: 0.5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #e8f5e9, #d0ead3);
+  border-radius: 12px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.titulo-label {
+  opacity: 0.9;
+}
+
+.titulo-mes {
+  color: #0c7a41;
+  font-weight: 900;
+}
+
+
+
 </style>
 </head>
 <body>
 
 <header>Asistencia IPUC Bochica Sur</header>
 
-<div id="subtitulo">Asistencia de: <span id="mesActual"></span></div>
+<div id="subtitulo" class="subtitulo-moderno">
+  <span class="titulo-label">Asistencia de:</span>
+  <span id="mesActual" class="titulo-mes"></span>
+</div>
 
+
+<!-- 🔽 TABLA ARRIBA -->
+<table id="tabla">
+  <thead></thead>
+  <tbody></tbody>
+</table>
+
+<!-- 🔽 PANEL AHORA ABAJO -->
 <div class="panel">
-  <button onclick="verMesActual()">Ver Mes Actual</button>
+  <button onclick="verMesActual()">Mes Actual</button>
   <button onclick="verHoy()">Ver Hoy</button>
 
   <select id="selectMes"></select>
@@ -112,9 +159,11 @@
   <select id="pantallaSelect">
     <option>Selecciona pantalla</option>
   </select>
+
   <button onclick="proyectar()">Proyectar</button>
   <button onclick="detectarPantallas()">Cargar pantallas</button>
 </div>
+
 
 <table id="tabla">
   <thead></thead>
@@ -493,6 +542,7 @@ window.addEventListener("load", detectarPantallas);
 </script>
 </body>
 </html>
+
 
 
 
