@@ -334,6 +334,8 @@ const meses = [
 
 let filaSeleccionada = null;
 let ventanaProyeccion = null;
+  let yaEstaHoyCargado = false;        // ← indica si ya mostramos la asistencia de hoy
+let intervaloPolling = null;         // ← para poder detenerlo cuando ya esté
 
 // ============================================================
 // DETECTAR PANTALLAS – VERSIÓN 100% SIN TEMBLOR NI PARPADEO
@@ -466,6 +468,12 @@ function verMesActual() {
 // Ver Hoy
 // ============================================================
 async function verHoy() {
+  yaEstaHoyCargado = true;   // ← NUEVO: marcamos que ya mostramos "hoy"
+  if (intervaloPolling) {
+    clearInterval(intervaloPolling);
+    intervaloPolling = null;
+  }
+
   let mes = meses[new Date().getMonth()];
   let url = `${URL}?accion=listar&mes=${mes}`;
   let res = await fetch(url);
@@ -485,6 +493,11 @@ async function verHoy() {
 // ============================================================
 function buscarMes() {
   cargarMes(selectMes.value);
+  yaEstaHoyCargado = true;
+if (intervaloPolling) {
+  clearInterval(intervaloPolling);
+  intervaloPolling = null;
+}
 }
 
 // ============================================================
@@ -609,28 +622,70 @@ async function cargarAlIniciar() {
     let res = await fetch(`${URL}?accion=listar&mes=${mesActual}`);
     let data = await res.json();
 
-    // Filtrar si hay fila de hoy
     const filaHoy = data.find(row => Array.isArray(row) && row[1] && row[1].includes(hoy));
 
     if (filaHoy) {
-      // Hay asistencia de hoy → mostrar solo hoy
-      const filtrados = [data[0]]; // headers
+      // Ya existe hoy → mostramos solo hoy y marcamos bandera
+      yaEstaHoyCargado = true;
+      const filtrados = [data[0]];
       data.forEach(row => {
         if (Array.isArray(row) && row[1] && row[1].includes(hoy)) filtrados.push(row);
       });
       document.getElementById("mesActual").textContent = "Hoy";
       pintarTabla(filtrados);
     } else {
-      // No hay hoy → mostrar mes actual completo
+      // No hay hoy → mostramos el mes completo
       document.getElementById("mesActual").textContent = mesActual;
       pintarTabla(data);
+
+      // === AQUÍ EMPIEZA EL POLLING AUTOMÁTICO ===
+      if (!intervaloPolling) {
+        intervaloPolling = setInterval(verificarSiYaSubieronAsistenciaDeHoy, 30000); // cada 30 segundos
+        console.log("Polling activado: revisando cada 30 seg si subieron la asistencia de hoy");
+      }
     }
   } catch (err) {
-    // En caso de error, caer en mes actual
+    console.error("Error al cargar al iniciar:", err);
     cargarMes(mesActual);
   }
 }
 
+
+// ============================================================
+// FUNCIÓN QUE REVISA CADA CIERTO TIEMPO SI YA SUBIERON LA ASISTENCIA DE HOY
+// ============================================================
+async function verificarSiYaSubieronAsistenciaDeHoy() {
+  if (yaEstaHoyCargado) return; // Ya la tenemos → no hacemos nada más
+
+  const hoy = new Date().toLocaleDateString("es-CO");
+  const mesActual = meses[new Date().getMonth()];
+
+  try {
+    let res = await fetch(`${URL}?accion=listar&mes=${mesActual}`);
+    let data = await res.json();
+
+    // Buscamos si existe alguna fila con la fecha de hoy
+    const existeHoy = data.some(row => 
+      Array.isArray(row) && row[1] && row[1].includes(hoy)
+    );
+
+    if (existeHoy) {
+      // ¡¡APARECIÓ LA ASISTENCIA DE HOY!!
+      yaEstaHoyCargado = true;
+      clearInterval(intervaloPolling);   // detenemos el polling
+      intervaloPolling = null;
+
+      await verHoy();                    // mostramos automáticamente "Hoy"
+      document.getElementById("mesActual").textContent = "Hoy"; // por si acaso
+      alert("¡La asistencia de hoy ya fue cargada! Se actualizó automáticamente.");
+    }
+  } catch (err) {
+    console.warn("Error en polling de asistencia hoy:", err);
+    // No hacemos nada, sigue intentando en el próximo ciclo
+  }
+}
+
+  
 // Ejecutar al cargar la página
 window.addEventListener("load", () => {
   detectarPantallas();
@@ -639,6 +694,7 @@ window.addEventListener("load", () => {
 </script>
 </body>
 </html>
+
 
 
 
