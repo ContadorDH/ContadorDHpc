@@ -26,12 +26,30 @@
     font-weight: bold;
   }
 
-  #subtitulo {
-    text-align: center;
-    margin-top: 5px;
-    font-size: 18px;
-    font-weight: bold;
-  }
+ /* SUBTÍTULO PRINCIPAL GRANDE Y MODERNO */
+#subtitulo {
+  margin-top: 18px;
+  text-align: center;
+  font-size: clamp(26px, 3.2vw, 40px);
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #1E6FB8; /* azul corporativo */
+  padding: 12px 26px;
+  background: linear-gradient(135deg, #eaf4ff, #d4e9ff);
+  border-radius: 14px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+  border: 2px solid #1E6FB8;
+}
+
+#subtitulo span {
+  color: #000;
+  font-weight: 900;
+  text-transform: capitalize;
+}
+
 
  /* PANEL FIJO MODERNO */
 .panel {
@@ -294,9 +312,14 @@ async function detectarPantallas() {
     details.screens.forEach((screen, index) => {
       const opt = document.createElement("option");
       opt.value = index;
-      opt.textContent =
-        `Pantalla ${index + 1} - ${screen.width}x${screen.height}` +
-        (screen.isPrimary ? " (Principal)" : "");
+
+      // Nombre sin resolución
+      if (screen.isPrimary) {
+        opt.textContent = "Pantalla Principal";
+      } else {
+        opt.textContent = `Pantalla ${index + 1}`;
+      }
+
       combo.appendChild(opt);
     });
 
@@ -637,6 +660,7 @@ window.addEventListener("load", detectarPantallas);
 </script>
 </body>
 </html>
+
 
 
 
