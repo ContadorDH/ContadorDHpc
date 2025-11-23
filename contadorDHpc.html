@@ -115,7 +115,7 @@ const meses = [
 let ventanaProyeccion = null;
 
 // ============================================================
-// 🔵 DETECTAR PANTALLAS REALES (solo tras interacción del usuario)
+// 🔵 DETECTAR PANTALLAS REALES (auto al cargar y botón)
 // ============================================================
 async function detectarPantallas() {
   const combo = document.getElementById("pantallaSelect");
@@ -132,12 +132,16 @@ async function detectarPantallas() {
 
     details.screens.forEach((screen, index) => {
       const opt = document.createElement("option");
-      opt.value = index; // Usamos índice en lugar de id
+      opt.value = index; // usamos índice
       opt.textContent =
         `Pantalla ${index + 1} - ${screen.width}x${screen.height}` +
         (screen.isPrimary ? " (Principal)" : "");
       combo.appendChild(opt);
     });
+
+    // Si hay al menos 1 pantalla, seleccionamos la principal por defecto
+    const principalIndex = details.screens.findIndex(s => s.isPrimary);
+    if (principalIndex >= 0) combo.value = principalIndex;
 
   } catch (error) {
     combo.innerHTML = "<option>Error: No autorizado</option>";
@@ -273,6 +277,10 @@ async function proyectar() {
     ${document.getElementById("tabla").outerHTML}
   `;
 }
+
+// 🔹 Ejecutar detección automáticamente al cargar
+window.addEventListener("load", detectarPantallas);
+
 </script>
 
 </body>
