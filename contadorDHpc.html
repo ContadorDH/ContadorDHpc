@@ -508,10 +508,13 @@ function buscarMes() {
 // ============================================================
 // PROYECCIÓN MODERNA – CON AUTO-SELECCIÓN CUANDO HAY UNA SOLA FILA
 // ============================================================
+// ============================================================
+// PROYECCIÓN MODERNA – FULLSCREEN REAL + CORREGIDA
+// ============================================================
 async function proyectar() {
   const btn = document.querySelector("button[onclick='proyectar()']");
 
-  // Si ya está proyectando → detener
+  // Detener si ya está abierta
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
     ventanaProyeccion.close();
     ventanaProyeccion = null;
@@ -520,99 +523,63 @@ async function proyectar() {
     return;
   }
 
-  // === NUEVO: detectar si hay solo una fila de datos ===
+  // Auto-seleccionar si solo hay una fila
   const filasDatos = document.querySelectorAll("#tabla tbody tr");
   if (filasDatos.length === 1) {
     filaSeleccionada = filasDatos[0];
-    filasDatos[0].classList.add("filaSel"); // opcional: resaltar
+    filasDatos[0].classList.add("filaSel");
   }
-  // === FIN NUEVO ===
-
-  // Si no hay fila seleccionada (y no es el caso de una sola fila)
   if (!filaSeleccionada) {
     alert("Selecciona una fila antes de proyectar.");
     return;
   }
 
-  // === Todo lo demás queda 100% igual que tenías ===
+  // Detectar pantalla secundaria
   let scr = null;
   if ("getScreenDetails" in window) {
     try {
       const details = await window.getScreenDetails();
-      const indexPantalla = parseInt(document.getElementById("pantallaSelect").value);
-      if (!isNaN(indexPantalla) && details.screens[indexPantalla]) {
-        scr = details.screens[indexPantalla];
-      }
-    } catch (e) { /* permiso denegado → se ignora */ }
+      const index = parseInt(document.getElementById("pantallaSelect").value);
+      if (!isNaN(index) && details.screens[index]) scr = details.screens[index];
+    } catch (e) { }
   }
 
+  // ABRIR EN PANTALLA COMPLETA REAL
   const features = scr
     ? `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height}`
-    : `width=1200,height=700`;
+    : `width=${screen.width},height=${screen.height},left=0,top=0`;
 
-   // === VENTANA FULLSCREEN REAL – SIN BARRAS, SIN BOTONES, SIN NADA ===
-  const features = scr
-    ? `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height},fullscreen=yes`
-    : `width=${screen.width},height=${screen.height},left=0,top=0,fullscreen=yes`;
+  ventanaProyeccion = window.open("", "proyeccion", features + ",fullscreen=yes,toolbar=no,menubar=no,location=no");
 
-  ventanaProyeccion = window.open("", "proyeccion", features);
-
-  // Forzar fullscreen real apenas abre (funciona en casi todos los navegadores modernos)
-  ventanaProyeccion.onload = function() {
-    ventanaProyeccion.document.documentElement.requestFullscreen?.() ||
-    ventanaProyeccion.document.documentElement.webkitRequestFullscreen?.() ||
-    ventanaProyeccion.document.documentElement.msRequestFullscreen?.();
+  // Forzar fullscreen real al cargar
+  ventanaProyeccion.onload = () => {
+    ventanaProyeccion.document.documentElement.requestFullscreen?.()
+      || ventanaProyeccion.document.documentElement.webkitRequestFullscreen?.()
+      || ventanaProyeccion.document.documentElement.msRequestFullscreen?.();
   };
 
-  // También ocultar cualquier rastro de interfaz del navegador
-  ventanaProyeccion.addEventListener("load", () => {
-    const style = ventanaProyeccion.document.createElement("style");
-    style.textContent = `
-      html, body { margin:0; padding:0; overflow:hidden; width:100vw; height:100vh; }
-      ::-webkit-scrollbar { display: none; }
-      body { -ms-overflow-style: none; scrollbar-width: none; }
-    `;
-    ventanaProyeccion.document.head.appendChild(style);
-  });
-
-  let headers = [...document.querySelectorAll("#tabla thead th")].map(th => th.innerText);
-  let valores = [...filaSeleccionada.querySelectorAll("td")].map(td => td.innerText);
-
-  let inicio = headers.findIndex(h => /hermano/i.test(h));
-  let fin = headers.findIndex(h => /total/i.test(h));
+  // Obtener datos de la fila
+  const headers = [...document.querySelectorAll("#tabla thead th")].map(th => th.innerText);
+  const valores = [...filaSeleccionada.querySelectorAll("td")].map(td => td.innerText);
+  const inicio = headers.findIndex(h => /hermano/i.test(h));
+  const fin = headers.findIndex(h => /total/i.test(h));
   const totalAsistencia = valores[fin];
   const headersSinTotal = headers.slice(inicio, fin);
   const valoresSinTotal = valores.slice(inicio, fin);
 
-  let fechaFila = valores[1] ? valores[1].trim() : "Fecha no disponible";
+  let fechaFila = valores[1] ? valores[1].trim().split(" ")[0] : "Fecha no disponible";
+  const [dia, mes, anio] = fechaFila.split("/").map(Number);
+  const mesesN = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+  const diasN = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+  const fechaObj = new Date(anio, mes - 1, dia);
+  fechaFila = `${diasN[fechaObj.getDay()]} ${dia} de ${mesesN[mes - 1]} de ${anio}`;
 
-  function formatearFechaLarga(fechaTexto) {
-    try {
-      let soloFecha = fechaTexto.split(" ")[0];
-      let [dia, mes, anio] = soloFecha.split("/").map(n => parseInt(n));
-      const meses = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
-      const diasSemana = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
-      const fechaObj = new Date(anio, mes - 1, dia);
-      return `${diasSemana[fechaObj.getDay()]} ${dia} de ${meses[mes - 1]} de ${anio}`;
-    } catch (e) {
-      return fechaTexto;
-    }
-  }
-  fechaFila = formatearFechaLarga(fechaFila);
-
+  // HTML PROYECTADO – LIMPIO Y CORRECTO
   ventanaProyeccion.document.body.innerHTML = `
     <style>
-     <style>
-  html,body{
-    margin:0;padding:0;overflow:hidden;width:100vw;height:100vh;
-    background:linear-gradient(90deg,#061b0f,#00321a 60%);
-    font-family:'Segoe UI',sans-serif;color:#fff;
-    -webkit-tap-highlight-color:transparent;
-  }
-  * { box-sizing:border-box; -webkit-user-select:none; user-select:none; }
-  /* Elimina cualquier barra, scroll o interfaz */
-  ::-webkit-scrollbar { display:none !important; }
-  body { scrollbar-width:none; -ms-overflow-style:none; }
+      html,body{margin:0;padding:0;overflow:hidden;width:100vw;height:100vh;background:linear-gradient(90deg,#061b0f,#00321a 60%);font-family:'Segoe UI',sans-serif;color:#fff}
+      *{box-sizing:border-box;user-select:none;-webkit-user-select:none}
+      ::-webkit-scrollbar{display:none} body{scrollbar-width:none;-ms-overflow-style:none}
       .wrap{width:100%;height:100%;display:flex;justify-content:center;align-items:center}
       .contenedor{width:96%;height:86%;padding:28px;background:rgba(255,255,255,0.05);border-radius:20px;backdrop-filter:blur(8px);box-shadow:0 12px 50px rgba(0,0,0,0.6);display:flex;flex-direction:column;align-items:center}
       h1{margin:0 0 18px 0;font-size:calc(20px + 2.6vw);font-weight:700;text-align:center;letter-spacing:1px}
@@ -624,18 +591,26 @@ async function proyectar() {
       @keyframes fadeIn{from{opacity:0;transform:translateY(6px) scale(0.98)}to{opacity:1;transform:none}}
       .contenedor{animation:fadeIn .5s ease-out}
     </style>
-    <div class="wrap"><div class="contenedor">
-      <h1>${fechaFila}</h1>
-      <div class="grid">
-        ${headersSinTotal.map((h,i) => `<div class="card"><div class="titulo">${h}</div><div class="valor">${valoresSinTotal[i]}</div></div>`).join("")}
+    <div class="wrap">
+      <div class="contenedor">
+        <h1>${fechaFila}</h1>
+        <div class="grid">
+          ${headersSinTotal.map((h,i) => `
+            <div class="card">
+              <div class="titulo">${h}</div>
+              <div class="valor">${valoresSinTotal[i]}</div>
+            </div>
+          `).join("")}
+        </div>
+        <div class="total-final">Total: ${totalAsistencia}</div>
       </div>
-      <div class="total-final">Total: ${totalAsistencia}</div>
-    </div></div>
+    </div>
   `;
 
   btn.textContent = "Detener";
   btn.classList.add("boton-detener");
 
+  // Monitorear cierre
   const timer = setInterval(() => {
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       clearInterval(timer);
@@ -690,6 +665,7 @@ window.addEventListener("load", () => {
 </script>
 </body>
 </html>
+
 
 
 
