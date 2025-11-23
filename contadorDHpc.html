@@ -392,15 +392,28 @@ async function detectarPantallas() {
 }
 
 // ============================================================
-// Cargar combo meses
+// Cargar combo meses con el mes actual seleccionado y al principio
 // ============================================================
 const selectMes = document.getElementById("selectMes");
+const mesActualNombre = meses[new Date().getMonth()];
+
+const optActual = document.createElement("option");
+optActual.value = mesActualNombre;
+optActual.textContent = mesActualNombre;
+optActual.selected = true;
+selectMes.appendChild(optActual);
+
 meses.forEach(m => {
-  const opt = document.createElement("option");
-  opt.value = m;
-  opt.textContent = m;
-  selectMes.appendChild(opt);
+  if (m !== mesActualNombre) {
+    const opt = document.createElement("option");
+    opt.value = m;
+    opt.textContent = m;
+    selectMes.appendChild(opt);
+  }
 });
+
+// Título grande
+document.getElementById("mesActual").textContent = mesActualNombre;
 
 document.getElementById("mesActual").textContent = meses[new Date().getMonth()];
 
@@ -677,7 +690,7 @@ async function verificarSiYaSubieronAsistenciaDeHoy() {
 
       await verHoy();                    // mostramos automáticamente "Hoy"
       document.getElementById("mesActual").textContent = "Hoy"; // por si acaso
-      alert("¡La asistencia de hoy ya fue cargada! Se actualizó automáticamente.");
+      
     }
   } catch (err) {
     console.warn("Error en polling de asistencia hoy:", err);
@@ -694,6 +707,7 @@ window.addEventListener("load", () => {
 </script>
 </body>
 </html>
+
 
 
 
