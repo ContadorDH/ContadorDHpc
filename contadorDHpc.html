@@ -93,9 +93,7 @@
   <button onclick="buscarMes()">Buscar</button>
 
   <select id="pantallaSelect">
-    <option value="1">Pantalla 1</option>
-    <option value="2">Pantalla 2</option>
-    <option value="3">Pantalla 3</option>
+    <option>Cargando pantallas...</option>
   </select>
   <button onclick="proyectar()">Proyectar</button>
 </div>
@@ -106,7 +104,7 @@
 </table>
 
 <script>
-const URL = "https://script.google.com/macros/s/AKfycbwuad6LbOg5k2TFzphjhPTm-NwMJwURzhfFPsEb8a5oB9KXuXIhWxe5QzrR2xLnDjYVlA/exec"; // ⚠️ Coloca tu URL aquí
+const URL = "https://script.google.com/macros/s/AKfycbwuad6LbOg5k2TFzphjhPTm-NwMJwURzhfFPsEb8a5oB9KXuXIhWxe5QzrR2xLnDjYVlA/exec";
 
 const meses = [
   "Enero","Febrero","Marzo","Abril","Mayo","Junio",
@@ -114,6 +112,50 @@ const meses = [
 ];
 
 let ventanaProyeccion = null;
+
+// ------------------------------------------------------
+// PERMISO PARA USAR PANTALLAS REALES
+// ------------------------------------------------------
+async function solicitarPermisoPantallas() {
+  if (!("getScreens" in window)) {
+    console.warn("API de pantallas no soportada en este navegador.");
+    return;
+  }
+
+  try {
+    await window.getScreens();
+  } catch (e) {
+    console.error("Permiso de pantallas denegado:", e);
+  }
+}
+
+solicitarPermisoPantallas();
+
+// ------------------------------------------------------
+// CARGAR PANTALLAS REALES
+// ------------------------------------------------------
+async function cargarPantallas() {
+  const select = document.getElementById("pantallaSelect");
+
+  if (!("getScreens" in window)) {
+    select.innerHTML = "<option>No compatible</option>";
+    return;
+  }
+
+  const screensObj = await window.getScreens();
+
+  select.innerHTML = "";
+
+  screensObj.screens.forEach((scr, i) => {
+    const opt = document.createElement("option");
+    opt.value = i;
+    opt.textContent = `Pantalla ${i + 1} (${scr.width}x${scr.height})`;
+    select.appendChild(opt);
+  });
+}
+
+cargarPantallas();
+
 
 // ------------------------------------------------------
 // Cargar combo de meses
@@ -157,14 +199,12 @@ function pintarTabla(data) {
     return;
   }
 
-  // Encabezados
   let headers = data[0];
   let thRow = "<tr>";
   headers.forEach(h => thRow += `<th>${h}</th>`);
   thRow += "</tr>";
   thead.innerHTML = thRow;
 
-  // Filas
   for (let i = 1; i < data.length; i++) {
     let row = "<tr>";
     data[i].forEach(cell => row += `<td>${cell}</td>`);
@@ -209,17 +249,35 @@ function buscarMes() {
 }
 
 // ------------------------------------------------------
-// Botón: Proyectar en otra pantalla
+// PROYECTAR EN PANTALLA REAL
 // ------------------------------------------------------
-function proyectar() {
-  const pantalla = document.getElementById("pantallaSelect").value;
-
-  if (!ventanaProyeccion || ventanaProyeccion.closed) {
-    ventanaProyeccion = window.open("", "proyeccion", "width=1000,height=600");
+async function proyectar() {
+  if (!("getScreens" in window)) {
+    alert("Tu navegador no soporta proyección en pantalla externa.");
+    return;
   }
 
-  ventanaProyeccion.document.body.innerHTML = `
-    <h1 style="text-align:center;">Asistencia ${document.getElementById("mesActual").textContent}</h1>
+  const screensObj = await window.getScreens();
+  const index = parseInt(document.getElementById("pantallaSelect").value);
+  const scr = screensObj.screens[index];
+
+  const win = await window.open(
+    "",
+    "",
+    `fullscreen=yes,left=${scr.left},top=${scr.top},
+     width=${scr.width},height=${scr.height}`
+  );
+
+  win.document.body.innerHTML = `
+    <style>
+      body { background:white; font-family:Arial; }
+      h1 { text-align:center; margin-top:20px; }
+      table { width:95%; margin:auto; border-collapse: collapse; }
+      th, td { border:1px solid #ccc; padding:8px; }
+      th { background:#d9ead3; }
+    </style>
+
+    <h1>Asistencia ${document.getElementById("mesActual").textContent}</h1>
     ${document.getElementById("tabla").outerHTML}
   `;
 }
