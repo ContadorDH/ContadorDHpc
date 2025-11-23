@@ -278,7 +278,7 @@ th {
   </button>
 
   <!-- SOLO ÍCONO AWESOME -->
-  <button class="btn-icono" onclick="detectarPantallas()">
+  <button class="btn-icono" onclick="Pantallas()">
     <i class="fa-solid fa-tv"></i>
   </button>
 </div>
@@ -682,62 +682,45 @@ async function proyectar() {
 
 
 
-  // ============================================================
-// CARGA INICIAL: Primero intenta mostrar HOY → si no hay, muestra el mes actual
 // ============================================================
-async function cargarInicial() {
-  const mesActualNombre = meses[new Date().getMonth()];
-  const hoy = new Date().toLocaleDateString("es-CO"); // ej: 23/11/2025
+// CARGA AUTOMÁTICA INTELIGENTE AL INICIAR LA PÁGINA
+// ============================================================
+async function cargarAlIniciar() {
+  const hoy = new Date().toLocaleDateString("es-CO");
+  const mesActual = meses[new Date().getMonth()];
 
   try {
-    const res = await fetch(`${URL}?accion=listar&mes=${encodeURIComponent(mesActualNombre)}`);
-    const data = await res.json();
+    let res = await fetch(`${URL}?accion=listar&mes=${mesActual}`);
+    let data = await res.json();
 
-    // Buscar si existe fila con la fecha de hoy
-    const filaDeHoy = data.slice(1).find(row => row[1] && row[1].includes(hoy));
+    // Filtrar si hay fila de hoy
+    const filaHoy = data.find(row => Array.isArray(row) && row[1] && row[1].includes(hoy));
 
-    if (filaDeHoy) {
-      // HAY asistencia hoy → mostrar solo esa fila
-      const tablaHoy = [data[0], filaDeHoy]; // encabezado + fila de hoy
+    if (filaHoy) {
+      // Hay asistencia de hoy → mostrar solo hoy
+      const filtrados = [data[0]]; // headers
+      data.forEach(row => {
+        if (Array.isArray(row) && row[1] && row[1].includes(hoy)) filtrados.push(row);
+      });
       document.getElementById("mesActual").textContent = "Hoy";
-      pintarTabla(tablaHoy);
+      pintarTabla(filtrados);
     } else {
-      // NO hay asistencia hoy → mostrar el mes completo
-      document.getElementById("mesActual").textContent = mesActualNombre;
+      // No hay hoy → mostrar mes actual completo
+      document.getElementById("mesActual").textContent = mesActual;
       pintarTabla(data);
     }
   } catch (err) {
-    console.error("Error carga inicial:", err);
-    // En caso de error, al menos muestra el mes actual
-    document.getElementById("mesActual").textContent = mesActualNombre;
-    cargarMes(mesActualNombre);
+    // En caso de error, caer en mes actual
+    cargarMes(mesActual);
   }
 }
 
-// ============================================================
-// Auto cargar pantallas
-// ============================================================
+// Ejecutar al cargar la página
 window.addEventListener("load", () => {
-  cargarInicial();         // ← NUEVO: carga Hoy o mes actual
-  detectarPantallas();     // ← mantiene detección de pantallas
+  detectarPantallas();
+  cargarAlIniciar();  // ← Esta es la nueva carga inteligente
 });
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
