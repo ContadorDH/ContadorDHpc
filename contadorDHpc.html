@@ -262,8 +262,7 @@ function buscarMes() {
 // ============================================================
 // PROYECCIÓN MODERNA – FILA COMPLETA
 // ============================================================
-// ============================================================
-// PROYECCIÓN MODERNA – FILA COMPLETA (MODIFICADA CORRECTAMENTE)
+// PROYECCIÓN MODERNA – FILA COMPLETA (VERSIÓN FINAL CORREGIDA)
 // ============================================================
 async function proyectar() {
   const btn = document.querySelector("button[onclick='proyectar()']");
@@ -305,30 +304,19 @@ async function proyectar() {
   let inicio = headers.findIndex(h => /hermano/i.test(h));
   let fin = headers.findIndex(h => /total/i.test(h));
 
-  // ====== ⚠️ AQUÍ VIENE EL CAMBIO IMPORTANTE ⚠️ ======
-  // Quitamos "Total asistencia" del grid.
+  // quitar TOTAL del grid
   const totalAsistencia = valores[fin];
   const headersSinTotal = headers.slice(inicio, fin);
   const valoresSinTotal = valores.slice(inicio, fin);
-  // ====================================================
 
-  // obtener fecha real de la fila
-  let fechaFormateada = "";
-  if (valores[1]) {
-    const fechaTexto = valores[1];
-    const fecha = new Date(fechaTexto);
-    if (!isNaN(fecha)) {
-      const opciones = { weekday: "long", day: "numeric", month: "long" };
-      fechaFormateada = fecha.toLocaleDateString("es-CO", opciones);
-      fechaFormateada = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
-    }
-  }
+  // ============================
+  // FECHA EXACTA DE LA FILA
+  // ============================
+  let fechaFila = valores[1] ? valores[1].trim() : "Fecha no disponible";
 
-  if (!fechaFormateada) {
-    fechaFormateada = "Fecha no disponible";
-  }
-
-  // construir HTML dentro de la ventana de proyección
+  // ============================
+  // HTML PROYECTADO
+  // ============================
   ventanaProyeccion.document.body.innerHTML = `
     <style>
       html, body {
@@ -406,7 +394,6 @@ async function proyectar() {
         line-height: 1;
       }
 
-      /* Estilo ESPECIAL para el total abajo */
       .total-final {
         margin-top: 40px;
         padding: 20px 50px;
@@ -428,7 +415,8 @@ async function proyectar() {
 
     <div class="wrap">
       <div class="contenedor">
-        <h1>Asistencia del día ${fechaFormateada}</h1>
+
+        <h1>Asistencia del día ${fechaFila}</h1>
 
         <div class="grid">
           ${
@@ -442,7 +430,7 @@ async function proyectar() {
         </div>
 
         <div class="total-final">
-          Total asistencia: ${totalAsistencia}
+          Total Asistencia: ${totalAsistencia}
         </div>
 
       </div>
@@ -466,6 +454,7 @@ async function proyectar() {
 
 
 
+
 // ============================================================
 // Auto cargar pantallas
 // ============================================================
@@ -473,5 +462,6 @@ window.addEventListener("load", detectarPantallas);
 </script>
 </body>
 </html>
+
 
 
