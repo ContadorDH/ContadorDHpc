@@ -27,22 +27,25 @@
     font-weight: bold;
   }
 
- /* SUBTÍTULO PRINCIPAL GRANDE Y MODERNO */
+/* SUBTÍTULO PRINCIPAL GRANDE Y MODERNO – SIN FONDO */
 #subtitulo {
-  margin-top: 18px;
+  margin-top: 22px;
+  margin-bottom: 10px;
   text-align: center;
-  font-size: clamp(26px, 3.2vw, 40px);
+  font-size: clamp(28px, 4vw, 44px);
   font-weight: 800;
-  letter-spacing: 1px;
-  color: #1E6FB8; 
-  padding: 12px 26px;
-  background: linear-gradient(135deg, #eaf4ff, #d4e9ff);
-  border-radius: 14px;
+  letter-spacing: 1.2px;
+  color: #1E6FB8;
+  /* Quitamos todo lo visual de fondo */
+  background: none;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
   width: fit-content;
   margin-left: auto;
   margin-right: auto;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.18);
-  border: 2px solid #1E6FB8;
+  line-height: 1.2;
 }
 
 #subtitulo span {
@@ -50,7 +53,6 @@
   font-weight: 900;
   text-transform: capitalize;
 }
-
 
  /* PANEL FIJO MODERNO */
 .panel {
@@ -276,7 +278,7 @@ th {
   </button>
 
   <!-- SOLO ÍCONO AWESOME -->
-  <button class="btn-icono" onclick="Pantallas()">
+  <button class="btn-icono" onclick="detectarPantallas()">
     <i class="fa-solid fa-tv"></i>
   </button>
 </div>
@@ -680,13 +682,49 @@ async function proyectar() {
 
 
 
+  // ============================================================
+// CARGA INICIAL: Primero intenta mostrar HOY → si no hay, muestra el mes actual
+// ============================================================
+async function cargarInicial() {
+  const mesActualNombre = meses[new Date().getMonth()];
+  const hoy = new Date().toLocaleDateString("es-CO"); // ej: 23/11/2025
+
+  try {
+    const res = await fetch(`${URL}?accion=listar&mes=${encodeURIComponent(mesActualNombre)}`);
+    const data = await res.json();
+
+    // Buscar si existe fila con la fecha de hoy
+    const filaDeHoy = data.slice(1).find(row => row[1] && row[1].includes(hoy));
+
+    if (filaDeHoy) {
+      // HAY asistencia hoy → mostrar solo esa fila
+      const tablaHoy = [data[0], filaDeHoy]; // encabezado + fila de hoy
+      document.getElementById("mesActual").textContent = "Hoy";
+      pintarTabla(tablaHoy);
+    } else {
+      // NO hay asistencia hoy → mostrar el mes completo
+      document.getElementById("mesActual").textContent = mesActualNombre;
+      pintarTabla(data);
+    }
+  } catch (err) {
+    console.error("Error carga inicial:", err);
+    // En caso de error, al menos muestra el mes actual
+    document.getElementById("mesActual").textContent = mesActualNombre;
+    cargarMes(mesActualNombre);
+  }
+}
+
 // ============================================================
 // Auto cargar pantallas
 // ============================================================
-window.addEventListener("load", detectarPantallas);
+window.addEventListener("load", () => {
+  cargarInicial();         // ← NUEVO: carga Hoy o mes actual
+  detectarPantallas();     // ← mantiene detección de pantallas
+});
 </script>
 </body>
 </html>
+
 
 
 
