@@ -8,27 +8,9 @@
 <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-<!-- COLORES MODERNOS TIPO GOOGLE / MATERIAL YOU -->
-<meta name="theme-color" content="#1e6fb8" />          <!-- Azul principal (el mismo de tus botones) -->
-<meta name="msapplication-navbutton-color" content="#1e6c6b8" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="theme-color" content="#0a5c30" />
 
 <style>
-/* Elimina el fondo verde oscuro que pone Android al cargar */
-  @viewport { width: device-width; }
-  html, body {
-    background: #f8fafc !important;   /* Gris muy claro moderno (como Google) */
-  }
-  /* Fuerza fondo blanco/gris claro mientras carga (incluso antes del JS) */
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: #f8fafc;
-    z-index: -1;
-  }
-
-  
   body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -508,16 +490,10 @@ function buscarMes() {
 // ============================================================
 // PROYECCIÓN MODERNA – CON AUTO-SELECCIÓN CUANDO HAY UNA SOLA FILA
 // ============================================================
-// ============================================================
-// PROYECCIÓN MODERNA – FULLSCREEN REAL + CORREGIDA
-// ============================================================
-// ============================================================
-// PROYECCIÓN MODERNA – FULLSCREEN REAL + CORREGIDA
-// ============================================================
 async function proyectar() {
   const btn = document.querySelector("button[onclick='proyectar()']");
 
-  // Detener si ya está abierta
+  // Si ya está proyectando → detener
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
     ventanaProyeccion.close();
     ventanaProyeccion = null;
@@ -526,69 +502,66 @@ async function proyectar() {
     return;
   }
 
-  // Auto-seleccionar si solo hay una fila
+  // === NUEVO: detectar si hay solo una fila de datos ===
   const filasDatos = document.querySelectorAll("#tabla tbody tr");
   if (filasDatos.length === 1) {
     filaSeleccionada = filasDatos[0];
-    filasDatos[0].classList.add("filaSel");
+    filasDatos[0].classList.add("filaSel"); // opcional: resaltar
   }
+  // === FIN NUEVO ===
+
+  // Si no hay fila seleccionada (y no es el caso de una sola fila)
   if (!filaSeleccionada) {
     alert("Selecciona una fila antes de proyectar.");
     return;
   }
 
-  // Detectar pantalla secundaria
+  // === Todo lo demás queda 100% igual que tenías ===
   let scr = null;
   if ("getScreenDetails" in window) {
     try {
       const details = await window.getScreenDetails();
-      const index = parseInt(document.getElementById("pantallaSelect").value);
-      if (!isNaN(index) && details.screens[index]) scr = details.screens[index];
-    } catch (e) { }
+      const indexPantalla = parseInt(document.getElementById("pantallaSelect").value);
+      if (!isNaN(indexPantalla) && details.screens[indexPantalla]) {
+        scr = details.screens[indexPantalla];
+      }
+    } catch (e) { /* permiso denegado → se ignora */ }
   }
 
-  // ABRIR EN PANTALLA COMPLETA REAL
   const features = scr
     ? `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height}`
-    : `width=${screen.width},height=${screen.height},left=0,top=0`;
+    : `width=1200,height=700`;
 
-  ventanaProyeccion = window.open("", "proyeccion", features + ",fullscreen=yes,toolbar=no,menubar=no,location=no");
+  ventanaProyeccion = window.open("", "proyeccion", features);
 
-  // Forzar fullscreen real al cargar
-  ventanaProyeccion.onload = () => {
-    ventanaProyeccion.document.documentElement.requestFullscreen?.()
-      || ventanaProyeccion.document.documentElement.webkitRequestFullscreen?.()
-      || ventanaProyeccion.document.documentElement.msRequestFullscreen?.();
-  };
+  let headers = [...document.querySelectorAll("#tabla thead th")].map(th => th.innerText);
+  let valores = [...filaSeleccionada.querySelectorAll("td")].map(td => td.innerText);
 
-  // Obtener datos de la fila
-  const headers = [...document.querySelectorAll("#tabla thead th")].map(th => th.innerText);
-  const valores = [...filaSeleccionada.querySelectorAll("td")].map(td => td.innerText);
-  const inicio = headers.findIndex(h => /hermano/i.test(h));
-  const fin = headers.findIndex(h => /total/i.test(h));
+  let inicio = headers.findIndex(h => /hermano/i.test(h));
+  let fin = headers.findIndex(h => /total/i.test(h));
   const totalAsistencia = valores[fin];
   const headersSinTotal = headers.slice(inicio, fin);
   const valoresSinTotal = valores.slice(inicio, fin);
 
-  let fechaFila = valores[1] ? valores[1].trim().split(" ")[0] : "Fecha no disponible";
-  const [dia, mes, anio] = fechaFila.split("/").map(Number);
-  const mesesN = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
-  const diasN = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
-  const fechaObj = new Date(anio, mes - 1, dia);
-  fechaFila = `${diasN[fechaObj.getDay()]} ${dia} de ${mesesN[mes - 1]} de ${anio}`;
+  let fechaFila = valores[1] ? valores[1].trim() : "Fecha no disponible";
 
-  // ← AQUÍ ESTÁ EL CAMBIO: primera letra en mayúscula
-  const diaSemana = diasN[fechaObj.getDay()];
-  const diaSemanaBonito = diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1);
+  function formatearFechaLarga(fechaTexto) {
+    try {
+      let soloFecha = fechaTexto.split(" ")[0];
+      let [dia, mes, anio] = soloFecha.split("/").map(n => parseInt(n));
+      const meses = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+      const diasSemana = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+      const fechaObj = new Date(anio, mes - 1, dia);
+      return `${diasSemana[fechaObj.getDay()]} ${dia} de ${meses[mes - 1]} de ${anio}`;
+    } catch (e) {
+      return fechaTexto;
+    }
+  }
+  fechaFila = formatearFechaLarga(fechaFila);
 
-  fechaFila = `${diaSemanaBonito} ${dia} de ${mesesN[mes - 1]} de ${anio}`;
-
-  // HTML PROYECTADO – LIMPIO Y CORRECTO
   ventanaProyeccion.document.body.innerHTML = `
     <style>
-      html,body{margin:0;padding:0;overflow:hidden;width:100vw;height:100vh;background:linear-gradient(90deg,#061b0f,#00321a 60%);font-family:'Segoe UI',sans-serif;color:#fff}
-      *{box-sizing:border-box;user-select:none;-webkit-user-select:none}
-      ::-webkit-scrollbar{display:none} body{scrollbar-width:none;-ms-overflow-style:none}
+      html,body{margin:0;padding:0;width:100vw;height:100vh;overflow:hidden;background:linear-gradient(90deg,#061b0f,#00321a 60%);font-family:'Segoe UI',sans-serif;color:#fff}
       .wrap{width:100%;height:100%;display:flex;justify-content:center;align-items:center}
       .contenedor{width:96%;height:86%;padding:28px;background:rgba(255,255,255,0.05);border-radius:20px;backdrop-filter:blur(8px);box-shadow:0 12px 50px rgba(0,0,0,0.6);display:flex;flex-direction:column;align-items:center}
       h1{margin:0 0 18px 0;font-size:calc(20px + 2.6vw);font-weight:700;text-align:center;letter-spacing:1px}
@@ -600,26 +573,18 @@ async function proyectar() {
       @keyframes fadeIn{from{opacity:0;transform:translateY(6px) scale(0.98)}to{opacity:1;transform:none}}
       .contenedor{animation:fadeIn .5s ease-out}
     </style>
-    <div class="wrap">
-      <div class="contenedor">
-        <h1>${fechaFila}</h1>
-        <div class="grid">
-          ${headersSinTotal.map((h,i) => `
-            <div class="card">
-              <div class="titulo">${h}</div>
-              <div class="valor">${valoresSinTotal[i]}</div>
-            </div>
-          `).join("")}
-        </div>
-        <div class="total-final">Total: ${totalAsistencia}</div>
+    <div class="wrap"><div class="contenedor">
+      <h1>${fechaFila}</h1>
+      <div class="grid">
+        ${headersSinTotal.map((h,i) => `<div class="card"><div class="titulo">${h}</div><div class="valor">${valoresSinTotal[i]}</div></div>`).join("")}
       </div>
-    </div>
+      <div class="total-final">Total: ${totalAsistencia}</div>
+    </div></div>
   `;
 
   btn.textContent = "Detener";
   btn.classList.add("boton-detener");
 
-  // Monitorear cierre
   const timer = setInterval(() => {
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       clearInterval(timer);
@@ -629,6 +594,8 @@ async function proyectar() {
     }
   }, 500);
 }
+
+
 
 
 // ============================================================
@@ -672,12 +639,3 @@ window.addEventListener("load", () => {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
