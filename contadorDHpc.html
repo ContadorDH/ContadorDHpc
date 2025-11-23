@@ -205,26 +205,23 @@ function pintarTabla(data) {
 }
 
 // ============================================================
-// Selección fila o celda
+// Seleccionar SOLO FILA COMPLETA
 // ============================================================
 document.getElementById("tabla").addEventListener("click", (e) => {
-  const td = e.target.closest("td");
   const tr = e.target.closest("tr");
 
-  if (!td || !tr || tr.querySelector("th")) return;
+  if (!tr || tr.querySelector("th")) return;
 
-  // Reset anteriores
+  // Quitar selección anterior
   document.querySelectorAll(".filaSel").forEach(r => r.classList.remove("filaSel"));
-  document.querySelectorAll(".celdaSel").forEach(c => c.classList.remove("celdaSel"));
 
-  // Guardar selecciones
-  celdaSeleccionada = td;
+  // Guardar selección
   filaSeleccionada = tr;
 
-  // Marcar visualmente
+  // Pintar selección
   tr.classList.add("filaSel");
-  td.classList.add("celdaSel");
 });
+
 
 // ============================================================
 // Ver Mes Actual
@@ -259,11 +256,11 @@ function buscarMes() {
 }
 
 // ============================================================
-// PROYECCIÓN MODERNA
+// PROYECCIÓN MODERNA – PROYECTA LA FILA COMPLETA
 // ============================================================
 async function proyectar() {
-  if (!celdaSeleccionada) {
-    alert("Selecciona una celda o fila antes de proyectar.");
+  if (!filaSeleccionada) {
+    alert("Selecciona una fila antes de proyectar.");
     return;
   }
 
@@ -282,50 +279,58 @@ async function proyectar() {
     `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height}`
   );
 
-  // Texto a proyectar (si seleccionó celda → solo celda)
-  const texto = celdaSeleccionada.innerText;
+  // Obtener datos de la fila seleccionada (sin HTML)
+  const celdas = [...filaSeleccionada.querySelectorAll("td")].map(td => td.innerText);
 
+  // Plantilla elegante
   win.document.body.innerHTML = `
     <style>
       body {
         margin: 0;
+        padding: 0;
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100vh;
-        font-family: Arial;
-        background: linear-gradient(135deg, #004e2a, #0a9d52);
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #003d23, #0fbf6a);
         color: white;
-        text-align: center;
       }
 
-      .card {
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(12px);
-        padding: 50px 80px;
-        border-radius: 25px;
-        box-shadow: 0 0 25px rgba(0,0,0,0.3);
-        animation: fadeIn 0.6s ease-out;
+      .contenedor {
+        text-align: center;
+        background: rgba(255,255,255,0.2);
+        padding: 60px 90px;
+        border-radius: 30px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 0 35px rgba(0,0,0,0.4);
+        animation: fadeIn 0.8s ease-out;
       }
 
       h1 {
-        font-size: 65px;
-        margin: 0;
-        line-height: 1.2;
+        font-size: 70px;
+        margin-bottom: 20px;
         font-weight: bold;
       }
 
+      .dato {
+        font-size: 50px;
+        margin: 15px 0;
+      }
+
       @keyframes fadeIn {
-        from { opacity: 0; transform: scale(0.9); }
-        to { opacity: 1; transform: scale(1); }
+        from {opacity: 0; transform: scale(0.9);}
+        to   {opacity: 1; transform: scale(1);}
       }
     </style>
 
-    <div class="card">
-      <h1>${texto}</h1>
+    <div class="contenedor">
+      <h1>Asistencia del Día</h1>
+      ${celdas.map(c => `<div class="dato">${c}</div>`).join("")}
     </div>
   `;
 }
+
 
 // ============================================================
 // Auto cargar pantallas
@@ -339,3 +344,4 @@ if ("serviceWorker" in navigator) {
 </script>
 </body>
 </html>
+
