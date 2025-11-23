@@ -3,10 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
 <title>Asistencia IPUC Bochica Sur</title>
 
-<!-- PWA -->
 <link rel="manifest" href="manifest.json" />
 <meta name="theme-color" content="#0a5c30" />
 
@@ -78,8 +76,13 @@
   }
 
   /* Fila seleccionada */
-  .seleccionada {
-    background-color: #f0f7f0 !important;
+  .filaSel {
+    background-color: #c7ffd1 !important;
+  }
+
+  /* Celda seleccionada */
+  .celdaSel {
+    background-color: #fff3b0 !important;
   }
 </style>
 </head>
@@ -110,17 +113,17 @@
 
 <script>
 const URL = "https://script.google.com/macros/s/AKfycbwuad6LbOg5k2TFzphjhPTm-NwMJwURzhfFPsEb8a5oB9KXuXIhWxe5QzrR2xLnDjYVlA/exec";
-
 const meses = [
   "Enero","Febrero","Marzo","Abril","Mayo","Junio",
   "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
 ];
 
 let ventanaProyeccion = null;
-let filaSeleccionada = null; // fila seleccionada
+let filaSeleccionada = null;
+let celdaSeleccionada = null;
 
 // ============================================================
-// 🔵 DETECTAR PANTALLAS REALES (auto al cargar y botón)
+// 🔵 DETECTAR PANTALLAS
 // ============================================================
 async function detectarPantallas() {
   const combo = document.getElementById("pantallaSelect");
@@ -137,25 +140,20 @@ async function detectarPantallas() {
 
     details.screens.forEach((screen, index) => {
       const opt = document.createElement("option");
-      opt.value = index; // usamos índice
+      opt.value = index;
       opt.textContent =
         `Pantalla ${index + 1} - ${screen.width}x${screen.height}` +
         (screen.isPrimary ? " (Principal)" : "");
       combo.appendChild(opt);
     });
 
-    // Si hay al menos 1 pantalla, seleccionamos la principal por defecto
-    const principalIndex = details.screens.findIndex(s => s.isPrimary);
-    if (principalIndex >= 0) combo.value = principalIndex;
-
   } catch (error) {
     combo.innerHTML = "<option>Error: No autorizado</option>";
-    console.error(error);
   }
 }
 
 // ============================================================
-// Cargar combo de meses
+// Cargar combo meses
 // ============================================================
 const selectMes = document.getElementById("selectMes");
 meses.forEach(m => {
@@ -165,32 +163,30 @@ meses.forEach(m => {
   selectMes.appendChild(opt);
 });
 
-// Mes actual
 document.getElementById("mesActual").textContent = meses[new Date().getMonth()];
 
 // ============================================================
-// Cargar datos por mes
+// Cargar datos
 // ============================================================
 async function cargarMes(mes) {
-  document.getElementById("mesActual").textContent = mes;
-
   let url = `${URL}?accion=listar&mes=${encodeURIComponent(mes)}`;
+
   let res = await fetch(url);
   let data = await res.json();
-
   pintarTabla(data);
+
+  document.getElementById("mesActual").textContent = mes;
 }
 
-// ============================================================
-// Pintar tabla
-// ============================================================
 function pintarTabla(data) {
   const thead = document.querySelector("#tabla thead");
   const tbody = document.querySelector("#tabla tbody");
 
   thead.innerHTML = "";
   tbody.innerHTML = "";
-  filaSeleccionada = null; // reset selección al cargar
+
+  filaSeleccionada = null;
+  celdaSeleccionada = null;
 
   if (!data || data.length === 0) {
     tbody.innerHTML = "<tr><td colspan='8'>Sin datos</td></tr>";
@@ -198,59 +194,57 @@ function pintarTabla(data) {
   }
 
   let headers = data[0];
-  let thRow = "<tr>";
-  headers.forEach(h => thRow += `<th>${h}</th>`);
-  thRow += "</tr>";
-  thead.innerHTML = thRow;
+  thead.innerHTML = "<tr>" + headers.map(h => `<th>${h}</th>`).join("") + "</tr>";
 
   for (let i = 1; i < data.length; i++) {
-    let row = "<tr>";
-    data[i].forEach(cell => row += `<td>${cell}</td>`);
-    row += "</tr>";
-    tbody.innerHTML += row;
+    tbody.innerHTML +=
+      "<tr>" +
+      data[i].map(cell => `<td>${cell}</td>`).join("") +
+      "</tr>";
   }
 }
 
 // ============================================================
-// Selección de fila al hacer click
+// Selección fila o celda
 // ============================================================
-const tabla = document.getElementById("tabla");
-tabla.addEventListener("click", (e) => {
+document.getElementById("tabla").addEventListener("click", (e) => {
+  const td = e.target.closest("td");
   const tr = e.target.closest("tr");
-  if (!tr || tr.querySelectorAll("th").length) return; // ignorar encabezados
 
-  // Toggle selección
-  if (tr === filaSeleccionada) {
-    tr.classList.remove("seleccionada");
-    filaSeleccionada = null;
-  } else {
-    tabla.querySelectorAll("tr").forEach(r => r.classList.remove("seleccionada"));
-    tr.classList.add("seleccionada");
-    filaSeleccionada = tr;
-  }
+  if (!td || !tr || tr.querySelector("th")) return;
+
+  // Reset anteriores
+  document.querySelectorAll(".filaSel").forEach(r => r.classList.remove("filaSel"));
+  document.querySelectorAll(".celdaSel").forEach(c => c.classList.remove("celdaSel"));
+
+  // Guardar selecciones
+  celdaSeleccionada = td;
+  filaSeleccionada = tr;
+
+  // Marcar visualmente
+  tr.classList.add("filaSel");
+  td.classList.add("celdaSel");
 });
 
 // ============================================================
-// Botón: Ver Mes Actual
+// Ver Mes Actual
 // ============================================================
 function verMesActual() {
-  let mes = meses[new Date().getMonth()];
-  cargarMes(mes);
+  cargarMes(meses[new Date().getMonth()]);
 }
 
 // ============================================================
-// Botón: Ver Hoy
+// Ver Hoy
 // ============================================================
 async function verHoy() {
   let mes = meses[new Date().getMonth()];
   let url = `${URL}?accion=listar&mes=${mes}`;
-
   let res = await fetch(url);
   let data = await res.json();
 
   const hoy = new Date().toLocaleDateString("es-CO");
-
   let filtrados = data.filter(row => row[1] && row[1].includes(hoy));
+
   if (filtrados.length > 0) filtrados.unshift(data[0]);
 
   document.getElementById("mesActual").textContent = "Hoy";
@@ -258,34 +252,29 @@ async function verHoy() {
 }
 
 // ============================================================
-// Botón: Buscar Mes
+// Buscar mes
 // ============================================================
 function buscarMes() {
-  let mes = selectMes.value;
-  cargarMes(mes);
+  cargarMes(selectMes.value);
 }
 
 // ============================================================
-// PROYECTAR EN PANTALLA REAL (solo fila seleccionada)
+// PROYECCIÓN MODERNA
 // ============================================================
 async function proyectar() {
-  if (!filaSeleccionada) {
-    alert("Selecciona una fila antes de proyectar.");
+  if (!celdaSeleccionada) {
+    alert("Selecciona una celda o fila antes de proyectar.");
     return;
   }
 
   if (!("getScreenDetails" in window)) {
-    alert("Tu navegador no soporta pantallas extendidas. Activa chrome://flags");
+    alert("Tu navegador no soporta pantallas extendidas.");
     return;
   }
 
   const details = await window.getScreenDetails();
-  const indexPantalla = parseInt(document.getElementById("pantallaSelect").value, 10);
+  const indexPantalla = parseInt(document.getElementById("pantallaSelect").value);
   const scr = details.screens[indexPantalla];
-  if (!scr) {
-    alert("Pantalla no encontrada.");
-    return;
-  }
 
   const win = window.open(
     "",
@@ -293,36 +282,60 @@ async function proyectar() {
     `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height}`
   );
 
-  // Clonar encabezado y solo la fila seleccionada
-  const tablaClon = document.createElement("table");
-  tablaClon.innerHTML = `
-    <thead>${document.querySelector("#tabla thead").innerHTML}</thead>
-    <tbody>${filaSeleccionada.outerHTML}</tbody>
-  `;
+  // Texto a proyectar (si seleccionó celda → solo celda)
+  const texto = celdaSeleccionada.innerText;
 
   win.document.body.innerHTML = `
     <style>
-      body { background:white; font-family:Arial; }
-      h1 { text-align:center; margin-top:20px; }
-      table { width:95%; margin:auto; border-collapse: collapse; }
-      th, td { border:1px solid #ccc; padding:8px; text-align:center; }
-      th { background:#d9ead3; }
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-family: Arial;
+        background: linear-gradient(135deg, #004e2a, #0a9d52);
+        color: white;
+        text-align: center;
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(12px);
+        padding: 50px 80px;
+        border-radius: 25px;
+        box-shadow: 0 0 25px rgba(0,0,0,0.3);
+        animation: fadeIn 0.6s ease-out;
+      }
+
+      h1 {
+        font-size: 65px;
+        margin: 0;
+        line-height: 1.2;
+        font-weight: bold;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.9); }
+        to { opacity: 1; transform: scale(1); }
+      }
     </style>
 
-    <h1>Asistencia ${document.getElementById("mesActual").textContent}</h1>
+    <div class="card">
+      <h1>${texto}</h1>
+    </div>
   `;
-  win.document.body.appendChild(tablaClon);
 }
 
-// 🔹 Ejecutar detección automáticamente al cargar
+// ============================================================
+// Auto cargar pantallas
+// ============================================================
 window.addEventListener("load", detectarPantallas);
 
+// PWA
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js")
-    .then(() => console.log("Service Worker registrado"))
-    .catch(err => console.error("Error registrando SW:", err));
+  navigator.serviceWorker.register("sw.js");
 }
 </script>
-
 </body>
 </html>
