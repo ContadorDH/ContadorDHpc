@@ -223,6 +223,19 @@ th {
   font-weight: 900;
 }
 
+/* Evita que la tabla mueva el panel al actualizar */
+#tabla {
+  display: block;
+  height: 65vh;     /* alto fijo ajustado a la pantalla */
+  overflow-y: auto; /* hace scroll interno sin mover nada */
+}
+
+  #tabla thead th {
+  position: sticky;
+  top: 0;
+  background: #cfe5f6;
+  z-index: 5;
+}
 
 
 </style>
@@ -685,6 +698,7 @@ window.addEventListener("load", detectarPantallas);
 </script>
 </body>
 </html>
+
 
 
 
