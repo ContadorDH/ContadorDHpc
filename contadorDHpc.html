@@ -8,9 +8,26 @@
 <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-<meta name="theme-color" content="#0a5c30" />
+<!-- COLORES MODERNOS TIPO GOOGLE / MATERIAL YOU -->
+<meta name="theme-color" content="#1e6fb8" />          <!-- Azul principal (el mismo de tus botones) -->
+<meta name="msapplication-navbutton-color" content="#1e6c6b8" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
 <style>
+/* Elimina el fondo verde oscuro que pone Android al cargar */
+  @viewport { width: device-width; }
+  html, body {
+    background: #f8fafc !important;   /* Gris muy claro moderno (como Google) */
+  }
+  /* Fuerza fondo blanco/gris claro mientras carga (incluso antes del JS) */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: #f8fafc;
+    z-index: -1;
+
+  
   body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -334,6 +351,8 @@ const meses = [
 
 let filaSeleccionada = null;
 let ventanaProyeccion = null;
+  let mostrandoHoy = false; // ← nueva bandera
+let intervaloAutoCheck = null; // para poder detenerlo si se desea
 
 // ============================================================
 // DETECTAR PANTALLAS – VERSIÓN 100% SIN TEMBLOR NI PARPADEO
@@ -459,6 +478,11 @@ document.getElementById("tabla").addEventListener("click", (e) => {
 // Ver Mes Actual
 // ============================================================
 function verMesActual() {
+  mostrandoHoy = false;
+  // Reiniciar el chequeo automático si no está activo
+  if (!intervaloAutoCheck) {
+    intervaloAutoCheck = setInterval(revisarSiHayAsistenciaDeHoy, 45000);
+  }
   cargarMes(meses[new Date().getMonth()]);
 }
 
@@ -466,6 +490,11 @@ function verMesActual() {
 // Ver Hoy
 // ============================================================
 async function verHoy() {
+  mostrandoHoy = true;
+  if (intervaloAutoCheck) {
+    clearInterval(intervaloAutoCheck);
+    intervaloAutoCheck = null;
+  }
   let mes = meses[new Date().getMonth()];
   let url = `${URL}?accion=listar&mes=${mes}`;
   let res = await fetch(url);
@@ -484,6 +513,11 @@ async function verHoy() {
 // Buscar mes
 // ============================================================
 function buscarMes() {
+  mostrandoHoy = false;
+  if (intervaloAutoCheck) {
+    clearInterval(intervaloAutoCheck);
+    intervaloAutoCheck = null;
+  }
   cargarMes(selectMes.value);
 }
 
@@ -596,10 +630,48 @@ async function proyectar() {
 }
 
 
+// ============================================================
+// FUNCIÓN: Revisar si ya subió la asistencia de hoy (en segundo plano)
+// ============================================================
+async function revisarSiHayAsistenciaDeHoy() {
+  const hoy = new Date().toLocaleDateString("es-CO");
+  const mesActual = meses[new Date().getMonth()];
 
+  try {
+    const res = await fetch(`${URL}?accion=listar&mes=${mesActual}`);
+    const data = await res.json();
+
+    // Buscar si existe alguna fila con la fecha de hoy
+    const existeHoy = data.some(row => Array.isArray(row) && row[1] && row[1].includes(hoy));
+
+    // Si ya existe hoy, y actualmente NO estamos mostrando "Hoy" → cambiar
+    if (existeHoy && !mostrandoHoy) {
+      console.log("¡NUEVA ASISTENCIA DE HOY DETECTADA! Cambiando automáticamente...");
+      
+      const filtrados = [data[0]]; // encabezados
+      data.forEach(row => {
+        if (Array.isArray(row) && row[1] && row[1].includes(hoy)) {
+          filtrados.push(row);
+        }
+      });
+
+      document.getElementById("mesActual").textContent = "Hoy";
+      pintarTabla(filtrados);
+      mostrandoHoy = true;
+
+      // Efecto visual bonito: pequeño "pop" en el título
+      const titulo = document.getElementById("subtitulo");
+      titulo.style.transform = "scale(1.08)";
+      titulo.style.transition = "transform 0.4s ease";
+      setTimeout(() => { titulo.style.transform = "scale(1)"; }, 500);
+    }
+  } catch (err) {
+    console.warn("Error al verificar asistencia de hoy en segundo plano:", err);
+  }
+}
 
 // ============================================================
-// CARGA AUTOMÁTICA INTELIGENTE AL INICIAR LA PÁGINA
+// CARGA AUTOMÁTICA INTELIGENTE AL INICIAR + AUTO-CHECK CÍCLICO
 // ============================================================
 async function cargarAlIniciar() {
   const hoy = new Date().toLocaleDateString("es-CO");
@@ -609,24 +681,29 @@ async function cargarAlIniciar() {
     let res = await fetch(`${URL}?accion=listar&mes=${mesActual}`);
     let data = await res.json();
 
-    // Filtrar si hay fila de hoy
     const filaHoy = data.find(row => Array.isArray(row) && row[1] && row[1].includes(hoy));
 
     if (filaHoy) {
-      // Hay asistencia de hoy → mostrar solo hoy
-      const filtrados = [data[0]]; // headers
+      // Ya hay asistencia de hoy
+      const filtrados = [data[0]];
       data.forEach(row => {
         if (Array.isArray(row) && row[1] && row[1].includes(hoy)) filtrados.push(row);
       });
       document.getElementById("mesActual").textContent = "Hoy";
       pintarTabla(filtrados);
+      mostrandoHoy = true;
     } else {
-      // No hay hoy → mostrar mes actual completo
+      // No hay hoy → mostrar mes completo
       document.getElementById("mesActual").textContent = mesActual;
       pintarTabla(data);
+      mostrandoHoy = false;
+
+      // ← AQUÍ EMPIEZA EL CHEQUEO EN SEGUNDO PLANO
+      if (intervaloAutoCheck) clearInterval(intervaloAutoCheck);
+      intervaloAutoCheck = setInterval(revisarSiHayAsistenciaDeHoy, 45000); // cada 45 segundos
     }
   } catch (err) {
-    // En caso de error, caer en mes actual
+    console.error("Error al cargar al iniciar:", err);
     cargarMes(mesActual);
   }
 }
@@ -634,8 +711,15 @@ async function cargarAlIniciar() {
 // Ejecutar al cargar la página
 window.addEventListener("load", () => {
   detectarPantallas();
-  cargarAlIniciar();  // ← Esta es la nueva carga inteligente
+  cargarAlIniciar();
+  document.getElementById("mesActual").textContent = meses[new Date().getMonth()];
+});
+
+// Opcional: detener el intervalo si el usuario se va de la página
+window.addEventListener("beforeunload", () => {
+  if (intervaloAutoCheck) clearInterval(intervaloAutoCheck);
 });
 </script>
 </body>
 </html>
+
