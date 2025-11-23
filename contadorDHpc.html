@@ -285,13 +285,8 @@ async function proyectar() {
     return;
   }
 
-  if (!("getScreenDetails" in window)) {
-    alert("Tu navegador no soporta pantallas extendidas.");
-    return;
-  }
-
   // =============================
-  // ABRIR EN PANTALLA SELECCIONADA
+  // PANTALLA
   // =============================
   const details = await window.getScreenDetails();
   const indexPantalla = parseInt(document.getElementById("pantallaSelect").value);
@@ -303,96 +298,142 @@ async function proyectar() {
     `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height}`
   );
 
+  // =============================
+  // OBTENER ENCABEZADOS Y DATOS
+  // =============================
   let headers = [...document.querySelectorAll("#tabla thead th")].map(th => th.innerText);
-  let celdas = [...filaSeleccionada.querySelectorAll("td")].map(td => td.innerText);
+  let valores = [...filaSeleccionada.querySelectorAll("td")].map(td => td.innerText);
+
+  // ============================================
+  // QUITA: FECHA, REGISTRADO POR, OTROS CAMPOS
+  // (Asumo primeras columnas: ID, Fecha, Nombre, RegistradoPor)
+  // SOLO MOSTRAR: Hermano → Total asistencia
+  // ============================================
+  let inicio = headers.findIndex(h => h.toLowerCase().includes("hermano"));
+  let fin = headers.findIndex(h => h.toLowerCase().includes("total"));
+
+  let h2 = headers.slice(inicio, fin + 1);
+  let v2 = valores.slice(inicio, fin + 1);
 
   // =============================
-  // DISEÑO PROFESIONAL FULL HD HORIZONTAL
+  // FECHA PARA EL TÍTULO
+  // =============================
+  let fechaTexto = valores[1]; // columna Fecha real
+  let fecha = new Date(fechaTexto);
+  let opciones = { weekday: "long", day: "numeric", month: "long" };
+  let fechaFormateada = fecha.toLocaleDateString("es-CO", opciones);
+
+  fechaFormateada =
+    fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
+
+  // =============================
+  // DISEÑO MEJORADO
+  // AUTO-ESCALA PARA NO SALIRSE
   // =============================
   ventanaProyeccion.document.body.innerHTML = `
     <style>
-      body {
+      html, body {
         margin: 0;
         padding: 0;
         width: 100vw;
         height: 100vh;
+        overflow: hidden;
+        background: #002a18;
+        font-family: 'Segoe UI', sans-serif;
+      }
+
+      .wrap {
+        transform-origin: center;
+        width: 100%;
+        height: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
-        background: #002a18;
-        font-family: 'Segoe UI', sans-serif;
-        overflow: hidden;
       }
 
       .contenedor {
-        width: 90%;
+        width: 92%;
         padding: 40px;
-        background: rgba(255,255,255,0.08);
+        background: rgba(255,255,255,0.10);
         border-radius: 25px;
         backdrop-filter: blur(12px);
         box-shadow: 0 0 45px rgba(0,0,0,0.5);
         color: white;
-        animation: fadeIn 0.8s ease-out;
+        animation: fadeIn 0.6s ease-out;
       }
 
       h1 {
-        font-size: 55px;
-        margin-bottom: 35px;
+        font-size: 4.2vw;
         text-align: center;
-        letter-spacing: 2px;
+        margin-bottom: 2vh;
         font-weight: 700;
+        letter-spacing: 2px;
       }
 
       .fila {
         display: grid;
-        grid-template-columns: repeat(${headers.length}, 1fr);
-        gap: 20px;
+        grid-template-columns: repeat(${h2.length}, 1fr);
+        gap: 1.4vw;
       }
 
       .item {
-        text-align: center;
-        padding: 25px;
-        background: rgba(255,255,255,0.15);
+        background: rgba(255,255,255,0.18);
+        padding: 1.6vw;
         border-radius: 18px;
-        box-shadow: 0 0 15px rgba(0,0,0,0.25);
+        text-align: center;
       }
 
       .titulo {
-        font-size: 36px;
-        margin-bottom: 10px;
-        font-weight: bold;
+        font-size: 2vw;
+        margin-bottom: 0.8vw;
         text-transform: uppercase;
+        font-weight: 600;
       }
 
       .valor {
-        font-size: 48px;
+        font-size: 3.5vw;
         font-weight: bold;
       }
 
       @keyframes fadeIn {
-        from { opacity: 0; transform: scale(0.90); }
+        from { opacity: 0; transform: scale(0.95); }
         to   { opacity: 1; transform: scale(1); }
       }
     </style>
 
-    <div class="contenedor">
-      <h1>Asistencia Registrada</h1>
+    <div class="wrap">
+      <div class="contenedor">
+        <h1>Asistencia del día ${fechaFormateada}</h1>
 
-      <div class="fila">
-        ${
-          headers.map((h,i)=>`
-            <div class="item">
-              <div class="titulo">${h}</div>
-              <div class="valor">${celdas[i]}</div>
-            </div>
-          `).join("")
-        }
+        <div class="fila">
+          ${
+            h2.map((h,i)=>`
+              <div class="item">
+                <div class="titulo">${h}</div>
+                <div class="valor">${v2[i]}</div>
+              </div>
+            `).join("")
+          }
+        </div>
       </div>
     </div>
+
+    <script>
+      function autoAjustar() {
+        const wrap = document.querySelector('.wrap');
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+
+        wrap.style.transform =
+          "scale(" + Math.min(w / 1920, h / 1080) + ")";
+      }
+      window.onload = autoAjustar;
+      window.onresize = autoAjustar;
+    </script>
   `;
 
   // =============================
-  // CAMBIAR BOTÓN A DETENER
+  // BOTÓN DETENER
   // =============================
   btn.textContent = "Detener";
   btn.classList.add("boton-detener");
@@ -408,6 +449,7 @@ async function proyectar() {
   }, 500);
 }
 
+
 // ============================================================
 // Auto cargar pantallas
 // ============================================================
@@ -416,5 +458,6 @@ window.addEventListener("load", detectarPantallas);
 </script>
 </body>
 </html>
+
 
 
