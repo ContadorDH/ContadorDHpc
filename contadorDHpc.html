@@ -265,212 +265,122 @@ function buscarMes() {
 async function proyectar() {
   const btn = document.querySelector("button[onclick='proyectar()']");
 
-  // Si ya proyecta -> detener
+  // SI YA ESTÁ PROYECTANDO → DETENER
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
     ventanaProyeccion.close();
     ventanaProyeccion = null;
-
     btn.textContent = "Proyectar";
     btn.classList.remove("boton-detener");
     return;
   }
 
+  // VALIDAR FILA
   if (!filaSeleccionada) {
     alert("Selecciona una fila antes de proyectar.");
     return;
   }
 
-  // abrir en pantalla seleccionada si existe
-  let scr = null;
-  if ("getScreenDetails" in window) {
-    const details = await window.getScreenDetails();
-    const indexPantalla = parseInt(document.getElementById("pantallaSelect").value);
-    scr = details.screens[indexPantalla];
-  }
+  const details = await window.getScreenDetails();
+  const indexPantalla = parseInt(document.getElementById("pantallaSelect").value);
+  const scr = details.screens[indexPantalla];
 
-  // si no hay pantalla, abrimos ventana normal centrada
-  const features = scr
-    ? `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height}`
-    : `width=1200,height=700`;
+  ventanaProyeccion = window.open(
+    "",
+    "proyeccion",
+    `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height}`
+  );
 
-  ventanaProyeccion = window.open("", "proyeccion", features);
+  // EXTRAER DATOS DE LA FILA SEGÚN TU ESTRUCTURA REAL
+  const celdas = [...filaSeleccionada.querySelectorAll("td")].map(td => td.innerText.trim());
 
-  // obtener headers y valores
-  let headers = [...document.querySelectorAll("#tabla thead th")].map(th => th.innerText);
-  let valores = [...filaSeleccionada.querySelectorAll("td")].map(td => td.innerText);
+  const usuario = celdas[0];  // ❌ NO se muestra
+  const fechaStr = celdas[1]; // ✔ Fecha usada en el encabezado
+  const hermanos = celdas[2];
+  const hermanas = celdas[3];
+  const amigos = celdas[4];
+  const adolescentes = celdas[5];
+  const ninos = celdas[6];
+  const total = celdas[7];  // ✔ SOLO abajo
 
-  // buscar índices de inicio (Hermano) y fin (Total)
-  let inicio = headers.findIndex(h => /hermano/i.test(h));
-  let fin = headers.findIndex(h => /total/i.test(h));
+  // Convertir fecha a texto bonito
+  const fechaObj = new Date(fechaStr);
+  const dias = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+  const meses = ["enero","febrero","marzo","abril","mayo","junio","julio",
+                 "agosto","septiembre","octubre","noviembre","diciembre"];
 
-  // si no se encuentran, fallback a mostrar las últimas 5 columnas (segura)
-  if (inicio === -1) {
-    // intenta buscar 'hermanas' o 'hombres' etc.
-    inicio = headers.findIndex(h => /hermanas|hermano/i.test(h));
-  }
-  if (fin === -1) {
-    fin = headers.length - 1;
-  }
+  const fechaBonita = `${dias[fechaObj.getDay()]} ${fechaObj.getDate()} de ${meses[fechaObj.getMonth()]}`;
 
-  // asegurar rangos válidos
-  if (inicio < 0) inicio = Math.max(0, headers.length - 5);
-  if (fin < inicio) fin = headers.length - 1;
-
-  const h2 = headers.slice(inicio, fin + 1);
-  const v2 = valores.slice(inicio, fin + 1);
-
-  // obtener fecha para el título: asumo que la fecha está en la columna 1 (índice 1)
-  let fechaFormateada = "";
-  if (valores[1]) {
-    const fechaTexto = valores[1];
-    const fecha = new Date(fechaTexto);
-    if (!isNaN(fecha)) {
-      const opciones = { weekday: "long", day: "numeric", month: "long" };
-      fechaFormateada = fecha.toLocaleDateString("es-CO", opciones);
-      fechaFormateada = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
-    }
-  }
-  if (!fechaFormateada) {
-    // fallback: hoy (no ideal, pero evita errores)
-    fechaFormateada = new Date().toLocaleDateString("es-CO", { weekday: "long", day: "numeric", month: "long" });
-    fechaFormateada = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
-  }
-
-  // construir HTML dentro de la ventana de proyección
-  // IMPORTANTE: el cierre de script se escribe como <\/script> para no romper el script padre
   ventanaProyeccion.document.body.innerHTML = `
     <style>
-      html, body {
+      body {
         margin: 0;
         padding: 0;
-        width: 100vw;
         height: 100vh;
-        overflow: hidden;
-        background: linear-gradient(90deg,#061b0f,#00321a 60%);
-        font-family: 'Segoe UI', sans-serif;
-        color: #fff;
-      }
-
-      .wrap {
-        width: 100%;
-        height: 100%;
+        width: 100vw;
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        justify-content: space-between;
         align-items: center;
-      }
-
-      .contenedor {
-        width: 96%;
-        height: 86%;
-        padding: 28px;
-        background: rgba(255,255,255,0.05);
-        border-radius: 20px;
-        backdrop-filter: blur(8px);
-        box-shadow: 0 12px 50px rgba(0,0,0,0.6);
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #003d23, #0fbf6a);
         color: white;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-      }
-
-      h1 {
-        margin: 0 0 18px 0;
-        font-size: calc(20px + 2.6vw);
-        font-weight: 700;
-        text-align: center;
-        letter-spacing: 1px;
-      }
-
-      .grid {
-        width: 100%;
-        display: grid;
-        grid-template-columns: repeat(${h2.length}, 1fr);
-        gap: 20px;
-        align-items: stretch;
-      }
-
-      .card {
-        background: rgba(255,255,255,0.08);
-        border-radius: 14px;
-        padding: 18px;
-        display:flex;
-        flex-direction: column;
-        align-items:center;
-        justify-content: center;
-        min-height: 160px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+        overflow: hidden;
       }
 
       .titulo {
-        font-size: calc(12px + 1.0vw);
-        text-transform: uppercase;
-        font-weight: 600;
-        margin-bottom: 8px;
-        opacity: 0.95;
+        margin-top: 4vh;
+        font-size: clamp(45px, 5vw, 85px);
+        font-weight: bold;
+        text-align: center;
       }
 
-      .valor {
-        font-size: calc(24px + 2.8vw);
-        font-weight: 800;
-        line-height: 1;
+      .contenedor-datos {
+        display: flex;
+        flex-direction: column;
+        gap: 2.3vh;
+        width: 90%;
+        margin-top: 4vh;
       }
 
-      /* ajuste responsivo para que no se corte */
-      @media (max-width: 1100px) {
-        .valor { font-size: calc(18px + 3.2vw); }
-        .card { min-height: 120px; padding: 14px; }
+      .item {
+        background: rgba(255,255,255,0.15);
+        padding: 3vh 5vw;
+        border-radius: 22px;
+        font-size: clamp(36px, 4vw, 65px);
+        text-align: center;
+        backdrop-filter: blur(10px);
       }
 
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(6px) scale(0.98); }
-        to { opacity: 1; transform: translateY(0) scale(1); }
+      .total-final {
+        margin-bottom: 6vh;
+        background: rgba(255,255,255,0.30);
+        padding: 3vh 8vw;
+        border-radius: 25px;
+        font-size: clamp(50px, 5vw, 90px);
+        font-weight: bold;
+        text-align: center;
+        backdrop-filter: blur(12px);
       }
-
-      .contenedor { animation: fadeIn .5s ease-out; }
     </style>
 
-    <div class="wrap">
-      <div class="contenedor">
-        <h1>Asistencia del día ${fechaFormateada}</h1>
+    <div class="titulo">Asistencia del día ${fechaBonita}</div>
 
-        <div class="grid">
-          ${
-            h2.map((h,i) => `
-              <div class="card">
-                <div class="titulo">${h}</div>
-                <div class="valor">${v2[i] !== undefined ? v2[i] : "-"}</div>
-              </div>
-            `).join("")
-          }
-        </div>
-
-      </div>
+    <div class="contenedor-datos">
+      <div class="item">Hermanos: ${hermanos}</div>
+      <div class="item">Hermanas: ${hermanas}</div>
+      <div class="item">Amigos: ${amigos}</div>
+      <div class="item">Adolescentes: ${adolescentes}</div>
+      <div class="item">Niños: ${ninos}</div>
     </div>
 
-    <script>
-      // auto-ajustar escala para pantallas muy anchas o muy estrechas
-      (function(){
-        function scale() {
-          const wrap = document.querySelector('.wrap');
-          if(!wrap) return;
-          const w = window.innerWidth;
-          const h = window.innerHeight;
-          const scale = Math.min(w / 1920, h / 1080);
-          wrap.style.transform = 'scale(' + Math.max(0.7, scale) + ')';
-        }
-        window.addEventListener('resize', scale);
-        window.addEventListener('load', scale);
-        scale();
-      })();
-    <\/script>
+    <div class="total-final">Total asistencia: ${total}</div>
   `;
 
-  // cambiar botón a detener
+  // CAMBIAR BOTÓN A DETENER
   btn.textContent = "Detener";
   btn.classList.add("boton-detener");
 
-  // monitorear cierre manual
+  // MONITOREAR SI LA VENTANA SE CIERRA
   let timer = setInterval(() => {
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       clearInterval(timer);
@@ -481,6 +391,7 @@ async function proyectar() {
   }, 500);
 }
 
+
 // ============================================================
 // Auto cargar pantallas
 // ============================================================
@@ -488,3 +399,4 @@ window.addEventListener("load", detectarPantallas);
 </script>
 </body>
 </html>
+
