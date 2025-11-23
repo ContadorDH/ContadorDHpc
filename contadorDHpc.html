@@ -8,9 +8,27 @@
 <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-<meta name="theme-color" content="#0a5c30" />
+<!-- COLORES MODERNOS TIPO GOOGLE / MATERIAL YOU -->
+<meta name="theme-color" content="#1e6fb8" />          <!-- Azul principal (el mismo de tus botones) -->
+<meta name="msapplication-navbutton-color" content="#1e6c6b8" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
 <style>
+/* Elimina el fondo verde oscuro que pone Android al cargar */
+  @viewport { width: device-width; }
+  html, body {
+    background: #f8fafc !important;   /* Gris muy claro moderno (como Google) */
+  }
+  /* Fuerza fondo blanco/gris claro mientras carga (incluso antes del JS) */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: #f8fafc;
+    z-index: -1;
+  }
+
+  
   body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -639,6 +657,7 @@ window.addEventListener("load", () => {
 </script>
 </body>
 </html>
+
 
 
 
