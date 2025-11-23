@@ -511,9 +511,13 @@ function buscarMes() {
 // ============================================================
 // PROYECCIÓN MODERNA – FULLSCREEN REAL + CORREGIDA
 // ============================================================
+// ============================================================
+// PROYECCIÓN MODERNA – FULLSCREEN REAL + CORREGIDA
+// ============================================================
 async function proyectar() {
   const btn = document.querySelector("button[onclick='proyectar()']");
 
+  // Detener si ya está abierta
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
     ventanaProyeccion.close();
     ventanaProyeccion = null;
@@ -522,6 +526,7 @@ async function proyectar() {
     return;
   }
 
+  // Auto-seleccionar si solo hay una fila
   const filasDatos = document.querySelectorAll("#tabla tbody tr");
   if (filasDatos.length === 1) {
     filaSeleccionada = filasDatos[0];
@@ -532,6 +537,7 @@ async function proyectar() {
     return;
   }
 
+  // Detectar pantalla secundaria
   let scr = null;
   if ("getScreenDetails" in window) {
     try {
@@ -541,42 +547,21 @@ async function proyectar() {
     } catch (e) { }
   }
 
+  // ABRIR EN PANTALLA COMPLETA REAL
   const features = scr
     ? `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height}`
     : `width=${screen.width},height=${screen.height},left=0,top=0`;
 
-  ventanaProyeccion = window.open("", "proyeccion", features + ",fullscreen=yes,toolbar=no,menubar=no,location=no,status=no,scrollbars=no,resizable=no");
+  ventanaProyeccion = window.open("", "proyeccion", features + ",fullscreen=yes,toolbar=no,menubar=no,location=no");
 
-  ventanaProyeccion.addEventListener("load", () => {
-    const entrarFull = () => {
-      const el = ventanaProyeccion.document.documentElement;
-      el.requestFullscreen?.() ||
-      el.webkitRequestFullscreen?.() ||
-      el.msRequestFullscreen?.() ||
-      el.mozRequestFullScreen?.();
-    };
-    entrarFull();
-    setTimeout(entrarFull, 100);
-    setTimeout(entrarFull, 500);
+  // Forzar fullscreen real al cargar
+  ventanaProyeccion.onload = () => {
+    ventanaProyeccion.document.documentElement.requestFullscreen?.()
+      || ventanaProyeccion.document.documentElement.webkitRequestFullscreen?.()
+      || ventanaProyeccion.document.documentElement.msRequestFullscreen?.();
+  };
 
-    const css = ventanaProyeccion.document.createElement("style");
-    css.textContent = `
-      html,body{margin:0;padding:0;overflow:hidden;width:100vw;height:100vh;background:#000}
-      *{box-sizing:border-box;user-select:none;cursor:none}
-      ::-webkit-scrollbar{display:none}body{scrollbar-width:none}
-    `;
-    ventanaProyeccion.document.head.appendChild(css);
-
-    let timeout;
-    const ocultarCursor = () => ventanaProyeccion.document.body.style.cursor = "none";
-    ventanaProyeccion.document.addEventListener("mousemove", () => {
-      ventanaProyeccion.document.body.style.cursor = "default";
-      clearTimeout(timeout);
-      timeout = setTimeout(ocultarCursor, 3000);
-    });
-    timeout = setTimeout(ocultarCursor, 3000);
-  });
-
+  // Obtener datos de la fila
   const headers = [...document.querySelectorAll("#tabla thead th")].map(th => th.innerText);
   const valores = [...filaSeleccionada.querySelectorAll("td")].map(td => td.innerText);
   const inicio = headers.findIndex(h => /hermano/i.test(h));
@@ -590,6 +575,7 @@ async function proyectar() {
   const mesesN = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
   const diasN = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
   const fechaObj = new Date(anio, mes - 1, dia);
+  fechaFila = `${diasN[fechaObj.getDay()]} ${dia} de ${mesesN[mes - 1]} de ${anio}`;
 
   // ← AQUÍ ESTÁ EL CAMBIO: primera letra en mayúscula
   const diaSemana = diasN[fechaObj.getDay()];
@@ -597,11 +583,12 @@ async function proyectar() {
 
   fechaFila = `${diaSemanaBonito} ${dia} de ${mesesN[mes - 1]} de ${anio}`;
 
+  // HTML PROYECTADO – LIMPIO Y CORRECTO
   ventanaProyeccion.document.body.innerHTML = `
     <style>
       html,body{margin:0;padding:0;overflow:hidden;width:100vw;height:100vh;background:linear-gradient(90deg,#061b0f,#00321a 60%);font-family:'Segoe UI',sans-serif;color:#fff}
-      *{box-sizing:border-box;user-select:none}
-      ::-webkit-scrollbar{display:none}body{scrollbar-width:none}
+      *{box-sizing:border-box;user-select:none;-webkit-user-select:none}
+      ::-webkit-scrollbar{display:none} body{scrollbar-width:none;-ms-overflow-style:none}
       .wrap{width:100%;height:100%;display:flex;justify-content:center;align-items:center}
       .contenedor{width:96%;height:86%;padding:28px;background:rgba(255,255,255,0.05);border-radius:20px;backdrop-filter:blur(8px);box-shadow:0 12px 50px rgba(0,0,0,0.6);display:flex;flex-direction:column;align-items:center}
       h1{margin:0 0 18px 0;font-size:calc(20px + 2.6vw);font-weight:700;text-align:center;letter-spacing:1px}
@@ -632,6 +619,7 @@ async function proyectar() {
   btn.textContent = "Detener";
   btn.classList.add("boton-detener");
 
+  // Monitorear cierre
   const timer = setInterval(() => {
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       clearInterval(timer);
@@ -641,8 +629,6 @@ async function proyectar() {
     }
   }, 500);
 }
-
-
 
 
 // ============================================================
@@ -686,6 +672,7 @@ window.addEventListener("load", () => {
 </script>
 </body>
 </html>
+
 
 
 
