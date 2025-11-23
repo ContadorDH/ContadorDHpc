@@ -186,20 +186,45 @@ th {
   background-color: #cbe0ff !important;
 }
 
-/* Botón detener - fade suave */
+/* Botón detener - pulso suave y elegante (NO agresivo) */
 .boton-detener {
-  background: red !important;
-  animation: fadeRojo 1.6s infinite ease-in-out;
-  transition: background 0.5s ease, transform 0.15s ease;
-  box-shadow: 0 6px 18px rgba(255,0,0,0.15);
+  background: #d32f2f !important;     /* Rojo oscuro más elegante */
+  color: white !important;
+  position: relative;
+  overflow: hidden;
+  animation: pulsoDetener 2s infinite ease-in-out;
+  box-shadow: 0 6px 20px rgba(211, 47, 47, 0.4) !important;
+  transform: translateY(0);
+  transition: transform 0.15s ease;
 }
 
-.boton-detener:active { transform: scale(0.98); }
+.boton-detener::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: inherit;
+  opacity: 0;
+  animation: ondaBlanca 2s infinite ease-in-out;
+  pointer-events: none;
+}
 
-@keyframes fadeRojo {
-  0%   { background: rgba(255, 0, 0, 0.50); }
-  50%  { background: rgba(255, 0, 0, 1); }
-  100% { background: rgba(255, 0, 0, 0.50); }
+.boton-detener:active {
+  transform: scale(0.96);
+}
+
+@keyframes pulsoDetener {
+  0%, 100% {
+    box-shadow: 0 6px 20px rgba(211, 47, 47, 0.4);
+  }
+  50% {
+    box-shadow: 0 8px 30px rgba(211, 47, 47, 0.6);
+  }
+}
+
+@keyframes ondaBlanca {
+  0%, 100% { opacity: 0; transform: scale(0.8); }
+  50% { opacity: 0.3; transform: scale(1.1); }
 }
 
 .subtitulo-moderno {
@@ -607,5 +632,6 @@ window.addEventListener("load", () => {
 </script>
 </body>
 </html>
+
 
 
