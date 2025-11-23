@@ -276,7 +276,7 @@ th {
   </button>
 
   <!-- SOLO ÍCONO AWESOME -->
-  <button class="btn-icono" onclick="detectarPantallas()">
+  <button class="btn-icono" onclick="Pantallas()">
     <i class="fa-solid fa-tv"></i>
   </button>
 </div>
@@ -302,64 +302,58 @@ let filaSeleccionada = null;
 let ventanaProyeccion = null;
 
 // ============================================================
-// 🔵 DETECTAR PANTALLAS
-// ============================================================
-// ============================================================
-// DETECTAR PANTALLAS (mejorado sin afectar nada más)
+// DETECTAR PANTALLAS – VERSIÓN 100% SIN TEMBLOR NI PARPADEO
 // ============================================================
 async function detectarPantallas() {
   const combo = document.getElementById("pantallaSelect");
 
-  // bloqueado sin ocultar — evita parpadeo
-  combo.style.opacity = "0.4";
-  combo.style.pointerEvents = "none";
-  combo.innerHTML = "<option>Cargando...</option>";
+  // 1. Mostrar "Cargando..." sin tocar innerHTML completo
+  if (combo.options.length === 1 && combo.options[0].text === "Selecciona pantalla") {
+    combo.options[0].text = "Cargando...";
+  } else {
+    combo.innerHTML = "<option>Cargando...</option>";
+  }
+  combo.disabled = true;
 
   if (!("getScreenDetails" in window)) {
-    combo.innerHTML = "<option>No compatible (activa chrome://flags)</option>";
-    combo.style.opacity = "1";
-    combo.style.pointerEvents = "auto";
+    combo.innerHTML = "<option>No compatible (activa flags)</option>";
+    combo.disabled = false;
     return;
   }
 
   try {
     const details = await window.getScreenDetails();
-    combo.innerHTML = "";
 
-    // Ordenar: principal primero
+    // Limpiar opciones sin provocar reflow masivo
+    combo.options.length = 0; // ← esto es mucho más eficiente que innerHTML = ""
+
     const pantallasOrdenadas = [...details.screens].sort((a, b) => {
       if (a.isPrimary) return -1;
       if (b.isPrimary) return 1;
       return 0;
     });
 
-    let indexSeleccion = 0;
+    let indicePrincipal = 0;
 
     pantallasOrdenadas.forEach((screen, index) => {
-      const opt = document.createElement("option");
-      opt.value = index;
-
-      if (screen.isPrimary) {
-        opt.textContent = "Pantalla Principal";
-        indexSeleccion = index;
-      } else {
-        opt.textContent = `Pantalla ${index + 1}`;
-      }
-
-      combo.appendChild(opt);
+      const opt = new Option(
+        screen.isPrimary ? "Pantalla Principal" : `Pantalla ${index + 1}`,
+        index
+      );
+      combo.add(opt);
+      if (screen.isPrimary) indicePrincipal = index;
     });
 
-    combo.selectedIndex = indexSeleccion;
+    combo.selectedIndex = indicePrincipal;
 
   } catch (error) {
-    combo.innerHTML = "<option>Error: No autorizado</option>";
+    combo.options.length = 0;
+    combo.add(new Option("Error: Permiso denegado", ""));
+    console.warn("Screen Details denegado:", error);
   }
 
-  // restaurar normal
-  combo.style.opacity = "1";
-  combo.style.pointerEvents = "auto";
+  combo.disabled = false;
 }
-
 
 // ============================================================
 // Cargar combo meses
@@ -693,6 +687,7 @@ window.addEventListener("load", detectarPantallas);
 </script>
 </body>
 </html>
+
 
 
 
