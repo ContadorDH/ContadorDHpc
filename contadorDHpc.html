@@ -93,9 +93,10 @@
   <button onclick="buscarMes()">Buscar</button>
 
   <select id="pantallaSelect">
-    <option>Cargando pantallas...</option>
+    <option>Selecciona pantalla</option>
   </select>
   <button onclick="proyectar()">Proyectar</button>
+  <button onclick="detectarPantallas()">Cargar pantallas</button>
 </div>
 
 <table id="tabla">
@@ -113,11 +114,9 @@ const meses = [
 
 let ventanaProyeccion = null;
 
-/* ============================================================
-   🔵 DETECTAR PANTALLAS REALES
-   Requiere activar:
-   chrome://flags/#enable-experimental-web-platform-features
-============================================================ */
+// ============================================================
+// 🔵 DETECTAR PANTALLAS REALES (solo tras interacción del usuario)
+// ============================================================
 async function detectarPantallas() {
   const combo = document.getElementById("pantallaSelect");
   combo.innerHTML = "<option>Cargando...</option>";
@@ -148,12 +147,9 @@ async function detectarPantallas() {
   }
 }
 
-// Ejecutar detección al cargar
-detectarPantallas();
-
-/* ============================================================
-   Cargar combo de meses
-============================================================ */
+// ============================================================
+// Cargar combo de meses
+// ============================================================
 const selectMes = document.getElementById("selectMes");
 meses.forEach(m => {
   const opt = document.createElement("option");
@@ -165,9 +161,9 @@ meses.forEach(m => {
 // Mes actual
 document.getElementById("mesActual").textContent = meses[new Date().getMonth()];
 
-/* ============================================================
-   Cargar datos por mes
-============================================================ */
+// ============================================================
+// Cargar datos por mes
+// ============================================================
 async function cargarMes(mes) {
   document.getElementById("mesActual").textContent = mes;
 
@@ -178,9 +174,9 @@ async function cargarMes(mes) {
   pintarTabla(data);
 }
 
-/* ============================================================
-   Pintar tabla
-============================================================ */
+// ============================================================
+// Pintar tabla
+// ============================================================
 function pintarTabla(data) {
   const thead = document.querySelector("#tabla thead");
   const tbody = document.querySelector("#tabla tbody");
@@ -207,17 +203,17 @@ function pintarTabla(data) {
   }
 }
 
-/* ============================================================
-   Botón: Ver Mes Actual
-============================================================ */
+// ============================================================
+// Botón: Ver Mes Actual
+// ============================================================
 function verMesActual() {
   let mes = meses[new Date().getMonth()];
   cargarMes(mes);
 }
 
-/* ============================================================
-   Botón: Ver Hoy
-============================================================ */
+// ============================================================
+// Botón: Ver Hoy
+// ============================================================
 async function verHoy() {
   let mes = meses[new Date().getMonth()];
   let url = `${URL}?accion=listar&mes=${mes}`;
@@ -234,17 +230,17 @@ async function verHoy() {
   pintarTabla(filtrados);
 }
 
-/* ============================================================
-   Botón: Buscar Mes
-============================================================ */
+// ============================================================
+// Botón: Buscar Mes
+// ============================================================
 function buscarMes() {
   let mes = selectMes.value;
   cargarMes(mes);
 }
 
-/* ============================================================
-   PROYECTAR EN PANTALLA REAL
-============================================================ */
+// ============================================================
+// PROYECTAR EN PANTALLA REAL
+// ============================================================
 async function proyectar() {
   if (!("getScreenDetails" in window)) {
     alert("Tu navegador no soporta pantallas extendidas. Activa chrome://flags");
@@ -260,7 +256,7 @@ async function proyectar() {
     return;
   }
 
-  // Intentar abrir en la pantalla seleccionada
+  // Abrir ventana en la pantalla seleccionada
   const win = window.open(
     "",
     "",
@@ -280,7 +276,6 @@ async function proyectar() {
     ${document.getElementById("tabla").outerHTML}
   `;
 }
-
 </script>
 
 </body>
