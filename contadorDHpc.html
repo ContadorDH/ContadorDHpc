@@ -456,34 +456,46 @@ function buscarMes() {
 }
 
 // ============================================================
-// PROYECCIÓN MODERNA – FILA COMPLETA
-// ============================================================
-// PROYECCIÓN MODERNA – FILA COMPLETA (VERSIÓN FINAL CORREGIDA)
+// PROYECCIÓN MODERNA – FILA COMPLETA (AHORA CON AUTO-SELECCIÓN CUANDO HAY UNA SOLA)
 // ============================================================
 async function proyectar() {
   const btn = document.querySelector("button[onclick='proyectar()']");
-
-  // Si ya proyecta -> detener
+  
+  // Si ya está proyectando → detener
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
     ventanaProyeccion.close();
     ventanaProyeccion = null;
-
     btn.textContent = "Proyectar";
     btn.classList.remove("boton-detener");
     return;
   }
 
-  if (!filaSeleccionada) {
+  // Contar filas reales de datos (excluyendo header)
+  const filasDatos = document.querySelectorAll("#tabla tbody tr");
+  if (filasDatos.length === 0) {
+    alert("No hay datos para proyectar.");
+    return;
+  }
+
+  // Caso 1: Solo hay una fila → usarla automáticamente
+  if (filasDatos.length === 1) {
+    filaSeleccionada = filasDatos[0];
+    filasDatos[0].classList.add("filaSel"); // opcional: resaltar visualmente
+  } 
+  // Caso 2: Varias filas → exigir selección manual
+  else if (!filaSeleccionada) {
     alert("Selecciona una fila antes de proyectar.");
     return;
   }
 
-  // abrir en pantalla seleccionada si existe
+  // === A partir de aquí es igual que antes ===
   let scr = null;
   if ("getScreenDetails" in window) {
-    const details = await window.getScreenDetails();
-    const indexPantalla = parseInt(document.getElementById("pantallaSelect").value);
-    scr = details.screens[indexPantalla];
+    try {
+      const details = await window.getScreenDetails();
+      const indexPantalla = parseInt(document.getElementById("pantallaSelect").value);
+      if (!isNaN(indexPantalla)) scr = details.screens[indexPantalla];
+    } catch(e) { /* ignorar si no tiene permiso */ }
   }
 
   const features = scr
@@ -492,186 +504,78 @@ async function proyectar() {
 
   ventanaProyeccion = window.open("", "proyeccion", features);
 
-  // obtener headers y valores
   let headers = [...document.querySelectorAll("#tabla thead th")].map(th => th.innerText);
   let valores = [...filaSeleccionada.querySelectorAll("td")].map(td => td.innerText);
 
-  // buscar índices de inicio (Hermano) y fin (Total)
   let inicio = headers.findIndex(h => /hermano/i.test(h));
   let fin = headers.findIndex(h => /total/i.test(h));
-
-  // quitar TOTAL del grid
   const totalAsistencia = valores[fin];
   const headersSinTotal = headers.slice(inicio, fin);
   const valoresSinTotal = valores.slice(inicio, fin);
 
-  // ============================
-  // FECHA EXACTA DE LA FILA
-  // ============================
   let fechaFila = valores[1] ? valores[1].trim() : "Fecha no disponible";
-
-  // -----------------------------------------------------
-  // FORMATEAR A: "sábado 1 de noviembre de 2025"
-  // -----------------------------------------------------
   function formatearFechaLarga(fechaTexto) {
     try {
-      // tomar solo "DD/MM/YYYY"
       let soloFecha = fechaTexto.split(" ")[0];
       let [dia, mes, anio] = soloFecha.split("/").map(n => parseInt(n));
-
-      const meses = [
-        "enero","febrero","marzo","abril","mayo","junio",
-        "julio","agosto","septiembre","octubre","noviembre","diciembre"
-      ];
-
-      const diasSemana = [
-        "domingo","lunes","martes","miércoles","jueves","viernes","sábado"
-      ];
-
+      const meses = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+      const diasSemana = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
       const fechaObj = new Date(anio, mes - 1, dia);
-
-      let nombreDia = diasSemana[fechaObj.getDay()];
-      let nombreMes = meses[mes - 1];
-
-      return `${nombreDia} ${dia} de ${nombreMes} de ${anio}`;
+      return `${diasSemana[fechaObj.getDay()]} ${dia} de ${meses[mes - 1]} de ${anio}`;
     } catch (e) {
       return fechaTexto;
     }
   }
-
   fechaFila = formatearFechaLarga(fechaFila);
 
-  // ============================
-  // HTML PROYECTADO
-  // ============================
   ventanaProyeccion.document.body.innerHTML = `
     <style>
-      html, body {
-        margin: 0;
-        padding: 0;
-        width: 100vw;
-        height: 100vh;
-        overflow: hidden;
-        background: linear-gradient(90deg,#061b0f,#00321a 60%);
-        font-family: 'Segoe UI', sans-serif;
-        color: #fff;
-      }
-
-      .wrap {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      .contenedor {
-        width: 96%;
-        height: 86%;
-        padding: 28px;
-        background: rgba(255,255,255,0.05);
-        border-radius: 20px;
-        backdrop-filter: blur(8px);
-        box-shadow: 0 12px 50px rgba(0,0,0,0.6);
-        color: white;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-
-      h1 {
-        margin: 0 0 18px 0;
-        font-size: calc(20px + 2.6vw);
-        font-weight: 700;
-        text-align: center;
-        letter-spacing: 1px;
-      }
-
-      .grid {
-        width: 100%;
-        display: grid;
-        grid-template-columns: repeat(${headersSinTotal.length}, 1fr);
-        gap: 20px;
-        align-items: stretch;
-      }
-
-      .card {
-        background: rgba(255,255,255,0.08);
-        border-radius: 14px;
-        padding: 18px;
-        display:flex;
-        flex-direction: column;
-        align-items:center;
-        justify-content: center;
-        min-height: 160px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.35);
-      }
-
-      .titulo {
-        font-size: calc(12px + 1.0vw);
-        text-transform: uppercase;
-        font-weight: 600;
-        margin-bottom: 8px;
-        opacity: 0.95;
-      }
-
-      .valor {
-        font-size: calc(24px + 2.8vw);
-        font-weight: 800;
-        line-height: 1;
-      }
-
-      .total-final {
-        margin-top: 40px;
-        padding: 20px 50px;
-        font-size: calc(26px + 3vw);
-        font-weight: 900;
-        background: rgba(255,255,255,0.15);
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.45);
-        text-align: center;
-      }
-
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(6px) scale(0.98); }
-        to { opacity: 1; transform: translateY(0) scale(1); }
-      }
-
-      .contenedor { animation: fadeIn .5s ease-out; }
+      html, body { margin:0; padding:0; width:100vw; height:100vh; overflow:hidden;
+        background: linear-gradient(90deg,#061b0f,#00321a 60%); font-family:'Segoe UI',sans-serif; color:#fff; }
+      .wrap { width:100%; height:100%; display:flex; justify-content:center; align-items:center; }
+      .contenedor { width:96%; height:86%; padding:28px; background:rgba(255,255,255,0.05);
+        border-radius:20px; backdrop-filter:blur(8px); box-shadow:0 12px 50px rgba(0,0,0,0.6);
+        display:flex; flex-direction:column; align-items:center; }
+      h1 { margin:0 0 18px 0; font-size:calc(20px + 2.6vw); font-weight:700; text-align:center; letter-spacing:1px; }
+      .grid { width:100%; display:grid; grid-template-columns:repeat(${headersSinTotal.length},1fr); gap:20px; }
+      .card { background:rgba(255,255,255,0.08); border-radius:14px; padding:18px;
+        display:flex; flex-direction:column; align-items:center; justify-content:center;
+        min-height:160px; box-shadow:0 8px 20px rgba(0,0,0,0.35); }
+      .titulo { font-size:calc(12px + 1.0vw); text-transform:uppercase; font-weight:600; margin-bottom:8px; opacity:0.95; }
+      .valor { font-size:calc(24px + 2.8vw); font-weight:800; line-height:1; }
+      .total-final { margin-top:40px; padding:20px 50px; font-size:calc(26px + 3vw); font-weight:900;
+        background:rgba(255,255,255,0.15); border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.45); text-align:center; }
+      @keyframes fadeIn { from {opacity:0; transform:translateY(6px) scale(0.98);} to {opacity:1; transform:translateY(0) scale(1);} }
+      .contenedor { animation:fadeIn .5s ease-out; }
     </style>
-
     <div class="wrap">
       <div class="contenedor">
-
-        <h1>Asistencia del día ${fechaFila}</h1>
-
+        <h1>${fechaFila}</h1>
         <div class="grid">
-          ${
-            headersSinTotal.map((h,i) => `
-              <div class="card">
-                <div class="titulo">${h}</div>
-                <div class="valor">${valoresSinTotal[i]}</div>
-              </div>
-            `).join("")
-          }
+          ${headersSinTotal.map((h,i) => `
+            <div class="card">
+              <div class="titulo">${h}</div>
+              <div class="valor">${valoresSinTotal[i]}</div>
+            </div>
+          `).join("")}
         </div>
-
-        <div class="total-final">
-          Total: ${totalAsistencia}
-        </div>
-
+        <div class="total-final">Total: ${totalAsistencia}</div>
       </div>
     </div>
   `;
 
-  // cambiar botón a detener
   btn.textContent = "Detener";
   btn.classList.add("boton-detener");
 
-  // monitorear cierre manual
-  let timer = setInterval(() => {
+  const timer = setInterval(() => {
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       clearInterval(timer);
+      ventanaProyeccion = null;
+      btn.textContent = "Proyectar";
+      btn.classList.remove("boton-detener");
+    }
+  }, 500);
+}rval(timer);
       ventanaProyeccion = null;
       btn.textContent = "Proyectar";
       btn.classList.remove("boton-detener");
@@ -723,4 +627,5 @@ window.addEventListener("load", () => {
 </script>
 </body>
 </html>
+
 
