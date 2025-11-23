@@ -266,6 +266,78 @@ th {
 
 
 
+  /* ====================== AVISO MODERNO PERSONALIZADO ====================== */
+.aviso-contenedor {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+.aviso-contenedor.mostrar {
+  opacity: 1;
+  visibility: visible;
+}
+.aviso {
+  background: white;
+  padding: 28px 32px;
+  border-radius: 20px;
+  max-width: 90%;
+  width: 420px;
+  text-align: center;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+  transform: scale(0.9) translateY(20px);
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.aviso-contenedor.mostrar .aviso {
+  transform: scale(1) translateY(0);
+}
+.aviso i {
+  font-size: 48px;
+  margin-bottom: 16px;
+  display: block;
+}
+.aviso.exito i   { color: #28a745; }
+.aviso.info i    { color: #17a2b8; }
+.aviso.alerta i  { color: #ffc107; }
+.aviso.error i   { color: #dc3545; }
+
+.aviso h3 {
+  margin: 0 0 12px;
+  font-size: 22px;
+  color: #1E6FB8;
+}
+.aviso p {
+  margin: 0 0 20px;
+  color: #333;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.aviso button {
+  background: #1E6FB8;
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s;
+}
+.aviso button:hover {
+  background: #145893;
+  transform: translateY(-2px);
+}
+.aviso button:active {
+  transform: translateY(0);
+}
+
 
 </style>
 </head>
@@ -324,7 +396,17 @@ th {
 
   <div style="height: 120px;"></div>
 
+<!-- AVISO PERSONALIZADO -->
+<div id="avisoContenedor" class="aviso-contenedor">
+  <div class="aviso" id="aviso">
+    <i id="avisoIcono"></i>
+    <h3 id="avisoTitulo">Título</h3>
+    <p id="avisoMensaje">Mensaje aquí</p>
+    <button onclick="cerrarAviso()">Aceptar</button>
+  </div>
+</div>
 
+  
 <script>
 const URL = "https://script.google.com/macros/s/AKfycbwuad6LbOg5k2TFzphjhPTm-NwMJwURzhfFPsEb8a5oB9KXuXIhWxe5QzrR2xLnDjYVlA/exec";
 const meses = [
@@ -337,6 +419,42 @@ let ventanaProyeccion = null;
   let yaEstaHoyCargado = false;        // ← indica si ya mostramos la asistencia de hoy
 let intervaloPolling = null;         // ← para poder detenerlo cuando ya esté
 
+
+// ============================================================
+// AVISO MODERNO PERSONALIZADO (reemplaza alert())
+// ============================================================
+function mostrarAviso(mensaje, tipo = "info", titulo = null) {
+  const contenedor = document.getElementById("avisoContenedor");
+  const aviso = document.getElementById("aviso");
+  const icono = document.getElementById("avisoIcono");
+  const tituloEl = document.getElementById("avisoTitulo");
+  const mensajeEl = document.getElementById("avisoMensaje");
+
+  // Tipos disponibles: exito, info, alerta, error
+  const iconos = {
+    exito:  "fa-solid fa-circle-check",
+    info:   "fa-solid fa-circle-info",
+    mostrarAvisoa: "fa-solid fa-triangle-exclamation",
+    error:  "fa-solid fa-circle-xmark"
+  };
+
+  aviso.className = "aviso " + tipo;  // para el color del ícono
+  icono.className = iconos[tipo] || iconos.info;
+  tituloEl.textContent = titulo || (tipo === "exito" ? "¡Éxito!" : tipo === "error" ? "Error" : tipo === "alerta" ? "Atención" : "Aviso");
+  mensajeEl.textContent = mensaje;
+
+  contenedor.classList.add("mostrar");
+
+  // Auto-cerrar después de 5 segundos (opcional, puedes quitarlo si no quieres)
+  clearTimeout(contenedor.timeout);
+  contenedor.timeout = setTimeout(cerrarAviso, 5000);
+}
+
+function cerrarAviso() {
+  document.getElementById("avisoContenedor").classList.remove("mostrar");
+}
+
+  
 // ============================================================
 // DETECTAR PANTALLAS – VERSIÓN 100% SIN TEMBLOR NI PARPADEO
 // ============================================================
@@ -538,7 +656,7 @@ async function proyectar() {
 
   // Si no hay fila seleccionada (y no es el caso de una sola fila)
   if (!filaSeleccionada) {
-    alert("Selecciona una fila antes de proyectar.");
+    mostrarAviso("Selecciona una fila antes de proyectar.");
     return;
   }
 
@@ -707,6 +825,7 @@ window.addEventListener("load", () => {
 </script>
 </body>
 </html>
+
 
 
 
