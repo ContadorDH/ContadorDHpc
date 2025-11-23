@@ -339,6 +339,67 @@ th {
 }
 
 
+/* ====================== LOADER MODERNO ====================== */
+.loader-contenedor {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s ease;
+  backdrop-filter: blur(8px);
+}
+.loader-contenedor.activo {
+  opacity: 1;
+  visibility: visible;
+}
+
+.loader {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #1E6FB8, #0d47a1, #1E6FB8);
+  animation: girar 1.8s linear infinite;
+  position: relative;
+}
+.loader::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  background: #f1f5f9;
+  border-radius: 50%;
+}
+.loader::after {
+  content: '';
+  position: absolute;
+  top: -12px; left: 50%;
+  width: 12px; height: 12px;
+  background: #1E6FB8;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 0 20px #1E6FB8;
+}
+
+@keyframes girar {
+  to { transform: rotate(360deg); }
+}
+
+/* Texto opcional debajo del loader */
+.loader-texto {
+  margin-top: 24px;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+  
+
 </style>
 </head>
 <body>
@@ -406,6 +467,15 @@ th {
   </div>
 </div>
 
+
+<!-- LOADER MODERNO -->
+<div id="loaderContenedor" class="loader-contenedor">
+  <div>
+    <div class="loader"></div>
+    <div class="loader-texto" id="loaderTexto">Cargando...</div>
+  </div>
+</div>
+
   
 <script>
 const URL = "https://script.google.com/macros/s/AKfycbwuad6LbOg5k2TFzphjhPTm-NwMJwURzhfFPsEb8a5oB9KXuXIhWxe5QzrR2xLnDjYVlA/exec";
@@ -420,6 +490,19 @@ let ventanaProyeccion = null;
 let intervaloPolling = null;         // ← para poder detenerlo cuando ya esté
 
 
+// ============================================================
+// LOADER MODERNO – ACTIVAR / DESACTIVAR
+// ============================================================
+function mostrarLoader(texto = "Cargando...") {
+  document.getElementById("loaderTexto").textContent = texto;
+  document.getElementById("loaderContenedor").classList.add("activo");
+}
+
+function ocultarLoader() {
+  document.getElementById("loaderContenedor").classList.remove("activo");
+}
+
+  
 // ============================================================
 // AVISO MODERNO PERSONALIZADO (reemplaza alert())
 // ============================================================
@@ -538,23 +621,37 @@ document.getElementById("mesActual").textContent = meses[new Date().getMonth()];
 // ============================================================
 // Cargar datos
 // ============================================================
+// ============================================================
+// CARGAR MES (con loader + manejo de errores)
+// ============================================================
 async function cargarMes(mes) {
-  let url = `${URL}?accion=listar&mes=${encodeURIComponent(mes)}`;
+  mostrarLoader(`Cargando ${mes}...`);
 
-  let res = await fetch(url);
-  let data = await res.json();
-  pintarTabla(data);
+  try {
+    let url = `${URL}?accion=listar&mes=${encodeURIComponent(mes)}`;
+    let res = await fetch(url);
 
-  document.getElementById("mesActual").textContent = mes;
+    if (!res.ok) throw new Error("Error en la respuesta del servidor");
+
+    let data = await res.json();
+    pintarTabla(data);
+    document.getElementById("mesActual").textContent = mes;
+  } catch (err) {
+    console.error(err);
+    mostrarAviso("No se pudo cargar el mes. Revisa tu conexión.", "error");
+  } finally {
+    ocultarLoader();
+  }
 }
 
+// ============================================================
+// PINTAR TABLA (sin cambios, solo la dejamos igual)
+// ============================================================
 function pintarTabla(data) {
   const thead = document.querySelector("#tabla thead");
   const tbody = document.querySelector("#tabla tbody");
-
   thead.innerHTML = "";
   tbody.innerHTML = "";
-
   filaSeleccionada = null;
 
   if (!data || data.length === 0) {
@@ -564,71 +661,85 @@ function pintarTabla(data) {
 
   let headers = data[0];
   thead.innerHTML = "<tr>" + headers.map(h => `<th>${h}</th>`).join("") + "</tr>";
-
   for (let i = 1; i < data.length; i++) {
-    tbody.innerHTML +=
-      "<tr>" +
-      data[i].map(cell => `<td>${cell}</td>`).join("") +
-      "</tr>";
+    tbody.innerHTML += "<tr>" + data[i].map(cell => `<td>${cell}</td>`).join("") + "</tr>";
   }
 }
 
 // ============================================================
-// Seleccionar fila completa
+// SELECCIONAR FILA (sin cambios)
 // ============================================================
 document.getElementById("tabla").addEventListener("click", (e) => {
   const tr = e.target.closest("tr");
-
   if (!tr || tr.querySelector("th")) return;
-
   document.querySelectorAll(".filaSel").forEach(r => r.classList.remove("filaSel"));
-
   filaSeleccionada = tr;
-
   tr.classList.add("filaSel");
 });
 
 // ============================================================
-// Ver Mes Actual
+// VER MES ACTUAL (con loader)
 // ============================================================
 function verMesActual() {
+  yaEstaHoyCargado = true;
+  if (intervaloPolling) {
+    clearInterval(intervaloPolling);
+    intervaloPolling = null;
+  }
   cargarMes(meses[new Date().getMonth()]);
 }
 
 // ============================================================
-// Ver Hoy
+// VER HOY (con loader + aviso automático bonito)
 // ============================================================
 async function verHoy() {
-  yaEstaHoyCargado = true;   // ← NUEVO: marcamos que ya mostramos "hoy"
+  yaEstaHoyCargado = true;
   if (intervaloPolling) {
     clearInterval(intervaloPolling);
     intervaloPolling = null;
   }
 
-  let mes = meses[new Date().getMonth()];
-  let url = `${URL}?accion=listar&mes=${mes}`;
-  let res = await fetch(url);
-  let data = await res.json();
+  mostrarLoader("Buscando asistencia de hoy...");
 
-  const hoy = new Date().toLocaleDateString("es-CO");
-  let filtrados = data.filter(row => row[1] && row[1].includes(hoy));
+  try {
+    let mes = meses[new Date().getMonth()];
+    let url = `${URL}?accion=listar&mes=${mes}`;
+    let res = await fetch(url);
 
-  if (filtrados.length > 0) filtrados.unshift(data[0]);
+    if (!res.ok) throw new Error("Error del servidor");
 
-  document.getElementById("mesActual").textContent = "Hoy";
-  pintarTabla(filtrados);
+    let data = await res.json();
+    const hoy = new Date().toLocaleDateString("es-CO");
+    let filtrados = data.filter(row => row[1] && row[1].includes(hoy));
+
+    if (filtrados.length > 0) filtrados.unshift(data[0]);
+
+    document.getElementById("mesActual").textContent = "Hoy";
+    pintarTabla(filtrados);
+
+    // Si se llamó desde el polling automático → aviso bonito
+    if (window.llamadoDesdePolling) {
+      mostrarAviso("¡La asistencia de hoy ya fue cargada! Se actualizó automáticamente.", "exito");
+      window.llamadoDesdePolling = false;
+    }
+  } catch (err) {
+    console.error(err);
+    mostrarAviso("Error al buscar la asistencia de hoy", "error");
+  } finally {
+    ocultarLoader();
+  }
 }
 
 // ============================================================
-// Buscar mes
+// BUSCAR MES (con loader + detiene polling)
 // ============================================================
 function buscarMes() {
-  cargarMes(selectMes.value);
   yaEstaHoyCargado = true;
-if (intervaloPolling) {
-  clearInterval(intervaloPolling);
-  intervaloPolling = null;
-}
+  if (intervaloPolling) {
+    clearInterval(intervaloPolling);
+    intervaloPolling = null;
+  }
+  cargarMes(selectMes.value);
 }
 
 // ============================================================
@@ -806,7 +917,8 @@ async function verificarSiYaSubieronAsistenciaDeHoy() {
       clearInterval(intervaloPolling);   // detenemos el polling
       intervaloPolling = null;
 
-      await verHoy();                    // mostramos automáticamente "Hoy"
+      window.llamadoDesdePolling = true;  // bandera para saber que viene del polling
+await verHoy();                  // mostramos automáticamente "Hoy"
       document.getElementById("mesActual").textContent = "Hoy"; // por si acaso
       
     }
@@ -825,6 +937,7 @@ window.addEventListener("load", () => {
 </script>
 </body>
 </html>
+
 
 
 
