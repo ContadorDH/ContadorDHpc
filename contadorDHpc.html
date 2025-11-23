@@ -6,6 +6,8 @@
 <title>Asistencia IPUC Bochica Sur</title>
 
 <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 <meta name="theme-color" content="#0a5c30" />
 
 <style>
@@ -31,45 +33,88 @@
     font-weight: bold;
   }
 
- .panel {
+ /* PANEL FIJO MODERNO */
+.panel {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  padding: 12px;
-  background: #0a5c30;
+  padding: 14px 20px;
+  background: rgba(10, 92, 48, 0.92);
+  backdrop-filter: blur(6px);
   display: flex;
-  gap: 10px;
+  gap: 12px;
   justify-content: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   z-index: 9999;
-  box-shadow: 0 -4px 15px rgba(0,0,0,0.25);
+  box-shadow: 0 -6px 20px rgba(0,0,0,0.25);
 }
 
-.panel button,
-.panel select {
-  padding: 10px 14px;
-  font-size: 15px;
-  border-radius: 8px;
-}
-
+/* BOTONES PROFESIONALES */
 .panel button {
-  background: #ffffff;
-  color: #0a5c30;
+  padding: 10px 18px;
+  font-size: 15px;
+  border-radius: 10px;
   border: none;
-  font-weight: bold;
+  background: white;
+  color: #0a5c30;
+  font-weight: 600;
   cursor: pointer;
+  transition: 0.25s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .panel button:hover {
-  background: #c0ffd9;
+  background: #eaffef;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
+.panel button:active {
+  transform: scale(0.97);
+}
+
+/* SELECT STYLE MODERNO */
 .panel select {
-  background: #fff;
-  border: 2px solid #0a5c30;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  background: #ffffff;
+  font-weight: 600;
   color: #0a5c30;
-  font-weight: bold;
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.panel select:hover {
+  background: #eaffef;
+}
+
+/* ÍCONO redondo moderno */
+.btn-icono {
+  width: 45px;
+  height: 45px;
+  background: white;
+  color: #0a5c30;
+  border-radius: 50%;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  transition: 0.25s ease;
+  padding: 0 !important;
+}
+
+.btn-icono:hover {
+  background: #eaffef;
+  transform: translateY(-2px);
+}
+
+.btn-icono:active {
+  transform: scale(0.93);
 }
 
 
@@ -182,19 +227,34 @@
 
 <!-- 🔽 PANEL AHORA ABAJO -->
 <div class="panel">
-  <button onclick="verMesActual()">Mes Actual</button>
-  <button onclick="verHoy()">Ver Hoy</button>
+  <button onclick="verMesActual()">
+    <i class="fa-solid fa-calendar-days"></i> Mes Actual
+  </button>
+
+  <button onclick="verHoy()">
+    <i class="fa-solid fa-calendar-check"></i> Hoy
+  </button>
 
   <select id="selectMes"></select>
-  <button onclick="buscarMes()">Buscar</button>
+
+  <button onclick="buscarMes()">
+    <i class="fa-solid fa-search"></i> Buscar
+  </button>
 
   <select id="pantallaSelect">
     <option>Selecciona pantalla</option>
   </select>
 
-  <button onclick="proyectar()">Proyectar</button>
-  <button onclick="detectarPantallas()">Cargar pantallas</button>
+  <button onclick="proyectar()">
+    <i class="fa-solid fa-display"></i> Proyectar
+  </button>
+
+  <!-- SOLO ÍCONO AWESOME -->
+  <button class="btn-icono" onclick="detectarPantallas()">
+    <i class="fa-solid fa-tv"></i>
+  </button>
 </div>
+
 
 
 <table id="tabla">
@@ -577,6 +637,7 @@ window.addEventListener("load", detectarPantallas);
 </script>
 </body>
 </html>
+
 
 
 
