@@ -129,16 +129,14 @@ async function detectarPantallas() {
   try {
     const details = await window.getScreenDetails();
     combo.innerHTML = "";
-    let index = 1;
 
-    details.screens.forEach(screen => {
+    details.screens.forEach((screen, index) => {
       const opt = document.createElement("option");
-      opt.value = screen.id;
+      opt.value = index; // Usamos índice en lugar de id
       opt.textContent =
-        `Pantalla ${index} - ${screen.width}x${screen.height}` +
+        `Pantalla ${index + 1} - ${screen.width}x${screen.height}` +
         (screen.isPrimary ? " (Principal)" : "");
       combo.appendChild(opt);
-      index++;
     });
 
   } catch (error) {
@@ -248,15 +246,14 @@ async function proyectar() {
   }
 
   const details = await window.getScreenDetails();
-  const idPantalla = document.getElementById("pantallaSelect").value;
+  const indexPantalla = parseInt(document.getElementById("pantallaSelect").value, 10);
 
-  const scr = details.screens.find(s => s.id == idPantalla);
+  const scr = details.screens[indexPantalla]; // Usamos índice
   if (!scr) {
     alert("Pantalla no encontrada.");
     return;
   }
 
-  // Abrir ventana en la pantalla seleccionada
   const win = window.open(
     "",
     "",
