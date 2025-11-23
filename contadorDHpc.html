@@ -78,6 +78,22 @@
   .filaSel {
     background-color: #c7ffd1 !important;
   }
+
+
+.boton-detener {
+  background: red !important;
+  animation: parpadeo 1s infinite ease-in-out;
+}
+
+@keyframes parpadeo {
+  0% { background: rgba(255, 0, 0, 0.6); }
+  50% { background: red; }
+  100% { background: rgba(255, 0, 0, 0.6); }
+}
+
+
+
+  
 </style>
 </head>
 <body>
@@ -113,6 +129,8 @@ const meses = [
 ];
 
 let filaSeleccionada = null;
+  let ventanaProyeccion = null;
+
 
 // ============================================================
 // 🔵 DETECTAR PANTALLAS
@@ -246,6 +264,24 @@ function buscarMes() {
 // PROYECCIÓN MODERNA – FILA COMPLETA
 // ============================================================
 async function proyectar() {
+  const btn = document.querySelector("button[onclick='proyectar()']");
+
+  // =============================
+  // SI YA ESTÁ PROYECTANDO → DETENER
+  // =============================
+  if (ventanaProyeccion && !ventanaProyeccion.closed) {
+    ventanaProyeccion.close();
+    ventanaProyeccion = null;
+
+    // restaurar botón
+    btn.textContent = "Proyectar";
+    btn.classList.remove("boton-detener");
+    return;
+  }
+
+  // =============================
+  // SI NO SE HA SELECCIONADO FILA
+  // =============================
   if (!filaSeleccionada) {
     alert("Selecciona una fila antes de proyectar.");
     return;
@@ -260,15 +296,15 @@ async function proyectar() {
   const indexPantalla = parseInt(document.getElementById("pantallaSelect").value);
   const scr = details.screens[indexPantalla];
 
-  const win = window.open(
+  ventanaProyeccion = window.open(
     "",
-    "",
+    "proyeccion",
     `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height}`
   );
 
   const celdas = [...filaSeleccionada.querySelectorAll("td")].map(td => td.innerText);
 
-  win.document.body.innerHTML = `
+  ventanaProyeccion.document.body.innerHTML = `
     <style>
       body {
         margin: 0;
@@ -314,7 +350,24 @@ async function proyectar() {
       ${celdas.map(c => `<div class="dato">${c}</div>`).join("")}
     </div>
   `;
+
+  // =============================
+  // CAMBIAR BOTÓN A DETENER
+  // =============================
+  btn.textContent = "Detener";
+  btn.classList.add("boton-detener");
+
+  // Detecta si la ventana se cierra manualmente
+  let timer = setInterval(() => {
+    if (!ventanaProyeccion || ventanaProyeccion.closed) {
+      clearInterval(timer);
+      ventanaProyeccion = null;
+      btn.textContent = "Proyectar";
+      btn.classList.remove("boton-detener");
+    }
+  }, 500);
 }
+
 
 // ============================================================
 // Auto cargar pantallas
@@ -324,3 +377,4 @@ window.addEventListener("load", detectarPantallas);
 </script>
 </body>
 </html>
+
