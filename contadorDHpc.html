@@ -302,13 +302,15 @@ let ventanaProyeccion = null;
 async function detectarPantallas() {
   const combo = document.getElementById("pantallaSelect");
 
-  // Oculto mientras carga
-  combo.style.visibility = "hidden";
+  // bloqueado sin ocultar — evita parpadeo
+  combo.style.opacity = "0.4";
+  combo.style.pointerEvents = "none";
   combo.innerHTML = "<option>Cargando...</option>";
 
   if (!("getScreenDetails" in window)) {
     combo.innerHTML = "<option>No compatible (activa chrome://flags)</option>";
-    combo.style.visibility = "visible";
+    combo.style.opacity = "1";
+    combo.style.pointerEvents = "auto";
     return;
   }
 
@@ -341,14 +343,15 @@ async function detectarPantallas() {
 
     combo.selectedIndex = indexSeleccion;
 
-    // Mostrar ya listo
-    combo.style.visibility = "visible";
-
   } catch (error) {
     combo.innerHTML = "<option>Error: No autorizado</option>";
-    combo.style.visibility = "visible";
   }
+
+  // restaurar normal
+  combo.style.opacity = "1";
+  combo.style.pointerEvents = "auto";
 }
+
 
 // ============================================================
 // Cargar combo meses
@@ -682,6 +685,7 @@ window.addEventListener("load", detectarPantallas);
 </script>
 </body>
 </html>
+
 
 
 
