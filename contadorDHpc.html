@@ -14,11 +14,12 @@
   body {
     font-family: Arial, sans-serif;
     margin: 0;
-    background: #f1f5f1;
+    background: #f1f5f9;
+    color: #000; /* TEXTO NEGRO GLOBAL */
   }
 
   header {
-    background: #0a5c30;
+    background: #1E6FB8;
     color: white;
     padding: 15px;
     text-align: center;
@@ -33,7 +34,7 @@
   font-size: clamp(26px, 3.2vw, 40px);
   font-weight: 800;
   letter-spacing: 1px;
-  color: #1E6FB8; /* azul corporativo */
+  color: #1E6FB8; 
   padding: 12px 26px;
   background: linear-gradient(135deg, #eaf4ff, #d4e9ff);
   border-radius: 14px;
@@ -58,7 +59,7 @@
   left: 0;
   width: 100%;
   padding: 14px 20px;
-  background: rgba(10, 92, 48, 0.92);
+  background: rgba(30, 111, 184, 0.92); /* AZUL */
   backdrop-filter: blur(6px);
   display: flex;
   gap: 12px;
@@ -75,7 +76,7 @@
   border-radius: 10px;
   border: none;
   background: white;
-  color: #0a5c30;
+  color: #1E6FB8;
   font-weight: 600;
   cursor: pointer;
   transition: 0.25s ease;
@@ -85,7 +86,7 @@
 }
 
 .panel button:hover {
-  background: #eaffef;
+  background: #e6f1ff;
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
@@ -101,14 +102,14 @@
   border: none;
   background: #ffffff;
   font-weight: 600;
-  color: #0a5c30;
+  color: #1E6FB8;
   box-shadow: 0 0 0 3px rgba(255,255,255,0.5);
   cursor: pointer;
   transition: 0.25s ease;
 }
 
 .panel select:hover {
-  background: #eaffef;
+  background: #e6f1ff;
 }
 
 /* ÍCONO redondo moderno */
@@ -116,7 +117,7 @@
   width: 45px;
   height: 45px;
   background: white;
-  color: #0a5c30;
+  color: #1E6FB8;
   border-radius: 50%;
   display: flex !important;
   align-items: center;
@@ -127,7 +128,7 @@
 }
 
 .btn-icono:hover {
-  background: #eaffef;
+  background: #e6f1ff;
   transform: translateY(-2px);
 }
 
@@ -135,70 +136,69 @@
   transform: scale(0.93);
 }
 
+button {
+  padding: 10px 15px;
+  background: #1E6FB8;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 6px;
+}
 
-  button {
-    padding: 10px 15px;
-    background: #0a5c30;
-    border: none;
-    color: white;
-    cursor: pointer;
-    border-radius: 6px;
-  }
+button:hover {
+  background: #145893;
+}
 
-  button:hover {
-    background: #0f7f47;
-  }
+select {
+  padding: 8px;
+  border-radius: 5px;
+}
 
-  select {
-    padding: 8px;
-    border-radius: 5px;
-  }
+table {
+  width: 95%;
+  margin: 15px auto;
+  border-collapse: collapse;
+  background: white;
+}
 
-  table {
-    width: 95%;
-    margin: 15px auto;
-    border-collapse: collapse;
-    background: white;
-  }
+th, td {
+  padding: 8px;
+  text-align: center;
+  border: 1px solid #ccc;
+  color: #000;
+}
 
-  th, td {
-    padding: 8px;
-    text-align: center;
-    border: 1px solid #ccc;
-  }
+th {
+  background: #cfe3ff;
+  font-weight: bold;
+}
 
-  th {
-    background: #d9ead3;
-    font-weight: bold;
-  }
+.filaSel {
+  background-color: #cbe0ff !important;
+}
 
-  .filaSel {
-    background-color: #c7ffd1 !important;
-  }
+/* Botón detener - fade suave */
+.boton-detener {
+  background: red !important;
+  animation: fadeRojo 1.6s infinite ease-in-out;
+  transition: background 0.5s ease, transform 0.15s ease;
+  box-shadow: 0 6px 18px rgba(255,0,0,0.15);
+}
 
-  /* Botón detener - fade suave */
-  .boton-detener {
-    background: red !important;
-    animation: fadeRojo 1.6s infinite ease-in-out;
-    transition: background 0.5s ease, transform 0.15s ease;
-    box-shadow: 0 6px 18px rgba(255,0,0,0.15);
-  }
+.boton-detener:active { transform: scale(0.98); }
 
-  .boton-detener:active { transform: scale(0.98); }
-
-  @keyframes fadeRojo {
-    0%   { background: rgba(255, 0, 0, 0.50); }
-    50%  { background: rgba(255, 0, 0, 1); }
-    100% { background: rgba(255, 0, 0, 0.50); }
-  
+@keyframes fadeRojo {
+  0%   { background: rgba(255, 0, 0, 0.50); }
+  50%  { background: rgba(255, 0, 0, 1); }
+  100% { background: rgba(255, 0, 0, 0.50); }
 }
 
 .subtitulo-moderno {
   margin-top: 12px;
   text-align: center;
   font-weight: 700;
-  font-size: clamp(22px, 3vw, 34px);   /* automático según pantalla */
-  color: #0a5c30;
+  font-size: clamp(22px, 3vw, 34px);
+  color: #1E6FB8;
   letter-spacing: 0.5px;
   display: flex;
   justify-content: center;
@@ -206,7 +206,7 @@
   gap: 8px;
 
   padding: 10px 20px;
-  background: linear-gradient(135deg, #e8f5e9, #d0ead3);
+  background: linear-gradient(135deg, #e6f1ff, #d1e3ff);
   border-radius: 12px;
   width: fit-content;
   margin-left: auto;
@@ -219,7 +219,7 @@
 }
 
 .titulo-mes {
-  color: #0c7a41;
+  color: #1E6FB8;
   font-weight: 900;
 }
 
@@ -682,6 +682,7 @@ window.addEventListener("load", detectarPantallas);
 </script>
 </body>
 </html>
+
 
 
 
