@@ -113,53 +113,47 @@ const meses = [
 
 let ventanaProyeccion = null;
 
-// ------------------------------------------------------
-// PERMISO PARA USAR PANTALLAS REALES
-// ------------------------------------------------------
-async function solicitarPermisoPantallas() {
-  if (!("getScreens" in window)) {
-    console.warn("API de pantallas no soportada en este navegador.");
+/* ============================================================
+   🔵 DETECTAR PANTALLAS REALES
+   Requiere activar:
+   chrome://flags/#enable-experimental-web-platform-features
+============================================================ */
+async function detectarPantallas() {
+  const combo = document.getElementById("pantallaSelect");
+  combo.innerHTML = "<option>Cargando...</option>";
+
+  if (!("getScreenDetails" in window)) {
+    combo.innerHTML = "<option>No compatible (activa chrome://flags)</option>";
     return;
   }
 
   try {
-    await window.getScreens();
-  } catch (e) {
-    console.error("Permiso de pantallas denegado:", e);
+    const details = await window.getScreenDetails();
+    combo.innerHTML = "";
+    let index = 1;
+
+    details.screens.forEach(screen => {
+      const opt = document.createElement("option");
+      opt.value = screen.id;
+      opt.textContent =
+        `Pantalla ${index} - ${screen.width}x${screen.height}` +
+        (screen.isPrimary ? " (Principal)" : "");
+      combo.appendChild(opt);
+      index++;
+    });
+
+  } catch (error) {
+    combo.innerHTML = "<option>Error: No autorizado</option>";
+    console.error(error);
   }
 }
 
-solicitarPermisoPantallas();
+// Ejecutar detección al cargar
+detectarPantallas();
 
-// ------------------------------------------------------
-// CARGAR PANTALLAS REALES
-// ------------------------------------------------------
-async function cargarPantallas() {
-  const select = document.getElementById("pantallaSelect");
-
-  if (!("getScreens" in window)) {
-    select.innerHTML = "<option>No compatible</option>";
-    return;
-  }
-
-  const screensObj = await window.getScreens();
-
-  select.innerHTML = "";
-
-  screensObj.screens.forEach((scr, i) => {
-    const opt = document.createElement("option");
-    opt.value = i;
-    opt.textContent = `Pantalla ${i + 1} (${scr.width}x${scr.height})`;
-    select.appendChild(opt);
-  });
-}
-
-cargarPantallas();
-
-
-// ------------------------------------------------------
-// Cargar combo de meses
-// ------------------------------------------------------
+/* ============================================================
+   Cargar combo de meses
+============================================================ */
 const selectMes = document.getElementById("selectMes");
 meses.forEach(m => {
   const opt = document.createElement("option");
@@ -171,9 +165,9 @@ meses.forEach(m => {
 // Mes actual
 document.getElementById("mesActual").textContent = meses[new Date().getMonth()];
 
-// ------------------------------------------------------
-// Función para consultar datos
-// ------------------------------------------------------
+/* ============================================================
+   Cargar datos por mes
+============================================================ */
 async function cargarMes(mes) {
   document.getElementById("mesActual").textContent = mes;
 
@@ -184,9 +178,9 @@ async function cargarMes(mes) {
   pintarTabla(data);
 }
 
-// ------------------------------------------------------
-// Pintar tabla
-// ------------------------------------------------------
+/* ============================================================
+   Pintar tabla
+============================================================ */
 function pintarTabla(data) {
   const thead = document.querySelector("#tabla thead");
   const tbody = document.querySelector("#tabla tbody");
@@ -213,17 +207,17 @@ function pintarTabla(data) {
   }
 }
 
-// ------------------------------------------------------
-// Botón: Ver Mes Actual
-// ------------------------------------------------------
+/* ============================================================
+   Botón: Ver Mes Actual
+============================================================ */
 function verMesActual() {
   let mes = meses[new Date().getMonth()];
   cargarMes(mes);
 }
 
-// ------------------------------------------------------
-// Botón: Ver Hoy
-// ------------------------------------------------------
+/* ============================================================
+   Botón: Ver Hoy
+============================================================ */
 async function verHoy() {
   let mes = meses[new Date().getMonth()];
   let url = `${URL}?accion=listar&mes=${mes}`;
@@ -240,32 +234,37 @@ async function verHoy() {
   pintarTabla(filtrados);
 }
 
-// ------------------------------------------------------
-// Botón: Buscar Mes
-// ------------------------------------------------------
+/* ============================================================
+   Botón: Buscar Mes
+============================================================ */
 function buscarMes() {
   let mes = selectMes.value;
   cargarMes(mes);
 }
 
-// ------------------------------------------------------
-// PROYECTAR EN PANTALLA REAL
-// ------------------------------------------------------
+/* ============================================================
+   PROYECTAR EN PANTALLA REAL
+============================================================ */
 async function proyectar() {
-  if (!("getScreens" in window)) {
-    alert("Tu navegador no soporta proyección en pantalla externa.");
+  if (!("getScreenDetails" in window)) {
+    alert("Tu navegador no soporta pantallas extendidas. Activa chrome://flags");
     return;
   }
 
-  const screensObj = await window.getScreens();
-  const index = parseInt(document.getElementById("pantallaSelect").value);
-  const scr = screensObj.screens[index];
+  const details = await window.getScreenDetails();
+  const idPantalla = document.getElementById("pantallaSelect").value;
 
-  const win = await window.open(
+  const scr = details.screens.find(s => s.id == idPantalla);
+  if (!scr) {
+    alert("Pantalla no encontrada.");
+    return;
+  }
+
+  // Intentar abrir en la pantalla seleccionada
+  const win = window.open(
     "",
     "",
-    `fullscreen=yes,left=${scr.left},top=${scr.top},
-     width=${scr.width},height=${scr.height}`
+    `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height}`
   );
 
   win.document.body.innerHTML = `
