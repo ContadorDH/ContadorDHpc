@@ -79,20 +79,21 @@
     background-color: #c7ffd1 !important;
   }
 
-.boton-detener {
-  background: red !important;
-  animation: fadeRojo 1.6s infinite ease-in-out;
-}
+  /* Botón detener - fade suave */
+  .boton-detener {
+    background: red !important;
+    animation: fadeRojo 1.6s infinite ease-in-out;
+    transition: background 0.5s ease, transform 0.15s ease;
+    box-shadow: 0 6px 18px rgba(255,0,0,0.15);
+  }
 
-@keyframes fadeRojo {
-  0%   { background: rgba(255, 0, 0, 0.50); }
-  50%  { background: rgba(255, 0, 0, 1); }
-  100% { background: rgba(255, 0, 0, 0.50); }
-}
+  .boton-detener:active { transform: scale(0.98); }
 
-
-
-  
+  @keyframes fadeRojo {
+    0%   { background: rgba(255, 0, 0, 0.50); }
+    50%  { background: rgba(255, 0, 0, 1); }
+    100% { background: rgba(255, 0, 0, 0.50); }
+  }
 </style>
 </head>
 <body>
@@ -128,8 +129,7 @@ const meses = [
 ];
 
 let filaSeleccionada = null;
-  let ventanaProyeccion = null;
-
+let ventanaProyeccion = null;
 
 // ============================================================
 // 🔵 DETECTAR PANTALLAS
@@ -265,9 +265,7 @@ function buscarMes() {
 async function proyectar() {
   const btn = document.querySelector("button[onclick='proyectar()']");
 
-  // =============================
-  // SI YA ESTÁ PROYECTANDO → DETENER
-  // =============================
+  // Si ya proyecta -> detener
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
     ventanaProyeccion.close();
     ventanaProyeccion = null;
@@ -277,59 +275,69 @@ async function proyectar() {
     return;
   }
 
-  // =============================
-  // VALIDAR FILA
-  // =============================
   if (!filaSeleccionada) {
     alert("Selecciona una fila antes de proyectar.");
     return;
   }
 
-  // =============================
-  // PANTALLA
-  // =============================
-  const details = await window.getScreenDetails();
-  const indexPantalla = parseInt(document.getElementById("pantallaSelect").value);
-  const scr = details.screens[indexPantalla];
+  // abrir en pantalla seleccionada si existe
+  let scr = null;
+  if ("getScreenDetails" in window) {
+    const details = await window.getScreenDetails();
+    const indexPantalla = parseInt(document.getElementById("pantallaSelect").value);
+    scr = details.screens[indexPantalla];
+  }
 
-  ventanaProyeccion = window.open(
-    "",
-    "proyeccion",
-    `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height}`
-  );
+  // si no hay pantalla, abrimos ventana normal centrada
+  const features = scr
+    ? `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height}`
+    : `width=1200,height=700`;
 
-  // =============================
-  // OBTENER ENCABEZADOS Y DATOS
-  // =============================
+  ventanaProyeccion = window.open("", "proyeccion", features);
+
+  // obtener headers y valores
   let headers = [...document.querySelectorAll("#tabla thead th")].map(th => th.innerText);
   let valores = [...filaSeleccionada.querySelectorAll("td")].map(td => td.innerText);
 
-  // ============================================
-  // QUITA: FECHA, REGISTRADO POR, OTROS CAMPOS
-  // (Asumo primeras columnas: ID, Fecha, Nombre, RegistradoPor)
-  // SOLO MOSTRAR: Hermano → Total asistencia
-  // ============================================
-  let inicio = headers.findIndex(h => h.toLowerCase().includes("hermano"));
-  let fin = headers.findIndex(h => h.toLowerCase().includes("total"));
+  // buscar índices de inicio (Hermano) y fin (Total)
+  let inicio = headers.findIndex(h => /hermano/i.test(h));
+  let fin = headers.findIndex(h => /total/i.test(h));
 
-  let h2 = headers.slice(inicio, fin + 1);
-  let v2 = valores.slice(inicio, fin + 1);
+  // si no se encuentran, fallback a mostrar las últimas 5 columnas (segura)
+  if (inicio === -1) {
+    // intenta buscar 'hermanas' o 'hombres' etc.
+    inicio = headers.findIndex(h => /hermanas|hermano/i.test(h));
+  }
+  if (fin === -1) {
+    fin = headers.length - 1;
+  }
 
-  // =============================
-  // FECHA PARA EL TÍTULO
-  // =============================
-  let fechaTexto = valores[1]; // columna Fecha real
-  let fecha = new Date(fechaTexto);
-  let opciones = { weekday: "long", day: "numeric", month: "long" };
-  let fechaFormateada = fecha.toLocaleDateString("es-CO", opciones);
+  // asegurar rangos válidos
+  if (inicio < 0) inicio = Math.max(0, headers.length - 5);
+  if (fin < inicio) fin = headers.length - 1;
 
-  fechaFormateada =
-    fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
+  const h2 = headers.slice(inicio, fin + 1);
+  const v2 = valores.slice(inicio, fin + 1);
 
-  // =============================
-  // DISEÑO MEJORADO
-  // AUTO-ESCALA PARA NO SALIRSE
-  // =============================
+  // obtener fecha para el título: asumo que la fecha está en la columna 1 (índice 1)
+  let fechaFormateada = "";
+  if (valores[1]) {
+    const fechaTexto = valores[1];
+    const fecha = new Date(fechaTexto);
+    if (!isNaN(fecha)) {
+      const opciones = { weekday: "long", day: "numeric", month: "long" };
+      fechaFormateada = fecha.toLocaleDateString("es-CO", opciones);
+      fechaFormateada = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
+    }
+  }
+  if (!fechaFormateada) {
+    // fallback: hoy (no ideal, pero evita errores)
+    fechaFormateada = new Date().toLocaleDateString("es-CO", { weekday: "long", day: "numeric", month: "long" });
+    fechaFormateada = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
+  }
+
+  // construir HTML dentro de la ventana de proyección
+  // IMPORTANTE: el cierre de script se escribe como <\/script> para no romper el script padre
   ventanaProyeccion.document.body.innerHTML = `
     <style>
       html, body {
@@ -338,12 +346,12 @@ async function proyectar() {
         width: 100vw;
         height: 100vh;
         overflow: hidden;
-        background: #002a18;
+        background: linear-gradient(90deg,#061b0f,#00321a 60%);
         font-family: 'Segoe UI', sans-serif;
+        color: #fff;
       }
 
       .wrap {
-        transform-origin: center;
         width: 100%;
         height: 100%;
         display: flex;
@@ -352,93 +360,117 @@ async function proyectar() {
       }
 
       .contenedor {
-        width: 92%;
-        padding: 40px;
-        background: rgba(255,255,255,0.10);
-        border-radius: 25px;
-        backdrop-filter: blur(12px);
-        box-shadow: 0 0 45px rgba(0,0,0,0.5);
+        width: 96%;
+        height: 86%;
+        padding: 28px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 20px;
+        backdrop-filter: blur(8px);
+        box-shadow: 0 12px 50px rgba(0,0,0,0.6);
         color: white;
-        animation: fadeIn 0.6s ease-out;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
       }
 
       h1 {
-        font-size: 4.2vw;
-        text-align: center;
-        margin-bottom: 2vh;
+        margin: 0 0 18px 0;
+        font-size: calc(20px + 2.6vw);
         font-weight: 700;
-        letter-spacing: 2px;
+        text-align: center;
+        letter-spacing: 1px;
       }
 
-      .fila {
+      .grid {
+        width: 100%;
         display: grid;
         grid-template-columns: repeat(${h2.length}, 1fr);
-        gap: 1.4vw;
+        gap: 20px;
+        align-items: stretch;
       }
 
-      .item {
-        background: rgba(255,255,255,0.18);
-        padding: 1.6vw;
-        border-radius: 18px;
-        text-align: center;
+      .card {
+        background: rgba(255,255,255,0.08);
+        border-radius: 14px;
+        padding: 18px;
+        display:flex;
+        flex-direction: column;
+        align-items:center;
+        justify-content: center;
+        min-height: 160px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.35);
       }
 
       .titulo {
-        font-size: 2vw;
-        margin-bottom: 0.8vw;
+        font-size: calc(12px + 1.0vw);
         text-transform: uppercase;
         font-weight: 600;
+        margin-bottom: 8px;
+        opacity: 0.95;
       }
 
       .valor {
-        font-size: 3.5vw;
-        font-weight: bold;
+        font-size: calc(24px + 2.8vw);
+        font-weight: 800;
+        line-height: 1;
+      }
+
+      /* ajuste responsivo para que no se corte */
+      @media (max-width: 1100px) {
+        .valor { font-size: calc(18px + 3.2vw); }
+        .card { min-height: 120px; padding: 14px; }
       }
 
       @keyframes fadeIn {
-        from { opacity: 0; transform: scale(0.95); }
-        to   { opacity: 1; transform: scale(1); }
+        from { opacity: 0; transform: translateY(6px) scale(0.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
       }
+
+      .contenedor { animation: fadeIn .5s ease-out; }
     </style>
 
     <div class="wrap">
       <div class="contenedor">
         <h1>Asistencia del día ${fechaFormateada}</h1>
 
-        <div class="fila">
+        <div class="grid">
           ${
-            h2.map((h,i)=>`
-              <div class="item">
+            h2.map((h,i) => `
+              <div class="card">
                 <div class="titulo">${h}</div>
-                <div class="valor">${v2[i]}</div>
+                <div class="valor">${v2[i] !== undefined ? v2[i] : "-"}</div>
               </div>
             `).join("")
           }
         </div>
+
       </div>
     </div>
 
     <script>
-      function autoAjustar() {
-        const wrap = document.querySelector('.wrap');
-        const w = window.innerWidth;
-        const h = window.innerHeight;
-
-        wrap.style.transform =
-          "scale(" + Math.min(w / 1920, h / 1080) + ")";
-      }
-      window.onload = autoAjustar;
-      window.onresize = autoAjustar;
-    </script>
+      // auto-ajustar escala para pantallas muy anchas o muy estrechas
+      (function(){
+        function scale() {
+          const wrap = document.querySelector('.wrap');
+          if(!wrap) return;
+          const w = window.innerWidth;
+          const h = window.innerHeight;
+          const scale = Math.min(w / 1920, h / 1080);
+          wrap.style.transform = 'scale(' + Math.max(0.7, scale) + ')';
+        }
+        window.addEventListener('resize', scale);
+        window.addEventListener('load', scale);
+        scale();
+      })();
+    <\/script>
   `;
 
-  // =============================
-  // BOTÓN DETENER
-  // =============================
+  // cambiar botón a detener
   btn.textContent = "Detener";
   btn.classList.add("boton-detener");
 
-  // Detectar cierre manual
+  // monitorear cierre manual
   let timer = setInterval(() => {
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       clearInterval(timer);
@@ -449,15 +481,10 @@ async function proyectar() {
   }, 500);
 }
 
-
 // ============================================================
 // Auto cargar pantallas
 // ============================================================
 window.addEventListener("load", detectarPantallas);
-
 </script>
 </body>
 </html>
-
-
-
