@@ -186,26 +186,28 @@ th {
   background-color: #cbe0ff !important;
 }
 
-/* Botón detener - pulso suave y elegante (NO agresivo) */
+/* Botón Detener – pulso bien visible pero elegante */
 .boton-detener {
-  background: #d32f2f !important;     /* Rojo oscuro más elegante */
+  background: #c62828 !important;     /* rojo oscuro bonito */
   color: white !important;
   position: relative;
   overflow: hidden;
-  animation: pulsoDetener 2s infinite ease-in-out;
-  box-shadow: 0 6px 20px rgba(211, 47, 47, 0.4) !important;
-  transform: translateY(0);
+  animation: pulsoFuerte 1.8s infinite ease-in-out !important;
+  box-shadow: 0 6px 20px rgba(198, 40, 40, 0.5) !important;
   transition: transform 0.15s ease;
+  z-index: 1;
 }
 
+/* Onda blanca que cruza el botón – se nota mucho */
 .boton-detener::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: inherit;
-  opacity: 0;
-  animation: ondaBlanca 2s infinite ease-in-out;
+  top: 0; left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transform: skewX(-25deg);
+  animation: brilloCruzado 1.8s infinite ease-in-out;
   pointer-events: none;
 }
 
@@ -213,18 +215,23 @@ th {
   transform: scale(0.96);
 }
 
-@keyframes pulsoDetener {
+/* Pulso de sombra + pequeño cambio de tono para que se sienta vivo */
+@keyframes pulsoFuerte {
   0%, 100% {
-    box-shadow: 0 6px 20px rgba(211, 47, 47, 0.4);
+    background: #c62828 !important;
+    box-shadow: 0 6px 20px rgba(198,40,40,0.5);
   }
   50% {
-    box-shadow: 0 8px 30px rgba(211, 47, 47, 0.6);
+    background: #e53935 !important;   /* rojo un poco más claro en el medio */
+    box-shadow: 0 10px 35px rgba(229,57,53,0.8);
   }
 }
 
-@keyframes ondaBlanca {
-  0%, 100% { opacity: 0; transform: scale(0.8); }
-  50% { opacity: 0.3; transform: scale(1.1); }
+/* Brillo que cruza el botón – esto es lo que hace que se note mucho */
+@keyframes brilloCruzado {
+  0%   { left: -100%; }
+  50%  { left: 100%; }
+  100% { left: 100%; }
 }
 
 .subtitulo-moderno {
@@ -632,6 +639,7 @@ window.addEventListener("load", () => {
 </script>
 </body>
 </html>
+
 
 
 
