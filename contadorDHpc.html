@@ -870,9 +870,9 @@ document.getElementById("selectMes").addEventListener("change", function() {
 // ============================================================
 // PROYECCIÓN MODERNA – CON AUTO-SELECCIÓN CUANDO HAY UNA SOLA FILA
 // ============================================================
-// ============================================================
 async function proyectar() {
   const btn = document.querySelector("button[onclick='proyectar()']");
+  // Si ya está proyectando → detener
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
     ventanaProyeccion.close();
     ventanaProyeccion = null;
@@ -880,26 +880,30 @@ async function proyectar() {
     btn.classList.remove("boton-detener");
     return;
   }
-
+  // === NUEVO: detectar si hay solo una fila de datos ===
   const filasDatos = document.querySelectorAll("#tabla tbody tr");
   if (filasDatos.length === 1) {
     filaSeleccionada = filasDatos[0];
-    filasDatos[0].classList.add("filaSel");
+    filasDatos[0].classList.add("filaSel"); // opcional: resaltar
   }
+  // === FIN NUEVO ===
+  // Si no hay fila seleccionada (y no es el caso de una sola fila)
   if (!filaSeleccionada) {
     mostrarAviso("Selecciona una fila antes de proyectar.");
     return;
   }
-
+  // === Todo lo demás queda 100% igual que tenías ===
   let scr = null;
   if ("getScreenDetails" in window) {
     try {
       const details = await window.getScreenDetails();
       const indexPantalla = parseInt(document.getElementById("pantallaSelect").value);
       if (!isNaN(indexPantalla) && details.screens[indexPantalla]) {
-        scr = details.screens[indexPantalla];
+       
+
+ scr = details.screens[indexPantalla];
       }
-    } catch (e) { }
+    } catch (e) { /* permiso denegado → se ignora */ }
   }
   const features = scr
     ? `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height}`
@@ -929,6 +933,7 @@ async function proyectar() {
   }
   fechaFila = formatearFechaLarga(fechaFila);
 
+  // === FUNCIÓN QUE ACTUALIZA LA VENTANA CON EL TEMA ACTUAL (se llama ahora y cada vez que cambie el tema) ===
   const actualizarProyeccion = () => {
     if (!ventanaProyeccion || ventanaProyeccion.closed) return;
 
@@ -942,60 +947,33 @@ async function proyectar() {
     ventanaProyeccion.document.body.innerHTML = `
       <style>
         :root{--fondo:${vars.fondo};--acento:${vars.acento};--texto:${vars.texto}}
-        html,body{margin:0;padding:0;width:100vw;height:100vh;overflow:hidden;background:var(--fondo);font-family:'Segoe UI',sans-serif;color:var(--texto);transition:all .6s ease}
+        html,body{margin:0;padding:0;width:100vw;height:100vh;overflow:hidden;background:var(--fondo);font-family:'Segoe UI',sans-serif;color:var(--texto);transition:all .5s ease}
         .wrap{width:100%;height:100%;display:flex;justify-content:center;align-items:center}
         .contenedor{
-          width:94%;max-width:1600px;height:90%;padding:40px;
-          background:rgba(255,255,255,${esOscuro?'0.09':'0.14'});
-          border-radius:32px;
-          border:2px solid rgba(255,255,255,0.18);
-          backdrop-filter:blur(16px);
-          box-shadow:0 30px 80px rgba(0,0,0,${esOscuro?'0.75':'0.45'});
-          display:flex;flex-direction:column;align-items:center;gap:36px;
-          animation:entrada .8s cubic-bezier(0.34,1.56,0.64,1)
+          width:96%;max-width:1400px;height:86%;padding:32px;
+          background:rgba(255,255,255,${esOscuro?'0.06':'0.10'});
+          border-radius:24px;border:1px solid rgba(255,255,255,0.12);
+          backdrop-filter:blur(12px);box-shadow:0 20px 60px rgba(0,0,0,${esOscuro?'0.6':'0.3'});
+          display:flex;flex-direction:column;align-items:center;gap:28px;
+          animation:entrada .7s cubic-bezier(0.34,1.56,0.64,1)
         }
-        h1{
-          font-size:clamp(48px,7vw,120px);font-weight:900;margin:0;
-          background:linear-gradient(135deg,var(--acento),color-mix(in srgb,var(--acento) 75%,white));
-          -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
-          letter-spacing:2.5px;text-shadow:0 6px 20px rgba(0,0,0,0.4)
-        }
-        .grid{
-          display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-          gap:32px;width:100%;padding:0 20px
-        }
-        .card{
-          background:rgba(255,255,255,${esOscuro?'0.11':'0.16'});
-          border-radius:24px;padding:32px 20px;
-          text-align:center;
-          box-shadow:0 16px 40px rgba(0,0,0,${esOscuro?'0.5':'0.25'});
-          border:1.5px solid rgba(255,255,255,0.15);
-          transition:transform .4s ease,box-shadow .4s ease
-        }
-        .card:hover{transform:translateY(-12px);box-shadow:0 28px 70px rgba(0,0,0,${esOscuro?'0.7':'0.4'})}
-        .titulo{
-          font-size:clamp(18px,2.6vw,32px);text-transform:uppercase;
-          font-weight:800;letter-spacing:3px;color:var(--acento);opacity:0.95;margin-bottom:12px
-        }
-        .valor{
-          font-size:clamp(44px,6.5vw,110px);font-weight:900;color:var(--texto);line-height:1.1
-        }
-        .total-final{
-          margin-top:auto;padding:28px 80px;
-          font-size:clamp(56px,8vw,140px);font-weight:900;
-          background:linear-gradient(135deg,var(--acento),color-mix(in srgb,var(--acento) 85%,black));
-          color:white;border-radius:32px;
-          box-shadow:0 20px 60px rgba(0,0,0,0.6);
-          text-shadow:0 6px 16px rgba(0,0,0,0.7)
-        }
-        @keyframes entrada{
-          from{opacity:0;transform:scale(0.92) translateY(40px)}
-          to{opacity:1;transform:scale(1)}
-        }
-        @media(max-width:768px){
-          .grid{grid-template-columns:repeat(2,1fr);gap:24px}
-          .contenedor{padding:24px}
-        }
+        h1{font-size:clamp(32px,5vw,80px);font-weight:900;margin:0;
+           background:linear-gradient(135deg,var(--acento),color-mix(in srgb,var(--acento) 70%,white));
+           -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+           letter-spacing:1.2px}
+        .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:24px;width:100%}
+        .card{background:rgba(255,255,255,${esOscuro?'0.08':'0.12'});border-radius:18px;padding:20px;
+              text-align:center;box-shadow:0 8px 25px rgba(0,0,0,${esOscuro?'0.4':'0.2'});
+              border:1px solid rgba(255,255,255,0.1);transition:all .3s}
+        .card:hover{transform:translateY(-8px);box-shadow:0 16px 40px rgba(0,0,0,${esOscuro?'0.6':'0.35'})}
+        .titulo{font-size:clamp(13px,1.8vw,18px);text-transform:uppercase;font-weight:700;
+                letter-spacing:1.8px;color:var(--acento);opacity:0.9;margin-bottom:8px}
+        .valor{font-size:clamp(28px,4.5vw,72px);font-weight:900;color:var(--texto)}
+        .total-final{margin-top:auto;padding:20px 60px;font-size:clamp(32px,5vw,90px);font-weight:900;
+                    background:linear-gradient(135deg,var(--acento),color-mix(in srgb,var(--acento) 80%,black));
+                    color:white;border-radius:24px;box-shadow:0 12px 40px rgba(0,0,0,0.5)}
+        @keyframes entrada{from{opacity:0;transform:scale(0.94) translateY(30px)}to{opacity:1;transform:none}}
+        @media(max-width:768px){.grid{grid-template-columns:repeat(2,1fr)};.contenedor{padding:20px}}
       </style>
       <div class="wrap"><div class="contenedor">
         <h1>${fechaFila}</h1>
@@ -1007,25 +985,27 @@ async function proyectar() {
     `;
   };
 
+  // === Primera carga ===
   actualizarProyeccion();
 
+  // === Sincronización automática cuando cambies el tema en la app principal ===
   const observer = new MutationObserver(actualizarProyeccion);
   observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
 
+  // === Botón Detener y detección de cierre ===
   btn.textContent = "Detener";
   btn.classList.add("boton-detener");
 
   const timer = setInterval(() => {
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       clearInterval(timer);
-      observer.disconnect();
+      observer.disconnect();           // ← limpiamos el observer
       ventanaProyeccion = null;
       btn.textContent = "Proyectar";
       btn.classList.remove("boton-detener");
     }
   }, 500);
 }
-
 
 // ============================================================
 // CARGA AUTOMÁTICA INTELIGENTE AL INICIAR LA PÁGINA
@@ -1111,6 +1091,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
