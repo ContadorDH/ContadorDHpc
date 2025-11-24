@@ -14,36 +14,26 @@
 body {
   font-family: Arial, sans-serif;
   margin: 0;
-  background: #ffffff;           /* Fondo blanco puro */
+  background: #ffffff;           /* fondo blanco puro */
   color: #000;
   min-height: 100vh;
   position: relative;
 }
 
-/* ====================== MARCA DE AGUA SUAVE Y ELEGANTE ====================== */
+/* MARCA DE AGUA → AHORA SÍ SE VE PERFECTO */
 body::before {
   content: "";
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   background: url('fondo.png') center center / contain no-repeat;
-  opacity: 0.20;                 /* Súper sutil – se ve pero no molesta */
+  opacity: 0.20;                  /* ← aquí controlas cuánto se ve */
   pointer-events: none;
   z-index: -1;
 }
 
-/* En pantallas pequeñas lo hacemos aún más tenue para que no distraiga */
+/* En móvil más tenue */
 @media (max-width: 768px) {
-  body::before { opacity: 0.06; }
-}
-
-/* Si tu logo/imagen es muy oscura y quieres que se vea un poquito más clara: */
-body::after {
-  content: "";
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(255, 255, 255, 0.94);   /* Capa blanca muy ligera encima del logo */
-  pointer-events: none;
-  z-index: -1;
+  body::before { opacity: 0.10; }   /* o 0.08 si quieres aún más suave */
 }
 
 header {
@@ -970,6 +960,7 @@ window.addEventListener("load", () => {
 </script>
 </body>
 </html>
+
 
 
 
