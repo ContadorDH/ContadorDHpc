@@ -258,6 +258,15 @@ th {
   100% { left: 100%; }
 }
 
+
+/* ==== AVISO SIEMPRE ENCIMA DEL BOTÓN DETENER (SOLUCIÓN FINAL) ==== */
+.boton-detener,
+.boton-detener::before {
+  z-index: 1 !important;
+  transform: translateZ(0);
+}
+
+  
 .subtitulo-moderno {
   margin-top: 12px;
   text-align: center;
@@ -1043,6 +1052,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
