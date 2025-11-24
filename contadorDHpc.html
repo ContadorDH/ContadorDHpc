@@ -573,6 +573,20 @@ td, th { border-color: var(--borde) !important; }
 .filaSel { background-color: var(--fila-sel) !important; }
 .panel button, .panel select { background: white !important; color: var(--acento) !important; }
 .panel button:hover, .panel select:hover { background: #f0f4ff !important; }
+
+
+/* ====== MENÚ SIEMPRE ENCIMA DE TODO ====== */
+#menuBtn,
+#menuLateral,
+#menuOverlay {
+  z-index: 999999 !important; /* ¡EL MÁS ALTO POSIBLE! */
+}
+
+/* Aseguramos que el botón de menú esté por encima del header/panel */
+#menuBtn {
+  z-index: 999999 !important;
+}
+
   
 </style>
 </head>
@@ -1275,6 +1289,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
