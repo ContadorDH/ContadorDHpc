@@ -8,45 +8,41 @@
 <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-<meta name="theme-color" content="#1E6FB8" />
+<!-- Soluciona el flash verde al cargar la PWA -->
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a5c30">
+<meta name="background-color" content="#ffffff">
+
 <style>
-/* ============================================= */
-/* INICIO SIN PARPADEO + TRANSICIÓN SUAVE (VERSIÓN CORRECTA) */
-/* ============================================= */
-html {
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity 0.4s ease-out;
-}
-html.loaded {
-  visibility: visible;
-  opacity: 1;
-}
+html, body { background-color: #ffffff !important; }
+  /* Evita flash incluso antes de que cargue el CSS completo */
+  @media (prefers-color-scheme: dark) {
+    html, body { background-color: #0a5c30 !important; }
+  }
+  
 body {
-  margin: 0;
   font-family: Arial, sans-serif;
-  background: #ffffff;
+  margin: 0;
+  background: #ffffff;           /* fondo blanco puro */
   color: #000;
   min-height: 100vh;
   position: relative;
 }
 
-/* MARCA DE AGUA – aparece suavemente */
+/* MARCA DE AGUA → AHORA SÍ SE VE PERFECTO */
 body::before {
   content: "";
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   background: url('fondo.png') center center / 92% auto no-repeat;
-  opacity: 0;
+  opacity: 0.20;                  /* ← aquí controlas cuánto se ve */
   pointer-events: none;
   z-index: -1;
-  transition: opacity 0.7s ease-out;
 }
-html.loaded body::before {
-  opacity: 0.20;
-}
+
+/* En móvil más tenue */
 @media (max-width: 768px) {
-  html.loaded body::before { opacity: 0.10; }
+  body::before { opacity: 0.10; }   /* o 0.08 si quieres aún más suave */
 }
 
 header {
@@ -526,18 +522,6 @@ let ventanaProyeccion = null;
 let intervaloPolling = null;         // ← para poder detenerlo cuando ya esté
 
 
-// Elimina cualquier flash y hace inicio suave – SE EJECUTA INMEDIATAMENTE
-  document.documentElement.style.visibility = "hidden";
-  document.documentElement.style.opacity = "0";
-  
-  window.addEventListener("load", function() {
-    setTimeout(function() {
-      document.documentElement.style.visibility = "visible";
-      document.documentElement.style.opacity = "1";
-      document.body.classList.add("loaded");
-    }, 50);
-  });
-  
 // ============================================================
 // LOADER MODERNO – ACTIVAR / DESACTIVAR
 // ============================================================
@@ -985,18 +969,5 @@ window.addEventListener("load", () => {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
