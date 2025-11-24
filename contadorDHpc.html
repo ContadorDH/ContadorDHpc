@@ -385,64 +385,102 @@ body.tema-oscuro .aviso {
   box-shadow: 0 15px 40px rgba(0,0,0,0.7);
   border-color: #30363d;
 }
-/* ====================== LOADER MODERNO ====================== */
+/* ====================== LOADER ULTRA MODERNO 2025 ====================== */
 .loader-contenedor {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.82);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 99999;
   opacity: 0;
   visibility: hidden;
-  transition: all 0.4s ease;
-  backdrop-filter: blur(8px);
+  transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 .loader-contenedor.activo {
   opacity: 1;
   visibility: visible;
 }
 
-.loader {
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  background: conic-gradient(from 0deg, #1E6FB8, #0d47a1, #1E6FB8);
-  animation: girar 1.8s linear infinite;
-  position: relative;
+/* Contenedor principal con efecto cristal */
+.loader-box {
+  text-align: center;
+  padding: 40px 50px;
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+              inset 0 0 40px rgba(255, 255, 255, 0.05);
+  animation: flotarSuave 4s ease-in-out infinite;
 }
+
+/* Anillo principal con degradado neón */
+.loader {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #1E6FB8, #58a6ff, #8b5cf6, #1E6FB8);
+  position: relative;
+  animation: girarNeon 2s linear infinite;
+  filter: drop-shadow(0 0 20px #1E6FB8);
+}
+
+/* Centro brillante */
 .loader::before {
   content: '';
   position: absolute;
-  inset: 8px;
-  background: #f1f5f9;
+  inset: 12px;
+  background: radial-gradient(circle, #ffffff 0%, #f0f8ff 70%);
   border-radius: 50%;
+  box-shadow: inset 0 0 30px rgba(30, 111, 184, 0.4);
 }
+
+/* Punto brillante que orbita */
 .loader::after {
   content: '';
   position: absolute;
-  top: -12px; left: 50%;
-  width: 12px; height: 12px;
+  top: -8px; left: 50%;
+  width: 18px; height: 18px;
   background: #1E6FB8;
   border-radius: 50%;
   transform: translateX(-50%);
-  box-shadow: 0 0 20px #1E6FB8;
+  box-shadow: 0 0 30px #1E6FB8, 0 0 60px #58a6ff;
+  animation: orbita 2s linear infinite;
 }
 
-@keyframes girar {
-  to { transform: rotate(360deg); }
+/* Partículas flotantes (mágico toque final) */
+.loader-box::before {
+  content: '';
+  position: absolute;
+  inset: -20px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='20' cy='20' r='3' fill='%231E6FB8' opacity='0.6'%3E%3Canimate attributeName='cy' values='20;80;20' dur='4s' repeatCount='indefinite'/%3E%3C/circle%3E%3Ccircle cx='50' cy='30' r='2.5' fill='%2358a6ff' opacity='0.7'%3E%3Canimate attributeName='cy' values='30;70;30' dur='3.5s' repeatCount='indefinite'/%3E%3C/circle%3E%3Ccircle cx='80' cy='40' r='2' fill='%238b5cf6' opacity='0.5'%3E%3Canimate attributeName='cy' values='40;90;40' dur='5s' repeatCount='indefinite'/%3E%3C/circle%3E%3C/svg%3E") repeat;
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: particulas 20s linear infinite;
 }
 
-/* Texto opcional debajo del loader */
+/* Texto con brillo */
 .loader-texto {
-  margin-top: 24px;
-  color: white;
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  margin-top: 28px;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 2px;
+  text-shadow: 0 0 20px rgba(30, 111, 184, 0.8);
+  animation: pulsoTexto 2.5s ease-in-out infinite;
 }
+
+/* Animaciones */
+@keyframes girarNeon { to { transform: rotate(360deg); } }
+@keyframes orbita { to { transform: translateX(-50%) rotate(360deg); } }
+@keyframes flotarSuave { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+@keyframes pulsoTexto { 0%,100% { opacity: 0.8; } 50% { opacity: 1; text-shadow: 0 0 30px #1E6FB8; } }
+@keyframes particulas { from { background-position: 0 0; } to { background-position: 100px 100px; } }
 
 /* ==================== TEMAS CON DEGRADADOS QUE SÍ SE VEN 100% ==================== */
 body.tema-claro   { --fondo:linear-gradient(135deg, #f9fcff 0%, #e6f4ff 100%); --texto:#000000; --acento:#1E6FB8; --tabla-fondo:rgba(255,255,255,0.97); --tabla-texto:#000; --borde:#c8e0ff; --fila-sel:#a8d0ff; }
@@ -587,14 +625,13 @@ td, th { border-color: var(--borde) !important; }
 </div>
 
 
-<!-- LOADER MODERNO -->
+<!-- LOADER ULTRA MODERNO 2025 -->
 <div id="loaderContenedor" class="loader-contenedor">
-  <div>
+  <div class="loader-box">
     <div class="loader"></div>
     <div class="loader-texto" id="loaderTexto">Cargando...</div>
   </div>
 </div>
-
   
 <script>
 const URL = "https://script.google.com/macros/s/AKfycbwuad6LbOg5k2TFzphjhPTm-NwMJwURzhfFPsEb8a5oB9KXuXIhWxe5QzrR2xLnDjYVlA/exec";
@@ -631,18 +668,13 @@ aplicarTema(temaActual);
 
 
   
-// ============================================================
-// LOADER MODERNO – ACTIVAR / DESACTIVAR
-// ============================================================
 function mostrarLoader(texto = "Cargando...") {
   document.getElementById("loaderTexto").textContent = texto;
   document.getElementById("loaderContenedor").classList.add("activo");
 }
-
 function ocultarLoader() {
   document.getElementById("loaderContenedor").classList.remove("activo");
 }
-
   
 // ============================================================
 // AVISO MODERNO PERSONALIZADO (reemplaza alert())
@@ -1120,6 +1152,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
