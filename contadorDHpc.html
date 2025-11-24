@@ -674,21 +674,21 @@ td, th { border-color: var(--borde) !important; }
 
 
 
-<!-- MENU LATERAL ULTRA PROFESIONAL 2025 -->
-<div id="menuBtn" style="position:fixed;top:16px;right:16px;z-index:9999;cursor:pointer;padding:12px;border-radius:50%;background:rgba(255,255,255,0.08);backdrop-filter:blur(12px);box-shadow:0 8px 25px rgba(0,0,0,0.25);transition:all .35s;border:1px solid rgba(255,255,255,0.12)">
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
-    <circle cx="12" cy="7" r="2.3"/>
-    <circle cx="12" cy="12" r="2.3"/>
-    <circle cx="12" cy="17" r="2.3"/>
+<!-- MENU LATERAL ULTRA PROFESIONAL 2025 - ACTUALIZADO -->
+<div id="menuBtn" style="position:fixed;top:16px;right:16px;z-index:9999;cursor:pointer;padding:12px;border-radius:50%;background:transparent;border:1px solid rgba(255,255,255,0.25);backdrop-filter:blur(12px);box-shadow:0 8px 25px rgba(0,0,0,0.25);transition:all .35s">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+    <line x1="4" y1="7" x2="20" y2="7"/>
+    <line x1="4" y1="12" x2="20" y2="12"/>
+    <line x1="4" y1="17" x2="20" y2="17"/>
   </svg>
 </div>
 
-<!-- Overlay oscuro que cierra al hacer clic afuera -->
+<!-- Overlay que cierra al hacer clic afuera -->
 <div id="menuOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.60);backdrop-filter:blur(8px);opacity:0;visibility:hidden;transition:all .4s;z-index:9997"></div>
 
 <div id="menuLateral" style="position:fixed;top:0;right:-380px;width:340px;height:100vh;background:rgba(15,25,45,0.98);backdrop-filter:blur(20px);border-left:1px solid rgba(255,255,255,0.1);box-shadow:-10px 0 50px rgba(0,0,0,0.7);transition:right .45s cubic-bezier(0.22,1,0.36,1);z-index:9998;padding:30px 28px;overflow-y:auto;color:white;font-family:'Poppins',sans-serif">
 
-  <!-- Solo botón cerrar (sin título "Menú") -->
+  <!-- Botón cerrar -->
   <div style="display:flex;justify-content:flex-end;margin-bottom:30px">
     <div onclick="cerrarMenu()" style="cursor:pointer;padding:10px;border-radius:50%;background:rgba(255,255,255,0.1);transition:all .3s">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="white">
@@ -697,7 +697,7 @@ td, th { border-color: var(--borde) !important; }
     </div>
   </div>
 
-  <!-- SOBRE NOSOTROS (igual de hermoso) -->
+  <!-- SOBRE NOSOTROS -->
   <div style="background:rgba(255,255,255,0.08);border-radius:18px;padding:24px;margin-bottom:24px;border:1px solid rgba(255,255,255,0.12);box-shadow:0 8px 32px rgba(0,0,0,0.3)">
     <h3 style="margin:0 0 16px;font-size:20px;color:#58a6ff;font-weight:700">Sobre Nosotros</h3>
     <p style="margin:0 0 18px;font-size:15px;line-height:1.7;opacity:0.95">
@@ -726,12 +726,16 @@ td, th { border-color: var(--borde) !important; }
     Soporte por WhatsApp
   </a>
 
-  <div style="margin-top:40px;text-align:center;font-size:13px;opacity:0.6">
-    © 2025 DECOM IPUC Bochica Sur<br>Todos los derechos reservados para la gloria de Dios
+  <!-- CRÉDITOS FINALES -->
+  <div style="margin-top:50px;padding-top:25px;border-top:1px solid rgba(255,255,255,0.15);text-align:center;font-size:13px;opacity:0.7;line-height:1.6">
+    <strong>Desarrollado por</strong><br>
+    Deimer Herrera<br>
+    <span style="color:#58a6ff;font-weight:700">DEHETRONICS</span><br>
+    <small style="opacity:0.6">Versión 1.0</small><br><br>
+    © 2025 DECOM IPUC Bochica Sur<br>
+    Todos los derechos reservados para la gloria de Dios
   </div>
 </div>
-
-
   
   
 <script>
@@ -758,12 +762,11 @@ function cerrarMenu() {
   document.getElementById("menuOverlay").style.opacity = "0";
   document.getElementById("menuOverlay").style.visibility = "hidden";
 }
-
-// Abrir con el botón
 document.getElementById("menuBtn").addEventListener("click", abrirMenu);
-
-// Cerrar al hacer clic afuera
 document.getElementById("menuOverlay").addEventListener("click", cerrarMenu);
+
+
+
   
 
 // ==================== SISTEMA DE TEMAS PASTELES ====================
@@ -1272,6 +1275,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
