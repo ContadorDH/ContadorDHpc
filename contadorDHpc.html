@@ -962,22 +962,20 @@ async function proyectar() {
               border:1px solid rgba(255,255,255,0.1);transition:all .3s}
         .card:hover{transform:translateY(-8px);box-shadow:0 16px 40px rgba(0,0,0,${esOscuro?'0.6':'0.35'})}
        .titulo{
-  font-size:clamp(28px,4.2vw,68px);
+  font-size:clamp(18px, 2.8vw, 28px);     /* antes era hasta 18px → ahora hasta 28px */
   text-transform:uppercase;
-  font-weight:900;
-  letter-spacing:3.5px;
+  font-weight:800;
+  letter-spacing:2.4px;
   color:var(--acento);
   opacity:0.95;
-  margin-bottom:12px;
-  line-height:1
+  margin-bottom:10px
 }
         /* AQUÍ ESTÁ EL ÚNICO CAMBIO: LOS VALORES AHORA SON MUCHO MÁS GRANDES */
        .valor{
-  font-size:clamp(72px,11vw,200px);
+  font-size:clamp(56px, 9.5vw, 160px);    /* antes era hasta 140px → ahora hasta 160px */
   font-weight:900;
   color:var(--texto);
-  line-height:1;
-  letter-spacing:-1.5px
+  line-height:1.05
 }
 .total-final{
   margin-top:auto;
@@ -1028,6 +1026,7 @@ async function proyectar() {
     }
   }, 500);
 }
+
 
 // ============================================================
 // CARGA AUTOMÁTICA INTELIGENTE AL INICIAR LA PÁGINA
@@ -1113,6 +1112,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
