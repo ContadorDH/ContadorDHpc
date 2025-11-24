@@ -483,27 +483,46 @@ body.tema-oscuro .aviso {
 @keyframes particulas { from { background-position: 0 0; } to { background-position: 100px 100px; } }
 
 /* ==================== TEMAS CON DEGRADADOS + MENÚ LATERAL 100% INTEGRADO ==================== */
-body.tema-claro   { --fondo:linear-gradient(135deg, #f9fcff 0%, #e6f4ff 100%); --texto:#000000; --acento:#1E6FB8; --menu-bg:rgba(255,255,255,0.96); --menu-texto:#1a1a1a; --menu-borde:rgba(0,0,0,0.08); --menu-sombra:rgba(0,0,0,0.15); }
-body.tema-oscuro  { --fondo:linear-gradient(135deg, #0a0e17 0%, #161b22 60%, #1f2833 100%); --texto:#e6edf3; --acento:#58a6ff; --menu-bg:rgba(15,23,36,0.98); --menu-texto:#e6edf3; --menu-borde:rgba(255,255,255,0.1); --menu-sombra:rgba(0,0,0,0.7); }
-body.tema-rosado  { --fondo:linear-gradient(135deg, #fff0f6 0%, #ffe4f0 100%); --texto:#5d1738; --acento:#e91e63; --menu-bg:rgba(255,245,252,0.97); --menu-texto:#5d1738; --menu-borde:rgba(233,30,99,0.15); --menu-sombra:rgba(233,30,99,0.12); }
-body.tema-lila    { --fondo:linear-gradient(135deg, #f8f1ff 0%, #f0e0ff 100%); --texto:#4a1e6e; --acento:#a855f7; --menu-bg:rgba(250,245,255,0.97); --menu-texto:#4a1e6e; --menu-borde:rgba(168,85,247,0.15); --menu-sombra:rgba(168,85,247,0.12); }
-body.tema-beige   { --fondo:linear-gradient(135deg, #fdf6f0 0%, #fef0e0 100%); --texto:#5d4037; --acento:#8d6e63; --menu-bg:rgba(253,248,240,0.97); --menu-texto:#5d4037; --menu-borde:rgba(141,110,99,0.15); --menu-sombra:rgba(141,110,99,0.1); }
-body.tema-verde   { --fondo:linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); --texto:#164028; --acento:#22c55e; --menu-bg:rgba(240,253,244,0.97); --menu-texto:#164028; --menu-borde:rgba(34,197,94,0.15); --menu-sombra:rgba(34,197,94,0.12); }
-body.tema-gris    { --fondo:linear-gradient(135deg, #f8f9fa 0%, #e2e6ea 100%); --texto:#2d3748; --acento:#607d8b; --menu-bg:rgba(248,249,250,0.97); --menu-texto:#2d3748; --menu-borde:rgba(96,125,139,0.15); --menu-sombra:rgba(96,125,139,0.1); }
-body.tema-naranja { --fondo:linear-gradient(135deg, #fff8f0 0%, #ffe8d0 100%); --texto:#5d2f10; --acento:#fb923c; --menu-bg:rgba(255,248,240,0.97); --menu-texto:#5d2f10; --menu-borde:rgba(251,146,60,0.15); --menu-sombra:rgba(251,146,60,0.12); }
+body.tema-claro   { --fondo:linear-gradient(135deg, #f9fcff 0%, #e6f4ff 100%); --texto:#000000; --acento:#1E6FB8; --tabla-fondo:rgba(255,255,255,0.97); --tabla-texto:#000; --borde:#c8e0ff; --fila-sel:#a8d0ff; --menu-bg:rgba(255,255,255,0.96); --menu-texto:#1a1a1a; --menu-borde:rgba(0,0,0,0.08); --menu-sombra:rgba(0,0,0,0.15); }
+body.tema-oscuro  { --fondo:linear-gradient(135deg, #0a0e17 0%, #161b22 60%, #1f2833 100%); --texto:#e6edf3; --acento:#58a6ff; --tabla-fondo:rgba(22,27,34,0.92); --tabla-texto:#ffffff; --borde:#30363d; --fila-sel:rgba(88,166,255,0.4); --menu-bg:rgba(15,23,36,0.98); --menu-texto:#e6edf3; --menu-borde:rgba(255,255,255,0.1); --menu-sombra:rgba(0,0,0,0.7); }
+body.tema-rosado  { --fondo:linear-gradient(135deg, #fff0f6 0%, #ffe4f0 100%); --texto:#5d1738; --acento:#e91e63; --tabla-fondo:rgba(255,240,250,0.97); --tabla-texto:#5d1738; --borde:#f8b0d8; --fila-sel:#ff99cc; --menu-bg:rgba(255,245,252,0.97); --menu-texto:#5d1738; --menu-borde:rgba(233,30,99,0.15); --menu-sombra:rgba(233,30,99,0.12); }
+body.tema-lila    { --fondo:linear-gradient(135deg, #f8f1ff 0%, #f0e0ff 100%); --texto:#4a1e6e; --acento:#a855f7; --tabla-fondo:rgba(245,235,255,0.97); --tabla-texto:#4a1e6e; --borde:#d8b0ff; --fila-sel:#c890ff; --menu-bg:rgba(250,245,255,0.97); --menu-texto:#4a1e6e; --menu-borde:rgba(168,85,247,0.15); --menu-sombra:rgba(168,85,247,0.12); }
+body.tema-beige   { --fondo:linear-gradient(135deg, #fdf6f0 0%, #fef0e0 100%); --texto:#5d4037; --acento:#8d6e63; --tabla-fondo:rgba(253,248,240,0.97); --tabla-texto:#5d4037; --borde:#e8d0b8; --fila-sel:#d8b8a0; --menu-bg:rgba(253,248,240,0.97); --menu-texto:#5d4037; --menu-borde:rgba(141,110,99,0.15); --menu-sombra:rgba(141,110,99,0.1); }
+body.tema-verde   { --fondo:linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); --texto:#164028; --acento:#22c55e; --tabla-fondo:rgba(240,253,244,0.97); --tabla-texto:#164028; --borde:#a0e8c0; --fila-sel:#70e090; --menu-bg:rgba(240,253,244,0.97); --menu-texto:#164028; --menu-borde:rgba(34,197,94,0.15); --menu-sombra:rgba(34,197,94,0.12); }
+body.tema-gris    { --fondo:linear-gradient(135deg, #f8f9fa 0%, #e2e6ea 100%); --texto:#2d3748; --acento:#607d8b; --tabla-fondo:rgba(250,250,250,0.97); --tabla-texto:#37474f; --borde:#cfd8dc; --fila-sel:#a0a8b8; --menu-bg:rgba(248,249,250,0.97); --menu-texto:#2d3748; --menu-borde:rgba(96,125,139,0.15); --menu-sombra:rgba(96,125,139,0.1); }
+body.tema-naranja { --fondo:linear-gradient(135deg, #fff8f0 0%, #ffe8d0 100%); --texto:#5d2f10; --acento:#fb923c; --tabla-fondo:rgba(255,245,230,0.97); --tabla-texto:#5d2f10; --borde:#ffcc88; --fila-sel:#ffaa70; --menu-bg:rgba(255,248,240,0.97); --menu-texto:#5d2f10; --menu-borde:rgba(251,146,60,0.15); --menu-sombra:rgba(251,146,60,0.12); }
 
 /* HEADER Y PANEL */
-header, .panel { background: var(--acento) !important; color: white !important; }
-body.tema-oscuro header, body.tema-oscuro .panel { background: linear-gradient(135deg, #161b22 0%, #1f2533 100%) !important; }
-body.tema-oscuro .panel button, body.tema-oscuro .panel select { color: #000000 !important; }
+header, .panel { 
+  background: var(--acento) !important; 
+  color: white !important; 
+}
+body.tema-oscuro header, 
+body.tema-oscuro .panel { 
+  background: linear-gradient(135deg, #161b22 0%, #1f2533 100%) !important; 
+}
+body.tema-oscuro .panel button,
+body.tema-oscuro .panel select { 
+  color: #000000 !important; 
+}
 
 /* TABLA EN MODO OSCURO */
-body.tema-oscuro table, body.tema-oscuro th, body.tema-oscuro td { color: #ffffff !important; border-color: #444444 !important; }
+body.tema-oscuro table,
+body.tema-oscuro th,
+body.tema-oscuro td {
+  color: #ffffff !important;
+  border-color: #444444 !important;
+}
 
 /* FONDO PRINCIPAL */
-body { background: var(--fondo) !important; background-attachment: fixed !important; color: var(--texto) !important; min-height: 100vh; }
+body {
+  background: var(--fondo) !important;
+  background-attachment: fixed !important;
+  color: var(--texto) !important;
+  min-height: 100vh;
+}
 
-/* ====================== MENÚ LATERAL – AHORA USA LOS TEMAS ====================== */
+/* ====================== MENÚ LATERAL – 100% INTEGRADO CON LOS TEMAS ====================== */
 #menuLateral {
   background: var(--menu-bg) !important;
   color: var(--menu-texto) !important;
@@ -512,20 +531,38 @@ body { background: var(--fondo) !important; background-attachment: fixed !import
   backdrop-filter: blur(20px);
 }
 #menuLateral h3 { color: var(--acento) !important; }
-#menuLateral p, #menuLateral small { color: var(--menu-texto) !important; opacity: 0.95; }
-#menuLateral .border-top { border-color: var(--menu-borde) !important; }
+#menuLateral p,
+#menuLateral small { color: var(--menu-texto) !important; opacity: 0.95; }
+#menuLateral [style*="border-top"] { border-color: var(--menu-borde) !important; }
 
-/* Botón de tres puntitos – también respeta el tema */
+/* Botón de tres puntitos – también usa los temas */
 #menuBtn {
   background: rgba(255,255,255,0.08) !important;
   border: 1px solid var(--menu-borde) !important;
   box-shadow: 0 8px 25px var(--menu-sombra) !important;
+  backdrop-filter: blur(12px);
 }
-body.tema-claro #menuBtn { background: rgba(255,255,255,0.75) !important; }
+body.tema-claro #menuBtn,
+body.tema-rosado #menuBtn,
+body.tema-lila #menuBtn,
+body.tema-beige #menuBtn,
+body.tema-verde #menuBtn,
+body.tema-gris #menuBtn,
+body.tema-naranja #menuBtn {
+  background: rgba(255,255,255,0.75) !important;
+}
 
 /* Overlay al abrir menú */
 #menuOverlay { background: rgba(0,0,0,0.60) !important; }
-body.tema-claro #menuOverlay { background: rgba(0,0,0,0.40) !important; }
+body.tema-claro #menuOverlay,
+body.tema-rosado #menuOverlay,
+body.tema-lila #menuOverlay,
+body.tema-beige #menuOverlay,
+body.tema-verde #menuOverlay,
+body.tema-gris #menuOverlay,
+body.tema-naranja #menuOverlay {
+  background: rgba(0,0,0,0.40) !important;
+}
 
 /* Resto de estilos (intactos) */
 #subtitulo { background: var(--tabla-fondo) !important; color: var(--acento) !important; }
@@ -1235,6 +1272,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
