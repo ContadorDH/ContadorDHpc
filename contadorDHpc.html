@@ -921,7 +921,8 @@ async function proyectar() {
       const meses = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
       const diasSemana = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
       const fechaObj = new Date(anio, mes - 1, dia);
-      return `${diasSemana[fechaObj.getDay()]} ${dia} de ${meses[mes - 1]} de ${anio}`;
+      const diaSemana = diasSemana[fechaObj.getDay()];
+      return `${diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1)} ${dia} de ${meses[mes - 1]} de ${anio}`;
     } catch (e) {
       return fechaTexto;
     }
@@ -1136,6 +1137,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
