@@ -8,32 +8,53 @@
 <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-<meta name="theme-color" content="#0a5c30" />
-
+<meta name="theme-color" content="#1E6FB8" />
 <style>
-body {
-  font-family: Arial, sans-serif;
+/* ============================================= */
+/* INICIO SIN PARPADEO + TRANSICIÓN SUAVE       */
+/* ============================================= */
+html, body {
   margin: 0;
-  background: #ffffff;           /* fondo blanco puro */
+  font-family: Arial, sans-serif;
+  background: #ffffff;
   color: #000;
   min-height: 100vh;
   position: relative;
+  
+  /* Oculta todo hasta que la página esté lista → elimina el flash */
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
 }
 
-/* MARCA DE AGUA → AHORA SÍ SE VE PERFECTO */
+/* Cuando JavaScript añade la clase "loaded" → aparece suavemente */
+body.loaded {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* MARCA DE AGUA → perfecta y con transición suave también */
 body::before {
   content: "";
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   background: url('fondo.png') center center / 92% auto no-repeat;
-  opacity: 0.20;                  /* ← aquí controlas cuánto se ve */
+  opacity: 0;                    /* Empieza invisible */
   pointer-events: none;
   z-index: -1;
+  transition: opacity 0.8s ease-out;   /* aparece progresivamente */
+}
+
+/* Cuando la página carga → la marca de agua aparece suavemente */
+body.loaded::before {
+  opacity: 0.20;                 /* valor normal en escritorio */
 }
 
 /* En móvil más tenue */
 @media (max-width: 768px) {
-  body::before { opacity: 0.10; }   /* o 0.08 si quieres aún más suave */
+  body.loaded::before { 
+    opacity: 0.10; 
+  }
 }
 
 header {
@@ -513,6 +534,15 @@ let ventanaProyeccion = null;
 let intervaloPolling = null;         // ← para poder detenerlo cuando ya esté
 
 
+// Hace que todo aparezca con fade-in suave y elimina cualquier flash
+  document.addEventListener("DOMContentLoaded", function() {
+    // Pequeño retraso para asegurar que todo esté pintado
+    setTimeout(function() {
+      document.body.classList.add("loaded");
+    }, 80);
+  });
+
+  
 // ============================================================
 // LOADER MODERNO – ACTIVAR / DESACTIVAR
 // ============================================================
@@ -960,6 +990,7 @@ window.addEventListener("load", () => {
 </script>
 </body>
 </html>
+
 
 
 
