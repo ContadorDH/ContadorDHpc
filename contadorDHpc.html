@@ -210,60 +210,53 @@ th {
   background-color: #cbe0ff !important;
 }
 
-/* Botón Detener – pulso bien visible pero elegante */
+/* Botón Detener – EFECTO BRUTAL PERO QUE NUNCA SE PONE ENCIMA DEL AVISO */
 .boton-detener {
-  background: #c62828 !important;     /* rojo oscuro bonito */
+  background: #c62828 !important;
   color: white !important;
   position: relative;
   overflow: hidden;
   animation: pulsoFuerte 1.8s infinite ease-in-out !important;
   box-shadow: 0 6px 20px rgba(198, 40, 40, 0.5) !important;
   transition: transform 0.15s ease;
- z-index: 2 !important;   /* ← SOLO ESTO CAMBIA */
+  z-index: 1 !important;
+  isolation: isolate; /* ← LA CLAVE: crea contexto de apilamiento limpio */
 }
 
-/* Onda blanca que cruza el botón – se nota mucho */
-.boton-detener::before {
+/* Brillo cruzado usando ::after en vez de ::before (más seguro) */
+.boton-detener::after {
   content: '';
   position: absolute;
-  top: 0; left: -100%;
+  top: 0;
+  left: -100%;
   width: 50%;
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
   transform: skewX(-25deg);
   animation: brilloCruzado 1.8s infinite ease-in-out;
   pointer-events: none;
+  z-index: 1 !important; /* ← nunca por encima del panel */
 }
 
 .boton-detener:active {
   transform: scale(0.96);
 }
 
-/* Pulso de sombra + pequeño cambio de tono para que se sienta vivo */
 @keyframes pulsoFuerte {
   0%, 100% {
     background: #c62828 !important;
     box-shadow: 0 6px 20px rgba(198,40,40,0.5);
   }
   50% {
-    background: #e53935 !important;   /* rojo un poco más claro en el medio */
+    background: #e53935 !important;
     box-shadow: 0 10px 35px rgba(229,57,53,0.8);
   }
 }
 
-/* Brillo que cruza el botón – esto es lo que hace que se note mucho */
 @keyframes brilloCruzado {
-  0%   { left: -100%; }
-  50%  { left: 100%; }
+  0% { left: -100%; }
+  50% { left: 100%; }
   100% { left: 100%; }
-}
-
-
-/* ==== AVISO SIEMPRE ENCIMA DEL BOTÓN DETENER (SOLUCIÓN FINAL) ==== */
-.boton-detener,
-.boton-detener::before {
-  z-index: 1 !important;
-  transform: translateZ(0);
 }
 
   
@@ -1052,6 +1045,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
