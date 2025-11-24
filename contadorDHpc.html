@@ -574,7 +574,11 @@ td, th { border-color: var(--borde) !important; }
 .panel button, .panel select { background: white !important; color: var(--acento) !important; }
 .panel button:hover, .panel select:hover { background: #f0f4ff !important; }
 
-
+/* ====== BOTONES DEL PANEL: TEXTO SIEMPRE NEGRO EN CUALQUIER TEMA ====== */
+.panel button, .panel select {
+  color: #000000 !important;
+}
+  
 /* ====== MENÚ SIEMPRE ENCIMA DE TODO ====== */
 #menuBtn,
 #menuLateral,
@@ -1291,6 +1295,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
