@@ -615,6 +615,17 @@ td, th { border-color: var(--borde) !important; }
       ASISTENCIA IPUC BOCHICA SUR
     </span>
   </div>
+
+<!-- MENU LATERAL ULTRA PROFESIONAL 2025 - 100% RESPONSIVE Y COMPLETO EN TODAS LAS PANTALLAS -->
+<div id="menuBtn" style="position:fixed;top:18px;right:18px;z-index:999999;cursor:pointer;padding:14px;transition:all .3s">
+  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="3" y1="7" x2="21" y2="7"/>
+    <line x1="3" y1="12" x2="21" y2="12"/>
+    <line x1="3" y1="17" x2="21" y2="17"/>
+  </svg>
+</div>
+
+  
 </header>
 
 <div id="subtitulo" class="subtitulo-moderno">
@@ -1290,11 +1301,12 @@ await verHoy();                  // mostramos automáticamente "Hoy"
   
 // Ejecuta TODO apenas el HTML esté parseado (mucho antes que "load")
 document.addEventListener("DOMContentLoaded", () => {
-  //detectarPantallas();
+  detectarPantallas();
   cargarAlIniciar();
 });
 </script>
 </body>
 </html>
+
 
 
