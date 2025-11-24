@@ -422,26 +422,44 @@ th {
   text-shadow: 0 2px 10px rgba(0,0,0,0.5);
 }
 
-/* ==================== TEMAS PASTELES ==================== */
-body.tema-claro     { --fondo: #ffffff; --texto: #000000; --acento: #1E6FB8; --panel: rgba(30,111,184,0.96); --tabla: rgba(255,255,255,0.92); }
-body.tema-oscuro    { --fondo: #1a1a2e; --texto: #e0e0ff; --acento: #6c5ce7; --panel: rgba(30,30,60,0.96); --tabla: rgba(40,40,80,0.92); }
-body.tema-rosado    { --fondo: #fff0f5; --texto: #5d1a3b; --acento: #e91e63; --panel: rgba(233,30,99,0.9); --tabla: rgba(255,240,245,0.95); }
-body.tema-lila      { --fondo: #f8f1ff; --texto: #4a2c6e; --acento: #9c27b0; --panel: rgba(156,39,176,0.9); --tabla: rgba(248,241,255,0.95); }
-body.tema-beige     { --fondo: #fdf6f0; --texto: #5d4037; --acento: #8d6e63; --panel: rgba(141,110,99,0.9); --tabla: rgba(253,246,240,0.95); }
-body.tema-verde     { --fondo: #f0fdf4; --texto: #1e4029; --acento: #22c55e; --panel: rgba(34,197,94,0.9); --tabla: rgba(240,253,244,0.95); }
-body.tema-gris      { --fondo: #f5f5f5; --texto: #424242; --acento: #607d8b; --panel: rgba(96,125,139,0.9); --tabla: rgba(255,255,255,0.95); }
-body.tema-naranja   { --fondo: #fff8f0; --texto: #5d2f10; --acento: #fb923c; --panel: rgba(251,146,60,0.9); --tabla: rgba(255,248,240,0.95); }
+/* ==================== TEMAS PASTELES – AHORA PERFECTOS ==================== */
+body.tema-claro   { --fondo:#ffffff; --texto:#000000; --acento:#1E6FB8; --tabla-fondo:rgba(255,255,255,0.94); --tabla-texto:#000; --borde:#ddd; --fila-sel:#cbe0ff; }
+body.tema-oscuro  { --fondo:#12121a; --texto:#e0e0ff; --acento:#8b7cff; --tabla-fondo:rgba(30,30,60,0.96); --tabla-texto:#e0e0ff; --borde:#444; --fila-sel:#5a4fcf; }
+body.tema-rosado  { --fondo:#fff0f6; --texto:#5d1738; --acento:#e91e63; --tabla-fondo:rgba(255,240,250,0.96); --tabla-texto:#5d1738; --borde:#f1c0d9; --fila-sel:#f8b4d9; }
+body.tema-lila    { --fondo:#f8f1ff; --texto:#4a1e6e; --acento:#a855f7; --tabla-fondo:rgba(240,230,255,0.96); --tabla-texto:#4a1e6e; --borde:#d8b4ff; --fila-sel:#c48aff; }
+body.tema-beige   { --fondo:#fdf6f0; --texto:#5d4037; --acento:#8d6e63; --tabla-fondo:rgba(253,248,240,0.96); --tabla-texto:#5d4037; --borde:#e0d4c8; --fila-sel:#d7ccc8; }
+body.tema-verde   { --fondo:#f0fdf4; --texto:#164028; --acento:#22c55e; --tabla-fondo:rgba(240,253,244,0.96); --tabla-texto:#164028; --borde:#bbf7d0; --fila-sel:#86efac; }
+body.tema-gris    { --fondo:#f5f5f5; --texto:#37474f; --acento:#607d8b; --tabla-fondo:rgba(250,250,250,0.96); --tabla-texto:#37474f; --borde:#cfd8dc; --fila-sel:#b0bec5; }
+body.tema-naranja { --fondo:#fff8f0; --texto:#5d2f10; --acento:#fb923c; --tabla-fondo:rgba(255,245,230,0.96); --tabla-texto:#5d2f10; --borde:#ffcc80; --fila-sel:#ffab91; }
 
-/* Aplicar variables */
-body {
-  background: var(--fondo) !important;
-  color: var(--texto);
+/* Aplicar colores a todo */
+body { 
+  background: var(--fondo) !important; 
+  color: var(--texto) !important; 
 }
-header, .panel { background: var(--panel) !important; }
-#subtitulo, table { background: var(--tabla) !important; }
-.panel button, .panel select, #subtitulo span { color: var(--acento) !important; }
-.filaSel { background-color: color-mix(in srgb, var(--acento) 15%, transparent) !important; }
+header, .panel { background: var(--acento) !important; color: white !important; }
+#subtitulo { background: var(--tabla-fondo) !important; color: var(--acento) !important; }
+#subtitulo span { color: var(--texto) !important; }
 
+/* Tabla perfecta en todos los temas */
+table {
+  background: var(--tabla-fondo) !important;
+  color: var(--tabla-texto) !important;
+  border-color: var(--borde) !important;
+}
+th {
+  background: color-mix(in srgb, var(--acento) 12%, var(--tabla-fondo)) !important;
+  color: var(--tabla-texto) !important;
+}
+td, th { border-color: var(--borde) !important; }
+.filaSel { background-color: var(--fila-sel) !important; }
+
+/* Botones y select del panel */
+.panel button, .panel select { 
+  background: white !important; 
+  color: var(--acento) !important; 
+}
+.panel button:hover, .panel select:hover { background: #f0f0ff !important; }
   
 
 </style>
@@ -1009,6 +1027,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
