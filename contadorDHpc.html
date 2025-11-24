@@ -11,50 +11,42 @@
 <meta name="theme-color" content="#1E6FB8" />
 <style>
 /* ============================================= */
-/* INICIO SIN PARPADEO + TRANSICIÓN SUAVE       */
+/* INICIO SIN PARPADEO + TRANSICIÓN SUAVE (VERSIÓN CORRECTA) */
 /* ============================================= */
-html, body {
+html {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.4s ease-out;
+}
+html.loaded {
+  visibility: visible;
+  opacity: 1;
+}
+body {
   margin: 0;
   font-family: Arial, sans-serif;
   background: #ffffff;
   color: #000;
   min-height: 100vh;
   position: relative;
-  
-  /* Oculta todo hasta que la página esté lista → elimina el flash */
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity 0.5s ease-out;
 }
 
-/* Cuando JavaScript añade la clase "loaded" → aparece suavemente */
-body.loaded {
-  visibility: visible;
-  opacity: 1;
-}
-
-/* MARCA DE AGUA → perfecta y con transición suave también */
+/* MARCA DE AGUA – aparece suavemente */
 body::before {
   content: "";
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   background: url('fondo.png') center center / 92% auto no-repeat;
-  opacity: 0;                    /* Empieza invisible */
+  opacity: 0;
   pointer-events: none;
   z-index: -1;
-  transition: opacity 0.8s ease-out;   /* aparece progresivamente */
+  transition: opacity 0.7s ease-out;
 }
-
-/* Cuando la página carga → la marca de agua aparece suavemente */
-body.loaded::before {
-  opacity: 0.20;                 /* valor normal en escritorio */
+html.loaded body::before {
+  opacity: 0.20;
 }
-
-/* En móvil más tenue */
 @media (max-width: 768px) {
-  body.loaded::before { 
-    opacity: 0.10; 
-  }
+  html.loaded body::before { opacity: 0.10; }
 }
 
 header {
@@ -534,14 +526,17 @@ let ventanaProyeccion = null;
 let intervaloPolling = null;         // ← para poder detenerlo cuando ya esté
 
 
-// Hace que todo aparezca con fade-in suave y elimina cualquier flash
-  document.addEventListener("DOMContentLoaded", function() {
-    // Pequeño retraso para asegurar que todo esté pintado
+// Elimina cualquier flash y hace inicio suave – SE EJECUTA INMEDIATAMENTE
+  document.documentElement.style.visibility = "hidden";
+  document.documentElement.style.opacity = "0";
+  
+  window.addEventListener("load", function() {
     setTimeout(function() {
+      document.documentElement.style.visibility = "visible";
+      document.documentElement.style.opacity = "1";
       document.body.classList.add("loaded");
-    }, 80);
+    }, 50);
   });
-
   
 // ============================================================
 // LOADER MODERNO – ACTIVAR / DESACTIVAR
@@ -990,6 +985,7 @@ window.addEventListener("load", () => {
 </script>
 </body>
 </html>
+
 
 
 
