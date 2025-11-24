@@ -953,12 +953,13 @@ await verHoy();                  // mostramos automáticamente "Hoy"
 }
 
   
-// Ejecutar al cargar la página
-window.addEventListener("load", () => {
+// Ejecuta TODO apenas el HTML esté parseado (mucho antes que "load")
+document.addEventListener("DOMContentLoaded", () => {
   detectarPantallas();
-  cargarAlIniciar();  // ← Esta es la nueva carga inteligente
+  cargarAlIniciar();
 });
 </script>
 </body>
 </html>
+
 
