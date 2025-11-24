@@ -944,13 +944,24 @@ async function proyectar() {
         html,body{margin:0;padding:0;width:100vw;height:100vh;overflow:hidden;background:var(--fondo);font-family:'Segoe UI',sans-serif;color:var(--texto);transition:all .5s ease}
         .wrap{width:100%;height:100%;display:flex;justify-content:center;align-items:center}
       .contenedor{
-  width:96%;max-width:1400px;min-height:82%;max-height:92%;padding:32px;
+.contenedor{
+  width:96%;
+  max-width:1400px;
+  min-height:78%;           /* bajamos un poco */
+  max-height:90%;           /* y limitamos más */
+  padding:28px 32px;        /* menos padding vertical */
   background:rgba(255,255,255,${esOscuro?'0.06':'0.10'});
-  border-radius:24px;border:1px solid rgba(255,255,255,0.12);
-  backdrop-filter:blur(12px);box-shadow:0 20px 60px rgba(0,0,0,${esOscuro?'0.6':'0.3'});
-  display:flex;flex-direction:column;align-items:center;gap:24px;
+  border-radius:24px;
+  border:1px solid rgba(255,255,255,0.12);
+  backdrop-filter:blur(12px);
+  box-shadow:0 20px 60px rgba(0,0,0,${esOscuro?'0.6':'0.3'});
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:20px;                 /* reducimos el gap entre elementos */
   animation:entrada .7s cubic-bezier(0.34,1.56,0.64,1);
-  justify-content:space-between
+  justify-content:space-between;
+  margin-bottom:2vh         /* ← ESTO ES LA CLAVE FINAL: margen inferior */
 }
         h1{font-size:clamp(32px,5vw,80px);font-weight:900;margin:0;
            background:linear-gradient(135deg,var(--acento),color-mix(in srgb,var(--acento) 70%,white));
@@ -974,7 +985,7 @@ async function proyectar() {
         .card:hover{transform:translateY(-8px);box-shadow:0 16px 40px rgba(0,0,0,${esOscuro?'0.6':'0.35'})}
       /* 3. Título más cerca del número (menos hueco arriba) */
 .titulo{
-  font-size:clamp(18px,2.8vw,28px);
+  font-size:clamp(18px,2.8vw,22px);
   text-transform:uppercase;
   font-weight:800;
   letter-spacing:2.4px;
@@ -992,7 +1003,7 @@ async function proyectar() {
 }
 .total-final{
   margin-top:auto;
-  padding:28px 50px;
+  padding:20px 48px;        /* menos padding vertical */
   background:linear-gradient(135deg,var(--acento),color-mix(in srgb,var(--acento) 80%,black));
   color:white;
   border-radius:28px;
@@ -1000,8 +1011,8 @@ async function proyectar() {
   text-align:center;
   display:flex;
   flex-direction:column;
-  gap:8px;
-  margin-bottom:16px   /* ← ESTA ES LA CLAVE */
+  gap:6px;
+  margin-bottom:1vh         /* ← margen extra por si acaso */
 }
 .total-numero{font-size:clamp(80px,12vw,220px);font-weight:900;line-height:1;letter-spacing:-2px}
 .total-texto{font-size:clamp(24px,3.5vw,48px);font-weight:700;opacity:0.9;letter-spacing:2px}
@@ -1125,6 +1136,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
