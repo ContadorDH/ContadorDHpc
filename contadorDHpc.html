@@ -210,63 +210,49 @@ th {
   background-color: #cbe0ff !important;
 }
 
-/* ====================== BOTÓN DETENER – CORREGIDO 100% PARA TEMAS ====================== */
+/* ================================================================= */
+/* BOTÓN DETENER POR ENCIMA DE TODO – SOLUCIÓN DEFINITIVA 2025      */
+/* ================================================================= */
 .panel button[onclick="proyectar()"] {
-  position: relative;
-  z-index: 10 !important; /* ¡Más alto que cualquier otro botón del panel! */
-  isolation: isolate;
-  overflow: hidden;
+  position: relative !important;
+  z-index: 9999 !important;                 /* ¡MUCHO más alto que cualquier cosa del panel! */
+  isolation: isolate !important;
+  overflow: hidden !important;
 }
-  
-.boton-detener {
+
+.boton-detener,
+.panel button[onclick="proyectar()"].boton-detener {
   background: #c62828 !important;
   color: white !important;
   animation: pulsoFuerte 1.8s infinite ease-in-out !important;
   box-shadow: 0 6px 20px rgba(198, 40, 40, 0.5) !important;
-  transform: translateZ(0); /* Fuerza capa GPU */
-  transition: all 0.2s ease;
-}
-
-/* Brillo cruzado – AHORA SÍEMPRE ENCIMA */
-.boton-detener::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-  transform: skewX(-25deg);
-  animation: brilloCruzado 1.8s infinite ease-in-out;
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* Forzamos que el botón esté por encima de TODO el panel */
-.panel button.boton-detener,
-.panel button[onclick="proyectar()"].boton-detener {
-  z-index: 20 !important;
+  z-index: 9999 !important;
   position: relative !important;
 }
 
-/* Animaciones (sin cambios) */
-@keyframes pulsoFuerte {
-  0%, 100% {
-    background: #c62828 !important;
-    box-shadow: 0 6px 20px rgba(198,40,40,0.5);
-  }
-  50% {
-    background: #e53935 !important;
-    box-shadow: 0 10px 35px rgba(229,57,53,0.8);
-  }
+.boton-detener::after {
+  content: '' !important;
+  position: absolute !important;
+  top: 0; left: -100%; width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent) !important;
+  transform: skewX(-25deg) !important;
+  animation: brilloCruzado 1.8s infinite ease-in-out !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
 }
 
-@keyframes brilloCruzado {
-  0% { left: -100%; }
-  50% { left: 100%; }
-  100% { left: 100%; }
+/* Forzar que ningún tema lo aplaste nunca más */
+body.tema-claro .boton-detener,
+body.tema-oscuro .boton-detener,
+body.tema-rosado .boton-detener,
+body.tema-lila .boton-detener,
+body.tema-beige .boton-detener,
+body.tema-verde .boton-detener,
+body.tema-gris .boton-detener,
+body.tema-naranja .boton-detener {
+  z-index: 9999 !important;
+  position: relative !important;
 }
-
   
 .subtitulo-moderno {
   margin-top: 12px;
@@ -488,18 +474,7 @@ td, th { border-color: var(--borde) !important; }
 .panel button:hover, .panel select:hover { background: #f0f0ff !important; }
   
 
-/* === GARANTÍA FINAL: El botón detener siempre encima en cualquier tema === */
-.tema-claro .boton-detener,
-.tema-oscuro .boton-detener,
-.tema-rosado .boton-detener,
-.tema-lila .boton-detener,
-.tema-beige .boton-detener,
-.tema-verde .boton-detener,
-.tema-gris .boton-detener,
-.tema-naranja .boton-detener {
-  z-index: 20 !important;
-  position: relative !important;
-}
+
   
 </style>
 </head>
