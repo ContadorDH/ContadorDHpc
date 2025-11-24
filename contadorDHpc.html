@@ -454,10 +454,6 @@ th {
 
   <select id="selectMes"></select>
 
-  <button onclick="buscarMes()">
-    <i class="fa-solid fa-search"></i> Buscar
-  </button>
-
   <select id="pantallaSelect">
     <option>Selecciona pantalla</option>
   </select>
@@ -754,17 +750,19 @@ async function verHoy() {
   }
 }
 
-// ============================================================
-// BUSCAR MES (con loader + detiene polling)
-// ============================================================
-function buscarMes() {
-  yaEstaHoyCargado = true;
+
+// === CARGA AUTOMÁTICA AL CAMBIAR EL MES ===
+document.getElementById("selectMes").addEventListener("change", function() {
+  const mes = this.value;
+  yaEstaHoyCargado = true;                // evita polling si el usuario cambia manualmente
   if (intervaloPolling) {
     clearInterval(intervaloPolling);
     intervaloPolling = null;
   }
-  cargarMes(selectMes.value);
-}
+  cargarMes(mes);                          // carga inmediata
+});
+
+  
 
 // ============================================================
 // PROYECCIÓN MODERNA – CON AUTO-SELECCIÓN CUANDO HAY UNA SOLA FILA
@@ -961,5 +959,6 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
