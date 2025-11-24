@@ -444,23 +444,33 @@ body.tema-oscuro .aviso {
   text-shadow: 0 2px 10px rgba(0,0,0,0.5);
 }
 
-/* ==================== TEMAS PASTELES CON DEGRADADOS PREMIUM 2025 ==================== */
-body.tema-claro   { --fondo:linear-gradient(135deg, #f9fcff 0%, #e8f2ff 100%); --texto:#000000; --acento:#1E6FB8; --tabla-fondo:rgba(255,255,255,0.96); --tabla-texto:#000; --borde:#d0e2ff; --fila-sel:#b8d4ff; }
-body.tema-oscuro  { --fondo:linear-gradient(135deg, #0a0e17 0%, #161b22 60%, #1e2533 100%); --texto:#e6edf3; --acento:#58a6ff; --tabla-fondo:rgba(30,38,51,0.85); --tabla-texto:#ffffff; --borde:#30363d; --fila-sel:rgba(88,166,255,0.35); }
-body.tema-rosado  { --fondo:linear-gradient(135deg, #fff0f6 0%, #ffe4f2 100%); --texto:#5d1738; --acento:#e91e63; --tabla-fondo:rgba(255,240,250,0.97); --tabla-texto:#5d1738; --borde:#f8c0e0; --fila-sel:#ffb4d9; }
-body.tema-lila    { --fondo:linear-gradient(135deg, #f8f1ff 0%, #f0e5ff 100%); --texto:#4a1e6e; --acento:#a855f7; --tabla-fondo:rgba(245,235,255,0.97); --tabla-texto:#4a1e6e; --borde:#e0c0ff; --fila-sel:#d8a8ff; }
-body.tema-beige   { --fondo:linear-gradient(135deg, #fdf6f0 0%, #fef3e8 100%); --texto:#5d4037; --acento:#8d6e63; --tabla-fondo:rgba(253,248,240,0.97); --tabla-texto:#5d4037; --borde:#e8d8c8; --fila-sel:#e0c8b0; }
-body.tema-verde   { --fondo:linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); --texto:#164028; --acento:#22c55e; --tabla-fondo:rgba(240,253,244,0.97); --tabla-texto:#164028; --borde:#bbf7d0; --fila-sel:#86efac; }
-body.tema-gris    { --fondo:linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); --texto:#2d3748; --acento:#607d8b; --tabla-fondo:rgba(250,250,250,0.97); --tabla-texto:#37474f; --borde:#ced4da; --fila-sel:#adb5bd; }
-body.tema-naranja { --fondo:linear-gradient(135deg, #fff8f0 0%, #ffedd5 100%); --texto:#5d2f10; --acento:#fb923c; --tabla-fondo:rgba(255,245,230,0.97); --tabla-texto:#5d2f10; --borde:#ffd7a8; --fila-sel:#ffb380; }
+/* ==================== TEMAS CON DEGRADADOS QUE SÍ SE VEN 100% ==================== */
+body.tema-claro   { --fondo:linear-gradient(135deg, #f9fcff 0%, #e6f4ff 100%); --texto:#000000; --acento:#1E6FB8; --tabla-fondo:rgba(255,255,255,0.97); --tabla-texto:#000; --borde:#c8e0ff; --fila-sel:#a8d0ff; }
+body.tema-oscuro  { --fondo:linear-gradient(135deg, #0a0e17 0%, #161b22 60%, #1f2833 100%); --texto:#e6edf3; --acento:#58a6ff; --tabla-fondo:rgba(22,27,34,0.92); --tabla-texto:#ffffff; --borde:#30363d; --fila-sel:rgba(88,166,255,0.4); }
+body.tema-rosado  { --fondo:linear-gradient(135deg, #fff0f6 0%, #ffe4f0 100%); --texto:#5d1738; --acento:#e91e63; --tabla-fondo:rgba(255,240,250,0.97); --tabla-texto:#5d1738; --borde:#f8b0d8; --fila-sel:#ff99cc; }
+body.tema-lila    { --fondo:linear-gradient(135deg, #f8f1ff 0%, #f0e0ff 100%); --texto:#4a1e6e; --acento:#a855f7; --tabla-fondo:rgba(245,235,255,0.97); --tabla-texto:#4a1e6e; --borde:#d8b0ff; --fila-sel:#c890ff; }
+body.tema-beige   { --fondo:linear-gradient(135deg, #fdf6f0 0%, #fef0e0 100%); --texto:#5d4037; --acento:#8d6e63; --tabla-fondo:rgba(253,248,240,0.97); --tabla-texto:#5d4037; --borde:#e8d0b8; --fila-sel:#d8b8a0; }
+body.tema-verde   { --fondo:linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); --texto:#164028; --acento:#22c55e; --tabla-fondo:rgba(240,253,244,0.97); --tabla-texto:#164028; --borde:#a0e8c0; --fila-sel:#70e090; }
+body.tema-gris    { --fondo:linear-gradient(135deg, #f8f9fa 0%, #e2e6ea 100%); --texto:#2d3748; --acento:#607d8b; --tabla-fondo:rgba(250,250,250,0.97); --tabla-texto:#37474f; --borde:#cfd8dc; --fila-sel:#a0a8b8; }
+body.tema-naranja { --fondo:linear-gradient(135deg, #fff8f0 0%, #ffe8d0 100%); --texto:#5d2f10; --acento:#fb923c; --tabla-fondo:rgba(255,245,230,0.97); --tabla-texto:#5d2f10; --borde:#ffcc88; --fila-sel:#ffaa70; }
 
-/* Mantiene el header y panel oscuro en modo oscuro */
-body.tema-oscuro header, 
-body.tema-oscuro .panel { background: linear-gradient(135deg, #161b22 0%, #1f2533 100%) !important; }
+/* HEADER Y PANEL: mantienen su color sólido (es lo correcto) */
+header, .panel { 
+  background: var(--acento) !important; 
+  color: white !important; 
+}
+
+/* MODO OSCURO: header y panel con su propio degradado elegante */
+body.tema-oscuro header,
+body.tema-oscuro .panel { 
+  background: linear-gradient(135deg, #161b22 0%, #1f2533 100%) !important; 
+}
 body.tema-oscuro .panel button,
-body.tema-oscuro .panel select { color: #000000 !important; }
+body.tema-oscuro .panel select { 
+  color: #000000 !important; 
+}
 
-/* Texto blanco en tabla (modo oscuro) */
+/* Tabla en modo oscuro */
 body.tema-oscuro table,
 body.tema-oscuro th,
 body.tema-oscuro td {
@@ -468,37 +478,23 @@ body.tema-oscuro td {
   border-color: #444444 !important;
 }
 
-/* APLICAR FONDO DEGRADADO CORRECTAMENTE */
+/* FONDO DEL BODY: ESTO ES LO QUE HACÍA QUE NO SE VIERA EL DEGRADADO */
 body {
   background: var(--fondo) !important;
   background-attachment: fixed !important;
   color: var(--texto) !important;
+  min-height: 100vh;
 }
-header, .panel { background: var(--acento) !important; color: white !important; }
+
+/* Resto de estilos (intactos) */
 #subtitulo { background: var(--tabla-fondo) !important; color: var(--acento) !important; }
 #subtitulo span { color: var(--texto) !important; }
-
-/* Tabla perfecta en todos los temas */
-table {
-  background: var(--tabla-fondo) !important;
-  color: var(--tabla-texto) !important;
-  border-color: var(--borde) !important;
-}
-th {
-  background: color-mix(in srgb, var(--acento) 12%, var(--tabla-fondo)) !important;
-  color: var(--tabla-texto) !important;
-}
+table { background: var(--tabla-fondo) !important; color: var(--tabla-texto) !important; border-color: var(--borde) !important; }
+th { background: color-mix(in srgb, var(--acento) 12%, var(--tabla-fondo)) !important; color: var(--tabla-texto) !important; }
 td, th { border-color: var(--borde) !important; }
 .filaSel { background-color: var(--fila-sel) !important; }
-
-/* Botones y select del panel */
-.panel button, .panel select { 
-  background: white !important; 
-  color: var(--acento) !important; 
-}
-.panel button:hover, .panel select:hover { background: #f0f0ff !important; }
-  
-
+.panel button, .panel select { background: white !important; color: var(--acento) !important; }
+.panel button:hover, .panel select:hover { background: #f0f4ff !important; }
 
   
 </style>
@@ -1159,6 +1155,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
