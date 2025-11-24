@@ -872,7 +872,6 @@ document.getElementById("selectMes").addEventListener("change", function() {
 // ============================================================
 async function proyectar() {
   const btn = document.querySelector("button[onclick='proyectar()']");
-  // Si ya está proyectando → detener
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
     ventanaProyeccion.close();
     ventanaProyeccion = null;
@@ -880,30 +879,26 @@ async function proyectar() {
     btn.classList.remove("boton-detener");
     return;
   }
-  // === NUEVO: detectar si hay solo una fila de datos ===
+
   const filasDatos = document.querySelectorAll("#tabla tbody tr");
   if (filasDatos.length === 1) {
     filaSeleccionada = filasDatos[0];
-    filasDatos[0].classList.add("filaSel"); // opcional: resaltar
+    filasDatos[0].classList.add("filaSel");
   }
-  // === FIN NUEVO ===
-  // Si no hay fila seleccionada (y no es el caso de una sola fila)
   if (!filaSeleccionada) {
     mostrarAviso("Selecciona una fila antes de proyectar.");
     return;
   }
-  // === Todo lo demás queda 100% igual que tenías ===
+
   let scr = null;
   if ("getScreenDetails" in window) {
     try {
       const details = await window.getScreenDetails();
       const indexPantalla = parseInt(document.getElementById("pantallaSelect").value);
       if (!isNaN(indexPantalla) && details.screens[indexPantalla]) {
-       
-
- scr = details.screens[indexPantalla];
+        scr = details.screens[indexPantalla];
       }
-    } catch (e) { /* permiso denegado → se ignora */ }
+    } catch (e) { }
   }
   const features = scr
     ? `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height}`
@@ -933,7 +928,6 @@ async function proyectar() {
   }
   fechaFila = formatearFechaLarga(fechaFila);
 
-  // === FUNCIÓN QUE ACTUALIZA LA VENTANA CON EL TEMA ACTUAL (se llama ahora y cada vez que cambie el tema) ===
   const actualizarProyeccion = () => {
     if (!ventanaProyeccion || ventanaProyeccion.closed) return;
 
@@ -968,8 +962,9 @@ async function proyectar() {
         .card:hover{transform:translateY(-8px);box-shadow:0 16px 40px rgba(0,0,0,${esOscuro?'0.6':'0.35'})}
         .titulo{font-size:clamp(13px,1.8vw,18px);text-transform:uppercase;font-weight:700;
                 letter-spacing:1.8px;color:var(--acento);opacity:0.9;margin-bottom:8px}
-        .valor{font-size:clamp(28px,4.5vw,72px);font-weight:900;color:var(--texto)}
-        .total-final{margin-top:auto;padding:20px 60px;font-size:clamp(32px,5vw,90px);font-weight:900;
+        /* AQUÍ ESTÁ EL ÚNICO CAMBIO: LOS VALORES AHORA SON MUCHO MÁS GRANDES */
+        .valor{font-size:clamp(48px,8vw,140px);font-weight:900;color:var(--texto);line-height:1.1}
+        .total-final{margin-top:auto;padding:20px 60px;font-size:clamp(56px,9vw,160px);font-weight:900;
                     background:linear-gradient(135deg,var(--acento),color-mix(in srgb,var(--acento) 80%,black));
                     color:white;border-radius:24px;box-shadow:0 12px 40px rgba(0,0,0,0.5)}
         @keyframes entrada{from{opacity:0;transform:scale(0.94) translateY(30px)}to{opacity:1;transform:none}}
@@ -985,21 +980,18 @@ async function proyectar() {
     `;
   };
 
-  // === Primera carga ===
   actualizarProyeccion();
 
-  // === Sincronización automática cuando cambies el tema en la app principal ===
   const observer = new MutationObserver(actualizarProyeccion);
   observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
 
-  // === Botón Detener y detección de cierre ===
   btn.textContent = "Detener";
   btn.classList.add("boton-detener");
 
   const timer = setInterval(() => {
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       clearInterval(timer);
-      observer.disconnect();           // ← limpiamos el observer
+      observer.disconnect();
       ventanaProyeccion = null;
       btn.textContent = "Proyectar";
       btn.classList.remove("boton-detener");
@@ -1091,6 +1083,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
