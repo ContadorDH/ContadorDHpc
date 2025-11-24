@@ -870,144 +870,77 @@ document.getElementById("selectMes").addEventListener("change", function() {
 // ============================================================
 // PROYECCIÓN MODERNA – CON AUTO-SELECCIÓN CUANDO HAY UNA SOLA FILA
 // ============================================================
-async function proyectar() {
-  const btn = document.querySelector("button[onclick='proyectar()']");
-  if (ventanaProyeccion && !ventanaProyeccion.closed) {
-    ventanaProyeccion.close();
-    ventanaProyeccion = null;
-    btn.textContent = "Proyectar";
-    btn.classList.remove("boton-detener");
-    return;
-  }
+const actualizarProyeccion = () => {
+  if (!ventanaProyeccion || ventanaProyeccion.closed) return;
 
-  const filasDatos = document.querySelectorAll("#tabla tbody tr");
-  if (filasDatos.length === 1) {
-    filaSeleccionada = filasDatos[0];
-    filasDatos[0].classList.add("filaSel");
-  }
-  if (!filaSeleccionada) {
-    mostrarAviso("Selecciona una fila antes de proyectar.");
-    return;
-  }
+  const vars = {
+    fondo: getComputedStyle(document.body).getPropertyValue('--fondo').trim(),
+    acento: getComputedStyle(document.body).getPropertyValue('--acento').trim(),
+    texto: getComputedStyle(document.body).getPropertyValue('--texto').trim()
+  };
+  const esOscuro = document.body.classList.contains("tema-oscuro");
 
-  let scr = null;
-  if ("getScreenDetails" in window) {
-    try {
-      const details = await window.getScreenDetails();
-      const indexPantalla = parseInt(document.getElementById("pantallaSelect").value);
-      if (!isNaN(indexPantalla) && details.screens[indexPantalla]) {
-        scr = details.screens[indexPantalla];
+  // === 1. Insertamos el HTML (sin <script> dentro) ===
+  ventanaProyeccion.document.body.innerHTML = `
+    <style>
+      :root{--fondo:${vars.fondo};--acento:${vars.acento};--texto:${vars.texto}}
+      *{margin:0;padding:0;box-sizing:border-box}
+      body{width:100vw;height:100vh;overflow:hidden;background:var(--fondo);display:flex;justify-content:center;align-items:center;font-family:'Segoe UI',sans-serif;color:var(--texto)}
+      
+      .slide{
+        position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;
+        opacity:0;visibility:hidden;transition:all 1.2s cubic-bezier(0.22,1,0.36,1);
+        transform:scale(0.8) translateY(60px)
       }
-    } catch (e) { }
-  }
-  const features = scr
-    ? `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height}`
-    : `width=1200,height=700`;
-  ventanaProyeccion = window.open("", "proyeccion", features);
+      .slide.active{opacity:1;visibility:visible;transform:scale(1) translateY(0)}
+      
+      .fecha{font-size:clamp(32px,5vw,90px);font-weight:900;margin-bottom:2vh;
+        background:linear-gradient(135deg,var(--acento),color-mix(in srgb,var(--acento) 70%,white));
+        -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+        letter-spacing:2px}
+      
+      .contenido{
+        text-align:center;background:rgba(255,255,255,${esOscuro?'0.08':'0.12'});
+        padding:8vh 10vw;border-radius:40px;max-width:90%;width:900px;
+        backdrop-filter:blur(16px);border:2px solid rgba(255,255,255,0.18);
+        box-shadow:0 30px 100px rgba(0,0,0,${esOscuro?'0.7':'0.3'})
+      }
+      
+      .titulo{font-size:clamp(36px,7vw,140px);text-transform:uppercase;font-weight:900;
+        letter-spacing:5px;color:var(--acento);margin-bottom:2vh;opacity:0.95}
+      .valor{font-size:clamp(120px,22vw,460px);font-weight:900;line-height:1;
+        letter-spacing:-8px;color:var(--texto);text-shadow:0 10px 30px rgba(0,0,0,0.4)}
+      
+      .total-contenido{
+        background:linear-gradient(135deg,var(--acento),color-mix(in srgb,var(--acento) 85%,#000));
+        color:white;padding:10vh 10vw;border-radius:48px
+      }
+      .total-valor{font-size:clamp(160px,28vw,600px);font-weight:900;line-height:1;letter-spacing:-12px}
+      .total-texto{font-size:clamp(40px,7vw,140px);font-weight:800;letter-spacing:6px;opacity:0.95}
+    </style>
 
-  let headers = [...document.querySelectorAll("#tabla thead th")].map(th => th.innerText);
-  let valores = [...filaSeleccionada.querySelectorAll("td")].map(td => td.innerText);
-  let inicio = headers.findIndex(h => /hermano/i.test(h));
-  let fin = headers.findIndex(h => /total/i.test(h));
-  const totalAsistencia = valores[fin];
-  const headersSinTotal = headers.slice(inicio, fin);
-  const valoresSinTotal = valores.slice(inicio, fin);
-  let fechaFila = valores[1] ? valores[1].trim() : "Fecha no disponible";
-
-  function formatearFechaLarga(fechaTexto) {
-    try {
-      let soloFecha = fechaTexto.split(" ")[0];
-      let [dia, mes, anio] = soloFecha.split("/").map(n => parseInt(n));
-      const meses = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
-      const diasSemana = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
-      const fechaObj = new Date(anio, mes - 1, dia);
-      const diaSemana = diasSemana[fechaObj.getDay()];
-      return `${diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1)} ${dia} de ${meses[mes - 1]} de ${anio}`;
-    } catch (e) {
-      return fechaTexto;
-    }
-  }
-  fechaFila = formatearFechaLarga(fechaFila);
-
-  const actualizarProyeccion = () => {
-    if (!ventanaProyeccion || ventanaProyeccion.closed) return;
-
-    const vars = {
-      fondo: getComputedStyle(document.body).getPropertyValue('--fondo').trim(),
-      acento: getComputedStyle(document.body).getPropertyValue('--acento').trim(),
-      texto: getComputedStyle(document.body).getPropertyValue('--texto').trim()
-    };
-    const esOscuro = document.body.classList.contains("tema-oscuro");
-
-ventanaProyeccion.document.body.innerHTML = `
-  <style>
-    :root{--fondo:${vars.fondo};--acento:${vars.acento};--texto:${vars.texto}}
-    *{margin:0;padding:0;box-sizing:border-box}
-    body{width:100vw;height:100vh;overflow:hidden;background:var(--fondo);display:flex;justify-content:center;align-items:center;font-family:'Segoe UI',sans-serif;color:var(--texto)}
-    
-    .slide{
-      position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;
-      opacity:0;visibility:hidden;transition:all 1.2s cubic-bezier(0.22,1,0.36,1);
-      transform:scale(0.8) translateY(60px)
-    }
-    .slide.active{opacity:1;visibility:visible;transform:scale(1) translateY(0)}
-    
-    .fecha{
-      font-size:clamp(32px,5vw,90px);font-weight:900;margin-bottom:2vh;
-      background:linear-gradient(135deg,var(--acento),color-mix(in srgb,var(--acento) 70%,white));
-      -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
-      letter-spacing:2px
-    }
-    
-    .contenido{
-      text-align:center;background:rgba(255,255,255,${esOscuro?'0.08':'0.12'});
-      padding:8vh 10vw;border-radius:40px;max-width:90%;width:900px;
-      backdrop-filter:blur(16px);border:2px solid rgba(255,255,255,0.18);
-      box-shadow:0 30px 100px rgba(0,0,0,${esOscuro?'0.7':'0.3'})
-    }
-    
-    .titulo{
-      font-size:clamp(36px,7vw,140px);text-transform:uppercase;font-weight:900;
-      letter-spacing:5px;color:var(--acento);margin-bottom:2vh;opacity:0.95
-    }
-    .valor{
-      font-size:clamp(120px,22vw,460px);font-weight:900;line-height:1;
-      letter-spacing:-8px;color:var(--texto);text-shadow:0 10px 30px rgba(0,0,0,0.4)
-    }
-    
-    /* Total final – épico */
-    .total-contenido{
-      background:linear-gradient(135deg,var(--acento),color-mix(in srgb,var(--acento) 85%,#000));
-      color:white;padding:10vh 10vw;border-radius:48px
-    }
-    .total-valor{font-size:clamp(160px,28vw,600px);font-weight:900;line-height:1;letter-spacing:-12px}
-    .total-texto{font-size:clamp(40px,7vw,140px);font-weight:800;letter-spacing:6px;opacity:0.95}
-  </style>
-
-  <div id="slides-container">
-    <!-- Fecha sola al inicio (opcional) -->
-    <div class="slide"><div class="fecha">${fechaFila}</div></div>
-    
-    <!-- Cada categoría -->
-    ${headersSinTotal.map((h, i) => `
+    <div id="slides-container">
+      <div class="slide"><div class="fecha">${fechaFila}</div></div>
+      ${headersSinTotal.map((h, i) => `
+        <div class="slide">
+          <div class="contenido">
+            <div class="titulo">${h}</div>
+            <div class="valor">${valoresSinTotal[i]}</div>
+          </div>
+        </div>
+      `).join("")}
       <div class="slide">
-        <div class="contenido">
-          <div class="titulo">${h}</div>
-          <div class="valor">${valoresSinTotal[i]}</div>
+        <div class="contenido total-contenido">
+          <div class="total-valor">${totalAsistencia}</div>
+          <div class="total-texto">Total Asistencia</div>
         </div>
       </div>
-    `).join("")}
-    
-    <!-- Total final -->
-    <div class="slide">
-      <div class="contenido total-contenido">
-        <div class="total-valor">${totalAsistencia}</div>
-        <div class="total-texto">Total Asistencia</div>
-      </div>
     </div>
-  </div>
+  `;
 
-  <script>
+  // === 2. Ahora SÍ inyectamos el script por separado (SIN ERROR) ===
+  const script = ventanaProyeccion.document.createElement('script');
+  script.textContent = `
     const slides = document.querySelectorAll('.slide');
     let actual = 0;
     const total = slides.length;
@@ -1018,16 +951,11 @@ ventanaProyeccion.document.body.innerHTML = `
       slides[actual].classList.add('active');
     }
 
-    // Mostrar el primero
     slides[0].classList.add('active');
-
-    // Cambiar cada 4.5 segundos
     setInterval(siguiente, 4500);
-
-    // Opcional: repetir para siempre
-  </script>
-`;
-  };
+  `;
+  ventanaProyeccion.document.body.appendChild(script);
+};
 
   actualizarProyeccion();
 
@@ -1133,6 +1061,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
