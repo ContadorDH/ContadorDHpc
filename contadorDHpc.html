@@ -210,20 +210,24 @@ th {
   background-color: #cbe0ff !important;
 }
 
-/* Botón Detener – EFECTO BRUTAL PERO QUE NUNCA SE PONE ENCIMA DEL AVISO */
+/* ====================== BOTÓN DETENER – CORREGIDO 100% PARA TEMAS ====================== */
+.panel button[onclick="proyectar()"] {
+  position: relative;
+  z-index: 10 !important; /* ¡Más alto que cualquier otro botón del panel! */
+  isolation: isolate;
+  overflow: hidden;
+}
+  
 .boton-detener {
   background: #c62828 !important;
   color: white !important;
-  position: relative;
-  overflow: hidden;
   animation: pulsoFuerte 1.8s infinite ease-in-out !important;
   box-shadow: 0 6px 20px rgba(198, 40, 40, 0.5) !important;
-  transition: transform 0.15s ease;
-  z-index: 1 !important;
-  isolation: isolate; /* ← LA CLAVE: crea contexto de apilamiento limpio */
+  transform: translateZ(0); /* Fuerza capa GPU */
+  transition: all 0.2s ease;
 }
 
-/* Brillo cruzado usando ::after en vez de ::before (más seguro) */
+/* Brillo cruzado – AHORA SÍEMPRE ENCIMA */
 .boton-detener::after {
   content: '';
   position: absolute;
@@ -235,13 +239,17 @@ th {
   transform: skewX(-25deg);
   animation: brilloCruzado 1.8s infinite ease-in-out;
   pointer-events: none;
-  z-index: 1 !important; /* ← nunca por encima del panel */
+  z-index: 1;
 }
 
-.boton-detener:active {
-  transform: scale(0.96);
+/* Forzamos que el botón esté por encima de TODO el panel */
+.panel button.boton-detener,
+.panel button[onclick="proyectar()"].boton-detener {
+  z-index: 20 !important;
+  position: relative !important;
 }
 
+/* Animaciones (sin cambios) */
 @keyframes pulsoFuerte {
   0%, 100% {
     background: #c62828 !important;
@@ -480,6 +488,19 @@ td, th { border-color: var(--borde) !important; }
 .panel button:hover, .panel select:hover { background: #f0f0ff !important; }
   
 
+/* === GARANTÍA FINAL: El botón detener siempre encima en cualquier tema === */
+.tema-claro .boton-detener,
+.tema-oscuro .boton-detener,
+.tema-rosado .boton-detener,
+.tema-lila .boton-detener,
+.tema-beige .boton-detener,
+.tema-verde .boton-detener,
+.tema-gris .boton-detener,
+.tema-naranja .boton-detener {
+  z-index: 20 !important;
+  position: relative !important;
+}
+  
 </style>
 </head>
 <body>
@@ -1045,6 +1066,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
