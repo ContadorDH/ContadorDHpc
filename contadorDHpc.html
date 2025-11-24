@@ -426,7 +426,6 @@ th {
 body.tema-claro   { --fondo:#ffffff; --texto:#000000; --acento:#1E6FB8; --tabla-fondo:rgba(255,255,255,0.94); --tabla-texto:#000; --borde:#ddd; --fila-sel:#cbe0ff; }
 body.tema-oscuro  { --fondo:#0d1117; --texto:#ffffff; --acento:#58a6ff; --tabla-fondo:transparent; --tabla-texto:#ffffff; --borde:#30363d; --fila-sel:rgba(88,166,255,0.25); }
 body.tema-oscuro header, body.tema-oscuro .panel { background: #161b22 !important; }
-/* AÑADIDO: texto negro en los botones y select del panel cuando está en modo oscuro */
 body.tema-oscuro .panel button,
 body.tema-oscuro .panel select { color: #000000 !important; }
 /* El resto de temas sin cambios */
@@ -436,7 +435,15 @@ body.tema-beige   { --fondo:#fdf6f0; --texto:#5d4037; --acento:#8d6e63; --tabla-
 body.tema-verde   { --fondo:#f0fdf4; --texto:#164028; --acento:#22c55e; --tabla-fondo:rgba(240,253,244,0.96); --tabla-texto:#164028; --borde:#bbf7d0; --fila-sel:#86efac; }
 body.tema-gris    { --fondo:#f5f5f5; --texto:#37474f; --acento:#607d8b; --tabla-fondo:rgba(250,250,250,0.96); --tabla-texto:#37474f; --borde:#cfd8dc; --fila-sel:#b0bec5; }
 body.tema-naranja { --fondo:#fff8f0; --texto:#5d2f10; --acento:#fb923c; --tabla-fondo:rgba(255,245,230,0.96); --tabla-texto:#5d2f10; --borde:#ffcc80; --fila-sel:#ffab91; }
-/* Aplicar colores a todo */
+
+/* ← SOLO ESTO AÑADIDO (texto blanco en toda la tabla solo en modo oscuro) */
+body.tema-oscuro table,
+body.tema-oscuro th,
+body.tema-oscuro td {
+  color: #ffffff !important;
+}
+  
+  /* Aplicar colores a todo */
 body { 
   background: var(--fondo) !important; 
   color: var(--texto) !important; 
@@ -1031,6 +1038,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
