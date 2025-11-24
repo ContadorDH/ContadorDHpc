@@ -422,6 +422,26 @@ th {
   text-shadow: 0 2px 10px rgba(0,0,0,0.5);
 }
 
+/* ==================== TEMAS PASTELES ==================== */
+body.tema-claro     { --fondo: #ffffff; --texto: #000000; --acento: #1E6FB8; --panel: rgba(30,111,184,0.96); --tabla: rgba(255,255,255,0.92); }
+body.tema-oscuro    { --fondo: #1a1a2e; --texto: #e0e0ff; --acento: #6c5ce7; --panel: rgba(30,30,60,0.96); --tabla: rgba(40,40,80,0.92); }
+body.tema-rosado    { --fondo: #fff0f5; --texto: #5d1a3b; --acento: #e91e63; --panel: rgba(233,30,99,0.9); --tabla: rgba(255,240,245,0.95); }
+body.tema-lila      { --fondo: #f8f1ff; --texto: #4a2c6e; --acento: #9c27b0; --panel: rgba(156,39,176,0.9); --tabla: rgba(248,241,255,0.95); }
+body.tema-beige     { --fondo: #fdf6f0; --texto: #5d4037; --acento: #8d6e63; --panel: rgba(141,110,99,0.9); --tabla: rgba(253,246,240,0.95); }
+body.tema-verde     { --fondo: #f0fdf4; --texto: #1e4029; --acento: #22c55e; --panel: rgba(34,197,94,0.9); --tabla: rgba(240,253,244,0.95); }
+body.tema-gris      { --fondo: #f5f5f5; --texto: #424242; --acento: #607d8b; --panel: rgba(96,125,139,0.9); --tabla: rgba(255,255,255,0.95); }
+body.tema-naranja   { --fondo: #fff8f0; --texto: #5d2f10; --acento: #fb923c; --panel: rgba(251,146,60,0.9); --tabla: rgba(255,248,240,0.95); }
+
+/* Aplicar variables */
+body {
+  background: var(--fondo) !important;
+  color: var(--texto);
+}
+header, .panel { background: var(--panel) !important; }
+#subtitulo, table { background: var(--tabla) !important; }
+.panel button, .panel select, #subtitulo span { color: var(--acento) !important; }
+.filaSel { background-color: color-mix(in srgb, var(--acento) 15%, transparent) !important; }
+
   
 
 </style>
@@ -462,10 +482,18 @@ th {
     <i class="fa-solid fa-display"></i> Proyectar
   </button>
 
+  <!-- BOTÓN DE TEMAS -->
+<button id="btnTema" class="btn-icono" title="Cambiar tema">
+  <i class="fa-solid fa-palette"></i>
+  
   <!-- SOLO ÍCONO AWESOME -->
   <button class="btn-icono" onclick="Pantallas()">
     <i class="fa-solid fa-tv"></i>
   </button>
+
+
+</button>
+  
 </div>
 
 
@@ -510,6 +538,28 @@ let ventanaProyeccion = null;
 let intervaloPolling = null;         // ← para poder detenerlo cuando ya esté
 
 
+// ==================== SISTEMA DE TEMAS PASTELES ====================
+const temas = ["claro","oscuro","rosado","lila","beige","verde","gris","naranja"];
+let temaActual = localStorage.getItem("tema") || "claro";
+
+function aplicarTema(tema) {
+  document.body.classList.remove(...temas.map(t => "tema-"+t));
+  document.body.classList.add("tema-"+tema);
+  localStorage.setItem("tema", tema);
+}
+
+document.getElementById("btnTema").addEventListener("click", () => {
+  let indice = temas.indexOf(temaActual);
+  let siguiente = temas[(indice + 1) % temas.length];
+  temaActual = siguiente;
+  aplicarTema(temaActual);
+});
+
+// Cargar tema guardado al iniciar
+aplicarTema(temaActual);
+
+
+  
 // ============================================================
 // LOADER MODERNO – ACTIVAR / DESACTIVAR
 // ============================================================
@@ -959,6 +1009,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
