@@ -290,7 +290,7 @@ th {
 
 
 
-  /* ====================== AVISO MODERNO PERSONALIZADO ====================== */
+/* ====================== AVISO MODERNO PERSONALIZADO – COMPATIBLE CON TEMAS ====================== */
 .aviso-contenedor {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -303,13 +303,14 @@ th {
   visibility: hidden;
   transition: all 0.3s ease;
   backdrop-filter: blur(4px);
+  color: var(--texto);
 }
 .aviso-contenedor.mostrar {
   opacity: 1;
   visibility: visible;
 }
 .aviso {
-  background: white;
+  background: var(--tabla-fondo, white);
   padding: 28px 32px;
   border-radius: 20px;
   max-width: 90%;
@@ -318,6 +319,8 @@ th {
   box-shadow: 0 15px 40px rgba(0,0,0,0.3);
   transform: scale(0.9) translateY(20px);
   transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  color: var(--texto);
+  border: 1px solid var(--borde, #ddd);
 }
 .aviso-contenedor.mostrar .aviso {
   transform: scale(1) translateY(0);
@@ -327,24 +330,23 @@ th {
   margin-bottom: 16px;
   display: block;
 }
-.aviso.exito i   { color: #28a745; }
-.aviso.info i    { color: #17a2b8; }
-.aviso.alerta i  { color: #ffc107; }
-.aviso.error i   { color: #dc3545; }
-
+.aviso.exito i  { color: #28a745; }
+.aviso.info i   { color: #58a6ff; }
+.aviso.alerta i { color: #ffc107; }
+.aviso.error i  { color: #f87171; }
 .aviso h3 {
   margin: 0 0 12px;
   font-size: 22px;
-  color: #1E6FB8;
+  color: var(--acento);
 }
 .aviso p {
   margin: 0 0 20px;
-  color: #333;
+  color: var(--texto);
   font-size: 16px;
   line-height: 1.5;
 }
 .aviso button {
-  background: #1E6FB8;
+  background: var(--acento);
   color: white;
   border: none;
   padding: 12px 28px;
@@ -355,14 +357,16 @@ th {
   transition: 0.25s;
 }
 .aviso button:hover {
-  background: #145893;
+  opacity: 0.9;
   transform: translateY(-2px);
 }
-.aviso button:active {
-  transform: translateY(0);
+
+/* Solo en modo oscuro: fondo del aviso más oscuro y elegante */
+body.tema-oscuro .aviso {
+  background: #1e2533 !important;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+  border-color: #30363d;
 }
-
-
 /* ====================== LOADER MODERNO ====================== */
 .loader-contenedor {
   position: fixed;
@@ -621,7 +625,7 @@ function mostrarAviso(mensaje, tipo = "info", titulo = null) {
     error:  "fa-solid fa-circle-xmark"
   };
 
-  aviso.className = "aviso " + tipo;  // para el color del ícono
+  aviso.className = "aviso " + tipo; // ya no hace falta nada más, el tema se aplica solo
   icono.className = iconos[tipo] || iconos.info;
   tituloEl.textContent = titulo || (tipo === "exito" ? "¡Éxito!" : tipo === "error" ? "Error" : tipo === "alerta" ? "Atención" : "Aviso");
   mensajeEl.textContent = mensaje;
@@ -1039,6 +1043,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
