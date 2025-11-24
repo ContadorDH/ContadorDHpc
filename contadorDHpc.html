@@ -14,26 +14,36 @@
 body {
   font-family: Arial, sans-serif;
   margin: 0;
-  background: #f1f5f9;
+  background: #ffffff;           /* Fondo blanco puro */
   color: #000;
   min-height: 100vh;
   position: relative;
 }
 
-/* ====================== MARCA DE AGUA SUAVE ====================== */
+/* ====================== MARCA DE AGUA SUAVE Y ELEGANTE ====================== */
 body::before {
   content: "";
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   background: url('fondo.png') center center / contain no-repeat;
-  opacity: 0.09;                  /* Muy suave – puedes ajustar entre 0.06 y 0.12 */
+  opacity: 0.08;                 /* Súper sutil – se ve pero no molesta */
   pointer-events: none;
   z-index: -1;
 }
 
-/* Opcional: un poquito más tenue si tu imagen es muy fuerte */
+/* En pantallas pequeñas lo hacemos aún más tenue para que no distraiga */
 @media (max-width: 768px) {
-  body::before { opacity: 0.07; }
+  body::before { opacity: 0.06; }
+}
+
+/* Si tu logo/imagen es muy oscura y quieres que se vea un poquito más clara: */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(255, 255, 255, 0.94);   /* Capa blanca muy ligera encima del logo */
+  pointer-events: none;
+  z-index: -1;
 }
 
 header {
@@ -960,6 +970,7 @@ window.addEventListener("load", () => {
 </script>
 </body>
 </html>
+
 
 
 
