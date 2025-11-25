@@ -557,10 +557,10 @@ body {
 }
 
 
-/* ==================== MODAL PROYECCIÓN – VERSIÓN FINAL 100% PERFECTA ==================== */
+/* ==================== MODAL PROYECCIÓN – VERSIÓN FINAL 100% PERFECTA (TEXTO NEGRO + ACENTO EN MENSAJE) ==================== */
 #modalProyeccion > div {
   background: var(--menu-bg) !important;
-  color: black !important;                  /* ← TEXTO SIEMPRE BLANCO EN TODOS LOS TEMAS */
+  color: #000000 !important;                  /* ← TODO EL MODAL EN TEXTO NEGRO */
   border: 2px solid var(--acento) !important;
 }
 
@@ -581,7 +581,7 @@ body {
   font-weight: 800;
 }
 #modalProyeccion td {
-  color: black !important;                  /* ← TODOS LOS TD SIEMPRE BLANCO */
+  color: #000000 !important;                  /* ← TODAS LAS CELDAS EN NEGRO */
 }
 
 /* LÍNEAS DE FILAS → MISMO COLOR ACENTO QUE LAS COLUMNAS */
@@ -597,15 +597,15 @@ body {
   border-bottom: 2.5px solid var(--acento) !important;
 }
 #modalProyeccion tr[style*="background"] td {
-  color: #ffffff !important;
+  color: #000000 !important;                  /* ← HASTA EL DÍA DE HOY EN NEGRO */
   font-weight: 800;
 }
 
-/* MENSAJE FINAL "asignaciones cargadas" → TEXTO EN COLOR ACENTO (verde, azul, rosado, etc.) */
+/* MENSAJE FINAL "asignaciones cargadas" → TEXTO EN COLOR ACENTO DEL TEMA (verde, azul, rosado, etc.) */
 #modalProyeccion > div > div:last-child,
 #proyeccionContenido > div:last-child {
   background: var(--fila-sel) !important;
-  color: var(--acento) !important;     /* ← Aquí está la clave: usa el acento del tema */
+  color: var(--acento) !important;     /* ← SOLO ESTE MENSAJE EN COLOR ACENTO */
   border: 1.8px solid var(--acento) !important;
   border-radius: 16px;
   padding: 18px;
@@ -1517,6 +1517,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
