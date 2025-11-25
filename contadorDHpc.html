@@ -824,24 +824,34 @@ function cerrarProyeccion() {
   document.getElementById("modalProyeccion").style.display = "none";
 }
 
-// CERRAR AL TOCAR AFUERA
+// Cerrar al tocar afuera
 document.getElementById("modalProyeccion").addEventListener("click", function(e) {
   if (e.target === this) cerrarProyeccion();
 });
 
 async function cargarCronogramaProyeccion() {
   const contenido = document.getElementById("proyeccionContenido");
-  contenido.innerHTML = "Cargando cronograma de proyección...";
+  contenido.innerHTML = "Conectando con Google Sheets...";
 
   try {
     const res = await fetch(URL_PROYECCION + "?t=" + Date.now());
-    const json = await res.json();
+    const textoCrudo = await res.text();  // ← primero lo vemos como texto
+
+    // ALERTA PARA VER EXACTAMENTE QUÉ DEVUELVE EL SCRIPT
+    alert("RESPUESTA DEL SCRIPT:\n\n" + textoCrudo);
+
+    // Ahora intentamos convertirlo a JSON
+    const json = JSON.parse(textoCrudo);
+
+    // ALERTA EXTRA: vemos el objeto completo
+    alert("OBJETO JSON:\n\n" + JSON.stringify(json, null, 2));
 
     if (!json.data || json.data.length === 0) {
-      contenido.innerHTML = "<div style='opacity:0.8;padding:20px'>No hay asignaciones en el cronograma</div>";
+      contenido.innerHTML = "<div style='color:#ff6b6b;padding:20px'>El script devolvió datos vacíos</div>";
       return;
     }
 
+    // SI LLEGA HASTA AQUÍ → YA TENEMOS DATOS!
     let tabla = `
       <div style="max-height:55vh;overflow-y:auto;border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.4);margin:10px 0">
         <table style="width:100%;border-collapse:collapse;background:rgba(255,255,255,0.08);font-size:16px">
@@ -854,11 +864,10 @@ async function cargarCronogramaProyeccion() {
           </thead>
           <tbody>`;
 
-    const hoy = new Date().toISOString().slice(0,10); // formato yyyy-mm-dd
+    const hoy = new Date().toISOString().slice(0,10);
 
     json.data.forEach(item => {
-      const fechaRaw = item.fechaRaw || item.fecha;
-      const fechaISO = fechaRaw ? new Date(fechaRaw).toISOString().slice(0,10) : "";
+      const fechaISO = item.fechaRaw ? new Date(item.fechaRaw).toISOString().slice(0,10) : "";
       const esHoy = fechaISO === hoy;
 
       tabla += `
@@ -869,22 +878,18 @@ async function cargarCronogramaProyeccion() {
         </tr>`;
     });
 
-    tabla += `
-          </tbody>
-        </table>
-      </div>
-      <div style="text-align:center;margin-top:16px;opacity:0.8;font-size:14px">
-        Total: ${json.data.length} asignaciones
+    tabla += `</tbody></table></div>
+      <div style="text-align:center;margin-top:16px;opacity:0.9;font-size:15px;color:#a3ff9e">
+        ✓ ${json.data.length} asignaciones cargadas correctamente
       </div>`;
 
     contenido.innerHTML = tabla;
 
   } catch (err) {
-    contenido.innerHTML = "<div style='color:#ff6b6b'>Error de conexión</div>";
-    console.error(err);
+    contenido.innerHTML = "<div style='color:#ff6b6b'>Error: " + err.message + "</div>";
+    alert("ERROR TÉCNICO:\n" + err.message);
   }
 }
-
   
 
 function abrirMenu() {
@@ -1410,6 +1415,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
