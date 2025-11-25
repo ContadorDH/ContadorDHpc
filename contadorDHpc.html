@@ -796,18 +796,25 @@ td, th { border-color: var(--borde) !important; }
 <!-- MENÚ LATERAL RESPONSIVE -->
 <div id="menuLateral" style="position:fixed;top:0;right:-100%;width:340px;max-width:92vw;height:100vh;background:rgba(15,25,45,0.98);backdrop-filter:blur(20px);border-left:1px solid rgba(255,255,255,0.1);box-shadow:-10px 0 50px rgba(0,0,0,0.7);transition:right .45s cubic-bezier(0.22,1,0.36,1);z-index:999998;padding:16px 20px;overflow-y:auto;color:white;font-family:'Poppins',sans-serif;box-sizing:border-box">
 
-<!-- Botón Proyección + Botón Cerrar (AHORA PERFECTO) -->
+<!-- Botón Proyección + Botón Cerrar (AHORA EL ÍCONO SÍ SE VE 100%) -->
 <div style="display:flex;justify-content:space-between;align-items:center;padding:0 16px;margin-bottom:12px">
   
-  <!-- BOTÓN PROYECCIÓN (izquierda, SIN FONDO, solo ícono verde) -->
+  <!-- BOTÓN PROYECCIÓN (izquierda, SIN FONDO, ÍCONO GARANTIZADO) -->
   <div onclick="abrirProyeccionDia()" 
        style="cursor:pointer;padding:12px;border-radius:50%;transition:all .3s;display:flex;align-items:center;justify-content:center"
        onmouseover="this.style.background='rgba(34,197,94,0.15)'"
        onmouseout="this.style.background='transparent'">
-    <i class="fas fa-projector" style="font-size:24px;color:#22c55e;"></i>
+    <!-- ÍCONO PROYECTOR EN SVG (siempre se ve, sin depender de Font Awesome) -->
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 7h13a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/>
+      <path d="M16 3v4"/>
+      <path d="M8 3v4"/>
+      <circle cx="18" cy="12" r="3"/>
+      <line x1="3" y1="12" x2="6" y2="12"/>
+    </svg>
   </div>
   
-  <!-- BOTÓN CERRAR (DERECHA - 100% SIN TOCAR, TAL CUAL COMO LO TENÍAS) -->
+  <!-- BOTÓN CERRAR (DERECHA - 100% SIN TOCAR, EXACTAMENTE IGUAL) -->
   <div onclick="cerrarMenu()" style="cursor:pointer;padding:8px;border-radius:50%;background:rgba(255,255,255,0.12);transition:all .3s">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="black">
       <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
@@ -1522,6 +1529,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
