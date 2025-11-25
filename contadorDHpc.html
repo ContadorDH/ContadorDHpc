@@ -617,45 +617,38 @@ body {
 
 /* ==================== TEMA OSCURO – SOLO NEGRO, GRIS Y BLANCO – CONTRASTE MÁXIMO ==================== */
 body.tema-oscuro #modalProyeccion > div {
-  background: #0d1117 !important;     /* Negro puro profesional */
-  color: #ffffff !important;           /* Todo el texto BLANCO puro */
+  background: #0d1117 !important; /* Negro puro profesional */
+  color: #ffffff !important; /* Todo el texto BLANCO puro */
   border: 2px solid #ffffff !important; /* Borde blanco brillante */
 }
-
 body.tema-oscuro #modalProyeccion h2 {
   color: #ffffff !important;
   border-bottom: 2px solid #ffffff !important;
   text-shadow: 0 0 10px rgba(255,255,255,0.3);
 }
-
 body.tema-oscuro #modalProyeccion th {
-  background: #ffffff !important;      /* Encabezado BLANCO */
-  color: #000000 !important;           /* Texto NEGRO en encabezado */
+  background: #ffffff !important; /* Encabezado BLANCO */
+  color: #000000 !important; /* Texto NEGRO en encabezado */
   font-weight: 900;
 }
-
 body.tema-oscuro #modalProyeccion td {
-  color: #ffffff !important;           /* Todo el texto de la tabla BLANCO */
+  color: #ffffff !important; /* ← FECHA, DÍA Y PERSONA: BLANCO PURO */
   font-weight: 600;
 }
-
 body.tema-oscuro #modalProyeccion tbody tr {
   border-bottom: 1.5px solid #444444 !important; /* Gris medio visible */
 }
-
 /* Día de hoy – resaltado en GRIS CLARO BRILLANTE */
 body.tema-oscuro #modalProyeccion tr[style*="background"] {
-  background: #303030 !important;      /* Gris oscuro elegante */
+  background: #303030 !important; /* Gris oscuro elegante */
   font-weight: 900 !important;
   border-bottom: 3px solid #ffffff !important; /* Línea blanca gruesa */
   box-shadow: 0 0 15px rgba(255,255,255,0.15);
 }
-
 body.tema-oscuro #modalProyeccion tr[style*="background"] td {
-  color: #ffffff !important;
+  color: #ffffff !important; /* ← HASTA EL DÍA DE HOY: BLANCO PURO */
   font-weight: 900;
 }
-
 /* Mensaje final – fondo gris, texto y borde blanco */
 body.tema-oscuro #proyeccionContenido > div:last-child,
 body.tema-oscuro #modalProyeccion > div > div:last-child {
@@ -663,6 +656,12 @@ body.tema-oscuro #modalProyeccion > div > div:last-child {
   color: #ffffff !important;
   border: 2px solid #ffffff !important;
   font-weight: 800;
+}
+
+/* === FORZADO EXTRA PARA QUE NUNCA SALGA GRIS (POR SI EL JS LO SOBREESCRIBE) === */
+body.tema-oscuro #proyeccionContenido td,
+body.tema-oscuro #proyeccionContenido tbody tr td {
+  color: #ffffff !important;
 }
 
   body.tema-oscuro #menuLateral svg[stroke="var(--acento)"] {
@@ -1619,6 +1618,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
