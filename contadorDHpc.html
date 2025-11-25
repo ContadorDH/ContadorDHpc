@@ -935,27 +935,40 @@ document.getElementById("modalProyeccion").addEventListener("click", function(e)
   if (e.target === this) cerrarProyeccion();
 });
 
-let datosCompletos = []; // Variable global para guardar todos los datos
-let personaFiltrada = null; // Para saber si estamos filtrando
+// VARIABLES GLOBALES CON CACHÉ (una sola vez en todo tu script)
+let datosCompletos = [];        // ← Cache de todos los datos
+let ultimaActualizacion = null; // ← Para saber cuándo se cargó por última vez
 
 async function cargarCronogramaProyeccion(filtroPersona = null) {
   const contenido = document.getElementById("proyeccionContenido");
-  contenido.innerHTML = "Cargando cronograma...";
+
+  // SI YA TENEMOS DATOS Y NO ES UN FILTRO NUEVO → CARGAR DESDE CACHÉ (INSTANTÁNEO)
+  if (datosCompletos.length > 0 && !filtroPersona) {
+    contenido.innerHTML = "Cargando desde caché...";
+  } else if (datosCompletos.length === 0) {
+    contenido.innerHTML = "Cargando cronograma...";
+  }
 
   try {
-    const res = await fetch(URL_PROYECCION + "?t=" + Date.now());
-    const json = await res.json();
+    // SOLO HACEMOS FETCH SI NO TENEMOS DATOS
+    if (datosCompletos.length === 0) {
+      const res = await fetch(URL_PROYECCION + "?t=" + Date.now());
+      const json = await res.json();
 
-    if (!json.data || json.data.length === 0) {
-      contenido.innerHTML = "<div style='text-align:center;color:#ff6b6b;padding:50px;font-size:18px'>No hay asignaciones en el cronograma</div>";
-      return;
+      if (!json.data || json.data.length === 0) {
+        contenido.innerHTML = "<div style='text-align:center;color:#ff6b6b;padding:50px;font-size:18px'>No hay asignaciones en el cronograma</div>";
+        return;
+      }
+
+      // GUARDAMOS EN CACHÉ
+      datosCompletos = json.data;
+      ultimaActualizacion = new Date().toLocaleTimeString();
     }
 
-    // Guardamos todos los datos la primera vez
-    if (!filtroPersona) datosCompletos = json.data;
-
     const hoy = new Date().toISOString().slice(0,10);
-    let datosMostrados = filtroPersona ? datosCompletos.filter(item => item.persona === filtroPersona) : datosCompletos;
+    let datosMostrados = filtroPersona 
+      ? datosCompletos.filter(item => item.persona === filtroPersona) 
+      : datosCompletos;
 
     // Actualizamos el título
     const titulo = document.querySelector("#modalProyeccion h2");
@@ -1027,13 +1040,14 @@ async function cargarCronogramaProyeccion(filtroPersona = null) {
             <i class="fas fa-arrow-left" style="font-size:24px;color:var(--acento)"></i>
           </div>
           <div style="background:var(--fila-sel);color:var(--acento);border:1.8px solid var(--acento);border-radius:16px;padding:18px;font-weight:700;font-size:16px;text-align:center;flex:1">
-            ✓ ${datosMostrados.length} proyecciones de ${filtroPersona}
+            ${datosMostrados.length} proyecciones de ${filtroPersona}
           </div>
         </div>`;
     } else {
       tabla += `
         <div style="background:var(--fila-sel);color:var(--acento);border:1.8px solid var(--acento);border-radius:16px;padding:18px;font-weight:700;font-size:16px;text-align:center;margin-top:24px">
-          ✓ ${datosMostrados.length} asignaciones cargadas correctamente
+          ${datosMostrados.length} asignaciones cargadas correctamente
+          ${ultimaActualizacion ? `<small style="display:block;margin-top:6px;opacity:0.7;font-size:13px">Última actualización: ${ultimaActualizacion}</small>` : ''}
         </div>`;
     }
 
@@ -1570,6 +1584,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
