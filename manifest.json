@@ -4,9 +4,9 @@
   "description": "Aplicación de asistencia para IPUC Bochica Sur",
   "start_url": "contadorDHpc.html",
   "display": "standalone",
-  "background_color": "#0a5c30",
-  "theme_color": "#0a5c30",
-  "orientation": "landscape",
+  "background_color": "#000000",
+  "theme_color": "#1E6FB8",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "icon-192.png",
