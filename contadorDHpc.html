@@ -1299,14 +1299,20 @@ await verHoy();                  // mostramos automáticamente "Hoy"
 }
 
   
-// Ejecuta TODO apenas el HTML esté parseado (mucho antes que "load")
+// Ejecuta TODO apenas el HTML esté parseado + MUESTRA EL LOADER DESDE EL INICIO
 document.addEventListener("DOMContentLoaded", () => {
+  // FORZAMOS QUE EL LOADER ESTÉ VISIBLE DESDE EL PRIMER SEGUNDO
+  document.getElementById("loaderTexto").textContent = "Cargando asistencia...";
+  document.getElementById("loaderContenedor").classList.add("activo");
+
+  // Ejecutamos las funciones normales
   detectarPantallas();
   cargarAlIniciar();
 });
 </script>
 </body>
 </html>
+
 
 
 
