@@ -723,14 +723,19 @@ td, th { border-color: var(--borde) !important; }
 <!-- MENÚ LATERAL RESPONSIVE -->
 <div id="menuLateral" style="position:fixed;top:0;right:-100%;width:340px;max-width:92vw;height:100vh;background:rgba(15,25,45,0.98);backdrop-filter:blur(20px);border-left:1px solid rgba(255,255,255,0.1);box-shadow:-10px 0 50px rgba(0,0,0,0.7);transition:right .45s cubic-bezier(0.22,1,0.36,1);z-index:999998;padding:16px 20px;overflow-y:auto;color:white;font-family:'Poppins',sans-serif;box-sizing:border-box">
 
-  <!-- Botón cerrar -->
-  <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
-    <div onclick="cerrarMenu()" style="cursor:pointer;padding:8px;border-radius:50%;background:rgba(255,255,255,0.12);transition:all .3s">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="black">
-        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-      </svg>
-    </div>
+<!-- Botón cerrar + Botón Proyección del Día -->
+<div style="display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-bottom:10px">
+  <!-- BOTÓN PROYECCIÓN -->
+  <div onclick="abrirProyeccionDia()" style="cursor:pointer;padding:10px;border-radius:50%;background:rgba(34,197,94,0.25);backdrop-filter:blur(10px);border:1px solid rgba(34,197,94,0.5);transition:all .3s;box-shadow:0 4px 15px rgba(34,197,94,0.3)">
+    <i class="fas fa-projector" style="font-size:20px;color:#22c55e;"></i>
   </div>
+  <!-- BOTÓN CERRAR -->
+  <div onclick="cerrarMenu()" style="cursor:pointer;padding:8px;border-radius:50%;background:rgba(255,255,255,0.12);transition:all .3s">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="black">
+      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+    </svg>
+  </div>
+</div>
 
   <!-- SOBRE NOSOTROS -->
   <div style="background:rgba(255,255,255,0.08);border-radius:16px;padding:18px;margin-bottom:18px;border:1px solid rgba(255,255,255,0.12);box-shadow:0 6px 24px rgba(0,0,0,0.3)">
@@ -770,6 +775,27 @@ td, th { border-color: var(--borde) !important; }
     © 2025 DECOM IPUC Bochica Sur<br>
     Todos los derechos reservados para la gloria de Dios
   </div>
+
+<!-- MODAL PROYECCIÓN DEL DÍA -->
+<div id="modalProyeccion" style="position:fixed;inset:0;background:rgba(0,0,0,0.92);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;z-index:999999;padding:20px">
+  <div style="background:rgba(15,25,45,0.98);border-radius:28px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;padding:32px 28px;text-align:center;border:2px solid rgba(34,197,94,0.4);box-shadow:0 30px 80px rgba(0,0,0,0.7);position:relative">
+    <div style="position:absolute;top:12px;right:16px;cursor:pointer;font-size:28px;color:rgba(255,255,255,0.5);transition:all .3s" onclick="cerrarProyeccion()">
+      <i class="fas fa-times"></i>
+    </div>
+    <h2 style="margin:0 0 24px;font-size:28px;color:#22c55e;font-weight:900">
+      <i class="fas fa-bullhorn" style="margin-right:12px"></i>
+      Mensaje del Día
+    </h2>
+    <div id="proyeccionContenido" style="font-size:19px;line-height:1.9;color:white;min-height:120px;background:rgba(34,197,94,0.12);padding:24px;border-radius:20px;border-left:5px solid #22c55e">
+      Cargando mensaje del día...
+    </div>
+    <div style="margin-top:24px;font-size:15px;opacity:0.8">
+      <span id="proyeccionFecha"></span> • <span id="proyeccionPersona"></span>
+    </div>
+  </div>
+</div>
+
+  
 </div>
 
 
@@ -786,7 +812,53 @@ let ventanaProyeccion = null;
   let yaEstaHoyCargado = false;        // ← indica si ya mostramos la asistencia de hoy
 let intervaloPolling = null;         // ← para poder detenerlo cuando ya esté
 
+const URL_PROYECCION = "https://script.google.com/macros/s/AKfycbxf8jUb2catO-d_Fs0l7jfilwNiPXh8pqxMJ6sBUeCGvsOX0_1PE98w8U7-sm4UzUxA/exec";
 
+function abrirProyeccionDia() {
+  cerrarMenu();
+  document.getElementById("modalProyeccion").style.display = "flex";
+  cargarProyeccionHoy();
+}
+
+function cerrarProyeccion() {
+  document.getElementById("modalProyeccion").style.display = "none";
+}
+
+// Cerrar al tocar fuera
+document.getElementById("modalProyeccion").addEventListener("click", function(e) {
+  if (e.target === this) cerrarProyeccion();
+});
+
+async function cargarProyeccionHoy() {
+  const contenido = document.getElementById("proyeccionContenido");
+  const fechaEl = document.getElementById("proyeccionFecha");
+  const personaEl = document.getElementById("proyeccionPersona");
+
+  contenido.innerHTML = "Buscando mensaje del día...";
+  
+  try {
+    const res = await fetch(URL_PROYECCION + "?t=" + Date.now()); // evita caché
+    const json = await res.json();
+    const data = json.data;
+
+    if (!data) {
+      contenido.innerHTML = "No hay mensaje programado para hoy";
+      fechaEl.textContent = "";
+      personaEl.textContent = "";
+      return;
+    }
+
+    contenido.innerHTML = data.mensaje.replace(/\n/g, "<br>");
+    fechaEl.textContent = data.dia + " " + data.fecha;
+    personaEl.textContent = data.persona;
+
+  } catch (err) {
+    contenido.innerHTML = "Error al cargar el mensaje";
+    console.error(err);
+  }
+}
+
+  
 
 function abrirMenu() {
   document.getElementById("menuLateral").style.right = "0";
@@ -1311,3 +1383,4 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
