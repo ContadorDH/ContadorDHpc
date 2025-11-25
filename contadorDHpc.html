@@ -3,16 +3,41 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="theme-color" content="#ffffff" />
+<meta name="theme-color" content="#1E6FB8" />
 <title>Asistencia IPUC Bochica Sur</title>
-
 <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
 
-
+<!-- ============================================ -->
+<!-- SOLUCIÓN ANTI-PARPADEO + LOADER DESDE EL INICIO -->
+<!-- ============================================ -->
+<script>
+  // 1. Forzamos el loader desde el primer milisegundo
+  document.documentElement.innerHTML = `
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>${document.head.innerHTML}</head>
+    <body style="margin:0;overflow:hidden">
+      <div id="loaderContenedor" class="loader-contenedor activo" style="position:fixed;inset:0;background:rgba(0,0,0,0.92);display:flex;justify-content:center;align-items:center;z-index:99999;backdrop-filter:blur(12px)">
+        <div class="loader-box">
+          <div class="loader"></div>
+          <div class="loader-texto">Cargando asistencia...</div>
+        </div>
+      </div>
+      ${ document.documentElement.innerHTML7.innerHTML }
+    </body>
+    </html>
+  `;
+</script>
 
 <style>
+/* ELIMINAMOS EL FONDO BLANCO POR DEFECTO PARA SIEMPRE */
+  html, body { background: #000 !important; margin:0; padding:0; }
+  
+  /* Loader siempre activo hasta que JS lo quite */
+  .loader-contenedor.activo { opacity:1 !important; visibility:visible !important; }
+  
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -1299,19 +1324,27 @@ await verHoy();                  // mostramos automáticamente "Hoy"
 }
 
   
-// Ejecuta TODO apenas el HTML esté parseado + MUESTRA EL LOADER DESDE EL INICIO
-document.addEventListener("DOMContentLoaded", () => {
-  // FORZAMOS QUE EL LOADER ESTÉ VISIBLE DESDE EL PRIMER SEGUNDO
-  document.getElementById("loaderTexto").textContent = "Cargando asistencia...";
-  document.getElementById("loaderContenedor").classList.add("activo");
+// QUITAMOS EL LOADER CUANDO TODO ESTÁ LISTO
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const loader = document.getElementById('loaderContenedor');
+    if (loader) {
+      loader.classList.remove('activo');
+      setTimeout(() => loader.remove(), 600);
+    }
+  }, 800); // pequeño delay para que se vea bonito
+});
 
-  // Ejecutamos las funciones normales
+// Ejecutamos todo lo demás normalmente
+document.addEventListener("DOMContentLoaded", () => {
   detectarPantallas();
   cargarAlIniciar();
+  aplicarTema(localStorage.getItem("tema") || "claro"); // tema desde el inicio
 });
 </script>
 </body>
 </html>
+
 
 
 
