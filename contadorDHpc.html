@@ -935,7 +935,10 @@ document.getElementById("modalProyeccion").addEventListener("click", function(e)
   if (e.target === this) cerrarProyeccion();
 });
 
-async function cargarCronogramaProyeccion() {
+let datosCompletos = []; // Variable global para guardar todos los datos
+let personaFiltrada = null; // Para saber si estamos filtrando
+
+async function cargarCronogramaProyeccion(filtroPersona = null) {
   const contenido = document.getElementById("proyeccionContenido");
   contenido.innerHTML = "Cargando cronograma...";
 
@@ -948,21 +951,28 @@ async function cargarCronogramaProyeccion() {
       return;
     }
 
+    // Guardamos todos los datos la primera vez
+    if (!filtroPersona) datosCompletos = json.data;
+
     const hoy = new Date().toISOString().slice(0,10);
+    let datosMostrados = filtroPersona ? datosCompletos.filter(item => item.persona === filtroPersona) : datosCompletos;
 
-    // ENCONTRAMOS EL NOMBRE MÁS LARGO PARA AJUSTAR EL ANCHO
+    // Actualizamos el título
+    const titulo = document.querySelector("#modalProyeccion h2");
+    if (filtroPersona) {
+      titulo.innerHTML = `Proyecciones de: <span style="color:var(--acento);font-weight:900">${filtroPersona}</span>`;
+    } else {
+      titulo.textContent = "Cronograma de Proyección";
+    }
+
+    // Ajuste automático del ancho
     let nombreMasLargo = 0;
-    json.data.forEach(item => {
-      if (item.persona && item.persona.length > nombreMasLargo) {
-        nombreMasLargo = item.persona.length;
-      }
+    datosMostrados.forEach(item => {
+      if (item.persona.length > nombreMasLargo) nombreMasLargo = item.persona.length;
     });
-
-    // Ajustamos el ancho del modal según el nombre más largo
     const anchoBase = 620;
-    const anchoExtra = nombreMasLargo > 25 ? (nombreMasLargo - 25) * 10 : 0; // +10px por letra extra
+    const anchoExtra = nombreMasLargo > 25 ? (nombreMasLargo - 25) * 10 : 0;
     const anchoFinal = Math.min(anchoBase + anchoExtra, 1000);
-
     const modalInterno = document.querySelector("#modalProyeccion > div");
     if (modalInterno) {
       modalInterno.style.maxWidth = anchoFinal + "px";
@@ -971,7 +981,7 @@ async function cargarCronogramaProyeccion() {
 
     let tabla = `
       <table style="width:100%;border-collapse:collapse;font-size:17.5px;border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.4);table-layout:auto">
-        <thead style="background:rgba(34,197,94,0.75);position:sticky;top:0;z-index:10">
+        <thead style="background:var(--acento);position:sticky;top:0;z-index:10">
           <tr>
             <th style="padding:20px 16px;text-align:left;color:white;font-weight:800;font-size:18.5px;width:38%">Fecha</th>
             <th style="padding:20px 16px;text-align:center;color:white;font-weight:800;font-size:18.5px;width:18%">Día</th>
@@ -980,50 +990,59 @@ async function cargarCronogramaProyeccion() {
         </thead>
         <tbody>`;
 
-    json.data.forEach(item => {
+    datosMostrados.forEach(item => {
       const fechaISO = item.fechaRaw ? new Date(item.fechaRaw).toISOString().slice(0,10) : "";
       const esHoy = fechaISO === hoy;
 
-      // FECHA EN ESPAÑOL COMPLETA
       let fechaFormateada = item.fecha;
       if (item.fechaRaw) {
         const fecha = new Date(item.fechaRaw);
-        fechaFormateada = fecha.toLocaleDateString('es-ES', {
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric'
-        });
+        fechaFormateada = fecha.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
       }
 
+      const clickable = !filtroPersona ? `cursor:pointer;user-select:none;` : '';
+      const onclick = !filtroPersona ? `onclick="cargarCronogramaProyeccion('${item.persona.replace(/'/g, "\\'")}')"` : '';
+
       tabla += `
-        <tr style="border-bottom:1px solid rgba(255,255,255,0.15);${esHoy?'background:rgba(34,197,94,0.5);font-weight:800':''}">
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.15);${esHoy?'background:var(--fila-sel);font-weight:800':''}">
           <td style="padding:18px 16px;color:${esHoy?'#ffffff':'#e0e0e0'};white-space:normal;line-height:1.4;overflow-wrap:break-word">
             ${fechaFormateada}
           </td>
           <td style="padding:18px 16px;text-align:center;color:${esHoy?'#ffffff':'#bbbbbb'}">${item.dia}</td>
-          <!-- NOMBRE COMPLETO EN UNA LÍNEA + MODAL SE AGRANDA AUTOMÁTICAMENTE -->
-          <td style="padding:18px 16px;color:${esHoy?'#ffffff':'#ffffff'};white-space:nowrap">
-            ${item.persona}
+          <td style="padding:18px 16px;color:${esHoy?'#ffffff':'#ffffff'};white-space:nowrap;${clickable}" ${onclick}>
+            ${!filtroPersona ? `<span style="border-bottom:2px dotted var(--acento);padding-bottom:2px">${item.persona}</span>` : item.persona}
           </td>
         </tr>`;
     });
 
-  // ... dentro del forEach y al final:
-// ... al final de la tabla:
-tabla += `
-    </tbody>
-  </table>
+    tabla += `</tbody></table>`;
 
-  <div style="background:var(--fila-sel);color:var(--acento);border:1.8px solid var(--acento);border-radius:16px;padding:18px;font-weight:700;font-size:16px;text-align:center;margin-top:24px">
-    ✓ ${json.data.length} asignaciones cargadas correctamente
-  </div>`;
+    // Botón volver + mensaje final
+    if (filtroPersona) {
+      tabla += `
+        <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-top:20px">
+          <div onclick="cargarCronogramaProyeccion()" style="cursor:pointer;padding:14px;border-radius:50%;transition:all .3s;display:flex;align-items:center;justify-content:center"
+               onmouseover="this.style.background='rgba(255,255,255,0.12)'"
+               onmouseout="this.style.background='transparent'">
+            <i class="fas fa-arrow-left" style="font-size:24px;color:var(--acento)"></i>
+          </div>
+          <div style="background:var(--fila-sel);color:var(--acento);border:1.8px solid var(--acento);border-radius:16px;padding:18px;font-weight:700;font-size:16px;text-align:center;flex:1">
+            ✓ ${datosMostrados.length} proyecciones de ${filtroPersona}
+          </div>
+        </div>`;
+    } else {
+      tabla += `
+        <div style="background:var(--fila-sel);color:var(--acento);border:1.8px solid var(--acento);border-radius:16px;padding:18px;font-weight:700;font-size:16px;text-align:center;margin-top:24px">
+          ✓ ${datosMostrados.length} asignaciones cargadas correctamente
+        </div>`;
+    }
+
     contenido.innerHTML = tabla;
 
   } catch (err) {
     contenido.innerHTML = "<div style='text-align:center;color:#ff4444;padding:50px;font-size:18px;background:rgba(255,0,0,0.1);border-radius:16px'>Error de conexión<br><small style='opacity:0.8'>Revisa tu internet o contacta a DEHETRONICS</small></div>";
   }
 }
-
 
 
   
@@ -1551,6 +1570,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
