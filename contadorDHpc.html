@@ -615,50 +615,55 @@ body {
   margin-top: 24px;
 }
 
-/* ==================== TEMA OSCURO – AHORA PERFECTO, SIN VERDE, CONTRASTE BÍBLICO ==================== */
+/* ==================== TEMA OSCURO – SOLO NEGRO, GRIS Y BLANCO – CONTRASTE MÁXIMO ==================== */
 body.tema-oscuro #modalProyeccion > div {
-  background: var(--menu-bg) !important;     /* Fondo oscuro del menú lateral */
-  color: #ffffff !important;                  /* TODO EL TEXTO BLANCO */
-  border: 2px solid var(--acento) !important; /* Borde con el azul del tema */
+  background: #0d1117 !important;     /* Negro puro profesional */
+  color: #ffffff !important;           /* Todo el texto BLANCO puro */
+  border: 2px solid #ffffff !important; /* Borde blanco brillante */
 }
 
 body.tema-oscuro #modalProyeccion h2 {
-  color: var(--acento) !important;            /* Título en azul acento */
+  color: #ffffff !important;
+  border-bottom: 2px solid #ffffff !important;
+  text-shadow: 0 0 10px rgba(255,255,255,0.3);
 }
 
 body.tema-oscuro #modalProyeccion th {
-  background: var(--acento) !important;       /* Encabezado = azul del tema (#58a6ff) */
-  color: #ffffff !important;
+  background: #ffffff !important;      /* Encabezado BLANCO */
+  color: #000000 !important;           /* Texto NEGRO en encabezado */
+  font-weight: 900;
 }
 
 body.tema-oscuro #modalProyeccion td {
-  color: #e0e0e0 !important;                  /* Texto de celdas: blanco grisáceo suave */
+  color: #ffffff !important;           /* Todo el texto de la tabla BLANCO */
+  font-weight: 600;
 }
 
 body.tema-oscuro #modalProyeccion tbody tr {
-  border-bottom: 1.5px solid rgba(255,255,255,0.12) !important; /* Líneas sutiles y elegantes */
+  border-bottom: 1.5px solid #444444 !important; /* Gris medio visible */
 }
 
-/* Día de hoy – resaltado con el color acento del tema oscuro (azul bonito) */
+/* Día de hoy – resaltado en GRIS CLARO BRILLANTE */
 body.tema-oscuro #modalProyeccion tr[style*="background"] {
-  background: var(--fila-sel) !important;     /* Usa el azul claro definido en --fila-sel */
-  font-weight: 800 !important;
-  border-bottom: 2.5px solid var(--acento) !important;
+  background: #303030 !important;      /* Gris oscuro elegante */
+  font-weight: 900 !important;
+  border-bottom: 3px solid #ffffff !important; /* Línea blanca gruesa */
+  box-shadow: 0 0 15px rgba(255,255,255,0.15);
 }
 
 body.tema-oscuro #modalProyeccion tr[style*="background"] td {
   color: #ffffff !important;
-  font-weight: 800;
+  font-weight: 900;
 }
 
-/* Mensaje final – también usa el acento del tema */
+/* Mensaje final – fondo gris, texto y borde blanco */
 body.tema-oscuro #proyeccionContenido > div:last-child,
 body.tema-oscuro #modalProyeccion > div > div:last-child {
-  background: var(--fila-sel) !important;
-  color: var(--acento) !important;
-  border: 1.8px solid var(--acento) !important;
+  background: #222222 !important;
+  color: #ffffff !important;
+  border: 2px solid #ffffff !important;
+  font-weight: 800;
 }
-
 
   body.tema-oscuro #menuLateral svg[stroke="var(--acento)"] {
   stroke: #ffffff !important;
@@ -1614,6 +1619,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
