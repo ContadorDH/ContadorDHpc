@@ -845,13 +845,33 @@ async function cargarCronogramaProyeccion() {
 
     const hoy = new Date().toISOString().slice(0,10);
 
+    // ENCONTRAMOS EL NOMBRE MÁS LARGO PARA AJUSTAR EL ANCHO
+    let nombreMasLargo = 0;
+    json.data.forEach(item => {
+      if (item.persona && item.persona.length > nombreMasLargo) {
+        nombreMasLargo = item.persona.length;
+      }
+    });
+
+    // Ajustamos el ancho del modal según el nombre más largo
+    const anchoBase = 620;
+    const anchoExtra = nombreMasLargo > 25 ? (nombreMasLargo - 25) * 8 : 0; // cada letra extra = 8px
+    const anchoFinal = Math.min(anchoBase + anchoExtra, 900); // máximo 900px
+
+    // Aplicamos el ancho dinámico al contenedor del modal
+    const modalInterno = document.querySelector("#modalProyeccion > div");
+    if (modalInterno) {
+      modalInterno.style.maxWidth = anchoFinal + "px";
+      modalInterno.style.width = "95%";
+    }
+
     let tabla = `
-      <table style="width:100%;border-collapse:collapse;font-size:17.5px;min-width:500px;border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.4)">
+      <table style="width:100%;border-collapse:collapse;font-size:17.5px;border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.4);table-layout:fixed">
         <thead style="background:rgba(34,197,94,0.75);position:sticky;top:0;z-index:10">
           <tr>
-            <th style="padding:20px 16px;text-align:left;color:white;font-weight:800;font-size:18.5px">Fecha</th>
-            <th style="padding:20px 16px;text-align:center;color:white;font-weight:800;font-size:18.5px">Día</th>
-            <th style="padding:20px 16px;text-align:left;color:white;font-weight:800;font-size:18.5px">Persona</th>
+            <th style="padding:20px 16px;text-align:left;color:white;font-weight:800;font-size:18.5px;width:32%">Fecha</th>
+            <th style="padding:20px 16px;text-align:center;color:white;font-weight:800;font-size:18.5px;width:18%">Día</th>
+            <th style="padding:20px 16px;text-align:left;color:white;font-weight:800;font-size:18.5px;width:50%">Persona</th>
           </tr>
         </thead>
         <tbody>`;
@@ -862,10 +882,9 @@ async function cargarCronogramaProyeccion() {
 
       tabla += `
         <tr style="border-bottom:1px solid rgba(255,255,255,0.15);transition:all .3s;${esHoy?'background:rgba(34,197,94,0.5);font-weight:800':''}">
-          <td style="padding:18px 16px;color:${esHoy?'#ffffff':'#e0e0e0'}">${item.fecha}</td>
+          <td style="padding:18px 16px;color:${esHoy?'#ffffff':'#e0e0e0'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${item.fecha}</td>
           <td style="padding:18px 16px;text-align:center;color:${esHoy?'#ffffff':'#bbbbbb'}">${item.dia}</td>
-          <!-- AQUÍ ESTÁ LA MAGIA: white-space:nowrap + overflow:hidden + text-overflow -->
-          <td style="padding:18px 16px;color:${esHoy?'#ffffff':'#ffffff'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:0">
+          <td style="padding:18px 16px;color:${esHoy?'#ffffff':'#ffffff'};word-wrap:break-word;overflow-wrap:break-word;hyphens:auto">
             ${item.persona}
           </td>
         </tr>`;
@@ -1409,6 +1428,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
