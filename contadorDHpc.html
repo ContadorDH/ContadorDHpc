@@ -845,7 +845,7 @@ async function cargarCronogramaProyeccion() {
 
     const hoy = new Date().toISOString().slice(0,10);
 
-    // ENCONTRAMOS EL NOMBRE MÁS LARGO PARA AJUSTAR EL ANCHO
+    // ENCONTRAMOS EL NOMBRE MÁS LARGO PARA AJUSTAR EL ANCHO (NO TOCADO)
     let nombreMasLargo = 0;
     json.data.forEach(item => {
       if (item.persona && item.persona.length > nombreMasLargo) {
@@ -853,7 +853,7 @@ async function cargarCronogramaProyeccion() {
       }
     });
 
-    // Ajustamos el ancho del modal según el nombre más largo
+    // Ajustamos el ancho del modal según el nombre más largo (NO TOCADO)
     const anchoBase = 620;
     const anchoExtra = nombreMasLargo > 25 ? (nombreMasLargo - 25) * 8 : 0;
     const anchoFinal = Math.min(anchoBase + anchoExtra, 900);
@@ -879,21 +879,25 @@ async function cargarCronogramaProyeccion() {
       const fechaISO = item.fechaRaw ? new Date(item.fechaRaw).toISOString().slice(0,10) : "";
       const esHoy = fechaISO === hoy;
 
-      // FORMATEO CORRECTO EN ESPAÑOL (sin inglés nunca más)
-      let fechaCompleta = item.fecha;
+      // CORRECCIÓN DE FECHA EN ESPAÑOL Y COMPLETA
+      let fechaFormateada = item.fecha;
       if (item.fechaRaw) {
         const fecha = new Date(item.fechaRaw);
-        const opciones = { day: 'numeric', month: 'long', year: 'numeric' };
-        fechaCompleta = fecha.toLocaleDateString('es-ES', opciones); // "26 de noviembre de 2025"
+        fechaFormateada = fecha.toLocaleDateString('es-ES', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        }); // → "26 de noviembre de 2025"
       }
 
       tabla += `
         <tr style="border-bottom:1px solid rgba(255,255,255,0.15);transition:all .3s;${esHoy?'background:rgba(34,197,94,0.5);font-weight:800':''}">
-          <!-- FECHA COMPLETA EN ESPAÑOL Y SIN CORTAR -->
-          <td style="padding:18px 16px;color:${esHoy?'#ffffff':'#e0e0e0'};white-space:normal;overflow-wrap:break-word;word-wrap:break-word;line-height:1.4">
-            ${fechaCompleta}
+          <!-- FECHA AHORA COMPLETA EN ESPAÑOL Y SIN CORTAR -->
+          <td style="padding:18px 16px;color:${esHoy?'#ffffff':'#e0e0e0'};white-space:normal;line-height:1.4;overflow-wrap:break-word">
+            ${fechaFormateada}
           </td>
           <td style="padding:18px 16px;text-align:center;color:${esHoy?'#ffffff':'#bbbbbb'}">${item.dia}</td>
+          <!-- COLUMNA PERSONA SIN TOCAR (queda exactamente como estaba) -->
           <td style="padding:18px 16px;color:${esHoy?'#ffffff':'#ffffff'};word-wrap:break-word;overflow-wrap:break-word;hyphens:auto">
             ${item.persona}
           </td>
@@ -1437,6 +1441,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
