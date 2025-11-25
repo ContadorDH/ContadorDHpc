@@ -780,18 +780,20 @@ td, th { border-color: var(--borde) !important; }
 
 <!-- MODAL PROYECCIÓN - CRONOGRAMA COMPLETO -->
 <div id="modalProyeccion" style="position:fixed;inset:0;background:rgba(0,0,0,0.92);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;z-index:999999;padding:20px">
-  <div style="background:#0f192d;border-radius:28px;max-width:520px;width:100%;max-height:92vh;overflow-y:auto;padding:32px 28px;text-align:center;border:2px solid rgba(34,197,94,0.4);box-shadow:0 30px 80px rgba(0,0,0,0.7);position:relative">
+  <div style="background:#0f192d;border-radius:28px;max-width:520px;width:100%;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;padding:0;position:relative;box-shadow:0 30px 80px rgba(0,0,0,0.7);border:2px solid rgba(34,197,94,0.4)">
     
     <!-- BOTÓN CERRAR X -->
-    <div onclick="cerrarProyeccion()" style="position:absolute;top:12px;right:16px;cursor:pointer;font-size:30px;color:rgba(255,255,255,0.6);transition:all .3s;padding:8px;border-radius:50%;background:rgba(255,255,255,0.1);width:44px;height:44px;display:flex;align-items:center;justify-content:center">
+    <div onclick="cerrarProyeccion()" style="position:absolute;top:12px;right:16px;cursor:pointer;font-size:30px;color:rgba(255,255,255,0.7);z-index:10;padding:8px;border-radius:50%;background:rgba(255,255,255,0.15);width:44px;height:44px;display:flex;align-items:center;justify-content:center">
       <i class="fas fa-times"></i>
     </div>
 
-    <h2 style="margin:0 0 24px;font-size:28px;color:#22c55e;font-weight:900">
+    <!-- TÍTULO -->
+    <h2 style="margin:0;padding:24px 24px 16px;text-align:center;font-size:28px;color:#22c55e;font-weight:900;background:rgba(34,197,94,0.15)">
       Cronograma de Proyección
     </h2>
 
-    <div id="proyeccionContenido" style="font-size:17px;line-height:1.8;color:white;min-height:200px">
+    <!-- ÁREA CON SCROLL -->
+    <div id="proyeccionContenido" style="flex:1;overflow-y:auto;padding:20px 24px 32px;font-size:17px;line-height:1.8;color:white">
       Cargando cronograma...
     </div>
   </div>
@@ -837,22 +839,20 @@ async function cargarCronogramaProyeccion() {
     const json = await res.json();
 
     if (!json.data || json.data.length === 0) {
-      contenido.innerHTML = "<div style='color:#ff6b6b;padding:30px'>No hay asignaciones</div>";
+      contenido.innerHTML = "<div style='text-align:center;color:#ff6b6b;padding:40px'>No hay asignaciones</div>";
       return;
     }
 
     let tabla = `
-      <!-- CONTENEDOR CON SCROLL PERFECTO -->
-      <div style="max-height:60vh;overflow-y:auto;border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.5);margin:16px 0;background:rgba(255,255,255,0.05)">
-        <table style="width:100%;border-collapse:collapse;font-size:16px">
-          <thead style="background:rgba(34,197,94,0.6);position:sticky;top:0;z-index:10">
-            <tr>
-              <th style="padding:16px 12px;text-align:left;color:#22c55e;font-weight:800">Fecha</th>
-              <th style="padding:16px 12px;text-align:center;color:#22c55e;font-weight:800">Día</th>
-              <th style="padding:16px 12px;text-align:left;color:#22x55e;font-weight:800">Persona</th>
-            </tr>
-          </thead>
-          <tbody>`;
+      <table style="width:100%;border-collapse:collapse;font-size:16.5px;min-width:420px">
+        <thead style="background:rgba(34,197,94,0.6);position:sticky;top:0;z-index:10">
+          <tr>
+            <th style="padding:16px 12px;text-align:left;color:#22c55e;font-weight:800">Fecha</th>
+            <th style="padding:16px 12px;text-align:center;color:#22c55e;font-weight:800">Día</th>
+            <th style="padding:16px 12px;text-align:left;color:#22c55e;font-weight:800">Persona</th>
+          </tr>
+        </thead>
+        <tbody>`;
 
     const hoy = new Date().toISOString().slice(0,10);
 
@@ -861,7 +861,7 @@ async function cargarCronogramaProyeccion() {
       const esHoy = fechaISO === hoy;
 
       tabla += `
-        <tr style="border-bottom:1px solid rgba(255,255,255,0.08);${esHoy?'background:rgba(34,197,94,0.35);font-weight:700':''}">
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.1);${esHoy?'background:rgba(34,197,94,0.4);font-weight:700':''}">
           <td style="padding:14px 12px;color:${esHoy?'#a3ff9e':'#ffffff'}">${item.fecha}</td>
           <td style="padding:14px;text-align:center;color:${esHoy?'#a3ff9e':'#cccccc'}">${item.dia}</td>
           <td style="padding:14px 12px;color:${esHoy?'#a3ff9e':'#ffffff'}">${item.persona}</td>
@@ -869,20 +869,18 @@ async function cargarCronogramaProyeccion() {
     });
 
     tabla += `
-          </tbody>
-        </table>
-      </div>
-      <div style="text-align:center;margin-top:16px;color:#a3ff9e;font-size:15px;font-weight:600">
+        </tbody>
+      </table>
+      <div style="text-align:center;margin-top:20px;padding:16px 0;color:#a3ff9e;font-weight:600;font-size:15px;background:rgba(34,197,94,0.2);border-radius:12px">
         ✓ ${json.data.length} asignaciones cargadas
       </div>`;
 
     contenido.innerHTML = tabla;
 
   } catch (err) {
-    contenido.innerHTML = "<div style='color:#ff6b6b'>Error de conexión</div>";
+    contenido.innerHTML = "<div style='color:#ff6b6b;text-align:center;padding:40px'>Error de conexión</div>";
   }
 }
-  
 
 function abrirMenu() {
   document.getElementById("menuLateral").style.right = "0";
@@ -1407,6 +1405,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
