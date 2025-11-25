@@ -825,7 +825,7 @@ function cerrarProyeccion() {
 }
 
 // Cerrar al tocar fuera
-document.getElementById("modalProyeccion").addEventListener("click", function(e) {
+document.getElementById("modalProyeccion")?.addEventListener("click", function(e) {
   if (e.target === this) cerrarProyeccion();
 });
 
@@ -837,30 +837,27 @@ async function cargarProyeccionHoy() {
   contenido.innerHTML = "Cargando mensaje del día...";
 
   try {
-    const res = await fetch(URL_PROYECCION + "?cache=" + Date.now(), {
-      method: "GET",
-      mode: "cors",           // obligatorio
-      credentials: "omit"
-    });
-
+    const res = await fetch(URL_PROYECCION + "?t=" + Date.now());
+    
     if (!res.ok) throw new Error("Error HTTP: " + res.status);
-
+    
     const json = await res.json();
     const data = json.data;
 
-    if (!data) {
-      contenido.innerHTML = "No hay mensaje programado para hoy";
+    if (!data || !data.mensaje) {
+      contenido.innerHTML = "<div style='opacity:0.8;font-size:18px'>No hay mensaje programado para hoy</div>";
       fechaEl.textContent = "";
       personaEl.textContent = "";
       return;
     }
 
+    // ÉXITO → MOSTRAMOS EL MENSAJE
     contenido.innerHTML = data.mensaje.replace(/\n/g, "<br>");
-    fechaEl.textContent = data.dia + " " + data.fecha;
-    personaEl.textContent = data.persona;
+    fechaEl.textContent = (data.dia || "") + " " + (data.fecha || "");
+    personaEl.textContent = data.persona || "Anónimo";
 
   } catch (err) {
-    contenido.innerHTML = "<span style='color:#ff6b6b'>Error de conexión</span>";
+    contenido.innerHTML = `<span style="color:#ff6b6b">Error de conexión</span>`;
     console.error("Error proyección:", err);
   }
 }
@@ -1390,5 +1387,6 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
