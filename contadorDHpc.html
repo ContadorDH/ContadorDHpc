@@ -555,6 +555,67 @@ body {
   transform: scale(1.15) rotate(90deg);
   /*background: rgba(255,255,255,0.12) !important;*/
 }
+
+
+
+/* ==================== MODAL PROYECCIÓN – 100% COMPATIBLE CON TODOS LOS TEMAS ==================== */
+#modalProyeccion {
+  background: rgba(0,0,0,0.92) !important;
+}
+#modalProyeccion > div {
+  background: var(--menu-bg) !important;                    /* Fondo del modal = mismo que menú lateral */
+  color: var(--menu-texto) !important;                      /* Texto principal */
+  border: 2px solid var(--acento) !important;               /* Borde con el color acento del tema */
+  box-shadow: 0 30px 80px rgba(0,0,0,0.7) !important;
+}
+
+/* Título del modal */
+#modalProyeccion h2 {
+  color: var(--acento) !important;
+  background: rgba(255,255,255,0.08) !important;
+}
+
+/* Tabla dentro del modal */
+#modalProyeccion table {
+  background: transparent !important;
+}
+#modalProyeccion th {
+  background: var(--acento) !important;
+  color: white !important;
+}
+#modalProyeccion td {
+  color: var(--menu-texto) !important;
+  border-bottom: 1px solid var(--menu-borde) !important;
+}
+
+/* Fila del día de hoy */
+#modalProyeccion tr[style*="background"] {
+  background: var(--fila-sel) !important;
+  font-weight: 800 !important;
+}
+
+/* Botón cerrar X */
+#modalProyeccion [onclick="cerrarProyeccion()"] {
+  color: var(--menu-texto) !important;
+  background: rgba(255,255,255,0.15) !important;
+}
+
+/* Mensaje final "asignaciones cargadas" */
+#modalProyeccion > div > div:last-child {
+  background: var(--fila-sel) !important;
+  color: var(--acento) !important;
+  border: 1px solid var(--acento) !important;
+  opacity: 0.9;
+}
+
+/* Tema oscuro especial (porque es el más usado en iglesias) */
+body.tema-oscuro #modalProyeccion th {
+  background: rgba(34,197,94,0.85) !important;
+}
+body.tema-oscuro #modalProyeccion tr[style*="background"] {
+  background: rgba(34,197,94,0.45) !important;
+}
+  
 /* BARRAS DEL BOTÓN MENÚ: NEGRAS EN TEMAS CLAROS 
 body.tema-claro #menuBtn svg,
 body.tema-rosado #menuBtn svg,
@@ -778,22 +839,20 @@ td, th { border-color: var(--borde) !important; }
   
 </div>
 
-<!-- MODAL PROYECCIÓN - CRONOGRAMA COMPLETO -->
+<!-- MODAL PROYECCIÓN – AHORA 100% CON TEMAS -->
 <div id="modalProyeccion" style="position:fixed;inset:0;background:rgba(0,0,0,0.92);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;z-index:999999;padding:20px">
-  <div style="background:#0f192d;border-radius:28px;max-width:620px;width:95%;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;position:relative;box-shadow:0 30px 80px rgba(0,0,0,0.7);border:2px solid rgba(34,197,94,0.4)">
+  <div style="border-radius:28px;max-width:720px;width:95%;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;position:relative">
     
-    <!-- BOTÓN CERRAR X (ahora bien posicionado) -->
-    <div onclick="cerrarProyeccion()" style="position:absolute;top:12px;right:12px;cursor:pointer;font-size:30px;color:white;z-index:20;padding:8px;border-radius:50%;background:rgba(255,255,255,0.18);width:48px;height:48px;display:flex;align-items:center;justify-content:center;transition:all .3s">
-      <i class="fas fa-times"></i>
+    <!-- BOTÓN CERRAR X -->
+    <div onclick="cerrarProyeccion()" style="position:absolute;top:12px;right:12px;cursor:pointer;font-size:30px;z-index:20;padding:10px;border-radius:50%;width:50px;height:50px;display:flex;align-items:center;justify-content:center">
+      X
     </div>
 
-    <!-- TÍTULO -->
-    <h2 style="margin:0;padding:28px 60px 18px 28px;text-align:center;font-size:29px;color:#22c55e;font-weight:900;background:rgba(34,197,94,0.18);border-bottom:2px solid rgba(34,197,94,0.3)">
+    <h2 style="margin:0;padding:28px 60px 18px 28px;text-align:center;font-size:29px;font-weight:900;border-bottom:2px solid transparent">
       Cronograma de Proyección
     </h2>
 
-    <!-- ÁREA CON SCROLL -->
-    <div id="proyeccionContenido" style="flex:1;overflow-y:auto;padding:24px 28px 32px;font-size:17px;line-height:1.8;color:white">
+    <div id="proyeccionContenido" style="flex:1;overflow-y:auto;padding:24px 28px 32px;font-size:17px;line-height:1.8">
       Cargando cronograma...
     </div>
   </div>
@@ -1444,6 +1503,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
