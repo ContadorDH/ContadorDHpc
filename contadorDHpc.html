@@ -839,44 +839,47 @@ async function cargarCronogramaProyeccion() {
     const json = await res.json();
 
     if (!json.data || json.data.length === 0) {
-      contenido.innerHTML = "<div style='text-align:center;color:#ff6b6b;padding:40px'>No hay asignaciones</div>";
+      contenido.innerHTML = "<div style='text-align:center;color:#ff6b6b;padding:50px;font-size:18px'>No hay asignaciones en el cronograma</div>";
       return;
     }
 
-   let tabla = `
-  <table style="width:100%;border-collapse:collapse;font-size:17.5px;min-width:480px">
-    <thead style="background:rgba(34,197,94,0.7);position:sticky;top:0;z-index:10">
-      <tr>
-        <th style="padding:18px 14px;text-align:left;color:#22c55e;font-weight:800;font-size:18px">Fecha</th>
-        <th style="padding:18px 14px;text-align:center;color:#22c55e;font-weight:800;font-size:18px">Día</th>
-        <th style="padding:18px 14px;text-align:left;color:#22c55e;font-weight:800;font-size:18px">Persona</th>
-      </tr>
-    </thead>
-    <tbody>`;
+    const hoy = new Date().toISOString().slice(0,10);
 
-json.data.forEach(item => {
-  const fechaISO = item.fechaRaw ? new Date(item.fechaRaw).toISOString().slice(0,10) : "";
-  const esHoy = fechaISO === hoy;
+    let tabla = `
+      <table style="width:100%;border-collapse:collapse;font-size:17.5px;min-width:500px;border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.4)">
+        <thead style="background:rgba(34,197,94,0.75);position:sticky;top:0;z-index:10">
+          <tr>
+            <th style="padding:20px 16px;text-align:left;color:white;font-weight:800;font-size:18.5px">Fecha</th>
+            <th style="padding:20px 16px;text-align:center;color:white;font-weight:800;font-size:18.5px">Día</th>
+            <th style="padding:20px 16px;text-align:left;color:white;font-weight:800;font-size:18.5px">Persona</th>
+          </tr>
+        </thead>
+        <tbody>`;
 
-  tabla += `
-    <tr style="border-bottom:1px solid rgba(255,255,255,0.12);${esHoy?'background:rgba(34,197,94,0.45);font-weight:700':''}">
-      <td style="padding:16px 14px;color:${esHoy?'#a3ff9e':'#ffffff'}">${item.fecha}</td>
-      <td style="padding:16px 14px;text-align:center;color:${esHoy?'#a3ff9e':'#cccccc'}">${item.dia}</td>
-      <td style="padding:16px 14px;color:${esHoy?'#a3ff9e':'#ffffff'}">${item.persona}</td>
-    </tr>`;
-});
+    json.data.forEach(item => {
+      const fechaISO = item.fechaRaw ? new Date(item.fechaRaw).toISOString().slice(0,10) : "";
+      const esHoy = fechaISO === hoy;
+
+      tabla += `
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.15);transition:all .3s;${esHoy?'background:rgba(34,197,94,0.5);font-weight:800':''}">
+          <td style="padding:18px 16px;color:${esHoy?'#ffffff':'#e0e0e0'}">${item.fecha}</td>
+          <td style="padding:18px 16px;text-align:center;color:${esHoy?'#ffffff':'#bbbbbb'}">${item.dia}</td>
+          <td style="padding:18px 16px;color:${esHoy?'#ffffff':'#ffffff'}">${item.persona}</td>
+        </tr>`;
+    });
 
     tabla += `
         </tbody>
       </table>
-      <div style="text-align:center;margin-top:20px;padding:16px 0;color:#a3ff9e;font-weight:600;font-size:15px;background:rgba(34,197,94,0.2);border-radius:12px">
-        ✓ ${json.data.length} asignaciones cargadas
+
+      <div style="text-align:center;margin-top:24px;padding:18px;background:rgba(34,197,94,0.25);border-radius:16px;color:#a3ff9e;font-weight:700;font-size:16px;border:1px solid rgba(34,197,94,0.4)">
+        ✓ ${json.data.length} asignaciones cargadas correctamente
       </div>`;
 
     contenido.innerHTML = tabla;
 
   } catch (err) {
-    contenido.innerHTML = "<div style='color:#ff6b6b;text-align:center;padding:40px'>Error de conexión</div>";
+    contenido.innerHTML = "<div style='text-align:center;color:#ff4444;padding:50px;font-size:18px;background:rgba(255,0,0,0.1);border-radius:16px'>Error de conexión<br><small style='opacity:0.8'>Revisa tu internet o contacta a DEHETRONICS</small></div>";
   }
 }
 
@@ -1403,6 +1406,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
