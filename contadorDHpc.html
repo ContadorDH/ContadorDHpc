@@ -817,48 +817,62 @@ const URL_PROYECCION = "https://script.google.com/macros/s/AKfycbxf8jUb2catO-d_F
 function abrirProyeccionDia() {
   cerrarMenu();
   document.getElementById("modalProyeccion").style.display = "flex";
-  cargarProyeccionHoy();
+  cargarCronogramaProyeccion();
 }
 
-function cerrarProyeccion() {
-  document.getElementById("modalProyeccion").style.display = "none";
-}
-
-document.getElementById("modalProyeccion")?.addEventListener("click", function(e) {
-  if (e.target === this) cerrarProyeccion();
-});
-
-async function cargarProyeccionHoy() {
+async function cargarCronogramaProyeccion() {
   const contenido = document.getElementById("proyeccionContenido");
-  const fechaEl = document.getElementById("proyeccionFecha");
-  const personaEl = document.getElementById("proyeccionPersona");
-
-  contenido.innerHTML = "Cargando mensaje del día...";
+  
+  contenido.innerHTML = "Cargando cronograma de proyección...";
 
   try {
     const res = await fetch(URL_PROYECCION + "?t=" + Date.now());
-    
-    if (!res.ok) {
-      contenido.innerHTML = `Error ${res.status}`;
-      return;
-    }
-    
     const json = await res.json();
-    const data = json.data;
-
-    if (!data) {
-      contenido.innerHTML = "No hay mensaje programado para hoy";
-      fechaEl.textContent = "";
-      personaEl.textContent = "";
+    
+    if (!json.success || !json.data || json.data.length === 0) {
+      contenido.innerHTML = "<div style='opacity:0.8'>No hay datos en el cronograma</div>";
       return;
     }
 
-    contenido.innerHTML = data.mensaje.replace(/\n/g, "<br>");
-    fechaEl.textContent = (data.dia || "") + " " + (data.fecha || "");
-    personaEl.textContent = data.persona || "Anónimo";
+    let tabla = `
+      <div style="max-height:60vh;overflow-y:auto;margin:16px 0;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.3)">
+        <table style="width:100%;border-collapse:collapse;background:rgba(255,255,255,0.1);font-size:16px">
+          <thead style="background:rgba(34,197,94,0.4);position:sticky;top:0;z-index:1">
+            <tr>
+              <th style="padding:14px 12px;text-align:left;color:#22c55e;font-weight:800">Fecha</th>
+              <th style="padding:14px 12px;text-align:center;color:#22c55e;font-weight:800">Día</th>
+              <th style="padding:14px 12px;text-align:left;color:#22c55e;font-weight:800">Persona</th>
+            </tr>
+          </thead>
+          <tbody>
+    `;
+
+    json.data.forEach(item => {
+      const hoy = new Date().toISOString().split('T')[0];
+      const esHoy = item.fechaRaw && new Date(item.fechaRaw).toISOString().split('T')[0] === hoy;
+      
+      tabla += `
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.1);${esHoy ? 'background:rgba(34,197,94,0.25);font-weight:700' : ''}">
+          <td style="padding:12px;color:${esHoy?'#a3ff9e':'white'}">${item.fecha}</td>
+          <td style="padding:12px;text-align:center;color:${esHoy?'#a3ff9e':'#bbbbbb'}">${item.dia}</td>
+          <td style="padding:12px;color:${esHoy?'#a3ff9e':'white'}">${item.persona}</td>
+        </tr>
+      `;
+    });
+
+    tabla += `
+          </tbody>
+        </table>
+      </div>
+      <div style="text-align:center;opacity:0.8;font-size:14px;margin-top:12px">
+        Total: ${json.data.length} asignaciones
+      </div>
+    `;
+
+    contenido.innerHTML = tabla;
 
   } catch (err) {
-    contenido.innerHTML = "Error de conexión";
+    contenido.innerHTML = "Error al cargar el cronograma";
     console.error(err);
   }
 }
@@ -1388,6 +1402,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
