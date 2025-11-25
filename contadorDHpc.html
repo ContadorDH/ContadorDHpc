@@ -557,11 +557,10 @@ body {
 }
 
 
-
-/* ==================== MODAL PROYECCIÓN – PERFECCIONADO PARA TODOS LOS TEMAS ==================== */
+/* ==================== MODAL PROYECCIÓN – VERSIÓN FINAL 100% PERFECTA ==================== */
 #modalProyeccion > div {
   background: var(--menu-bg) !important;
-  color: var(--menu-texto) !important;
+  color: #ffffff !important;                  /* ← TEXTO SIEMPRE BLANCO EN TODOS LOS TEMAS */
   border: 2px solid var(--acento) !important;
 }
 
@@ -572,10 +571,9 @@ body {
   border-bottom: 2px solid var(--acento) !important;
 }
 
-/* Tabla - fondo y texto bien legible */
+/* Tabla */
 #modalProyeccion table {
   background: transparent !important;
-  color: var(--menu-texto) !important;
 }
 #modalProyeccion th {
   background: var(--acento) !important;
@@ -583,32 +581,31 @@ body {
   font-weight: 800;
 }
 #modalProyeccion td {
-  color: var(--menu-texto) !important;
+  color: #ffffff !important;                  /* ← TODOS LOS TD SIEMPRE BLANCO */
 }
 
-/* LÍNEAS DE FILAS AHORA DEL MISMO COLOR QUE LAS COLUMNAS (color acento del tema) */
+/* LÍNEAS DE FILAS → MISMO COLOR ACENTO QUE LAS COLUMNAS */
 #modalProyeccion tbody tr {
   border-bottom: 1.5px solid var(--acento) !important;
-  opacity: 0.45;
+  opacity: 0.5;
 }
 
-/* Día de hoy → línea más fuerte y visible */
+/* Día de hoy */
 #modalProyeccion tr[style*="background"] {
   background: var(--fila-sel) !important;
   font-weight: 800 !important;
-  color: var(--acento) !important;
   border-bottom: 2.5px solid var(--acento) !important;
 }
 #modalProyeccion tr[style*="background"] td {
-  color: var(--acento) !important;
+  color: #ffffff !important;
   font-weight: 800;
 }
 
-/* Mensaje final "asignaciones cargadas" → AHORA SÍ 100% CON EL COLOR DEL TEMA (nunca más negro) */
+/* MENSAJE FINAL "asignaciones cargadas" → TEXTO EN COLOR ACENTO (verde, azul, rosado, etc.) */
 #modalProyeccion > div > div:last-child,
 #proyeccionContenido > div:last-child {
   background: var(--fila-sel) !important;
-  color: var(--acento) !important;
+  color: var(--acento) !important;     /* ← Aquí está la clave: usa el acento del tema */
   border: 1.8px solid var(--acento) !important;
   border-radius: 16px;
   padding: 18px;
@@ -618,23 +615,19 @@ body {
   margin-top: 24px;
 }
 
-/* Tema oscuro especial – verde perfecto y legible */
+/* Tema oscuro – verde perfecto */
 body.tema-oscuro #modalProyeccion th {
   background: #22c55e !important;
 }
 body.tema-oscuro #modalProyeccion tr[style*="background"] {
   background: rgba(34,197,94,0.55) !important;
 }
-body.tema-oscuro #modalProyeccion td {
-  color: #e0ffe0 !important;
-}
 body.tema-oscuro #modalProyeccion tbody tr {
-  border-bottom: 1.5px solid rgba(34,197,94,0.6) !important;
+  border-bottom: 1.5px solid rgba(34,197,94,0.7) !important;
 }
 body.tema-oscuro #modalProyeccion tr[style*="background"] {
   border-bottom: 2.5px solid #22c55e !important;
 }
-  
 /* BARRAS DEL BOTÓN MENÚ: NEGRAS EN TEMAS CLAROS 
 body.tema-claro #menuBtn svg,
 body.tema-rosado #menuBtn svg,
@@ -1524,6 +1517,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
