@@ -780,7 +780,7 @@ td, th { border-color: var(--borde) !important; }
 
 <!-- MODAL PROYECCIÓN - CRONOGRAMA COMPLETO -->
 <div id="modalProyeccion" style="position:fixed;inset:0;background:rgba(0,0,0,0.92);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;z-index:999999;padding:20px">
-  <div style="background:rgba(15,25,45,0.98);border-radius:28px;max-width:520px;width:100%;max-height:92vh;overflow-y:auto;padding:32px 28px;text-align:center;border:2px solid rgba(34,197,94,0.4);box-shadow:0 30px 80px rgba(0,0,0,0.7);position:relative">
+  <div style="background:#0f192d;border-radius:28px;max-width:520px;width:100%;max-height:92vh;overflow-y:auto;padding:32px 28px;text-align:center;border:2px solid rgba(34,197,94,0.4);box-shadow:0 30px 80px rgba(0,0,0,0.7);position:relative">
     
     <!-- BOTÓN CERRAR X -->
     <div onclick="cerrarProyeccion()" style="position:absolute;top:12px;right:16px;cursor:pointer;font-size:30px;color:rgba(255,255,255,0.6);transition:all .3s;padding:8px;border-radius:50%;background:rgba(255,255,255,0.1);width:44px;height:44px;display:flex;align-items:center;justify-content:center">
@@ -796,7 +796,6 @@ td, th { border-color: var(--borde) !important; }
     </div>
   </div>
 </div>
-
 
 
   
@@ -831,35 +830,26 @@ document.getElementById("modalProyeccion").addEventListener("click", function(e)
 
 async function cargarCronogramaProyeccion() {
   const contenido = document.getElementById("proyeccionContenido");
-  contenido.innerHTML = "Conectando con Google Sheets...";
+  contenido.innerHTML = "Cargando cronograma...";
 
   try {
     const res = await fetch(URL_PROYECCION + "?t=" + Date.now());
-    const textoCrudo = await res.text();  // ← primero lo vemos como texto
-
-    // ALERTA PARA VER EXACTAMENTE QUÉ DEVUELVE EL SCRIPT
-    alert("RESPUESTA DEL SCRIPT:\n\n" + textoCrudo);
-
-    // Ahora intentamos convertirlo a JSON
-    const json = JSON.parse(textoCrudo);
-
-    // ALERTA EXTRA: vemos el objeto completo
-    alert("OBJETO JSON:\n\n" + JSON.stringify(json, null, 2));
+    const json = await res.json();
 
     if (!json.data || json.data.length === 0) {
-      contenido.innerHTML = "<div style='color:#ff6b6b;padding:20px'>El script devolvió datos vacíos</div>";
+      contenido.innerHTML = "<div style='color:#ff6b6b;padding:30px'>No hay asignaciones</div>";
       return;
     }
 
-    // SI LLEGA HASTA AQUÍ → YA TENEMOS DATOS!
     let tabla = `
-      <div style="max-height:55vh;overflow-y:auto;border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.4);margin:10px 0">
-        <table style="width:100%;border-collapse:collapse;background:rgba(255,255,255,0.08);font-size:16px">
-          <thead style="background:rgba(34,197,94,0.5);position:sticky;top:0">
+      <!-- CONTENEDOR CON SCROLL PERFECTO -->
+      <div style="max-height:60vh;overflow-y:auto;border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.5);margin:16px 0;background:rgba(255,255,255,0.05)">
+        <table style="width:100%;border-collapse:collapse;font-size:16px">
+          <thead style="background:rgba(34,197,94,0.6);position:sticky;top:0;z-index:10">
             <tr>
               <th style="padding:16px 12px;text-align:left;color:#22c55e;font-weight:800">Fecha</th>
               <th style="padding:16px 12px;text-align:center;color:#22c55e;font-weight:800">Día</th>
-              <th style="padding:16px 12px;text-align:left;color:#22c55e;font-weight:800">Persona</th>
+              <th style="padding:16px 12px;text-align:left;color:#22x55e;font-weight:800">Persona</th>
             </tr>
           </thead>
           <tbody>`;
@@ -871,23 +861,25 @@ async function cargarCronogramaProyeccion() {
       const esHoy = fechaISO === hoy;
 
       tabla += `
-        <tr style="border-bottom:1px solid rgba(255,255,255,0.08);${esHoy?'background:rgba(34,197,94,0.3);font-weight:700':''}">
-          <td style="padding:14px;color:${esHoy?'#a3ff9e':'white'}">${item.fecha}</td>
-          <td style="padding:14px;text-align:center;color:${esHoy?'#a3ff9e':'#ccc'}">${item.dia}</td>
-          <td style="padding:14px;color:${esHoy?'#a3ff9e':'white'}">${item.persona}</td>
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.08);${esHoy?'background:rgba(34,197,94,0.35);font-weight:700':''}">
+          <td style="padding:14px 12px;color:${esHoy?'#a3ff9e':'#ffffff'}">${item.fecha}</td>
+          <td style="padding:14px;text-align:center;color:${esHoy?'#a3ff9e':'#cccccc'}">${item.dia}</td>
+          <td style="padding:14px 12px;color:${esHoy?'#a3ff9e':'#ffffff'}">${item.persona}</td>
         </tr>`;
     });
 
-    tabla += `</tbody></table></div>
-      <div style="text-align:center;margin-top:16px;opacity:0.9;font-size:15px;color:#a3ff9e">
-        ✓ ${json.data.length} asignaciones cargadas correctamente
+    tabla += `
+          </tbody>
+        </table>
+      </div>
+      <div style="text-align:center;margin-top:16px;color:#a3ff9e;font-size:15px;font-weight:600">
+        ✓ ${json.data.length} asignaciones cargadas
       </div>`;
 
     contenido.innerHTML = tabla;
 
   } catch (err) {
-    contenido.innerHTML = "<div style='color:#ff6b6b'>Error: " + err.message + "</div>";
-    alert("ERROR TÉCNICO:\n" + err.message);
+    contenido.innerHTML = "<div style='color:#ff6b6b'>Error de conexión</div>";
   }
 }
   
@@ -1415,6 +1407,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
