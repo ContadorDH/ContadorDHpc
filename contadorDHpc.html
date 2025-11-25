@@ -775,8 +775,10 @@ td, th { border-color: var(--borde) !important; }
     © 2025 DECOM IPUC Bochica Sur<br>
     Todos los derechos reservados para la gloria de Dios
   </div>
+  
+</div>
 
-<!-- MODAL PROYECCIÓN DEL DÍA -->
+  <!-- MODAL PROYECCIÓN DEL DÍA -->
 <div id="modalProyeccion" style="position:fixed;inset:0;background:rgba(0,0,0,0.92);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;z-index:999999;padding:20px">
   <div style="background:rgba(15,25,45,0.98);border-radius:28px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;padding:32px 28px;text-align:center;border:2px solid rgba(34,197,94,0.4);box-shadow:0 30px 80px rgba(0,0,0,0.7);position:relative">
     <div style="position:absolute;top:12px;right:16px;cursor:pointer;font-size:28px;color:rgba(255,255,255,0.5);transition:all .3s" onclick="cerrarProyeccion()">
@@ -795,8 +797,6 @@ td, th { border-color: var(--borde) !important; }
   </div>
 </div>
 
-  
-</div>
 
 
   
@@ -834,10 +834,17 @@ async function cargarProyeccionHoy() {
   const fechaEl = document.getElementById("proyeccionFecha");
   const personaEl = document.getElementById("proyeccionPersona");
 
-  contenido.innerHTML = "Buscando mensaje del día...";
-  
+  contenido.innerHTML = "Cargando mensaje del día...";
+
   try {
-    const res = await fetch(URL_PROYECCION + "?t=" + Date.now()); // evita caché
+    const res = await fetch(URL_PROYECCION + "?cache=" + Date.now(), {
+      method: "GET",
+      mode: "cors",           // obligatorio
+      credentials: "omit"
+    });
+
+    if (!res.ok) throw new Error("Error HTTP: " + res.status);
+
     const json = await res.json();
     const data = json.data;
 
@@ -853,8 +860,8 @@ async function cargarProyeccionHoy() {
     personaEl.textContent = data.persona;
 
   } catch (err) {
-    contenido.innerHTML = "Error al cargar el mensaje";
-    console.error(err);
+    contenido.innerHTML = "<span style='color:#ff6b6b'>Error de conexión</span>";
+    console.error("Error proyección:", err);
   }
 }
 
@@ -1383,4 +1390,5 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
