@@ -796,15 +796,21 @@ td, th { border-color: var(--borde) !important; }
 <!-- MENÚ LATERAL RESPONSIVE -->
 <div id="menuLateral" style="position:fixed;top:0;right:-100%;width:340px;max-width:92vw;height:100vh;background:rgba(15,25,45,0.98);backdrop-filter:blur(20px);border-left:1px solid rgba(255,255,255,0.1);box-shadow:-10px 0 50px rgba(0,0,0,0.7);transition:right .45s cubic-bezier(0.22,1,0.36,1);z-index:999998;padding:16px 20px;overflow-y:auto;color:white;font-family:'Poppins',sans-serif;box-sizing:border-box">
 
-<!-- Botón cerrar + Botón Proyección del Día -->
-<div style="display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-bottom:10px">
-  <!-- BOTÓN PROYECCIÓN -->
-  <div onclick="abrirProyeccionDia()" style="cursor:pointer;padding:10px;border-radius:50%;background:rgba(34,197,94,0.25);backdrop-filter:blur(10px);border:1px solid rgba(34,197,94,0.5);transition:all .3s;box-shadow:0 4px 15px rgba(34,197,94,0.3)">
-    <i class="fas fa-projector" style="font-size:20px;color:#22c55e;"></i>
+<!-- Botón Proyección + Botón Cerrar (AHORA PERFECTO) -->
+<div style="display:flex;justify-content:space-between;align-items:center;padding:0 16px;margin-bottom:12px">
+  
+  <!-- BOTÓN PROYECCIÓN (izquierda) -->
+  <div onclick="abrirProyeccionDia()" 
+       style="cursor:pointer;padding:14px;border-radius:50%;background:rgba(34,197,94,0.25);backdrop-filter:blur(12px);border:2px solid rgba(34,197,94,0.5);transition:all .3s;box-shadow:0 6px 20px rgba(34,197,94,0.35);display:flex;align-items:center;justify-content:center"
+       title="Cronograma de Proyección">
+    <i class="fas fa-projector" style="font-size:24px;color:#22c55e;"></i>
   </div>
-  <!-- BOTÓN CERRAR -->
-  <div onclick="cerrarMenu()" style="cursor:pointer;padding:8px;border-radius:50%;background:rgba(255,255,255,0.12);transition:all .3s">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="black">
+  
+  <!-- BOTÓN CERRAR (derecha) -->
+  <div onclick="cerrarMenu()" 
+       style="cursor:pointer;padding:10px;border-radius:50%;background:rgba(255,255,255,0.15);transition:all .3s;display:flex;align-items:center;justify-content:center"
+       title="Cerrar">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
       <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
     </svg>
   </div>
@@ -1517,6 +1523,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
