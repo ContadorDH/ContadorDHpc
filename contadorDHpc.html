@@ -684,7 +684,20 @@ td, th { border-color: var(--borde) !important; }
 }
 
 
-
+/* EFECTO HOVER PROFESIONAL PARA EL BOTÓN DE PROYECCIÓN */
+#menuLateral div[onclick="abrirProyeccionDia()"]:hover > div:last-child {
+  transform: scale(1.1);
+  opacity: 0.25;
+}
+#menuLateral div[onclick="abrirProyeccionDia()"]:hover svg {
+  stroke: white !important;
+  transform: scale(1.15);
+  filter: drop-shadow(0 0 8px var(--acento));
+}
+#menuLateral div[onclick="abrirProyeccionDia()"]:active {
+  transform: scale(0.95);
+}
+  
   
 </style>
 </head>
@@ -801,17 +814,15 @@ td, th { border-color: var(--borde) !important; }
 <!-- MENÚ LATERAL RESPONSIVE -->
 <div id="menuLateral" style="position:fixed;top:0;right:-100%;width:340px;max-width:92vw;height:100vh;background:rgba(15,25,45,0.98);backdrop-filter:blur(20px);border-left:1px solid rgba(255,255,255,0.1);box-shadow:-10px 0 50px rgba(0,0,0,0.7);transition:right .45s cubic-bezier(0.22,1,0.36,1);z-index:999998;padding:16px 20px;overflow-y:auto;color:white;font-family:'Poppins',sans-serif;box-sizing:border-box">
 
-<!-- Botón Proyección + Botón Cerrar (ÍCONO PERFECTO + TEMAS 100%) -->
+<!-- Botón Proyección + Cerrar (EFECTO HOVER PROFESIONAL 100%) -->
 <div style="display:flex;justify-content:space-between;align-items:center;padding:0 16px;margin-bottom:12px">
   
-  <!-- BOTÓN PROYECCIÓN (izquierda) - ÍCONO MODERNO + COLOR DEL TEMA -->
+  <!-- BOTÓN PROYECCIÓN – EFECTO HOVER DE LUJO -->
   <div onclick="abrirProyeccionDia()" 
-       style="cursor:pointer;padding:14px;border-radius:50%;transition:all .3s;display:flex;align-items:center;justify-content:center"
-       onmouseover="this.style.background='rgba(var(--acento-rgb),0.12)'"
-       onmouseout="this.style.background='transparent'">
+       style="cursor:pointer;padding:16px;border-radius:50%;transition:all .4s ease;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center">
     
-    <!-- ÍCONO PROYECTOR ESTILO PRESENTACIÓN - MUY ELEGANTE -->
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--acento)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <!-- ÍCONO PROYECTOR (color del tema) -->
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--acento)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="z-index:2;position:relative;transition:all .4s">
       <rect x="3" y="5" width="15" height="11" rx="2"/>
       <path d="M18 7v8a2 2 0 0 1-2 2H8"/>
       <circle cx="12" cy="10.5" r="2.5"/>
@@ -820,9 +831,12 @@ td, th { border-color: var(--borde) !important; }
       <path d="M9 19v-3"/>
       <path d="M15 19v-3"/>
     </svg>
+    
+    <!-- ONDA DE COLOR QUE CRECE AL PASAR EL MOUSE (EFECTO MODERNO) -->
+    <div style="position:absolute;inset:0;border-radius:50%;background:var(--acento);transform:scale(0);transition:transform .5s ease"></div>
   </div>
   
-  <!-- BOTÓN CERRAR (derecha) - 100% SIN TOCAR, EXACTAMENTE COMO LO TENÍAS -->
+  <!-- BOTÓN CERRAR (100% SIN TOCAR) -->
   <div onclick="cerrarMenu()" style="cursor:pointer;padding:8px;border-radius:50%;background:rgba(255,255,255,0.12);transition:all .3s">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="black">
       <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
@@ -1537,6 +1551,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
