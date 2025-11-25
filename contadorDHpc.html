@@ -38,6 +38,10 @@ body::before {
   body::before { opacity: 0.10; }   /* o 0.08 si quieres aún más suave */
 }
 
+ @media all and (display-mode: standalone) {
+    body { background: #000 !important; }
+  } 
+
 header {
   background: rgba(30, 111, 184, 0.96); /* Un poco más sólido para que se lea bien sobre el fondo */
   color: white;
@@ -782,28 +786,7 @@ let ventanaProyeccion = null;
   let yaEstaHoyCargado = false;        // ← indica si ya mostramos la asistencia de hoy
 let intervaloPolling = null;         // ← para poder detenerlo cuando ya esté
 
-// Cambia el color de la barra superior según el tema
-  function actualizarThemeColor() {
-    const tema = localStorage.getItem("tema") || "claro";
-    const colores = {
-      claro: "#1E6FB8",
-      oscuro: "#58a6ff",
-      rosado: "#e91e63",
-      lila: "#a855f7",
-      beige: "#8d6e63",
-      verde: "#22c55e",
-      gris: "#607d8b",
-      naranja: "#fb923c"
-    };
-    document.querySelector('meta[name="theme-color"]').setAttribute('content', colores[tema] || "#1E6FB8");
-  }
-  actualizarThemeColor();
-  // Y lo actualizas cada vez que cambias de tema
-  const originalAplicarTema = aplicarTema;
-  aplicarTema = function(t) {
-    originalAplicarTema(t);
-    actualizarThemeColor();
-  };
+
 
 function abrirMenu() {
   document.getElementById("menuLateral").style.right = "0";
@@ -1328,7 +1311,3 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
-
-
-
-
