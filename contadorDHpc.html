@@ -558,62 +558,78 @@ body {
 
 
 
-/* ==================== MODAL PROYECCIÓN – 100% COMPATIBLE CON TODOS LOS TEMAS ==================== */
-#modalProyeccion {
-  background: rgba(0,0,0,0.92) !important;
-}
+/* ==================== MODAL PROYECCIÓN – PERFECCIONADO PARA TODOS LOS TEMAS ==================== */
 #modalProyeccion > div {
-  background: var(--menu-bg) !important;                    /* Fondo del modal = mismo que menú lateral */
-  color: var(--menu-texto) !important;                      /* Texto principal */
-  border: 2px solid var(--acento) !important;               /* Borde con el color acento del tema */
-  box-shadow: 0 30px 80px rgba(0,0,0,0.7) !important;
+  background: var(--menu-bg) !important;
+  color: var(--menu-texto) !important;
+  border: 2px solid var(--acento) !important;
 }
 
-/* Título del modal */
+/* Título */
 #modalProyeccion h2 {
   color: var(--acento) !important;
   background: rgba(255,255,255,0.08) !important;
+  border-bottom: 2px solid var(--acento) !important;
 }
 
-/* Tabla dentro del modal */
+/* Tabla - fondo y texto bien legible */
 #modalProyeccion table {
   background: transparent !important;
+  color: var(--menu-texto) !important;
 }
 #modalProyeccion th {
   background: var(--acento) !important;
-  color: white !important;
+  color: #ffffff !important;
+  font-weight: 800;
 }
 #modalProyeccion td {
   color: var(--menu-texto) !important;
-  border-bottom: 1px solid var(--menu-borde) !important;
+  /* LÍNEAS DIVISORAS MUY VISIBLES */
+  border-bottom: 1.5px solid var(--menu-borde) !important;
 }
 
-/* Fila del día de hoy */
+/* Fila del día de hoy - más destacada */
 #modalProyeccion tr[style*="background"] {
   background: var(--fila-sel) !important;
   font-weight: 800 !important;
+  color: var(--acento) !important;
+}
+#modalProyeccion tr[style*="background"] td {
+  color: var(--acento) !important;
+  font-weight: 800;
 }
 
-/* Botón cerrar X */
-#modalProyeccion [onclick="cerrarProyeccion()"] {
-  color: var(--menu-texto) !important;
-  background: rgba(255,255,255,0.15) !important;
+/* LÍNEAS DIVISORAS ENTRE FILAS (incluso si no es hoy) */
+#modalProyeccion tbody tr {
+  border-bottom: 1.5px solid var(--menu-borde) !important;
 }
 
-/* Mensaje final "asignaciones cargadas" */
-#modalProyeccion > div > div:last-child {
+/* Mensaje final "asignaciones cargadas" - ahora 100% con tema */
+#modalProyeccion > div > div:last-child,
+#proyeccionContenido > div:last-child {
   background: var(--fila-sel) !important;
   color: var(--acento) !important;
-  border: 1px solid var(--acento) !important;
-  opacity: 0.9;
+  border: 1.8px solid var(--acento) !important;
+  border-radius: 16px;
+  padding: 18px;
+  font-weight: 700;
+  font-size: 16px;
+  text-align: center;
+  margin-top: 24px;
 }
 
-/* Tema oscuro especial (porque es el más usado en iglesias) */
+/* Tema oscuro especial - verde más fuerte y legible */
 body.tema-oscuro #modalProyeccion th {
-  background: rgba(34,197,94,0.85) !important;
+  background: #22c55e !important;
 }
 body.tema-oscuro #modalProyeccion tr[style*="background"] {
-  background: rgba(34,197,94,0.45) !important;
+  background: rgba(34,197,94,0.55) !important;
+}
+body.tema-oscuro #modalProyeccion td {
+  color: #e0ffe0 !important;
+}
+body.tema-oscuro #modalProyeccion tbody tr {
+  border-bottom: 1.5px solid #22c55e44 !important;
 }
   
 /* BARRAS DEL BOTÓN MENÚ: NEGRAS EN TEMAS CLAROS 
@@ -962,12 +978,15 @@ async function cargarCronogramaProyeccion() {
         </tr>`;
     });
 
-    tabla += `
-        </tbody>
-      </table>
-      <div style="text-align:center;margin-top:24px;padding:18px;background:rgba(34,197,94,0.25);border-radius:16px;color:#a3ff9e;font-weight:700;font-size:16px;border:1px solid rgba(34,197,94,0.4)">
-        ✓ ${json.data.length} asignaciones cargadas correctamente
-      </div>`;
+  // ... dentro del forEach y al final:
+tabla += `
+    </tbody>
+  </table>
+
+  <!-- MENSAJE FINAL AHORA 100% COMPATIBLE CON TEMAS -->
+  <div style='background:var(--fila-sel);color:var(--acento);border:1.8px solid var(--acento);border-radius:16px;padding:18px;font-weight:700;font-size:16px;text-align:center;margin-top:24px'>
+    ✓ ${json.data.length} asignaciones cargadas correctamente
+  </div>`;
 
     contenido.innerHTML = tabla;
 
@@ -1503,6 +1522,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
