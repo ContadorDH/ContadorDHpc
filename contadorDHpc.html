@@ -780,20 +780,20 @@ td, th { border-color: var(--borde) !important; }
 
 <!-- MODAL PROYECCIÓN - CRONOGRAMA COMPLETO -->
 <div id="modalProyeccion" style="position:fixed;inset:0;background:rgba(0,0,0,0.92);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;z-index:999999;padding:20px">
-  <div style="background:#0f192d;border-radius:28px;max-width:520px;width:100%;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;padding:0;position:relative;box-shadow:0 30px 80px rgba(0,0,0,0.7);border:2px solid rgba(34,197,94,0.4)">
+  <div style="background:#0f192d;border-radius:28px;max-width:620px;width:95%;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;position:relative;box-shadow:0 30px 80px rgba(0,0,0,0.7);border:2px solid rgba(34,197,94,0.4)">
     
-    <!-- BOTÓN CERRAR X -->
-    <div onclick="cerrarProyeccion()" style="position:absolute;top:12px;right:16px;cursor:pointer;font-size:30px;color:rgba(255,255,255,0.7);z-index:10;padding:8px;border-radius:50%;background:rgba(255,255,255,0.15);width:44px;height:44px;display:flex;align-items:center;justify-content:center">
+    <!-- BOTÓN CERRAR X (ahora bien posicionado) -->
+    <div onclick="cerrarProyeccion()" style="position:absolute;top:12px;right:12px;cursor:pointer;font-size:30px;color:white;z-index:20;padding:8px;border-radius:50%;background:rgba(255,255,255,0.18);width:48px;height:48px;display:flex;align-items:center;justify-content:center;transition:all .3s">
       <i class="fas fa-times"></i>
     </div>
 
     <!-- TÍTULO -->
-    <h2 style="margin:0;padding:24px 24px 16px;text-align:center;font-size:28px;color:#22c55e;font-weight:900;background:rgba(34,197,94,0.15)">
+    <h2 style="margin:0;padding:28px 60px 18px 28px;text-align:center;font-size:29px;color:#22c55e;font-weight:900;background:rgba(34,197,94,0.18);border-bottom:2px solid rgba(34,197,94,0.3)">
       Cronograma de Proyección
     </h2>
 
     <!-- ÁREA CON SCROLL -->
-    <div id="proyeccionContenido" style="flex:1;overflow-y:auto;padding:20px 24px 32px;font-size:17px;line-height:1.8;color:white">
+    <div id="proyeccionContenido" style="flex:1;overflow-y:auto;padding:24px 28px 32px;font-size:17px;line-height:1.8;color:white">
       Cargando cronograma...
     </div>
   </div>
@@ -843,30 +843,28 @@ async function cargarCronogramaProyeccion() {
       return;
     }
 
-    let tabla = `
-      <table style="width:100%;border-collapse:collapse;font-size:16.5px;min-width:420px">
-        <thead style="background:rgba(34,197,94,0.6);position:sticky;top:0;z-index:10">
-          <tr>
-            <th style="padding:16px 12px;text-align:left;color:#22c55e;font-weight:800">Fecha</th>
-            <th style="padding:16px 12px;text-align:center;color:#22c55e;font-weight:800">Día</th>
-            <th style="padding:16px 12px;text-align:left;color:#22c55e;font-weight:800">Persona</th>
-          </tr>
-        </thead>
-        <tbody>`;
+   let tabla = `
+  <table style="width:100%;border-collapse:collapse;font-size:17.5px;min-width:480px">
+    <thead style="background:rgba(34,197,94,0.7);position:sticky;top:0;z-index:10">
+      <tr>
+        <th style="padding:18px 14px;text-align:left;color:#22c55e;font-weight:800;font-size:18px">Fecha</th>
+        <th style="padding:18px 14px;text-align:center;color:#22c55e;font-weight:800;font-size:18px">Día</th>
+        <th style="padding:18px 14px;text-align:left;color:#22c55e;font-weight:800;font-size:18px">Persona</th>
+      </tr>
+    </thead>
+    <tbody>`;
 
-    const hoy = new Date().toISOString().slice(0,10);
+json.data.forEach(item => {
+  const fechaISO = item.fechaRaw ? new Date(item.fechaRaw).toISOString().slice(0,10) : "";
+  const esHoy = fechaISO === hoy;
 
-    json.data.forEach(item => {
-      const fechaISO = item.fechaRaw ? new Date(item.fechaRaw).toISOString().slice(0,10) : "";
-      const esHoy = fechaISO === hoy;
-
-      tabla += `
-        <tr style="border-bottom:1px solid rgba(255,255,255,0.1);${esHoy?'background:rgba(34,197,94,0.4);font-weight:700':''}">
-          <td style="padding:14px 12px;color:${esHoy?'#a3ff9e':'#ffffff'}">${item.fecha}</td>
-          <td style="padding:14px;text-align:center;color:${esHoy?'#a3ff9e':'#cccccc'}">${item.dia}</td>
-          <td style="padding:14px 12px;color:${esHoy?'#a3ff9e':'#ffffff'}">${item.persona}</td>
-        </tr>`;
-    });
+  tabla += `
+    <tr style="border-bottom:1px solid rgba(255,255,255,0.12);${esHoy?'background:rgba(34,197,94,0.45);font-weight:700':''}">
+      <td style="padding:16px 14px;color:${esHoy?'#a3ff9e':'#ffffff'}">${item.fecha}</td>
+      <td style="padding:16px 14px;text-align:center;color:${esHoy?'#a3ff9e':'#cccccc'}">${item.dia}</td>
+      <td style="padding:16px 14px;color:${esHoy?'#a3ff9e':'#ffffff'}">${item.persona}</td>
+    </tr>`;
+});
 
     tabla += `
         </tbody>
@@ -1405,6 +1403,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
