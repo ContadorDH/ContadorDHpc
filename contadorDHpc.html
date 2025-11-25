@@ -864,7 +864,10 @@ async function cargarCronogramaProyeccion() {
         <tr style="border-bottom:1px solid rgba(255,255,255,0.15);transition:all .3s;${esHoy?'background:rgba(34,197,94,0.5);font-weight:800':''}">
           <td style="padding:18px 16px;color:${esHoy?'#ffffff':'#e0e0e0'}">${item.fecha}</td>
           <td style="padding:18px 16px;text-align:center;color:${esHoy?'#ffffff':'#bbbbbb'}">${item.dia}</td>
-          <td style="padding:18px 16px;color:${esHoy?'#ffffff':'#ffffff'}">${item.persona}</td>
+          <!-- AQUÍ ESTÁ LA MAGIA: white-space:nowrap + overflow:hidden + text-overflow -->
+          <td style="padding:18px 16px;color:${esHoy?'#ffffff':'#ffffff'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:0">
+            ${item.persona}
+          </td>
         </tr>`;
     });
 
@@ -1406,6 +1409,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
