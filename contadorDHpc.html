@@ -855,10 +855,9 @@ async function cargarCronogramaProyeccion() {
 
     // Ajustamos el ancho del modal según el nombre más largo
     const anchoBase = 620;
-    const anchoExtra = nombreMasLargo > 25 ? (nombreMasLargo - 25) * 8 : 0; // cada letra extra = 8px
-    const anchoFinal = Math.min(anchoBase + anchoExtra, 900); // máximo 900px
+    const anchoExtra = nombreMasLargo > 25 ? (nombreMasLargo - 25) * 8 : 0;
+    const anchoFinal = Math.min(anchoBase + anchoExtra, 900);
 
-    // Aplicamos el ancho dinámico al contenedor del modal
     const modalInterno = document.querySelector("#modalProyeccion > div");
     if (modalInterno) {
       modalInterno.style.maxWidth = anchoFinal + "px";
@@ -869,9 +868,9 @@ async function cargarCronogramaProyeccion() {
       <table style="width:100%;border-collapse:collapse;font-size:17.5px;border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.4);table-layout:fixed">
         <thead style="background:rgba(34,197,94,0.75);position:sticky;top:0;z-index:10">
           <tr>
-            <th style="padding:20px 16px;text-align:left;color:white;font-weight:800;font-size:18.5px;width:32%">Fecha</th>
+            <th style="padding:20px 16px;text-align:left;color:white;font-weight:800;font-size:18.5px;width:38%">Fecha</th>
             <th style="padding:20px 16px;text-align:center;color:white;font-weight:800;font-size:18.5px;width:18%">Día</th>
-            <th style="padding:20px 16px;text-align:left;color:white;font-weight:800;font-size:18.5px;width:50%">Persona</th>
+            <th style="padding:20px 16px;text-align:left;color:white;font-weight:800;font-size:18.5px;width:44%">Persona</th>
           </tr>
         </thead>
         <tbody>`;
@@ -880,9 +879,20 @@ async function cargarCronogramaProyeccion() {
       const fechaISO = item.fechaRaw ? new Date(item.fechaRaw).toISOString().slice(0,10) : "";
       const esHoy = fechaISO === hoy;
 
+      // FORMATEO CORRECTO EN ESPAÑOL (sin inglés nunca más)
+      let fechaCompleta = item.fecha;
+      if (item.fechaRaw) {
+        const fecha = new Date(item.fechaRaw);
+        const opciones = { day: 'numeric', month: 'long', year: 'numeric' };
+        fechaCompleta = fecha.toLocaleDateString('es-ES', opciones); // "26 de noviembre de 2025"
+      }
+
       tabla += `
         <tr style="border-bottom:1px solid rgba(255,255,255,0.15);transition:all .3s;${esHoy?'background:rgba(34,197,94,0.5);font-weight:800':''}">
-          <td style="padding:18px 16px;color:${esHoy?'#ffffff':'#e0e0e0'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${item.fecha}</td>
+          <!-- FECHA COMPLETA EN ESPAÑOL Y SIN CORTAR -->
+          <td style="padding:18px 16px;color:${esHoy?'#ffffff':'#e0e0e0'};white-space:normal;overflow-wrap:break-word;word-wrap:break-word;line-height:1.4">
+            ${fechaCompleta}
+          </td>
           <td style="padding:18px 16px;text-align:center;color:${esHoy?'#ffffff':'#bbbbbb'}">${item.dia}</td>
           <td style="padding:18px 16px;color:${esHoy?'#ffffff':'#ffffff'};word-wrap:break-word;overflow-wrap:break-word;hyphens:auto">
             ${item.persona}
@@ -893,7 +903,6 @@ async function cargarCronogramaProyeccion() {
     tabla += `
         </tbody>
       </table>
-
       <div style="text-align:center;margin-top:24px;padding:18px;background:rgba(34,197,94,0.25);border-radius:16px;color:#a3ff9e;font-weight:700;font-size:16px;border:1px solid rgba(34,197,94,0.4)">
         ✓ ${json.data.length} asignaciones cargadas correctamente
       </div>`;
@@ -1428,6 +1437,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
