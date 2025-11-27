@@ -775,6 +775,12 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
 }
 
 
+  .resaltado {
+  background: yellow;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
 
 
   
@@ -1276,9 +1282,14 @@ function buscar() {
       const versoNumero = parseInt(ref.split(":")[1]);
       const marca = versoNumero === versoBuscado ? "id='scroll-aqui'" : "";
 
+      // 🔥 Nuevo: resaltar el verso buscado
+      const texto = versoNumero === versoBuscado
+        ? `<span class="resaltado">${biblia[ref]}</span>`
+        : biblia[ref];
+
       r.innerHTML += `
         <div class="vers" onclick="ver('${ref}')" ${marca}>
-          <b>${ref}</b><br>${biblia[ref]}
+          <b>${ref}</b><br>${texto}
         </div>`;
     });
 
@@ -2324,6 +2335,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
