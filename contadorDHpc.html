@@ -745,6 +745,59 @@ td, th { border-color: var(--borde) !important; }
   transform: scale(0.95);
 }
   
+
+
+/* 🔵 MENÚ SUPERIOR FIJO */
+#topMenu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: #1E6FB8;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  z-index: 9999;
+}
+
+/* Contenedores del menú */
+.menu-left,
+.menu-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Botón del menú */
+.menu-btn {
+  background: white;
+  color: #1E6FB8;
+  border: none;
+  padding: 10px 16px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  transition: 0.2s ease;
+}
+
+.menu-btn:hover {
+  background: #e9eef5;
+}
+
+/* Para evitar que el menú tape el contenido */
+body {
+  padding-top: 70px;
+}
+
+
   
 </style>
 </head>
@@ -960,10 +1013,20 @@ td, th { border-color: var(--borde) !important; }
 </div>
 
 
- <button id="btnCargarAsistencia" class="btnPrincipal">
-  Cargar Asistencia
-</button>
 
+
+<!-- 🔵 MENÚ SUPERIOR FIJO -->
+<header id="topMenu">
+  <div class="menu-left">
+    <button id="btnCargarAsistencia" class="menu-btn">
+      <i class="fa-solid fa-list-check"></i> Cargar Asistencia
+    </button>
+  </div>
+
+  <div class="menu-right">
+    <!-- Aquí en el futuro van botones de usuario, config, etc -->
+  </div>
+</header>
 
 
   
@@ -1640,28 +1703,28 @@ await verHoy();                  // mostramos automáticamente "Hoy"
 document.addEventListener("DOMContentLoaded", () => {
   detectarPantallas();
 
-  // 🚫 No cargar asistencia al iniciar
-  // 🚫 No mostrar panel ni subtítulo
+  // Ocultar panel inferior y subtítulo al iniciar
   document.getElementById("subtitulo").style.display = "none";
   document.querySelector(".panel").style.display = "none";
 
-  // 🟦 Al presionar el botón, cargar todo
+  // Evento del menú superior
   document.getElementById("btnCargarAsistencia").addEventListener("click", () => {
-    
-    // Ocultar el botón principal
-    document.getElementById("btnCargarAsistencia").style.display = "none";
-
-    // Mostrar subtítulo y panel
+    // Mostrar elementos
     document.getElementById("subtitulo").style.display = "flex";
     document.querySelector(".panel").style.display = "flex";
 
-    // Ejecutar su lógica normal de carga
+    // Ejecutar la carga normal
     cargarAlIniciar();
+
+    // (Opcional) deshabilitar el botón después de usarlo
+    // document.getElementById("btnCargarAsistencia").disabled = true;
   });
 });
+
 
 
 </script>
 </body>
 </html>
+
 
