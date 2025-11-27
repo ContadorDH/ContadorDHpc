@@ -1255,7 +1255,7 @@ function actualizarVentanaBiblia(ref, texto) {
   const esOscuro = document.body.classList.contains("tema-oscuro");
 
   ventanaProyeccion.document.body.innerHTML = `
-    <style>
+  <style>
   :root { --fondo:${vars.fondo}; --acento:${vars.acento}; --texto:${vars.texto}; }
 
   html, body {
@@ -1269,53 +1269,45 @@ function actualizarVentanaBiblia(ref, texto) {
     font-family:'Segoe UI', sans-serif;
   }
 
-  /* CONTENEDOR GENERAL */
   .biblia-wrapper {
     position:relative;
     width:100%;
     height:100%;
-    padding:8vh 8vw 12vh 8vw;
-    box-sizing:border-box;
-
+    padding:6vh 6vw 10vh 6vw;
     display:flex;
     justify-content:center;
     align-items:center;
+    box-sizing:border-box;
   }
 
-  /* TEXTO DEL VERSÍCULO — versión limpia, grande y gruesa */
   .biblia-texto {
     display:inline-block;
     max-width:100%;
     max-height:100%;
     text-align:center;
-    line-height:1.28;
-    font-weight:700;         /* MÁS GRUESO */
+    line-height:1.22;
+    font-weight:700;
     word-wrap:break-word;
     overflow:hidden;
 
-    /* tamaño base grande → igual se autoajusta */
-    font-size:14vw;
+    /* muchísimo más grande para que el auto-fit no lo reduzca tanto */
+    font-size:22vw;
 
-    /* ✨ SIN sombras, SIN efectos */
     text-shadow:none;
   }
 
-  /* REFERENCIA INFERIOR DERECHA */
   .biblia-referencia {
     position:absolute;
     right:3vw;
     bottom:3vh;
-
-    font-size:clamp(28px, 3.8vw, 70px);
+    font-size:clamp(30px, 4vw, 80px);
     font-weight:700;
     color:var(--acento);
-
-    /* quitar sombras también */
     text-shadow:none;
-
     pointer-events:none;
   }
 </style>
+
 
 
     <div class="biblia-wrapper">
@@ -1327,32 +1319,34 @@ function actualizarVentanaBiblia(ref, texto) {
   // ======== AUTO-AJUSTE ULTRA PRECISO ========
   const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
 
-  function autoFit() {
-    let size = 20;           // tamaño mínimo
-    let maxSize = 300;       // máximo absoluto permitido
+ function autoFit() {
+  // 🔥 Tamaños ajustados para texto realmente grande
+  let size = 60;        // antes 20 → ahora arranca MUCHO más grande
+  let maxSize = 700;    // antes 300 → ahora permite tamaño gigante
 
-    const maxW = ventanaProyeccion.innerWidth * 0.80;
-    const maxH = ventanaProyeccion.innerHeight * 0.65;
+  // Área útil aumentada (más pantalla para el texto)
+  const maxW = ventanaProyeccion.innerWidth * 0.92;
+  const maxH = ventanaProyeccion.innerHeight * 0.80;
 
+  caja.style.fontSize = size + "px";
+
+  // Aumentar hasta que toque los límites
+  while (size < maxSize) {
     caja.style.fontSize = size + "px";
 
-    // Aumentar hasta que toque los límites
-    while (size < maxSize) {
-      caja.style.fontSize = size + "px";
-
-      if (caja.scrollHeight > maxH || caja.scrollWidth > maxW) {
-        break;
-      }
-
-      size += 2; // crece suavemente
+    if (caja.scrollHeight > maxH || caja.scrollWidth > maxW) {
+      break;
     }
 
-    // Retroceder para quedar exacto
-    caja.style.fontSize = (size - 2) + "px";
+    size += 6; // crece más rápido y llega a tamaños grandes
   }
 
-  autoFit();
+  // Retroceder para quedar exacto
+  caja.style.fontSize = (size - 6) + "px";
 }
+
+autoFit();
+
 
 
   
@@ -2051,4 +2045,5 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
