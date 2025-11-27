@@ -754,31 +754,53 @@ td, th { border-color: var(--borde) !important; }
   
 
 /* --- AUTOCOMPLETADO INLINE (GHOST) --- */
-#input-wrap { position:relative; }
-#ghost { color: rgba(0,0,0,0.35); font-size:16px; }
-#ghost-typed { color: transparent; }
-#ghost-rest { opacity:0.55; }
+#input-wrap {
+  position: relative;
+}
 
-body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
+#ghost-typed,
+#ghost-rest {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  font-family: inherit;
+  font-size: inherit;
+  padding: inherit;
+  height: 100%;
+  line-height: inherit;
+}
 
-/* --- LISTA PREDICTIVA OPCIONAL --- */
+#ghost-typed {
+  color: rgba(0,0,0,0.35);
+}
+
+#ghost-rest {
+  color: rgba(0,0,0,0.25);
+}
+
+/* Modo oscuro */
+body.tema-oscuro #ghost-typed {
+  color: rgba(255,255,255,0.40);
+}
+
+body.tema-oscuro #ghost-rest {
+  color: rgba(255,255,255,0.25);
+}
+
+/* Input al frente */
+#q {
+  position: relative;
+  background: transparent;
+}
+
+/* --- LISTA PREDICTIVA (DESACTIVADA) --- */
 .predictivo {
-  background:#fff;
-  border:1px solid #aac;
-  border-radius:8px;
-  overflow:hidden;
-  display:none;
-  max-height:200px;
-  overflow-y:auto;
-}
-
-.predictivo div {
-  padding:8px;
-  cursor:pointer;
-  border-bottom:1px solid #eee;
-}
-.predictivo div:hover {
-  background:#def;
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
 }
 
 
@@ -2609,3 +2631,4 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
