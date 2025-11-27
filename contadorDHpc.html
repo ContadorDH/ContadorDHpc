@@ -947,6 +947,12 @@ td, th { border-color: var(--borde) !important; }
 </div>
 
 
+  <button id="btnCargarAsistencia" 
+        style="padding:10px 16px; font-size:16px; margin-bottom:12px;">
+  Cargar asistencia
+</button>
+
+
   
 <script>
 const URL = "https://script.google.com/macros/s/AKfycbwuad6LbOg5k2TFzphjhPTm-NwMJwURzhfFPsEb8a5oB9KXuXIhWxe5QzrR2xLnDjYVlA/exec";
@@ -1621,46 +1627,16 @@ await verHoy();                  // mostramos automáticamente "Hoy"
 // Ejecuta TODO apenas el HTML esté parseado (mucho antes que "load")
 document.addEventListener("DOMContentLoaded", () => {
   detectarPantallas();
-  cargarAlIniciar();
+
+  // NO cargar automáticamente
+  // cargarAlIniciar();  // ← esto se elimina
+
+  // Esperar a que el usuario presione el botón
+  document.getElementById("btnCargarAsistencia").addEventListener("click", () => {
+    cargarAlIniciar();
+  });
 });
+
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
