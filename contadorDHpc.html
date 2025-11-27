@@ -1243,7 +1243,6 @@ async function abrirVentanaBiblia(ref, texto) {
     }
   }, 500);
 }
-
 function actualizarVentanaBiblia(ref, texto) {
   if (!ventanaProyeccion || ventanaProyeccion.closed) return;
 
@@ -1252,7 +1251,6 @@ function actualizarVentanaBiblia(ref, texto) {
     acento: getComputedStyle(document.body).getPropertyValue("--acento").trim(),
     texto: getComputedStyle(document.body).getPropertyValue("--texto").trim()
   };
-  const esOscuro = document.body.classList.contains("tema-oscuro");
 
   ventanaProyeccion.document.body.innerHTML = `
   <style>
@@ -1289,11 +1287,9 @@ function actualizarVentanaBiblia(ref, texto) {
     font-weight:700;
     word-wrap:break-word;
     overflow:hidden;
-
-    /* muchísimo más grande para que el auto-fit no lo reduzca tanto */
-    font-size:22vw;
-
+    font-size:22vw; /* tamaño inicial gigante */
     text-shadow:none;
+    white-space:pre-line; /* permite saltos limpios */
   }
 
   .biblia-referencia {
@@ -1306,48 +1302,69 @@ function actualizarVentanaBiblia(ref, texto) {
     text-shadow:none;
     pointer-events:none;
   }
-</style>
+  </style>
 
-
-
-    <div class="biblia-wrapper">
-      <div id="textoAutoFit" class="biblia-texto">${texto}</div>
-      <div class="biblia-referencia">${ref}</div>
-    </div>
+  <div class="biblia-wrapper">
+    <div id="textoAutoFit" class="biblia-texto"></div>
+    <div class="biblia-referencia">${ref}</div>
+  </div>
   `;
 
-  // ======== AUTO-AJUSTE ULTRA PRECISO ========
+  // ============================
+  //  UTILIDADES EASYWORSHIP PRO
+  // ============================
+
   const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
 
- function autoFit() { 
-  // Rango realista de tamaños
-  let min = 30;      // mínimo visible
-  let max = 300;     // máximo gigante inicial
-  let best = min;
-
-  // Más área útil como EasyWorship
-  const maxW = ventanaProyeccion.innerWidth * 0.92;
-  const maxH = ventanaProyeccion.innerHeight * 0.82;
-
-  // Búsqueda binaria = ajuste perfecto al centro
-  while (min <= max) {
-    let mid = Math.floor((min + max) / 2);
-    caja.style.fontSize = mid + "px";
-
-    if (caja.scrollWidth <= maxW && caja.scrollHeight <= maxH) {
-      best = mid;   // cabe → probar más grande
-      min = mid + 2;
-    } else {
-      max = mid - 2; // no cabe → bajar tamaño
-    }
+  // Limpia espacios y saltos feos
+  function limpiarTexto(str) {
+    return str
+      .replace(/\s+/g, " ")
+      .replace(/ ?\n ?/g, "\n")
+      .trim();
   }
 
-  // tamaño final
-  caja.style.fontSize = best + "px";
-}
+  // Balancea las líneas para mejor legibilidad en pantalla
+  function balancearLineas(str) {
+    const palabras = str.split(" ");
+    if (palabras.length < 12) return str;
 
-autoFit();
+    let mitad = Math.floor(palabras.length / 2);
+    return palabras.slice(0, mitad).join(" ") + "\n" +
+           palabras.slice(mitad).join(" ");
+  }
 
+  // Aplicar texto limpio y balanceado
+  caja.textContent = balancearLineas(limpiarTexto(texto));
+
+  // =============================
+  //  AUTO-FIT PROFESIONAL (EASYWORSHIP)
+  // =============================
+  function autoFit() { 
+    let min = 30;      // mínimo legible
+    let max = 350;     // máximo gigante
+    let best = min;
+
+    const maxW = ventanaProyeccion.innerWidth * 0.92;
+    const maxH = ventanaProyeccion.innerHeight * 0.82;
+
+    while (min <= max) {
+      let mid = Math.floor((min + max) / 2);
+      caja.style.fontSize = mid + "px";
+
+      if (caja.scrollWidth <= maxW && caja.scrollHeight <= maxH) {
+        best = mid;
+        min = mid + 2;   // probar más grande
+      } else {
+        max = mid - 2;   // muy grande → bajar
+      }
+    }
+
+    caja.style.fontSize = best + "px";
+  }
+
+  // Ejecutar ajuste
+  autoFit();
 }
 
 
@@ -2048,6 +2065,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
