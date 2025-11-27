@@ -820,26 +820,26 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
   min-width: 0;             /* necesario para que flex funcione bien */
 }
 
-/* ==================== LAS PANTALLAS – CLAVE MÁGICA + CLON PERFECTO DE PROYECCIÓN ==================== */
+/* ==================== PANTALLAS LOCALES – CLONES PERFECTOS EN MINIATURA ==================== */
 .pantalla {
-  flex: 1;                          /* cada una ocupa su parte justa */
-  max-width: 48%;                   /* nunca se pasan del centro */
-  min-width: 380px;                 /* tamaño mínimo legible */
+  flex: 1;
+  max-width: 48%;
+  min-width: 380px;
   aspect-ratio: 16 / 9;
   background: var(--fondo);
   border: 4px solid #333;
   border-radius: 14px;
   box-shadow: 0 15px 40px rgba(0,0,0,0.5);
-  overflow: hidden;                 /* importante para que no se desborde nada */
-  position: relative;
+  overflow: hidden;
   box-sizing: border-box;
+  position: relative;
 }
 
-/* Wrapper idéntico al de la ventana de proyección real */
+/* Wrapper idéntico al de la proyección real (pero en miniatura) */
 .biblia-wrapper-local {
   width: 100%;
   height: 100%;
-  padding: 5vh 4vw;                 /* ¡EXACTAMENTE igual que la proyección externa! */
+  padding: 5vh 4vw;                    /* ¡Mismo padding que la proyección real! */
   box-sizing: border-box;
   display: flex;
   justify-content: center;
@@ -848,7 +848,7 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
   color: var(--texto);
 }
 
-/* Texto 100% idéntico al de la ventana real (incluyendo auto-fit gigante) */
+/* Texto: misma fuente, peso, línea, todo... pero con tamaño base razonable */
 .biblia-texto-local {
   width: 100%;
   max-height: 100%;
@@ -860,28 +860,26 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
   overflow-wrap: break-word;
   color: var(--texto);
   
-  /* Empezamos con tamaño brutal para que el JS haga el mismo auto-fit que en la proyección real */
-  font-size: 25vw !important;
+  /* Tamaño base razonable (no 25vw como en la proyección real) */
+  font-size: 2.8rem;
 }
 
-/* Cita mini exactamente igual que en la ventana externa */
+/* Cita mini exactamente igual que en la ventana real */
 .biblia-texto-local .cita-mini {
   display: block;
-  font-size: 0.65em !important;
+  font-size: 0.65em;
   font-family: "Segoe UI Semilight", sans-serif;
   opacity: 0.85;
-  margin-top: 1em;
+  margin-top: 0.8em;
 }
 
-/* =================================================================== */
-/* Responsive – pantallas pequeñas (tablets y móviles) */
-/* =================================================================== */
+/* Responsive para pantallas pequeñas */
 @media (max-width: 1100px) {
-  #biblia-container {
-    flex-direction: column;
-    gap: 15px;
-    padding: 10px;
-  }
+  #biblia-container { flex-direction: column; gap: 15px; padding: 10px; }
+  #izq { width: 100% !important; max-height: 45vh; border-bottom: 2px solid #ddd; border-right: none; }
+  #pantallas-container { flex-direction: column; gap: 25px; }
+  .pantalla { max-width: 95%; min-width: unset; width: 100%; }
+}
   
   #izq {
     width: 100% !important;
@@ -1812,7 +1810,6 @@ function actualizarVentanaBiblia(ref, texto) {
 }
 
 
-
 function renderPantallaLocal(contenedorId, ref, texto) {
   const contenedor = document.getElementById(contenedorId);
   if (!contenedor) return;
@@ -1821,42 +1818,47 @@ function renderPantallaLocal(contenedorId, ref, texto) {
   
   contenedor.innerHTML = `
     <div class="biblia-wrapper-local">
-      <div id="${contenedorId}-autofit" class="biblia-texto-local">${textoFinal}</div>
+      <div class="biblia-texto-local">${textoFinal}</div>
     </div>
   `;
 
-  // === AUTO-FIT 100% IDÉNTICO AL DE LA VENTANA REAL ===
   const caja = contenedor.querySelector('.biblia-texto-local');
 
+  // AUTO-FIT SUAVE Y PROPORCIONAL (no agresivo como en pantalla completa)
   function autoFit() {
-    let min = 10;
-    let max = 1000;  // más alto para que llegue al mismo tamaño que la proyección real
-    let best = min;
+    let size = 80;                    // tamaño inicial alto pero razonable
+    const maxWidth = contenedor.clientWidth * 0.92;
+    const maxHeight = contenedor.clientHeight * 0.88;
 
-    const maxW = contenedor.clientWidth * 0.95;
-    const maxH = contenedor.clientHeight * 0.92;
+    // Bajar tamaño hasta que quepa perfectamente
+    while (
+      size > 10 &&
+      (caja.scrollWidth > maxWidth || caja.scrollHeight > maxHeight)
+    ) {
+      size -= 2;
+      caja.style.fontSize = size + "px";
+    }
 
-    while (min <= max) {
-      const mid = Math.floor((min + max) / 2);
-      caja.style.fontSize = mid + "px";
-      
-      if (caja.scrollWidth <= maxW && caja.scrollHeight <= maxH) {
-        best = mid;
-        min = mid + 2;
-      } else {
-        max = mid - 2;
+    // Subir un poco más si hay espacio (para maximizar legibilidad)
+    while (
+      size < 200 &&
+      caja.scrollWidth <= maxWidth && 
+      caja.scrollHeight <= maxHeight
+    ) {
+      size += 1;
+      caja.style.fontSize = size + "px";
+      if (caja.scrollWidth > maxWidth || caja.scrollHeight > maxHeight) {
+        size -= 1;
+        caja.style.fontSize = size + "px";
+        break;
       }
     }
-    
-    caja.style.fontSize = best + "px";
   }
 
-  // Ejecutar inmediatamente y también al redimensionar
   autoFit();
-  // Opcional: volver a ajustar si cambia el tamaño de la ventana
-  window.addEventListener('resize', () => {
-    setTimeout(autoFit, 100);
-  });
+
+  // Reajustar al redimensionar ventana
+  window.addEventListener('resize', () => setTimeout(autoFit, 50));
 }
 
   
@@ -2561,6 +2563,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
