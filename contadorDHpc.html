@@ -1222,34 +1222,37 @@ function buscar() {
   const tieneCapitulo = /\d+\s*:\s*\d+/.test(q);
   let resultados = [];
 
+  let versoBuscado = null; // para scroll automático
+
   if (tieneCapitulo) {
     // ===============================
     // 📌 MODO: libro + capítulo + verso
     // → mostrar CAPÍTULO COMPLETO
     // ===============================
 
-    // Separar libro y cap/verso
     let partes = q.split(" ");
     let libro = "";
     let cap = "";
+    let verso = "";
 
-    // Caso 1: libro con número (1 juan 3:1)
     if (!isNaN(partes[0])) {
+      // Ej: "1 juan 3:14"
       libro = partes[0] + " " + partes[1];
       cap = partes[2].split(":")[0];
-    }
-    else {
-      // Caso 2: libro normal (juan 1:1)
+      verso = partes[2].split(":")[1];
+    } else {
+      // Ej: "juan 1:14"
       libro = partes[0];
       cap = partes[1].split(":")[0];
+      verso = partes[1].split(":")[1];
     }
 
+    versoBuscado = parseInt(verso);
     libro = libro.trim();
 
-    // Construir prefijo exacto: "juan 1:" ó "1 juan 3:"
     const prefijo = libro + " " + cap + ":";
 
-    // Buscar TODOS los versículos del capítulo
+    // Buscar TODO el capítulo
     for (let ref in biblia) {
       if (ref.toLowerCase().startsWith(prefijo)) {
         resultados.push(ref);
@@ -1261,19 +1264,33 @@ function buscar() {
       return;
     }
 
-    // Ordenar por número de verso
-    resultados.sort((a,b)=> {
+    // Ordenar los versos
+    resultados.sort((a, b) => {
       let va = parseInt(a.split(":")[1]);
       let vb = parseInt(b.split(":")[1]);
       return va - vb;
     });
 
-    // Mostrar todo el capítulo
+    // Mostrar capítulo completo
     resultados.forEach(ref => {
-      r.innerHTML += `<div class="vers" onclick="ver('${ref}')">
-        <b>${ref}</b><br>${biblia[ref]}
-      </div>`;
+      const versoNumero = parseInt(ref.split(":")[1]);
+      const marca = versoNumero === versoBuscado ? "id='scroll-aqui'" : "";
+
+      r.innerHTML += `
+        <div class="vers" onclick="ver('${ref}')" ${marca}>
+          <b>${ref}</b><br>${biblia[ref]}
+        </div>`;
     });
+
+    // ===============================
+    // 📌 SCROLL AUTOMÁTICO AL VERSO
+    // ===============================
+    setTimeout(() => {
+      const destino = document.getElementById("scroll-aqui");
+      if (destino) {
+        destino.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }, 100);
 
     return;
   }
@@ -1300,7 +1317,6 @@ function buscar() {
     </div>`;
   });
 }
-
 
 
 
@@ -2308,6 +2324,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
