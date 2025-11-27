@@ -641,6 +641,65 @@ body {
 }
 
 
+/* ================================
+   TEMA OSCURO – Biblia y Predictivo
+   ================================ */
+
+/* Contenedor general de resultados */
+.dark-mode #r .vers {
+  background: #1c1c1c;
+  border: 1px solid #333;
+  color: #e8e8e8;
+}
+
+/* Hover */
+.dark-mode #r .vers:hover {
+  background: #2a2a2a;
+}
+
+/* Texto resaltado (verso buscado) */
+.dark-mode .resaltado {
+  background: #444;
+  color: #fff;
+  padding: 3px 4px;
+  border-radius: 4px;
+}
+
+/* ===========================
+   Autocompletado “ghost text”
+   =========================== */
+
+.dark-mode #ghost-typed {
+  color: #fff !important;
+  opacity: 0.35;
+}
+
+.dark-mode #ghost-rest {
+  color: #fff !important;
+  opacity: 0.20;
+}
+
+/* ===========================
+   Dropdown predictivo
+   =========================== */
+
+.dark-mode #predictivo {
+  background: #1c1c1c !important;
+  border: 1px solid #333 !important;
+  color: #e8e8e8 !important;
+}
+
+.dark-mode #predictivo div {
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.dark-mode #predictivo div:hover {
+  background: #333 !important;
+}
+
+
+  
   
 /* MENSAJE FINAL "asignaciones cargadas" → TEXTO EN COLOR ACENTO DEL TEMA (verde, azul, rosado, etc.) */
 #modalProyeccion > div > div:last-child,
@@ -2609,6 +2668,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
