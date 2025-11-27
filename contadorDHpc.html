@@ -621,6 +621,27 @@ body {
   font-weight: 800;
 }
 
+
+
+/* ================= PANEL IZQUIERDO INTEGRADO CON TEMAS ================= */
+#izq {
+  background: var(--menu-bg) !important;
+  color: var(--menu-texto) !important;
+  border-right: 2px solid var(--menu-borde) !important;
+}
+#izq select,
+#izq button,
+#izq input {
+  color: var(--menu-texto) !important;
+  background: var(--tabla-fondo) !important;
+  border-color: var(--borde) !important;
+}
+#izq i {
+  color: var(--acento) !important;
+}
+
+
+  
 /* MENSAJE FINAL "asignaciones cargadas" → TEXTO EN COLOR ACENTO DEL TEMA (verde, azul, rosado, etc.) */
 #modalProyeccion > div > div:last-child,
 #proyeccionContenido > div:last-child {
@@ -687,28 +708,7 @@ body.tema-oscuro #proyeccionContenido tbody tr td {
   body.tema-oscuro #menuLateral svg[stroke="var(--acento)"] {
   stroke: #ffffff !important;
 }
-/* BARRAS DEL BOTÓN MENÚ: NEGRAS EN TEMAS CLAROS 
-body.tema-claro #menuBtn svg,
-body.tema-rosado #menuBtn svg,
-body.tema-lila #menuBtn svg,
-body.tema-beige #menuBtn svg,
-body.tema-verde #menuBtn svg,
-body.tema-gris #menuBtn svg,
-body.tema-naranja #menuBtn svg {
-  stroke: #000000 !important;
-}
-*/
-/* Overlay al abrir menú 
-#menuOverlay { background: rgba(0,0,0,0.60) !important; }
-body.tema-claro #menuOverlay,
-body.tema-rosado #menuOverlay,
-body.tema-lila #menuOverlay,
-body.tema-beige #menuOverlay,
-body.tema-verde #menuOverlay,
-body.tema-gris #menuOverlay,
-body.tema-naranja #menuOverlay {
-  background: rgba(0,0,0,0.40) !important;
-} */
+
 
 /* Resto de estilos (intactos) */
 #subtitulo { background: var(--tabla-fondo) !important; color: var(--acento) !important; }
@@ -2609,6 +2609,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
