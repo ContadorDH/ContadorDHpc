@@ -1219,50 +1219,73 @@ function buscar() {
 
   if (!q) return;
 
-  const tieneCapitulo = /\d+\s*:\s*\d+/.test(q); // detecta "1:1", "3:16", etc.
+  const tieneCapitulo = /\d+\s*:\s*\d+/.test(q);
   let resultados = [];
 
-  for (let ref in biblia) {
-    let refLower = ref.toLowerCase();
+  if (tieneCapitulo) {
+    // ===============================
+    // 📌 MODO: libro + capítulo + verso
+    // → mostrar CAPÍTULO COMPLETO
+    // ===============================
 
-    if (tieneCapitulo) {
-      // ----------------------------
-      // 🔍 MODO EXACTO CON CAPITULO
-      // ----------------------------
+    // Separar libro y cap/verso
+    let partes = q.split(" ");
+    let libro = "";
+    let cap = "";
 
-      // separar libro y cap/verso
-      let partesQ = q.split(/[ ]+/);
-      let partesRef = refLower.split(/[ ]+/);
-
-      let libroQ = partesQ[0].replace(/\d+:\d+/, "").trim(); // nombre del libro sin cap/verso
-      let libroRef = partesRef[0];
-
-      // permitir forzar diferenciación:
-      // "juan 1:1" ≠ "1 juan 1:1"
-      // "1 juan 1:1" solo coincide con 1 juan
-      if (q.startsWith("1 ") || q.startsWith("2 ") || q.startsWith("3 ")) {
-        if (!refLower.startsWith(q.split(" ")[0] + " " + q.split(" ")[1].split(":")[0])) {
-          continue;
-        }
-      }
-
-      // comparar el libro por igualdad estricta
-      if (!refLower.startsWith(libroQ)) continue;
-
-      // comparar cap/verso
-      if (!refLower.includes(q)) continue;
-
-      resultados.push(ref);
-    } 
+    // Caso 1: libro con número (1 juan 3:1)
+    if (!isNaN(partes[0])) {
+      libro = partes[0] + " " + partes[1];
+      cap = partes[2].split(":")[0];
+    }
     else {
-      // --------------------------------
-      // 🔍 MODO NORMAL (solo letras)
-      // --------------------------------
-      if (refLower.includes(q) || biblia[ref].toLowerCase().includes(q)) {
+      // Caso 2: libro normal (juan 1:1)
+      libro = partes[0];
+      cap = partes[1].split(":")[0];
+    }
+
+    libro = libro.trim();
+
+    // Construir prefijo exacto: "juan 1:" ó "1 juan 3:"
+    const prefijo = libro + " " + cap + ":";
+
+    // Buscar TODOS los versículos del capítulo
+    for (let ref in biblia) {
+      if (ref.toLowerCase().startsWith(prefijo)) {
         resultados.push(ref);
       }
     }
 
+    if (resultados.length === 0) {
+      r.innerHTML = "<i>No encontrado</i>";
+      return;
+    }
+
+    // Ordenar por número de verso
+    resultados.sort((a,b)=> {
+      let va = parseInt(a.split(":")[1]);
+      let vb = parseInt(b.split(":")[1]);
+      return va - vb;
+    });
+
+    // Mostrar todo el capítulo
+    resultados.forEach(ref => {
+      r.innerHTML += `<div class="vers" onclick="ver('${ref}')">
+        <b>${ref}</b><br>${biblia[ref]}
+      </div>`;
+    });
+
+    return;
+  }
+
+  // =================================
+  // 📌 MODO NORMAL (sin capítulo)
+  // =================================
+  for (let ref in biblia) {
+    let refLower = ref.toLowerCase();
+    if (refLower.includes(q) || biblia[ref].toLowerCase().includes(q)) {
+      resultados.push(ref);
+    }
     if (resultados.length > 120) break;
   }
 
@@ -1277,6 +1300,7 @@ function buscar() {
     </div>`;
   });
 }
+
 
 
 
@@ -2284,6 +2308,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
