@@ -795,51 +795,26 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
   overflow: hidden;         /* evita cualquier desborde */
 }
 
-/* Panel izquierdo – intacto y siempre visible */
-#izq {
-  flex-shrink: 0;
-  width: 320px;
-  min-width: 320px;
-  background: #fff;
-  border-right: 2px solid #ddd;
-  overflow-y: auto;
-  padding: 15px;
-  font-size: 15px;
-  box-sizing: border-box;
-}
-
-/* Contenedor de las dos pantallas – ahora perfecto */
-#pantallas-container {
-  display: flex;
-  gap: 30px;                /* separación bonita entre pantallas */
-  justify-content: center;
-  align-items: center;
-  flex: 1;                  /* ocupa TODO el espacio que sobra */
-  padding: 0 20px;
-  box-sizing: border-box;
-  min-width: 0;             /* necesario para que flex funcione bien */
-}
-
-/* ==================== PANTALLAS LOCALES – CLONES PERFECTOS EN MINIATURA ==================== */
+/* ==================== LAS PANTALLAS – CLAVE MÁGICA + VISTA PREVIA PERFECTA ==================== */
 .pantalla {
-  flex: 1;
-  max-width: 48%;
-  min-width: 380px;
+  flex: 1;                          /* cada una ocupa su parte justa */
+  max-width: 48%;                   /* nunca se salen del centro */
+  min-width: 380px;                 /* tamaño mínimo legible */
   aspect-ratio: 16 / 9;
   background: var(--fondo);
   border: 4px solid #333;
   border-radius: 14px;
   box-shadow: 0 15px 40px rgba(0,0,0,0.5);
-  overflow: hidden;
+  overflow: hidden;                 /* imprescindible */
   box-sizing: border-box;
   position: relative;
 }
 
-/* Wrapper idéntico al de la proyección real (pero en miniatura) */
+/* Wrapper exactamente igual que la proyección real (pero en miniatura) */
 .biblia-wrapper-local {
   width: 100%;
   height: 100%;
-  padding: 5vh 4vw;                    /* ¡Mismo padding que la proyección real! */
+  padding: 5vh 4vw;                 /* ¡100% igual que la ventana de proyección! */
   box-sizing: border-box;
   display: flex;
   justify-content: center;
@@ -848,7 +823,7 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
   color: var(--texto);
 }
 
-/* Texto: misma fuente, peso, línea, todo... pero con tamaño base razonable */
+/* Texto idéntico al de la proyección real (fuente, peso, espaciado...) */
 .biblia-texto-local {
   width: 100%;
   max-height: 100%;
@@ -860,11 +835,11 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
   overflow-wrap: break-word;
   color: var(--texto);
   
-  /* Tamaño base razonable (no 25vw como en la proyección real) */
-  font-size: 2.8rem;
+  /* Tamaño base razonable (luego el JS lo ajusta perfectamente) */
+  font-size: 3.2rem;
 }
 
-/* Cita mini exactamente igual que en la ventana real */
+/* Referencia pequeña exactamente igual que en la proyección real */
 .biblia-texto-local .cita-mini {
   display: block;
   font-size: 0.65em;
@@ -873,13 +848,15 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
   margin-top: 0.8em;
 }
 
-/* Responsive para pantallas pequeñas */
+/* =================================================================== */
+/* Responsive – pantallas pequeñas (móviles y tablets) */
+/* =================================================================== */
 @media (max-width: 1100px) {
-  #biblia-container { flex-direction: column; gap: 15px; padding: 10px; }
-  #izq { width: 100% !important; max-height: 45vh; border-bottom: 2px solid #ddd; border-right: none; }
-  #pantallas-container { flex-direction: column; gap: 25px; }
-  .pantalla { max-width: 95%; min-width: unset; width: 100%; }
-}
+  #biblia-container {
+    flex-direction: column;
+    gap: 15px;
+    padding: 10px;
+  }
   
   #izq {
     width: 100% !important;
@@ -1814,7 +1791,7 @@ function renderPantallaLocal(contenedorId, ref, texto) {
   const contenedor = document.getElementById(contenedorId);
   if (!contenedor) return;
 
-  const textoFinal = `${texto} <span class="cita-mini">${ref}</span>`;
+  const textoFinal = `${texto} <  <span class="cita-mini">${ref}</span>`;
   
   contenedor.innerHTML = `
     <div class="biblia-wrapper-local">
@@ -1824,30 +1801,19 @@ function renderPantallaLocal(contenedorId, ref, texto) {
 
   const caja = contenedor.querySelector('.biblia-texto-local');
 
-  // AUTO-FIT SUAVE Y PROPORCIONAL (no agresivo como en pantalla completa)
   function autoFit() {
-    let size = 80;                    // tamaño inicial alto pero razonable
-    const maxWidth = contenedor.clientWidth * 0.92;
-    const maxHeight = contenedor.clientHeight * 0.88;
+    let size = 80;
+    const maxW = contenedor.clientWidth * 0.92;
+    const maxH = contenedor.clientHeight * 0.88;
 
-    // Bajar tamaño hasta que quepa perfectamente
-    while (
-      size > 10 &&
-      (caja.scrollWidth > maxWidth || caja.scrollHeight > maxHeight)
-    ) {
+    while (size > 10 && (caja.scrollWidth > maxW || caja.scrollHeight > maxH)) {
       size -= 2;
       caja.style.fontSize = size + "px";
     }
-
-    // Subir un poco más si hay espacio (para maximizar legibilidad)
-    while (
-      size < 200 &&
-      caja.scrollWidth <= maxWidth && 
-      caja.scrollHeight <= maxHeight
-    ) {
+    while (size < 200 && caja.scrollWidth <= maxW && caja.scrollHeight <= maxH) {
       size += 1;
       caja.style.fontSize = size + "px";
-      if (caja.scrollWidth > maxWidth || caja.scrollHeight > maxHeight) {
+      if (caja.scrollWidth > maxW || caja.scrollHeight > maxH) {
         size -= 1;
         caja.style.fontSize = size + "px";
         break;
@@ -1856,8 +1822,6 @@ function renderPantallaLocal(contenedorId, ref, texto) {
   }
 
   autoFit();
-
-  // Reajustar al redimensionar ventana
   window.addEventListener('resize', () => setTimeout(autoFit, 50));
 }
 
@@ -2563,6 +2527,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
