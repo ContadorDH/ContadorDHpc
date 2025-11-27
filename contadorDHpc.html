@@ -1251,7 +1251,8 @@ function actualizarVentanaBiblia(ref, texto) {
 
   // 👉 Separa solo por un punto
   // La cita va más pequeña en un <span>
-  const textoFinal = `${texto}. <span class="cita-mini">${ref}</span>`;
+  const textoFinal = `${texto} <span class="cita-mini">${ref}</span>`;
+
 
   const vars = {
     fondo: getComputedStyle(document.body).getPropertyValue("--fondo").trim(),
@@ -2050,6 +2051,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
