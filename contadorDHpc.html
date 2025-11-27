@@ -783,107 +783,111 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
 
 
 
+/* Contenedor principal – sin cambios importantes */
 #biblia-container {
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;     /* cambiado de flex-start a stretch */
   gap: 30px;
   width: 100%;
   height: calc(100vh - 160px);
   padding: 20px 0;
   box-sizing: border-box;
+  overflow: hidden;         /* evita cualquier desborde */
 }
 
+/* Panel izquierdo – intacto y siempre visible */
 #izq {
   flex-shrink: 0;
-  width: 320px !important;
+  width: 320px;
+  min-width: 320px;
   background: #fff;
   border-right: 2px solid #ddd;
   overflow-y: auto;
   padding: 15px;
   font-size: 15px;
+  box-sizing: border-box;
 }
 
-/* Contenedor que centra y ocupa todo el espacio disponible */
+/* Contenedor de las dos pantallas – ahora perfecto */
 #pantallas-container {
   display: flex;
-  gap: 40px;
+  gap: 30px;                /* separación bonita entre pantallas */
   justify-content: center;
   align-items: center;
-  flex-grow: 1;
+  flex: 1;                  /* ocupa TODO el espacio que sobra */
   padding: 0 20px;
-  min-width: 0; /* importante para que flex no rompa */
+  box-sizing: border-box;
+  min-width: 0;             /* necesario para que flex funcione bien */
 }
 
-/* LAS PANTALLAS: siempre caben, siempre centradas, siempre lo más grandes posible */
+/* LAS PANTALLAS – esta es la clave mágica que nunca falla */
 .pantalla {
-  width: 48vw;                    /* ocupa casi la mitad del ancho disponible */
-  max-width: 900px;               /* límite razonable para pantallas gigantes */
-  min-width: 400px;               /* no se hacen demasiado pequeñas */
-  height: auto;
-  aspect-ratio: 16 / 9;           /* proporción perfecta 16:9 */
+  flex: 1;                          /* cada pantalla ocupa el mismo espacio */
+  max-width: 48%;                   /* nunca más del 48% cada una → caben seguro */
+  min-width: 380px;                 /* tamaño mínimo legible */
+  aspect-ratio: 16 / 9;
   background: var(--fondo);
   border: 4px solid #333;
   border-radius: 14px;
-  padding: 3%;
+  padding: 2% 3%;
   box-shadow: 0 15px 40px rgba(0,0,0,0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
-  position: relative;
-  color: var(--texto);
-  flex-shrink: 0;
   box-sizing: border-box;
+  position: relative;
 }
 
+/* Texto perfectamente adaptativo y centrado */
 .pantalla-texto {
-  width **width: 100%**;
+  width: 100%;
   height: 100%;
-  text-align: center;
-  font-weight: 700;
-  line-height: 1.15;
-  white-space: pre-wrap;
-  overflow-wrap: break-word;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  text-align: center;
+  font-weight: 700;
+  line-height: 1.15;
+  white-space: pre-wrap;
+  word-wrap: break-word;
   padding: 10px;
   box-sizing: border-box;
-  font-size: clamp(1.8rem, 4.5vw, 5rem);   /* ¡TAMAÑO MÁGICO! Se adapta solo */
+  font-size: clamp(1.8rem, 4.8vw, 6rem);   /* tamaño ideal en cualquier pantalla */
 }
 
 .pantalla-texto .cita-mini {
   font-size: 0.5em;
-  margin-top: 15px;
+  margin-top: 12px;
   opacity: 0.9;
   font-family: "Segoe UI Semilight", sans-serif;
 }
 
-/* En pantallas pequeñas: apilamos todo verticalmente (móviles/tablets) */
+/* En pantallas pequeñas: todo vertical y sigue funcionando perfecto */
 @media (max-width: 1100px) {
   #biblia-container {
     flex-direction: column;
+    gap: 15px;
     padding: 10px;
-    gap: 20px;
   }
   
   #izq {
     width: 100% !important;
-    max-height: 40vh;
-    border-right: none;
+    max-height: 45vh;
     border-bottom: 2px solid #ddd;
+    border-right: none;
   }
   
   #pantallas-container {
     flex-direction: column;
-    gap: 30px;
+    gap: 25px;
     padding: 0;
   }
   
   .pantalla {
-    width: 90vw;
+    max-width: 95%;
     min-width: unset;
+    width: 100%;
   }
 }
 
@@ -2543,6 +2547,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
