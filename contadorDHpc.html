@@ -1833,24 +1833,29 @@ await verHoy();                  // mostramos automáticamente "Hoy"
 document.addEventListener("DOMContentLoaded", () => {
   detectarPantallas();
 
+  const tablaArriba = document.getElementById("tabla");
+
   // Ocultar ambas secciones al iniciar
   document.getElementById("subtitulo").style.display = "none";
   document.querySelector(".panel").style.display = "none";
   document.getElementById("biblia-container").style.display = "none";
+  tablaArriba.style.display = "none"; // 🔥 también ocultar tabla arriba
 
   // BOTÓN: CARGAR ASISTENCIA
   document.getElementById("btnCargarAsistencia").addEventListener("click", () => {
     document.getElementById("subtitulo").style.display = "flex";
     document.querySelector(".panel").style.display = "flex";
     document.getElementById("biblia-container").style.display = "none";
+    tablaArriba.style.display = "table"; // 🔥 mostrar tabla arriba
     cargarAlIniciar();
   });
 
   // BOTÓN: BIBLIA
   document.getElementById("btnBiblia").addEventListener("click", () => {
     document.getElementById("subtitulo").style.display = "none";
-    document.querySelector(".panel").style.display = "none";  // 🔥 oculta tabla
+    document.querySelector(".panel").style.display = "none";
     document.getElementById("biblia-container").style.display = "flex";
+    tablaArriba.style.display = "none"; // 🔥 ocultar tabla arriba
   });
 });
 
@@ -1863,6 +1868,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
