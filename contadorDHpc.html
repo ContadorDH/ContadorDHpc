@@ -783,6 +783,48 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
 
 
 
+  #biblia-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 30px;
+  width: 100%;
+}
+
+/* CONTENEDOR DE LAS DOS PANTALLAS */
+#pantallas-container {
+  display: flex;
+  gap: 20px;
+}
+
+/* CADA PANTALLA */
+.pantalla {
+  width: 480px;     /* tamaño TV */
+  height: 270px;    /* 16:9 */
+  background: #000;
+  border: 3px solid #333;
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: #fff;
+}
+
+/* TEXTO INTERNO */
+.pantalla-texto {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font-weight: bold;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
   
 </style>
 </head>
@@ -912,7 +954,22 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
     
   </div>
 
- 
+ <div id="pantallas-container">
+
+  <!-- PREVIEW -->
+  <div class="pantalla" id="preview-biblia">
+    <h3>PREVIEW</h3>
+    <div class="pantalla-texto" id="preview-texto"></div>
+  </div>
+
+  <!-- PROYECCIÓN -->
+  <div class="pantalla" id="proyeccion-biblia">
+    <h3>PROYECCIÓN</h3>
+    <div class="pantalla-texto" id="proyeccion-texto"></div>
+  </div>
+
+</div>
+
 
 </div>
 
@@ -1510,7 +1567,13 @@ contenedorTexto.innerHTML = `
   <div style="font-size:1.5em;color:#ff0">${ref}</div><br>${biblia[key]}
 `;
 
+ // ⬇ NUEVO: PREVIEW
+  document.getElementById("preview-texto").innerHTML =
+    `<div style="font-size:1.2em;color:yellow">${ref}</div>${biblia[key]}`;
 
+  // ⬇ NUEVO: PROYECCIÓN (COPIA LOCAL, NO LA VENTANA EXTERNA)
+  document.getElementById("proyeccion-texto").innerHTML =
+    `<div style="font-size:1.2em;color:yellow">${ref}</div>${biblia[key]}`;
   // Solo si estamos en la sección Biblia → proyectar automáticamente
   if (document.getElementById("biblia-container").style.display !== "none") {
    proyectarBiblia(ref, biblia[key]);
@@ -2374,3 +2437,4 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
