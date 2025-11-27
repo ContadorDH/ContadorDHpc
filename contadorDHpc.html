@@ -1634,19 +1634,21 @@ document.getElementById("selectMes").addEventListener("change", function() {
   
 
 // ============================================================
-// PROYECCIÓN MODERNA – CON AUTO-SELECCIÓN CUANDO HAY UNA SOLA FILA
+// PROYECCIÓN MODERNA – CON AUTO-SELECCIÓN Y PROYECCIÓN DE BIBLIA
 // ============================================================
 async function proyectar() {
-  // 📘 BIBLIA: Si existe el contenedor #r y NO hay tabla → proyectar Biblia
+
+  // 👉 Si existe Biblia (#r) y NO hay tabla → proyectar Biblia
   const tieneBiblia = document.getElementById("r");
   const tieneTabla = document.querySelector("#tabla tbody tr");
 
   if (tieneBiblia && !tieneTabla) {
-    return proyectarContenido(tieneBiblia.innerHTML); 
+    return proyectarContenido(tieneBiblia.innerHTML);
   }
-  // 📘 FIN BIBLIA
+  // ------------------------------------------------------------
 
   const btn = document.querySelector("button[onclick='proyectar()']");
+
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
     ventanaProyeccion.close();
     ventanaProyeccion = null;
@@ -1677,7 +1679,7 @@ async function proyectar() {
   }
 
   const totalAsistencia = valores[fin]?.trim();
-  if (!totalAsistencia) {
+  if (!totalAsistencia || totalAsistencia === "" || totalAsistencia === "undefined") {
     mostrarAviso("No se puede proyectar: El Total de asistencia no está disponible.", "alerta");
     return;
   }
@@ -1690,21 +1692,19 @@ async function proyectar() {
       if (!isNaN(indexPantalla) && details.screens[indexPantalla]) {
         scr = details.screens[indexPantalla];
       }
-    } catch (e) {}
+    } catch (e) { }
   }
 
   const features = scr
     ? `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height}`
     : `width=1200,height=700`;
 
-  // 🔥 ventana SIEMPRE NUEVA
-  ventanaProyeccion = window.open("", "_blank", features);
+  ventanaProyeccion = window.open("", "proyeccion", features);
 
   const headersSinTotal = headers.slice(inicio, fin);
   const valoresSinTotal = valores.slice(inicio, fin);
 
   let fechaFila = valores[1] ? valores[1].trim() : "Fecha no disponible";
-
   function formatearFechaLarga(fechaTexto) {
     try {
       let soloFecha = fechaTexto.split(" ")[0];
@@ -1722,16 +1722,56 @@ async function proyectar() {
 
   const actualizarProyeccion = () => {
     if (!ventanaProyeccion || ventanaProyeccion.closed) return;
-
     const vars = {
       fondo: getComputedStyle(document.body).getPropertyValue('--fondo').trim(),
       acento: getComputedStyle(document.body).getPropertyValue('--acento').trim(),
       texto: getComputedStyle(document.body).getPropertyValue('--texto').trim()
     };
     const esOscuro = document.body.classList.contains("tema-oscuro");
-
     ventanaProyeccion.document.body.innerHTML = `
-      ... (todo el código de tu proyección moderna aquí sin cambios) ...
+      <style>
+        :root{--fondo:${vars.fondo};--acento:${vars.acento};--texto:${vars.texto}}
+        html,body{margin:0;padding:0;width:100vw;height:100vh;overflow:hidden;background:var(--fondo);font-family:'Segoe UI',sans-serif;color:var(--texto);transition:all .5s ease}
+        .wrap{width:100%;height:100%;display:flex;justify-content:center;align-items:center}
+        .contenedor{
+          width:96%;max-width:1400px;min-height:78%;max-height:90%;padding:28px 32px;
+          background:rgba(255,255,255,${esOscuro?'0.06':'0.10'});border-radius:24px;
+          border:1px solid rgba(255,255,255,0.12);backdrop-filter:blur(12px);
+          box-shadow:0 20px 60px rgba(0,0,0,${esOscuro?'0.6':'0.3'});
+          display:flex;flex-direction:column;align-items:center;gap:20px;
+          animation:entrada .7s cubic-bezier(0.34,1.56,0.64,1);justify-content:space-between;
+          margin-bottom:2vh
+        }
+        h1{font-size:clamp(32px,5vw,80px);font-weight:900;margin:0;
+           background:linear-gradient(135deg,var(--acento),color-mix(in srgb,var(--acento) 70%,white));
+           -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+           letter-spacing:1.2px}
+        .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:24px;width:100%}
+        .card{
+          background:rgba(255,255,255,${esOscuro?'0.08':'0.12'});border-radius:18px;
+          padding:24px 16px;text-align:center;box-shadow:0 8px 25px rgba(0,0,0,${esOscuro?'0.4':'0.2'});
+          border:1px solid rgba(255,255,255,0.1);transition:all .3s;display:flex;
+          flex-direction:column;justify-content:center;min-height:140px
+        }
+        .card:hover{transform:translateY(-8px);box-shadow:0 16px 40px rgba(0,0,0,${esOscuro?'0.6':'0.35'})}
+        .titulo{font-size:clamp(18px,2.8vw,22px);text-transform:uppercase;font-weight:800;letter-spacing:2.4px;color:var(--acento);opacity:0.95;margin-bottom:6px}
+        .valor{font-size:clamp(56px,9.5vw,160px);font-weight:900;color:var(--texto);line-height:1;margin:0}
+        .total-final{margin-top:auto;padding:20px 48px;background:linear-gradient(135deg,var(--acento),color-mix(in srgb,var(--acento) 80%,black));color:white;border-radius:28px;box-shadow:0 16px 50px rgba(0,0,0,0.6);text-align:center;display:flex;flex-direction:column;gap:6px;margin-bottom:1vh}
+        .total-numero{font-size:clamp(80px,12vw,220px);font-weight:900;line-height:1;letter-spacing:-2px}
+        .total-texto{font-size:clamp(24px,3.5vw,48px);font-weight:700;opacity:0.9;letter-spacing:2px}
+        @keyframes entrada{from{opacity:0;transform:scale(0.94) translateY(30px)}to{opacity:1;transform:none}}
+        @media(max-width:768px){.grid{grid-template-columns:repeat(2,1fr)};.contenedor{padding:20px}}
+      </style>
+      <div class="wrap"><div class="contenedor">
+        <h1>${fechaFila}</h1>
+        <div class="grid">
+          ${headersSinTotal.map((h,i) => `<div class="card"><div class="titulo">${h}</div><div class="valor">${valoresSinTotal[i]}</div></div>`).join("")}
+        </div>
+        <div class="total-final">
+          <div class="total-numero">${totalAsistencia}</div>
+          <div class="total-texto">Total</div>
+        </div>
+      </div></div>
     `;
   };
 
@@ -1753,6 +1793,7 @@ async function proyectar() {
     }
   }, 500);
 }
+
 
 
 
@@ -1923,6 +1964,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
