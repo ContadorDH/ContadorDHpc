@@ -746,6 +746,31 @@ td, th { border-color: var(--borde) !important; }
 }
   
 
+#predictivo {
+  position: absolute;
+  background: #fff;
+  width: calc(100% - 4px);
+  border: 1px solid #ccc;
+  border-top: none;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  max-height: 260px;
+  overflow-y: auto;
+  display: none;
+  z-index: 9999;
+  border-radius: 0 0 8px 8px;
+  font-family: 'Segoe UI';
+}
+
+.predictivo-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+.predictivo-item:hover {
+  background: #0066cc;
+  color: white;
+}
 
 
 
@@ -809,16 +834,20 @@ td, th { border-color: var(--borde) !important; }
     <div style="background:#f0f8ff;padding:12px;border-radius:10px;
                 box-shadow:0 2px 6px rgba(0,0,0,0.12);margin-bottom:15px">
 
-      <input type="text" id="q" placeholder="Juan 3:16 | Salmos 23 | amor"
-             style="padding:10px;font-size:16px;width:100%;
-                    border-radius:8px;border:2px solid #aac;">
+     <input type="text" id="q" placeholder="Juan 3:16 | Salmos 23 | amor"
+       style="padding:10px;font-size:16px;width:100%;
+              border-radius:8px;border:2px solid #aac;">
 
-      <button onclick="buscar()" 
-              style="padding:10px;font-size:16px;width:100%;margin-top:8px;
-                     background:#0066cc;color:white;border:none;border-radius:8px;
-                     font-weight:bold">
-        Buscar
-      </button>
+<!-- 🔮 BUSQUEDA PREDITIVA -->
+<div id="predictivo" class="predictivo"></div>
+
+<button onclick="buscar()" 
+        style="padding:10px;font-size:16px;width:100%;margin-top:8px;
+               background:#0066cc;color:white;border:none;border-radius:8px;
+               font-weight:bold">
+  Buscar
+</button>
+
 
       <div id="status" class="ok" 
            style="font-size:12px;text-align:center;color:#0066cc;margin-top:6px;">
@@ -1184,6 +1213,57 @@ function buscar() {
     </div>`;
   });
 }
+
+
+
+// ========================================
+//      BUSQUEDA PREDITIVA EN VIVO
+// ========================================
+document.getElementById("q").addEventListener("input", e => {
+  const q = e.target.value.trim().toLowerCase();
+  const box = document.getElementById("predictivo");
+
+  if (!q) {
+    box.style.display = "none";
+    box.innerHTML = "";
+    return;
+  }
+
+  let resultados = [];
+
+  // Buscar coincidencias por referencia primero
+  for (let ref in biblia) {
+    const lower = ref.toLowerCase();
+
+    if (lower.startsWith(q)) resultados.push({ref, tipo:1});
+    else if (lower.includes(q)) resultados.push({ref, tipo:2});
+    else if (biblia[ref].toLowerCase().includes(q)) resultados.push({ref, tipo:3});
+
+    if (resultados.length >= 40) break;
+  }
+
+  resultados.sort((a, b) => a.tipo - b.tipo);
+
+  if (resultados.length === 0) {
+    box.style.display = "none";
+    return;
+  }
+
+  box.innerHTML = resultados
+    .map(r => `<div class="predictivo-item" onclick="seleccionarPredictivo('${r.ref}')">${r.ref}</div>`)
+    .join("");
+
+  box.style.display = "block";
+});
+
+function seleccionarPredictivo(ref) {
+  document.getElementById("q").value = ref;
+  document.getElementById("predictivo").style.display = "none";
+  buscar();
+}
+
+
+  
 
 // ====== FUNCIÓN PRINCIPAL: AL TOCAR UN VERSÍCULO EN BIBLIA ======
 function ver(ref) {
@@ -2051,6 +2131,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
