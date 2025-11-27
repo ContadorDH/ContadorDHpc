@@ -833,7 +833,40 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
 
 
 
-<div id="biblia-container" style="display:flex;height:calc(100vh - 160px);">
+<div id="biblia-container" style="display:flex; gap:15px; width:100%;">
+
+    <!-- 📌 PREVIEW -->
+    <div id="preview-biblia" 
+        style="
+            flex:1;
+            background:#111;
+            color:white;
+            padding:15px;
+            border-radius:10px;
+            box-shadow:0 0 8px rgba(0,0,0,0.4);
+            overflow-y:auto;
+        ">
+        <h3 style="margin-top:0; color:#4af;">Vista previa</h3>
+        <div id="preview-content" style="font-size:1.4em; line-height:1.4;"></div>
+    </div>
+
+    <!-- 📌 VISOR REAL (proyección) -->
+    <div id="proyector" 
+        style="
+            flex:1;
+            background:black;
+            color:white;
+            padding:15px;
+            border-radius:10px;
+            box-shadow:0 0 12px rgba(0,0,0,0.7);
+            overflow-y:auto;
+        ">
+        <h3 style="margin-top:0; color:#ff0;">Proyección activa</h3>
+        <div id="proyector-content" style="font-size:1.6em; line-height:1.4;"></div>
+    </div>
+
+</div>
+
     
   <!-- PANEL IZQUIERDO -->
   <div id="izq" style="width:320px;background:#fff;border-right:2px solid #ddd;
@@ -1506,20 +1539,37 @@ function ver(ref) {
   const contenedorTexto = document.getElementById("t");
   const key = ref.toLowerCase();
 
-contenedorTexto.innerHTML = `
-  <div style="font-size:1.5em;color:#ff0">${ref}</div><br>${biblia[key]}
-`;
+  contenedorTexto.innerHTML = `
+    <div style="font-size:1.5em;color:#ff0">${ref}</div><br>${biblia[key]}
+  `;
 
+  // 🔥 NUEVO: Vista previa (pantalla izquierda)
+  const preview = document.getElementById("preview-content");
+  if (preview) {
+    preview.innerHTML = `
+      <div style="font-size:1.2em; color:#4af;">${ref}</div>
+      <div>${biblia[key]}</div>
+    `;
+  }
 
   // Solo si estamos en la sección Biblia → proyectar automáticamente
   if (document.getElementById("biblia-container").style.display !== "none") {
-   proyectarBiblia(ref, biblia[key]);
-
+    proyectarBiblia(ref, biblia[key]);
   }
 }
 
 // ====== PROYECCIÓN AUTOMÁTICA DE BIBLIA (con pantalla seleccionada) ======
 async function proyectarBiblia(referencia, texto) {
+
+  // 🔥 NUEVO: Actualizar VISOR INTERNO (pantalla derecha)
+  const proyector = document.getElementById("proyector-content");
+  if (proyector) {
+    proyector.innerHTML = `
+      <div style="font-size:1.2em; color:#ff0;">${referencia}</div>
+      <div>${texto}</div>
+    `;
+  }
+
   // Si ya hay ventana abierta → solo actualiza contenido
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
     actualizarVentanaBiblia(referencia, texto);
@@ -1529,6 +1579,7 @@ async function proyectarBiblia(referencia, texto) {
   // Si no hay ventana → la abre (con pantalla seleccionada)
   await abrirVentanaBiblia(referencia, texto);
 }
+
 
 async function abrirVentanaBiblia(ref, texto) {
   let scr = null;
@@ -2374,4 +2425,5 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
