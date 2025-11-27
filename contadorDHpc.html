@@ -1835,22 +1835,28 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("subtitulo").style.display = "none";
   document.querySelector(".panel").style.display = "none";
 
-  // Evento del menú superior
+  // Evento del botón Cargar Asistencia
   document.getElementById("btnCargarAsistencia").addEventListener("click", () => {
-    // Mostrar elementos
+
+    // Mostrar tus elementos normales
     document.getElementById("subtitulo").style.display = "flex";
     document.querySelector(".panel").style.display = "flex";
 
+    // 🔥 OCULTAR TODA LA BIBLIA
+    const bibliaContainer = document.getElementById("biblia-container");
+    if (bibliaContainer) {
+      bibliaContainer.style.display = "none";
+    }
+
     // Ejecutar la carga normal
     cargarAlIniciar();
-
-    // (Opcional) deshabilitar el botón después de usarlo
-    // document.getElementById("btnCargarAsistencia").disabled = true;
   });
 });
+
 
 
 
 </script>
 </body>
 </html>
+
