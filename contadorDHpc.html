@@ -52,9 +52,22 @@ header {
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255,255,255,0.2);
 }
+.btnPrincipal {
+  padding: 14px 22px;
+  width: 100%;
+  font-size: 20px;
+  cursor: pointer;
+  background: #1E6FB8;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  margin-top: 20px;
+}
 
+  
 /* SUBTÍTULO PRINCIPAL GRANDE Y MODERNO – AHORA CON EFECTO CRISTAL */
 #subtitulo {
+  display: none;
   margin-top: 22px;
   margin-bottom: 10px;
   text-align: center;
@@ -947,10 +960,10 @@ td, th { border-color: var(--borde) !important; }
 </div>
 
 
-  <button id="btnCargarAsistencia" 
-        style="padding:10px 16px; font-size:16px; margin-bottom:12px;">
-  Cargar asistencia
+ <button id="btnCargarAsistencia" class="btnPrincipal">
+  Cargar Asistencia
 </button>
+
 
 
   
@@ -1624,19 +1637,31 @@ await verHoy();                  // mostramos automáticamente "Hoy"
 }
 
   
-// Ejecuta TODO apenas el HTML esté parseado (mucho antes que "load")
 document.addEventListener("DOMContentLoaded", () => {
   detectarPantallas();
 
-  // NO cargar automáticamente
-  // cargarAlIniciar();  // ← esto se elimina
+  // 🚫 No cargar asistencia al iniciar
+  // 🚫 No mostrar panel ni subtítulo
+  document.getElementById("subtitulo").style.display = "none";
+  document.querySelector(".panel").style.display = "none";
 
-  // Esperar a que el usuario presione el botón
+  // 🟦 Al presionar el botón, cargar todo
   document.getElementById("btnCargarAsistencia").addEventListener("click", () => {
+    
+    // Ocultar el botón principal
+    document.getElementById("btnCargarAsistencia").style.display = "none";
+
+    // Mostrar subtítulo y panel
+    document.getElementById("subtitulo").style.display = "flex";
+    document.querySelector(".panel").style.display = "flex";
+
+    // Ejecutar su lógica normal de carga
     cargarAlIniciar();
   });
 });
 
+
 </script>
 </body>
 </html>
+
