@@ -665,39 +665,45 @@ body {
   border-radius: 4px;
 }
 
-/* ===========================
-   Autocompletado “ghost text”
-   =========================== */
+/* ==========================
+   MODO OSCURO PARA .vers
+   ========================== */
+.app.dark .vers {
+  background: #1e1e1e !important;
+  border-color: #333 !important;
+  color: #eaeaea !important;
+}
 
-.dark-mode #ghost-typed {
+.app.dark .vers:hover {
+  background: #2a2a2a !important;
+}
+
+.app.dark .resaltado {
+  background: #444 !important;
+  color: #fff !important;
+}
+
+
+  
+.app.dark #predictivo {
+  background: #1e1e1e !important;
+  border: 1px solid #333 !important;
+  color: #eaeaea !important;
+}
+
+.app.dark #predictivo div:hover {
+  background: #333 !important;
+}
+
+.app.dark #ghost-typed {
   color: #fff !important;
   opacity: 0.35;
 }
 
-.dark-mode #ghost-rest {
+.app.dark #ghost-rest {
   color: #fff !important;
   opacity: 0.20;
 }
-
-/* ===========================
-   Dropdown predictivo
-   =========================== */
-
-.dark-mode #predictivo {
-  background: #1c1c1c !important;
-  border: 1px solid #333 !important;
-  color: #e8e8e8 !important;
-}
-
-.dark-mode #predictivo div {
-  padding: 6px 10px;
-  cursor: pointer;
-}
-
-.dark-mode #predictivo div:hover {
-  background: #333 !important;
-}
-
 
   
   
@@ -952,6 +958,23 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
     width: 100%;
   }
 }
+
+
+/* Contenedor de cada versículo */
+.vers {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin: 6px 0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.vers:hover {
+  background: #f3f3f3;
+}
+
 
   
 </style>
@@ -2668,6 +2691,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
