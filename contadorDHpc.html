@@ -1185,38 +1185,45 @@ function buscar() {
   });
 }
 
+// ====== FUNCIÓN PRINCIPAL: AL TOCAR UN VERSÍCULO EN BIBLIA ======
 function ver(ref) {
   const contenedorTexto = document.getElementById("t");
   contenedorTexto.innerHTML = `
     <div style="font-size:1.5em;color:#ff0">${ref}</div><br>${biblia[ref]}
   `;
 
-  // === PROYECTAR AUTOMÁTICAMENTE SI ESTAMOS EN LA SECCIÓN DE BIBLIA ===
+  // Solo si estamos en la sección Biblia → proyectar automáticamente
   if (document.getElementById("biblia-container").style.display !== "none") {
-    proyectarBiblia(ref, biblia[ref]);  // Proyecta inmediatamente
+    proyectarBiblia(ref, biblia[ref]);
   }
 }
 
-
-function proyectarBiblia(referencia, texto) {
-  // Si ya hay proyección abierta → solo actualiza contenido
+// ====== PROYECCIÓN AUTOMÁTICA DE BIBLIA (con pantalla seleccionada) ======
+async function proyectarBiblia(referencia, texto) {
+  // Si ya hay ventana abierta → solo actualiza contenido
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
     actualizarVentanaBiblia(referencia, texto);
     return;
   }
 
-  // Si no hay ventana → la abre
-  abrirVentanaBiblia(referencia, texto);
+  // Si no hay ventana → la abre (con pantalla seleccionada)
+  await abrirVentanaBiblia(referencia, texto);
 }
 
-function abrirVentanaBiblia(ref, texto) {
+async function abrirVentanaBiblia(ref, texto) {
   let scr = null;
+
+  // === RESPETAR LA PANTALLA SELECCIONADA (igual que asistencia) ===
   if ("getScreenDetails" in window) {
     try {
-      const details = window.getScreenDetails();
-      const index = parseInt(document.getElementById("pantallaSelect")?.value || "0");
-      if (details.screens[index]) scr = details.screens[index];
-    } catch (e) {}
+      const details = await window.getScreenDetails();  // ← AQUÍ ESTABA EL ERROR ANTES
+      const indexPantalla = parseInt(document.getElementById("pantallaSelect").value);
+      if (!isNaN(indexPantalla) && details.screens[indexPantalla]) {
+        scr = details.screens[indexPantalla];
+      }
+    } catch (e) {
+      console.warn("No se pudo obtener pantalla:", e);
+    }
   }
 
   const features = scr
@@ -1225,9 +1232,10 @@ function abrirVentanaBiblia(ref, texto) {
 
   ventanaProyeccion = window.open("", "proyeccion", features + ",scrollbars=no");
 
+  // Aplicar contenido
   actualizarVentanaBiblia(ref, texto);
 
-  // Detectar cierre
+  // Detectar cierre automático
   const timer = setInterval(() => {
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       clearInterval(timer);
@@ -1250,11 +1258,23 @@ function actualizarVentanaBiblia(ref, texto) {
     <style>
       :root{--fondo:${vars.fondo};--acento:${vars.acento};--texto:${vars.texto}}
       html,body{margin:0;padding:0;width:100vw;height:100vh;overflow:hidden;background:var(--fondo);color:var(--texto);font-family:'Segoe UI',Arial,sans-serif;display:flex;justify-content:center;align-items:center}
-      .biblia-fondo{width:100vw;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:5vh 10vw;box-sizing:border-box}
-      .biblia-referencia{font-size:clamp(28px,4.5vw,70px);font-weight:700;color:var(--acento);margin-bottom:4vh;opacity:0.92;letter-spacing:1.8px;text-align:center;text-shadow:0 2px 8px rgba(0,0,0,0.4)}
-      .biblia-texto{font-size:clamp(36px,7vw,110px);font-weight:500;line-height:1.42;text-align:center;max-width:94%;color:var(--texto);text-shadow:0 3px 12px rgba(0,0,0,0.6)}
-      @keyframes entrada{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
-      .biblia-fondo{animation:entrada 0.9s ease-out}
+      
+      .biblia-fondo{
+        width:100vw;height:100vh;display:flex;flex-direction:column;
+        justify-content:center;align-items:center;padding:6vh 10vw;box-sizing:border-box;
+        animation:entrada 0.9s ease-out;
+      }
+      .biblia-referencia{
+        font-size:clamp(32px,5vw,78px);font-weight:700;color:var(--acento);
+        margin-bottom:4vh;opacity:0.94;letter-spacing:2px;text-align:center;
+        text-shadow:0 3px 12px rgba(0,0,0,0.5);
+      }
+      .biblia-texto{
+        font-size:clamp(38px,7.5vw,120px);font-weight:500;line-height:1.42;
+        text-align:center;max-width:96%;color:var(--texto);
+        text-shadow:0 4px 16px rgba(0,0,0,0.6);
+      }
+      @keyframes entrada{from{opacity:0;transform:translateY(50px)}to{opacity:1;transform:none}}
     </style>
     <div class="biblia-fondo">
       <div class="biblia-referencia">${ref}</div>
@@ -1693,28 +1713,19 @@ document.getElementById("selectMes").addEventListener("change", function() {
 
   
 
+// ============================================================
+// PROYECCIÓN MODERNA – CON AUTO-SELECCIÓN CUANDO HAY UNA SOLA FILA
+// ============================================================
 async function proyectar() {
-  const btn = document.querySelector("button[onclick=\"proyectar()\"]") || 
-               document.querySelector("button[onclick='proyectar()']");
-
-  // === DETENER SI YA ESTÁ ABIERTA ===
+  const btn = document.querySelector("button[onclick='proyectar()']");
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
     ventanaProyeccion.close();
     ventanaProyeccion = null;
-    if (btn) {
-      btn.textContent = "Proyectar";
-      btn.classList.remove("boton-detener");
-    }
+    btn.textContent = "Proyectar";
+    btn.classList.remove("boton-detener");
     return;
   }
 
-  // === SOLO PERMITIR PROYECCIÓN DE ASISTENCIA SI ESTAMOS EN ESA SECCIÓN ===
-  if (document.getElementById("biblia-container").style.display !== "none") {
-    mostrarAviso("Estás en la Biblia. Haz clic en un versículo para proyectarlo.", "info");
-    return;
-  }
-
-  // === CÓDIGO ORIGINAL DE ASISTENCIA (sin cambios) ===
   const filasDatos = document.querySelectorAll("#tabla tbody tr");
   if (filasDatos.length === 1) {
     filaSeleccionada = filasDatos[0];
@@ -1727,61 +1738,101 @@ async function proyectar() {
 
   let headers = [...document.querySelectorAll("#tabla thead th")].map(th => th.innerText);
   let valores = [...filaSeleccionada.querySelectorAll("td")].map(td => td.innerText);
-  let inicio = headers.findIndex(h => /hermano|asistencia/i.test(h));
+
+  let inicio = headers.findIndex(h => /hermano/i.test(h));
   let fin = headers.findIndex(h => /total/i.test(h));
 
-  if (inicio === -1 || fin === -1 || fin <= inicio || !valores[fin]?.trim()) {
+  // VALIDACIÓN: si no encuentra "Hermanos" o "Total", o el total está vacío
+  if (inicio === -1 || fin === -1 || fin <= inicio) {
     mostrarAviso("Error en los datos: No se encontró la asistencia de hoy.", "error");
     return;
   }
 
-  const totalAsistencia = valores[fin].trim();
-  let fechaFila = valores[1] ? valores[1].trim().split(" ")[0] : "Fecha no disponible";
-  fechaFila = formatearFechaLarga(fechaFila);
-  const headersSinTotal = headers.slice(inicio, fin);
-  const valoresSinTotal = valores.slice(inicio, fin);
+  const totalAsistencia = valores[fin]?.trim();
+  if (!totalAsistencia || totalAsistencia === "" || totalAsistencia === "undefined") {
+    mostrarAviso("No se puede proyectar: El Total de asistencia no está disponible.", "alerta");
+    return;
+  }
 
-  // === ABRIR VENTANA (igual que antes) ===
   let scr = null;
   if ("getScreenDetails" in window) {
     try {
       const details = await window.getScreenDetails();
-      const index = parseInt(document.getElementById("pantallaSelect")?.value || "0");
-      if (details.screens[index]) scr = details.screens[index];
-    } catch (e) {}
+      const indexPantalla = parseInt(document.getElementById("pantallaSelect").value);
+      if (!isNaN(indexPantalla) && details.screens[indexPantalla]) {
+        scr = details.screens[indexPantalla];
+      }
+    } catch (e) { }
   }
 
   const features = scr
-    ? `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height},fullscreen=yes`
+    ? `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height}`
     : `width=1200,height=700`;
 
-  ventanaProyeccion = window.open("", "proyeccion", features + ",scrollbars=no");
+  ventanaProyeccion = window.open("", "proyeccion", features);
 
-  const vars = {
-    fondo: getComputedStyle(document.body).getPropertyValue('--fondo').trim(),
-    acento: getComputedStyle(document.body).getPropertyValue('--acento').trim(),
-    texto: getComputedStyle(document.body).getPropertyValue('--texto').trim()
-  };
-  const esOscuro = document.body.classList.contains("tema-oscuro");
+  const headersSinTotal = headers.slice(inicio, fin);
+  const valoresSinTotal = valores.slice(inicio, fin);
 
-  ventanaProyeccion.document.body.innerHTML = `
-    <style>
-      :root{--fondo:${vars.fondo};--acento:${vars.acento};--texto:${vars.texto}}
-      html,body{margin:0;padding:0;width:100vw;height:100vh;overflow:hidden;background:var(--fondo);color:var(--texto);font-family:'Segoe UI',sans-serif;display:flex;justify-content:center;align-items:center}
-      .contenedor{width:96%;max-width:1400px;min-height:78%;padding:28px 32px;background:rgba(255,255,255,${esOscuro?'0.06':'0.10'});border-radius:24px;border:1px solid rgba(255,255,255,0.12);backdrop-filter:blur(12px);box-shadow:0 20px 60px rgba(0,0,0,${esOscuro?'0.6':'0.3'});display:flex;flex-direction:column;gap:20px;justify-content:space-between}
-      h1{font-size:clamp(32px,5vw,80px);font-weight:900;background:linear-gradient(135deg,var(--acento),color-mix(in srgb,var(--acento) 70%,white));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-      .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:24px;width:100%}
-      .card{background:rgba(255,255,255,${esOscuro?'0.08':'0.12'});border-radius:18px;padding:24px 16px;text-align:center;box-shadow:0 8px 25px rgba(0,0,0,${esOscuro?'0.4':'0.2'});border:1px solid rgba(255,255,255,0.1);min-height:140px;display:flex;flex-direction:column;justify-content:center}
-      .titulo{font-size:clamp(18px,2.8vw,22px);text-transform:uppercase;font-weight:800;letter-spacing:2.4px;color:var(--acento);opacity:0.95}
-      .valor{font-size:clamp(56px,9.5vw,160px);font-weight:900;line-height:1}
-      .total-final{padding:20px 48px;background:linear-gradient(135deg,var(--acento),color-mix(in srgb,var(--acento) 80%,black));color:white;border-radius:28px;box-shadow:0 16px 50px rgba(0,0,0,0.6);text-align:center;display:flex;flex-direction:column;gap:6px}
-      .total-numero{font-size:clamp(80px,12vw,220px);font-weight:900;line-height:1}
-      .total-texto{font-size:clamp(24px,3.5vw,48px);font-weight:700}
-      @keyframes entrada{from{opacity:0;transform:scale(0.94)}to{opacity:1;transform:none}}
-      .contenedor{animation:entrada .7s cubic-bezier(0.34,1.56,0.64,1)}
-    </style>
-    <div class="wrap">
-      <div class="contenedor">
+  let fechaFila = valores[1] ? valores[1].trim() : "Fecha no disponible";
+  function formatearFechaLarga(fechaTexto) {
+    try {
+      let soloFecha = fechaTexto.split(" ")[0];
+      let [dia, mes, anio] = soloFecha.split("/").map(n => parseInt(n));
+      const meses = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+      const diasSemana = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+      const fechaObj = new Date(anio, mes - 1, dia);
+      const diaSemana = diasSemana[fechaObj.getDay()];
+      return `${diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1)} ${dia} de ${meses[mes - 1]} de ${anio}`;
+    } catch (e) {
+      return fechaTexto;
+    }
+  }
+  fechaFila = formatearFechaLarga(fechaFila);
+
+  const actualizarProyeccion = () => {
+    if (!ventanaProyeccion || ventanaProyeccion.closed) return;
+    const vars = {
+      fondo: getComputedStyle(document.body).getPropertyValue('--fondo').trim(),
+      acento: getComputedStyle(document.body).getPropertyValue('--acento').trim(),
+      texto: getComputedStyle(document.body).getPropertyValue('--texto').trim()
+    };
+    const esOscuro = document.body.classList.contains("tema-oscuro");
+    ventanaProyeccion.document.body.innerHTML = `
+      <style>
+        :root{--fondo:${vars.fondo};--acento:${vars.acento};--texto:${vars.texto}}
+        html,body{margin:0;padding:0;width:100vw;height:100vh;overflow:hidden;background:var(--fondo);font-family:'Segoe UI',sans-serif;color:var(--texto);transition:all .5s ease}
+        .wrap{width:100%;height:100%;display:flex;justify-content:center;align-items:center}
+        .contenedor{
+          width:96%;max-width:1400px;min-height:78%;max-height:90%;padding:28px 32px;
+          background:rgba(255,255,255,${esOscuro?'0.06':'0.10'});border-radius:24px;
+          border:1px solid rgba(255,255,255,0.12);backdrop-filter:blur(12px);
+          box-shadow:0 20px 60px rgba(0,0,0,${esOscuro?'0.6':'0.3'});
+          display:flex;flex-direction:column;align-items:center;gap:20px;
+          animation:entrada .7s cubic-bezier(0.34,1.56,0.64,1);justify-content:space-between;
+          margin-bottom:2vh
+        }
+        h1{font-size:clamp(32px,5vw,80px);font-weight:900;margin:0;
+           background:linear-gradient(135deg,var(--acento),color-mix(in srgb,var(--acento) 70%,white));
+           -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+           letter-spacing:1.2px}
+        .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:24px;width:100%}
+        .card{
+          background:rgba(255,255,255,${esOscuro?'0.08':'0.12'});border-radius:18px;
+          padding:24px 16px;text-align:center;box-shadow:0 8px 25px rgba(0,0,0,${esOscuro?'0.4':'0.2'});
+          border:1px solid rgba(255,255,255,0.1);transition:all .3s;display:flex;
+          flex-direction:column;justify-content:center;min-height:140px
+        }
+        .card:hover{transform:translateY(-8px);box-shadow:0 16px 40px rgba(0,0,0,${esOscuro?'0.6':'0.35'})}
+        .titulo{font-size:clamp(18px,2.8vw,22px);text-transform:uppercase;font-weight:800;letter-spacing:2.4px;color:var(--acento);opacity:0.95;margin-bottom:6px}
+        .valor{font-size:clamp(56px,9.5vw,160px);font-weight:900;color:var(--texto);line-height:1;margin:0}
+        .total-final{margin-top:auto;padding:20px 48px;background:linear-gradient(135deg,var(--acento),color-mix(in srgb,var(--acento) 80%,black));color:white;border-radius:28px;box-shadow:0 16px 50px rgba(0,0,0,0.6);text-align:center;display:flex;flex-direction:column;gap:6px;margin-bottom:1vh}
+        .total-numero{font-size:clamp(80px,12vw,220px);font-weight:900;line-height:1;letter-spacing:-2px}
+        .total-texto{font-size:clamp(24px,3.5vw,48px);font-weight:700;opacity:0.9;letter-spacing:2px}
+        @keyframes entrada{from{opacity:0;transform:scale(0.94) translateY(30px)}to{opacity:1;transform:none}}
+        @media(max-width:768px){.grid{grid-template-columns:repeat(2,1fr)};.contenedor{padding:20px}}
+      </style>
+      <div class="wrap"><div class="contenedor">
         <h1>${fechaFila}</h1>
         <div class="grid">
           ${headersSinTotal.map((h,i) => `<div class="card"><div class="titulo">${h}</div><div class="valor">${valoresSinTotal[i]}</div></div>`).join("")}
@@ -1790,26 +1841,29 @@ async function proyectar() {
           <div class="total-numero">${totalAsistencia}</div>
           <div class="total-texto">Total</div>
         </div>
-      </div>
-    </div>
-  `;
+      </div></div>
+    `;
+  };
 
-  if (btn) {
-    btn.textContent = "Detener";
-    btn.classList.add("boton-detener");
-  }
+  actualizarProyeccion();
+
+  const observer = new MutationObserver(actualizarProyeccion);
+  observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+
+  btn.textContent = "Detener";
+  btn.classList.add("boton-detener");
 
   const timer = setInterval(() => {
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       clearInterval(timer);
+      observer.disconnect();
       ventanaProyeccion = null;
-      if (btn) {
-        btn.textContent = "Proyectar";
-        btn.classList.remove("boton-detener");
-      }
+      btn.textContent = "Proyectar";
+      btn.classList.remove("boton-detener");
     }
   }, 500);
 }
+
 // ============================================================
 // CARGA AUTOMÁTICA INTELIGENTE AL INICIAR LA PÁGINA
 // ============================================================
@@ -1924,6 +1978,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
