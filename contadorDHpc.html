@@ -793,24 +793,31 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
 /* CONTENEDOR DE LAS DOS PANTALLAS */
 #pantallas-container {
   display: flex;
-  gap: 20px;
+  gap: 30px; /* más espacio entre pantallas */
+  justify-content: center; /* centra horizontalmente */
+  align-items: center;     /* centra verticalmente */
+  margin-top: 20px;        /* opcional, para separarlo del panel izquierdo */
+  flex-wrap: wrap;         /* que se adapte si la pantalla es más pequeña */
 }
 
+/* CADA PANTALLA */
 .pantalla {
-  width: 480px;
-  height: 270px;
+  width: 600px;   /* más ancha */
+  height: 340px;  /* más alta */
   background: var(--fondo);
   border: 3px solid #333;
   border-radius: 8px;
-  padding: 10px;
+  padding: 15px;
   display: flex;
-  justify-content:center;
-  align-items:center;
+  justify-content: center;
+  align-items: center;
   overflow: hidden;
   position: relative;
   color: var(--texto);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25); /* opcional, más estilo */
 }
 
+/* TEXTO DENTRO DE CADA PANTALLA */
 .pantalla-texto {
   width: 100%;
   height: 100%;
@@ -822,6 +829,7 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 2.8vw; /* tamaño relativo, se ajusta al contenedor */
 }
 
 .pantalla-texto .cita-mini {
@@ -2507,6 +2515,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
