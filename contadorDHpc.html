@@ -2341,7 +2341,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Ocultar ambas secciones al iniciar
   document.getElementById("subtitulo").style.display = "none";
   document.querySelector(".panel").style.display = "none";
-  document.getElementById("biblia-container").style.display = "none";
+  document.getElementById("biblia-container").style.display = "flex";
   tablaArriba.style.display = "none"; // 🔥 también ocultar tabla arriba
 
   // BOTÓN: CARGAR ASISTENCIA
@@ -2360,6 +2360,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("biblia-container").style.display = "flex";
     tablaArriba.style.display = "none"; // 🔥 ocultar tabla arriba
   });
+  // 🔥 Mostrar Biblia automáticamente al abrir
+  document.getElementById("btnBiblia").click();
+  
 });
 
 
@@ -2371,3 +2374,4 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
