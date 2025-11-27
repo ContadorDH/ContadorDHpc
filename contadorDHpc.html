@@ -2544,7 +2544,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Ocultar ambas secciones al iniciar
   document.getElementById("subtitulo").style.display = "none";
-  document.querySelector(".panel").style.display = "none";
+  document.querySelector(".panel").style.display = "flex";
+
   document.getElementById("biblia-container").style.display = "flex";
   tablaArriba.style.display = "none"; // 🔥 también ocultar tabla arriba
 
@@ -2557,13 +2558,24 @@ document.addEventListener("DOMContentLoaded", () => {
     cargarAlIniciar();
   });
 
-  // BOTÓN: BIBLIA
-  document.getElementById("btnBiblia").addEventListener("click", () => {
-    document.getElementById("subtitulo").style.display = "none";
-    document.querySelector(".panel").style.display = "none";
-    document.getElementById("biblia-container").style.display = "flex";
-    tablaArriba.style.display = "none"; // 🔥 ocultar tabla arriba
-  });
+// BOTÓN: BIBLIA
+document.getElementById("btnBiblia").addEventListener("click", () => {
+  document.getElementById("subtitulo").style.display = "none";
+  document.querySelector(".panel").style.display = "flex";   // 🔥 ahora el panel NO se oculta
+  document.getElementById("biblia-container").style.display = "flex";
+  tablaArriba.style.display = "none";
+
+  // 🔥 Mostrar SOLO Temas y Seleccionar pantalla:
+  document.querySelector('button[onclick="verMesActual()"]').style.display = "none";
+  document.querySelector('button[onclick="verHoy()"]').style.display = "none";
+  document.getElementById("selectMes").style.display = "none";
+  document.querySelector('button[onclick="proyectar()"]').style.display = "none";
+
+  // Mostrar estos dos:
+  document.getElementById("pantallaSelect").style.display = "inline-flex";
+  document.getElementById("btnTema").style.display = "inline-flex";
+});
+
   // 🔥 Mostrar Biblia automáticamente al abrir
   document.getElementById("btnBiblia").click();
   
@@ -2578,6 +2590,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
