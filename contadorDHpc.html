@@ -1258,7 +1258,7 @@ function actualizarVentanaBiblia(ref, texto) {
     <style>
       :root { --fondo:${vars.fondo}; --acento:${vars.acento}; --texto:${vars.texto}; }
 
-      html,body {
+      html, body {
         margin:0;
         padding:0;
         width:100vw;
@@ -1267,49 +1267,51 @@ function actualizarVentanaBiblia(ref, texto) {
         background:var(--fondo);
         color:var(--texto);
         font-family:'Segoe UI', sans-serif;
-        display:flex;
-        justify-content:center;
-        align-items:center;
       }
 
-      /* CONTENEDOR FLEXIBLE */
+      /* Contenedor GENERAL */
       .biblia-wrapper {
         position:relative;
         width:100%;
         height:100%;
-        padding:12vh 10vw 10vh 10vw; /* evita que el texto toque bordes */
+        padding:8vh 10vw 14vh 10vw; /* arriba - lados - abajo */
         box-sizing:border-box;
+
         display:flex;
         justify-content:center;
         align-items:center;
       }
 
-      /* TEXTO – AUTO AJUSTE REAL */
+      /* Texto del versículo */
       .biblia-texto {
-        max-width:100%;
-        max-height:75vh;
-        overflow:hidden;
-        font-weight:500;
-        line-height:1.35;
-        text-align:center;
-        color:var(--texto);
-        text-shadow:0 4px 20px rgba(0,0,0,0.7);
         display:inline-block;
+        max-width:100%;
+        max-height:100%;
+        text-align:center;
+        line-height:1.35;
+        font-weight:500;
+        word-wrap:break-word;
+        overflow:hidden;
 
-        /* Ajuste automático real */
-        font-size:10vw;
+        /* tamaño inicial alto para luego autoajustar */
+        font-size:12vw;
+
+        text-shadow:0 4px 20px rgba(0,0,0,0.7);
       }
 
-      /* REFERENCIA ARRIBA – nunca tapa el texto */
+      /* Referencia INFERIOR DERECHA – como solicitaste */
       .biblia-referencia {
         position:absolute;
-        top:3vh;
-        right:5vw;
-        font-size:clamp(24px, 3.2vw, 60px);
+        right:4vw;
+        bottom:4vh;
+
+        font-size:clamp(24px, 3vw, 60px);
         font-weight:700;
         color:var(--acento);
-        text-shadow:0 3px 15px rgba(0,0,0,0.8);
         letter-spacing:1.5px;
+        text-shadow:0 3px 15px rgba(0,0,0,0.8);
+
+        pointer-events:none;
       }
     </style>
 
@@ -1319,28 +1321,34 @@ function actualizarVentanaBiblia(ref, texto) {
     </div>
   `;
 
-  // AJUSTE AUTOMÁTICO PERFECTO AL ALTO Y ANCHO
+  // ======== AUTO-AJUSTE ULTRA PRECISO ========
   const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
 
-  function ajustarTexto() {
-    let size = 10; // tamaño mínimo
-    caja.style.fontSize = size + "px";
+  function autoFit() {
+    let size = 20;           // tamaño mínimo
+    let maxSize = 300;       // máximo absoluto permitido
 
     const maxW = ventanaProyeccion.innerWidth * 0.80;
     const maxH = ventanaProyeccion.innerHeight * 0.65;
 
-    // Incrementa hasta que empiece a sobresalir
-    while (size < 300) {
+    caja.style.fontSize = size + "px";
+
+    // Aumentar hasta que toque los límites
+    while (size < maxSize) {
       caja.style.fontSize = size + "px";
-      if (caja.scrollHeight > maxH || caja.scrollWidth > maxW) break;
-      size++;
+
+      if (caja.scrollHeight > maxH || caja.scrollWidth > maxW) {
+        break;
+      }
+
+      size += 2; // crece suavemente
     }
 
-    // Retrocede un paso para quedar perfecto
-    caja.style.fontSize = (size - 1) + "px";
+    // Retroceder para quedar exacto
+    caja.style.fontSize = (size - 2) + "px";
   }
 
-  ajustarTexto();
+  autoFit();
 }
 
 
@@ -2040,6 +2048,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
