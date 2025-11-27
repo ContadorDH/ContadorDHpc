@@ -784,16 +784,17 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
 
 
 /* Contenedor principal – sin cambios importantes */
-#biblia-container {
+#pantallas-container {
   display: flex;
-  align-items: stretch;     /* cambiado de flex-start a stretch */
+  flex-direction: column;   /* ahora vertical dentro del área restante */
+  justify-content: flex-end; /* pega las pantallas al fondo */
   gap: 30px;
-  width: 100%;
-  height: calc(100vh - 160px);
-  padding: 20px 0;
+  flex: 1;
+  padding: 0 20px;
   box-sizing: border-box;
-  overflow: hidden;         /* evita cualquier desborde */
+  min-width: 0;
 }
+
 
 /* Panel izquierdo – intacto y siempre visible */
 #izq {
@@ -878,20 +879,11 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
     border-right: none;
   }
   
- /* Contenedor de las dos pantallas – ahora pegadas al fondo */
-#pantallas-container {
-  display: flex;
-  gap: 30px;
-  justify-content: center;
-  align-items: center;
-  flex: 1;
-  padding: 0 20px;
-  box-sizing: border-box;
-  min-width: 0;
-
-  margin-top: auto;  /* hace que se pegue al fondo del contenedor principal */
-}
-
+  #pantallas-container {
+    flex-direction: column;
+    gap: 25px;
+    padding: 0;
+  }
   
   .pantalla {
     max-width: 95%;
@@ -900,11 +892,29 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
   }
 }
 
+
+.pantallas-row {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  align-items: center;
+}
+
+
   
 </style>
 </head>
 <body>
 
+<div id="pantallas-container">
+  <div class="pantallas-row">
+    <div class="pantalla">...</div>
+    <div class="pantalla">...</div>
+  </div>
+</div>
+
+
+  
 <header style="padding: 0 20px 10px 20px;">
   
   <!-- FILA 1: LOGO Y TÍTULO -->
@@ -2586,6 +2596,4 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
-
-
 
