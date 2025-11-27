@@ -1249,8 +1249,9 @@ async function abrirVentanaBiblia(ref, texto) {
 function actualizarVentanaBiblia(ref, texto) {
   if (!ventanaProyeccion || ventanaProyeccion.closed) return;
 
-  // 👉 Referencia incrustada al final del texto (como tú quieres)
-  const textoFinal = `${texto}. ${ref}`;
+  // 👉 Separa solo por un punto
+  // La cita va más pequeña en un <span>
+  const textoFinal = `${texto}. <span class="cita-mini">${ref}</span>`;
 
   const vars = {
     fondo: getComputedStyle(document.body).getPropertyValue("--fondo").trim(),
@@ -1274,10 +1275,9 @@ function actualizarVentanaBiblia(ref, texto) {
     }
 
     .biblia-wrapper {
-      position:relative;
       width:100%;
       height:100%;
-      padding:6vh 5vw 6vh 5vw; /* más alto para usar TODO el espacio */
+      padding:5vh 4vw 5vh 4vw;
       display:flex;
       justify-content:center;
       align-items:center;
@@ -1287,45 +1287,49 @@ function actualizarVentanaBiblia(ref, texto) {
     .biblia-texto {
       display:block;
       width:100%;
-      height:auto;
       max-height:100%;
 
       text-align:center;
-      line-height:1.16;
       font-weight:700;
+      line-height:1.12;
 
-      /* NO CORTAR palabras jamás */
+      /* NO cortar palabras */
       white-space:pre-wrap;
       overflow-wrap:break-word;
-      word-break:normal;
 
-      /* Inicial gigante */
-      font-size:22vw;
+      /* Tamaño inicial gigante */
+      font-size:25vw;
     }
-</style>
 
-<div class="biblia-wrapper">
-  <div id="textoAutoFit" class="biblia-texto">${textoFinal}</div>
-</div>
+    /* Cita más pequeña y distinta fuente */
+    .cita-mini {
+      font-size:0.65em;                 /* 65% del tamaño del versículo */
+      font-family: "Segoe UI Semilight";
+      opacity:0.85;
+    }
+  </style>
+
+  <div class="biblia-wrapper">
+    <div id="textoAutoFit" class="biblia-texto">${textoFinal}</div>
+  </div>
   `;
 
-  // ======================================================
-  //              AUTO-FIT ESTILO EASYWORSHIP REAL
-  // ======================================================
-
+  // ====================================
+  //         AUTO-FIT AGRESIVO
+  // ====================================
   const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
 
   function autoFit() {
     let min = 20;
-    let max = 650;
+    let max = 900;       // 🔥 Muy grande para permitir tamaños gigantes
     let best = min;
 
-    // Área optimizada para pantalla completa
-    const maxW = ventanaProyeccion.innerWidth * 0.95; // MUCHÍSIMO ESPACIO
-    const maxH = ventanaProyeccion.innerHeight * 0.90;
+    // Área mejorada para versión PRO
+    const maxW = ventanaProyeccion.innerWidth * 0.95;
+    const maxH = ventanaProyeccion.innerHeight * 0.92;
 
     while (min <= max) {
-      const mid = Math.floor((min + max) / 2);
+      let mid = Math.floor((min + max) / 2);
       caja.style.fontSize = mid + "px";
 
       const fits =
@@ -1334,9 +1338,9 @@ function actualizarVentanaBiblia(ref, texto) {
 
       if (fits) {
         best = mid;
-        min = mid + 2;
+        min = mid + 2;     // seguir creciendo
       } else {
-        max = mid - 2;
+        max = mid - 2;     // demasiado grande, bajar
       }
     }
 
@@ -2046,6 +2050,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
