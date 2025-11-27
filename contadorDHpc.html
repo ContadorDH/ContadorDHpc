@@ -1064,15 +1064,42 @@ const URL_PROYECCION = "https://script.google.com/macros/s/AKfycbxf8jUb2catO-d_F
 let biblia = {};
 let books = [];
 
-fetch("RV1960_COMPLETA.json?" + Date.now())
-  .then(r => r.json())
-  .then(json => cargarBiblia(json));
+// 🚀 Al iniciar: intentar cargar desde localStorage
+document.addEventListener("DOMContentLoaded", () => {
+  const bibliaGuardada = localStorage.getItem("biblia_json");
+
+  if (bibliaGuardada) {
+    console.log("✔ Biblia cargada desde memoria local");
+    cargarBiblia(JSON.parse(bibliaGuardada));
+  } else {
+    console.log("⬇ Descargando Biblia por primera vez...");
+    descargarBiblia();
+  }
+});
+
+function descargarBiblia() {
+  fetch("RV1960_COMPLETA.json?" + Date.now())
+    .then(r => r.json())
+    .then(json => {
+      // 💾 Guardar JSON en localStorage UNA sola vez
+      localStorage.setItem("biblia_json", JSON.stringify(json));
+
+      console.log("✔ Biblia guardada permanentemente");
+      cargarBiblia(json);
+    })
+    .catch(err => {
+      document.getElementById("status").textContent =
+        "❌ No se pudo cargar la Biblia (sin conexión)";
+      console.error(err);
+    });
+}
 
 function cargarBiblia(json) {
   books = json.books;
   const lista = document.getElementById("lista-libros");
   lista.innerHTML = "";
 
+  // 📘 Cargar lista de libros solo una vez
   books.forEach((libro, i) => {
     const div = document.createElement("div");
     div.className = "libro";
@@ -1081,7 +1108,10 @@ function cargarBiblia(json) {
     lista.appendChild(div);
   });
 
+  // 🧠 Crear índice de búsqueda
   let contador = 0;
+  biblia = {}; // reset
+
   books.forEach(libro => {
     libro.chapters.forEach(cap => {
       cap.verses.forEach(v => {
@@ -1093,8 +1123,12 @@ function cargarBiblia(json) {
   });
 
   document.getElementById("status").innerHTML =
-    `¡Biblia cargada! ${contador.toLocaleString()} versículos`;
+    `✔ Biblia lista (${contador.toLocaleString()} versículos)`;
 }
+
+// =============================
+//    RESTO: NO CAMBIA NADA
+// =============================
 
 function mostrarCapitulos(i) {
   const libro = books[i];
@@ -1868,6 +1902,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
