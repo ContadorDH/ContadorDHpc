@@ -1186,14 +1186,82 @@ function buscar() {
 }
 
 function ver(ref) {
-  document.getElementById("t").innerHTML =
-    `<div style="font-size:1.5em;color:#ff0">${ref}</div><br>${biblia[ref]}`;
-  mostrar();
+  const contenedorTexto = document.getElementById("t");
+  contenedorTexto.innerHTML = `
+    <div style="font-size:1.5em;color:#ff0">${ref}</div><br>${biblia[ref]}
+  `;
+
+  // === PROYECTAR AUTOMÁTICAMENTE SI ESTAMOS EN LA SECCIÓN DE BIBLIA ===
+  if (document.getElementById("biblia-container").style.display !== "none") {
+    proyectarBiblia(ref, biblia[ref]);  // Proyecta inmediatamente
+  }
 }
 
 
+function proyectarBiblia(referencia, texto) {
+  // Si ya hay proyección abierta → solo actualiza contenido
+  if (ventanaProyeccion && !ventanaProyeccion.closed) {
+    actualizarVentanaBiblia(referencia, texto);
+    return;
+  }
 
+  // Si no hay ventana → la abre
+  abrirVentanaBiblia(referencia, texto);
+}
 
+function abrirVentanaBiblia(ref, texto) {
+  let scr = null;
+  if ("getScreenDetails" in window) {
+    try {
+      const details = window.getScreenDetails();
+      const index = parseInt(document.getElementById("pantallaSelect")?.value || "0");
+      if (details.screens[index]) scr = details.screens[index];
+    } catch (e) {}
+  }
+
+  const features = scr
+    ? `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height},fullscreen=yes`
+    : `width=1200,height=700`;
+
+  ventanaProyeccion = window.open("", "proyeccion", features + ",scrollbars=no");
+
+  actualizarVentanaBiblia(ref, texto);
+
+  // Detectar cierre
+  const timer = setInterval(() => {
+    if (!ventanaProyeccion || ventanaProyeccion.closed) {
+      clearInterval(timer);
+      ventanaProyeccion = null;
+    }
+  }, 500);
+}
+
+function actualizarVentanaBiblia(ref, texto) {
+  if (!ventanaProyeccion || ventanaProyeccion.closed) return;
+
+  const vars = {
+    fondo: getComputedStyle(document.body).getPropertyValue('--fondo').trim(),
+    acento: getComputedStyle(document.body).getPropertyValue('--acento').trim(),
+    texto: getComputedStyle(document.body).getPropertyValue('--texto').trim()
+  };
+  const esOscuro = document.body.classList.contains("tema-oscuro");
+
+  ventanaProyeccion.document.body.innerHTML = `
+    <style>
+      :root{--fondo:${vars.fondo};--acento:${vars.acento};--texto:${vars.texto}}
+      html,body{margin:0;padding:0;width:100vw;height:100vh;overflow:hidden;background:var(--fondo);color:var(--texto);font-family:'Segoe UI',Arial,sans-serif;display:flex;justify-content:center;align-items:center}
+      .biblia-fondo{width:100vw;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:5vh 10vw;box-sizing:border-box}
+      .biblia-referencia{font-size:clamp(28px,4.5vw,70px);font-weight:700;color:var(--acento);margin-bottom:4vh;opacity:0.92;letter-spacing:1.8px;text-align:center;text-shadow:0 2px 8px rgba(0,0,0,0.4)}
+      .biblia-texto{font-size:clamp(36px,7vw,110px);font-weight:500;line-height:1.42;text-align:center;max-width:94%;color:var(--texto);text-shadow:0 3px 12px rgba(0,0,0,0.6)}
+      @keyframes entrada{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+      .biblia-fondo{animation:entrada 0.9s ease-out}
+    </style>
+    <div class="biblia-fondo">
+      <div class="biblia-referencia">${ref}</div>
+      <div class="biblia-texto">${texto}</div>
+    </div>
+  `;
+}
   
   
 function abrirProyeccionDia() {
@@ -1628,8 +1696,8 @@ document.getElementById("selectMes").addEventListener("change", function() {
 async function proyectar() {
   const btn = document.querySelector("button[onclick=\"proyectar()\"]") || 
                document.querySelector("button[onclick='proyectar()']");
-  
-  // === DETENER PROYECCIÓN ===
+
+  // === DETENER SI YA ESTÁ ABIERTA ===
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
     ventanaProyeccion.close();
     ventanaProyeccion = null;
@@ -1640,79 +1708,46 @@ async function proyectar() {
     return;
   }
 
-  let esBiblia = false;
-  let contenidoHTML = "";
-  let tituloProyeccion = "";
-
-  // === DETECTAR SI ES VERSÍCULO DE LA BIBLIA ===
-  const contenedorTexto = document.getElementById("t");
-  if (contenedorTexto && contenedorTexto.innerHTML.trim() !== "") {
-    esBiblia = true;
-    const referencia = contenedorTexto.querySelector("div[style*='font-size:1.5em']")?.textContent || "Versículo";
-    const textoVersiculo = contenedorTexto.innerHTML.split("<br>")[1] || contenedorTexto.innerHTML;
-    tituloProyeccion = referencia;
-    contenidoHTML = `
-      <div class="biblia-fondo">
-        <div class="biblia-referencia">${referencia}</div>
-        <div class="biblia-texto">${textoVersiculo}</div>
-      </div>
-    `;
-  } 
-  // === SI NO, ES ASISTENCIA (comportamiento original) ===
-  else {
-    const filasDatos = document.querySelectorAll("#tabla tbody tr");
-    if (filasDatos.length === 1) {
-      filaSeleccionada = filasDatos[0];
-      filasDatos[0].classList.add("filaSel");
-    }
-    if (!filaSeleccionada) {
-      mostrarAviso("Selecciona una fila antes de proyectar.");
-      return;
-    }
-
-    let headers = [...document.querySelectorAll("#tabla thead th")].map(th => th.innerText);
-    let valores = [...filaSeleccionada.querySelectorAll("td")].map(td => td.innerText);
-    let inicio = headers.findIndex(h => /hermano|asistencia/i.test(h));
-    let fin = headers.findIndex(h => /total/i.test(h));
-
-    if (inicio === -1 || fin === -1 || fin <= inicio || !valores[fin]?.trim()) {
-      mostrarAviso("Error en los datos: No se encontró la asistencia de hoy.", "error");
-      return;
-    }
-
-    const totalAsistencia = valores[fin].trim();
-    let fechaFila = valores[1] ? valores[1].trim().split(" ")[0] : "Fecha no disponible";
-    fechaFila = formatearFechaLarga(fechaFila);
-
-    const headersSinTotal = headers.slice(inicio, fin);
-    const valoresSinTotal = valores.slice(inicio, fin);
-
-    tituloProyeccion = fechaFila;
-    contenidoHTML = `
-      <div class="contenedor">
-        <h1>${fechaFila}</h1>
-        <div class="grid">
-          ${headersSinTotal.map((h,i) => `
-            <div class="card">
-              <div class="titulo">${h}</div>
-              <div class="valor">${valoresSinTotal[i]}</div>
-            </div>`).join("")}
-        </div>
-        <div class="total-final">
-          <div class="total-numero">${totalAsistencia}</div>
-          <div class="total-texto">Total</div>
-        </div>
-      </div>
-    `;
+  // === SOLO PERMITIR PROYECCIÓN DE ASISTENCIA SI ESTAMOS EN ESA SECCIÓN ===
+  if (document.getElementById("biblia-container").style.display !== "none") {
+    mostrarAviso("Estás en la Biblia. Haz clic en un versículo para proyectarlo.", "info");
+    return;
   }
 
-  // === ABRIR VENTANA DE PROYECCIÓN ===
+  // === CÓDIGO ORIGINAL DE ASISTENCIA (sin cambios) ===
+  const filasDatos = document.querySelectorAll("#tabla tbody tr");
+  if (filasDatos.length === 1) {
+    filaSeleccionada = filasDatos[0];
+    filasDatos[0].classList.add("filaSel");
+  }
+  if (!filaSeleccionada) {
+    mostrarAviso("Selecciona una fila antes de proyectar.");
+    return;
+  }
+
+  let headers = [...document.querySelectorAll("#tabla thead th")].map(th => th.innerText);
+  let valores = [...filaSeleccionada.querySelectorAll("td")].map(td => td.innerText);
+  let inicio = headers.findIndex(h => /hermano|asistencia/i.test(h));
+  let fin = headers.findIndex(h => /total/i.test(h));
+
+  if (inicio === -1 || fin === -1 || fin <= inicio || !valores[fin]?.trim()) {
+    mostrarAviso("Error en los datos: No se encontró la asistencia de hoy.", "error");
+    return;
+  }
+
+  const totalAsistencia = valores[fin].trim();
+  let fechaFila = valores[1] ? valores[1].trim().split(" ")[0] : "Fecha no disponible";
+  fechaFila = formatearFechaLarga(fechaFila);
+  const headersSinTotal = headers.slice(inicio, fin);
+  const valoresSinTotal = valores.slice(inicio, fin);
+
+  // === ABRIR VENTANA (igual que antes) ===
   let scr = null;
   if ("getScreenDetails" in window) {
     try {
       const details = await window.getScreenDetails();
-      const indexPantalla = parseInt(document.getElementById("pantallaSelect")?.value || "0");
-      if (details.screens[indexPantalla]) scr = details.screens[indexPantalla];
+      const index = parseInt(document.getElementById("pantallaSelect")?.value || "0");
+      if (details.screens[index]) scr = details.screens[index];
     } catch (e) {}
   }
 
@@ -1729,14 +1764,11 @@ async function proyectar() {
   };
   const esOscuro = document.body.classList.contains("tema-oscuro");
 
-  // === ESTILOS UNIFICADOS (asistencia + biblia) ===
   ventanaProyeccion.document.body.innerHTML = `
     <style>
       :root{--fondo:${vars.fondo};--acento:${vars.acento};--texto:${vars.texto}}
-      html,body{margin:0;padding:0;width:100vw;height:100vh;overflow:hidden;background:var(--fondo);color:var(--texto);font-family:'Segoe UI',Arial,sans-serif;display:flex;justify-content:center;align-items:center}
-      
-      /* ==== PROYECCIÓN DE ASISTENCIA ==== */
-      .contenedor{width:96%;max-width:1400px;min-height:78%;padding:28px 32px;background:rgba(255,255,255,${esOscuro?'0.06':'0.10'});border-radius:24px;border:1px solid rgba(255,255,255,0.12);backdrop-filter:blur(12px);box-shadow:0 20px 60px rgba(0,0,0,${esOscuro?'0.6':'0.3'});display:flex;flex-direction:column;gap:20px;justify-content:space-between;margin-bottom:2vh}
+      html,body{margin:0;padding:0;width:100vw;height:100vh;overflow:hidden;background:var(--fondo);color:var(--texto);font-family:'Segoe UI',sans-serif;display:flex;justify-content:center;align-items:center}
+      .contenedor{width:96%;max-width:1400px;min-height:78%;padding:28px 32px;background:rgba(255,255,255,${esOscuro?'0.06':'0.10'});border-radius:24px;border:1px solid rgba(255,255,255,0.12);backdrop-filter:blur(12px);box-shadow:0 20px 60px rgba(0,0,0,${esOscuro?'0.6':'0.3'});display:flex;flex-direction:column;gap:20px;justify-content:space-between}
       h1{font-size:clamp(32px,5vw,80px);font-weight:900;background:linear-gradient(135deg,var(--acento),color-mix(in srgb,var(--acento) 70%,white));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
       .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:24px;width:100%}
       .card{background:rgba(255,255,255,${esOscuro?'0.08':'0.12'});border-radius:18px;padding:24px 16px;text-align:center;box-shadow:0 8px 25px rgba(0,0,0,${esOscuro?'0.4':'0.2'});border:1px solid rgba(255,255,255,0.1);min-height:140px;display:flex;flex-direction:column;justify-content:center}
@@ -1745,34 +1777,31 @@ async function proyectar() {
       .total-final{padding:20px 48px;background:linear-gradient(135deg,var(--acento),color-mix(in srgb,var(--acento) 80%,black));color:white;border-radius:28px;box-shadow:0 16px 50px rgba(0,0,0,0.6);text-align:center;display:flex;flex-direction:column;gap:6px}
       .total-numero{font-size:clamp(80px,12vw,220px);font-weight:900;line-height:1}
       .total-texto{font-size:clamp(24px,3.5vw,48px);font-weight:700}
-
-      /* ==== PROYECCIÓN DE BIBLIA (pantalla completa) ==== */
-      .biblia-fondo{width:100vw;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:5vh 10vw;box-sizing:border-box;background:var(--fondo)}
-      .biblia-referencia{font-size:clamp(28px,4vw,60px);font-weight:700;color:var(--acento);margin-bottom:3vh;opacity:0.9;letter-spacing:1.5px;text-align:center}
-      .biblia-texto{font-size:clamp(32px,6vw,100px);font-weight:500;line-height:1.45;text-align:center;max-width:90%;color:var(--texto);text-shadow:0 2px 10px rgba(0,0,0,0.5)}
-
-      @keyframes entrada{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
-      .contenedor, .biblia-fondo {animation:entrada .8s ease-out}
+      @keyframes entrada{from{opacity:0;transform:scale(0.94)}to{opacity:1;transform:none}}
+      .contenedor{animation:entrada .7s cubic-bezier(0.34,1.56,0.64,1)}
     </style>
-    <div class="wrap">${contenidoHTML}</div>
+    <div class="wrap">
+      <div class="contenedor">
+        <h1>${fechaFila}</h1>
+        <div class="grid">
+          ${headersSinTotal.map((h,i) => `<div class="card"><div class="titulo">${h}</div><div class="valor">${valoresSinTotal[i]}</div></div>`).join("")}
+        </div>
+        <div class="total-final">
+          <div class="total-numero">${totalAsistencia}</div>
+          <div class="total-texto">Total</div>
+        </div>
+      </div>
+    </div>
   `;
-
-  // Actualizar al cambiar tema
-  const observer = new MutationObserver(() => {
-    if (ventanaProyeccion && !ventanaProyeccion.closed) location.reload(); // recarga limpia
-  });
-  observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
 
   if (btn) {
     btn.textContent = "Detener";
     btn.classList.add("boton-detener");
   }
 
-  // Auto-cerrar detección
   const timer = setInterval(() => {
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       clearInterval(timer);
-      observer.disconnect();
       ventanaProyeccion = null;
       if (btn) {
         btn.textContent = "Proyectar";
@@ -1895,6 +1924,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
