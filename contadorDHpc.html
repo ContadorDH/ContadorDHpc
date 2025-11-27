@@ -1215,7 +1215,8 @@ function mostrarCapitulos(i) {
   const libro = books[i];
   const lista = document.getElementById("lista-libros");
 
-  lista.innerHTML = `<div class="libro" onclick="location.reload()" 
+  lista.innerHTML = `<div class="libro" onclick="cerrarCapitulos()"
+ 
     style="background:#0066cc;color:#fff">← ${libro.name}</div>`;
 
   libro.chapters.forEach(cap => {
@@ -1487,19 +1488,33 @@ function buscar() {
 })();
 
 
+function cerrarCapitulos() {
+  const combo = document.getElementById("combo-libros");
+  const lista = document.getElementById("lista-libros");
+
+  // Volver a estado inicial del combobox
+  combo.value = "";
+
+  // Vaciar capítulos
+  lista.innerHTML = "";
+}
 
   
 
 // ====== FUNCIÓN PRINCIPAL: AL TOCAR UN VERSÍCULO EN BIBLIA ======
 function ver(ref) {
   const contenedorTexto = document.getElementById("t");
-  contenedorTexto.innerHTML = `
-    <div style="font-size:1.5em;color:#ff0">${ref}</div><br>${biblia[ref]}
-  `;
+  const key = ref.toLowerCase();
+
+contenedorTexto.innerHTML = `
+  <div style="font-size:1.5em;color:#ff0">${ref}</div><br>${biblia[key]}
+`;
+
 
   // Solo si estamos en la sección Biblia → proyectar automáticamente
   if (document.getElementById("biblia-container").style.display !== "none") {
-    proyectarBiblia(ref, biblia[ref]);
+   proyectarBiblia(ref, biblia[key]);
+
   }
 }
 
@@ -2356,6 +2371,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
