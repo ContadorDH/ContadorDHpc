@@ -907,13 +907,6 @@ line-height:2;z-index:99;">
   
 </div>
 
-
-
-<table id="tabla">
-  <thead></thead>
-  <tbody></tbody>
-</table>
-
   <div style="height: 120px;"></div>
 
 <!-- AVISO PERSONALIZADO -->
@@ -1856,7 +1849,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // BOTÓN: BIBLIA
   document.getElementById("btnBiblia").addEventListener("click", () => {
     document.getElementById("subtitulo").style.display = "none";
-    document.querySelector(".panel").style.display = "none";
+    document.querySelector(".panel").style.display = "none";  // 🔥 oculta tabla
     document.getElementById("biblia-container").style.display = "flex";
   });
 });
@@ -1866,8 +1859,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+
 </script>
 </body>
 </html>
+
 
 
