@@ -790,6 +790,51 @@ td, th { border-color: var(--borde) !important; }
 </header>
 
 
+<div id="biblia-container" style="display:flex;height:calc(100vh - 160px);">
+    
+  <!-- PANEL IZQUIERDO -->
+  <div id="izq" style="width:320px;background:#fff;border-right:2px solid #ddd;
+       overflow-y:auto;padding:15px;font-size:15px">
+    <h3 style="text-align:center;color:#0066cc;margin:10px 0">Libros de la Biblia</h3>
+    <div id="lista-libros">Cargando libros...</div>
+  </div>
+
+  <!-- PANEL DERECHO -->
+  <div id="der" style="flex:1;overflow-y:auto;padding:25px;">
+    <div id="c" style="max-width:900px;margin:0 auto;background:#fff;padding:20px;
+         border-radius:12px;box-shadow:0 5px 20px rgba(0,0,0,0.2)">
+      
+      <h1 style="text-align:center;color:#0066cc">Reina Valera 1960</h1>
+      <div id="status" class="ok">Cargando Biblia completa...</div>
+
+      <input type="text" id="q" placeholder="Juan 3:16 | Salmos 23 | amor" style="padding:13px;font-size:18px;width:100%;border-radius:8px;border:2px solid #ccc">
+
+      <button onclick="buscar()" style="padding:13px;font-size:18px;width:100%;margin-top:10px;background:#0066cc;color:white;border:none;border-radius:8px;font-weight:bold">Buscar</button>
+
+      <button onclick="proyectar()" style="padding:13px;font-size:18px;width:100%;margin-top:10px;background:#28a745;color:white;border:none;border-radius:8px;font-weight:bold">Proyectar</button>
+
+      <div id="r" style="margin-top:15px"></div>
+    </div>
+  </div>
+
+</div>
+
+
+
+  <div id="s" onclick="cerrar()" style="position:fixed;top:0;left:0;width:100vw;
+height:100vh;background:#000;color:#fff;font-size:7vw;display:none;
+align-items:center;justify-content:center;text-align:center;padding:5%;
+line-height:2;z-index:99;">
+  <div id="t"></div>
+</div>
+
+<button class="x" onclick="cerrar()" 
+  style="position:fixed;top:15px;right:15px;padding:15px 28px;font-size:40px;
+  background:#c00;color:#fff;border-radius:50%;display:none;z-index:100;cursor:pointer">
+  X
+</button>
+
+  
 
 
 <div id="subtitulo" class="subtitulo-moderno">
@@ -995,6 +1040,120 @@ let intervaloPolling = null;         // ← para poder detenerlo cuando ya esté
 
 const URL_PROYECCION = "https://script.google.com/macros/s/AKfycbxf8jUb2catO-d_Fs0l7jfilwNiPXh8pqxMJ6sBUeCGvsOX0_1PE98w8U7-sm4UzUxA/exec";
 
+
+let biblia = {};
+let books = [];
+
+fetch("RV1960_COMPLETA.json?" + Date.now())
+  .then(r => r.json())
+  .then(json => cargarBiblia(json));
+
+function cargarBiblia(json) {
+  books = json.books;
+  const lista = document.getElementById("lista-libros");
+  lista.innerHTML = "";
+
+  books.forEach((libro, i) => {
+    const div = document.createElement("div");
+    div.className = "libro";
+    div.textContent = libro.name;
+    div.onclick = () => mostrarCapitulos(i);
+    lista.appendChild(div);
+  });
+
+  let contador = 0;
+  books.forEach(libro => {
+    libro.chapters.forEach(cap => {
+      cap.verses.forEach(v => {
+        const ref = `${libro.name} ${cap.chapter}:${v.verse}`;
+        biblia[ref.toLowerCase()] = v.text;
+        contador++;
+      });
+    });
+  });
+
+  document.getElementById("status").innerHTML =
+    `¡Biblia cargada! ${contador.toLocaleString()} versículos`;
+}
+
+function mostrarCapitulos(i) {
+  const libro = books[i];
+  const lista = document.getElementById("lista-libros");
+
+  lista.innerHTML = `<div class="libro" onclick="location.reload()" 
+    style="background:#0066cc;color:#fff">← ${libro.name}</div>`;
+
+  libro.chapters.forEach(cap => {
+    const div = document.createElement("div");
+    div.className = "capitulo";
+    div.textContent = `Capítulo ${cap.chapter}`;
+    div.onclick = () =>
+      mostrarVersiculos(libro.name, cap.chapter, cap.verses);
+    lista.appendChild(div);
+  });
+}
+
+function mostrarVersiculos(nombre, cap, versiculos) {
+  const r = document.getElementById("r");
+  r.innerHTML = `<h3 style="color:#0066cc">${nombre} ${cap}</h3>`;
+
+  versiculos.forEach(v => {
+    const ref = `${nombre} ${cap}:${v.verse}`;
+    r.innerHTML += `<div class="vers" onclick="ver('${ref}')">
+    <b>${v.verse}</b> ${v.text}</div>`;
+  });
+}
+
+function buscar() {
+  const q = document.getElementById("q").value.trim().toLowerCase();
+  const r = document.getElementById("r");
+  r.innerHTML = "";
+
+  if (!q) return;
+
+  let resultados = [];
+  for (let ref in biblia) {
+    if (ref.includes(q) || biblia[ref].toLowerCase().includes(q)) {
+      resultados.push(ref);
+      if (resultados.length > 120) break;
+    }
+  }
+
+  if (resultados.length === 0) {
+    r.innerHTML = "<i>No encontrado</i>";
+    return;
+  }
+
+  resultados.forEach(ref => {
+    r.innerHTML += `<div class="vers" onclick="ver('${ref}')">
+      <b>${ref}</b><br>${biblia[ref]}
+    </div>`;
+  });
+}
+
+function ver(ref) {
+  document.getElementById("t").innerHTML =
+    `<div style="font-size:1.5em;color:#ff0">${ref}</div><br>${biblia[ref]}`;
+  mostrar();
+}
+
+function proyectar() {
+  document.getElementById("t").innerHTML =
+    document.getElementById("r").innerHTML;
+  mostrar();
+}
+
+function mostrar() {
+  document.getElementById("s").style.display = "flex";
+  document.querySelector(".x").style.display = "block";
+}
+
+function cerrar() {
+  document.getElementById("s").style.display = "none";
+  document.querySelector(".x").style.display = "none";
+}
+
+  
 function abrirProyeccionDia() {
   cerrarMenu();
   document.getElementById("modalProyeccion").style.display = "flex";
@@ -1677,6 +1836,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
