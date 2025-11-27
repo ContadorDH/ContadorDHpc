@@ -783,14 +783,12 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
 
 
 
-#biblia-container {
+ #biblia-container {
   display: flex;
-  align-items: center; /* ⚡ Cambiado de flex-start a center */
+  align-items: flex-start;
   gap: 30px;
   width: 100%;
-  justify-content: flex-start; /* opcional: mantiene las pantallas a la derecha del panel */
 }
-
 
 /* CONTENEDOR DE LAS DOS PANTALLAS */
 #pantallas-container {
@@ -2517,6 +2515,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
