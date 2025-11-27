@@ -754,41 +754,38 @@ td, th { border-color: var(--borde) !important; }
 </head>
 <body>
 
-<header>
-  <div style="display:flex;align-items:center;justify-content:space-between;gap:22px;height:100%;padding:14px 20px">
-
-    <!-- BOTÓN IZQUIERDA -->
-    <button onclick="mostrarControles()" 
-            style="background:none;border:none;color:white;font-size:18px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;">
-      Cargar Asistencia
-    </button>
-
-    <!-- CENTRO: LOGO + TÍTULO -->
-    <div style="display:flex;align-items:center;gap:22px;">
-      <img src="logo.png" alt="Logo IPUC Bochica Sur"
-           style="height:78px;width:78px;object-fit:cover;border-radius:50%;box-shadow:0 8px 25px rgba(0,0,0,0.5);border:4px solid rgba(255,255,255,0.35);transition:all .3s">
-      
-      <span style="font-family:'Poppins', 'Montserrat', 'Segoe UI', sans-serif;
-                   font-size:34px;
-                   font-weight:800;
-                   letter-spacing:3.2px;
-                   background:linear-gradient(90deg, #ffffff, #e0e7ff, #ffffff);
-                   -webkit-background-clip:text;
-                   background-clip:text;
-                   -webkit-text-fill-color:transparent;
-                   text-shadow:0 3px 12px rgba(0,0,0,0.4);
-                   text-transform:uppercase">
-        ASISTENCIA IPUC BOCHICA SUR
-      </span>
-    </div>
+<header style="padding: 0 20px 10px 20px;">
+  
+  <!-- FILA 1: LOGO Y TÍTULO -->
+  <div style="display:flex;align-items:center;justify-content:center;gap:22px;padding-top:14px;">
+    <img src="logo.png" alt="Logo IPUC Bochica Sur"
+         style="height:78px;width:78px;object-fit:cover;border-radius:50%;box-shadow:0 8px 25px rgba(0,0,0,0.5);border:4px solid rgba(255,255,255,0.35);transition:all .3s">
+    
+    <span style="font-family:'Poppins','Montserrat','Segoe UI',sans-serif;
+                 font-size:34px;font-weight:800;letter-spacing:3.2px;
+                 background:linear-gradient(90deg,#ffffff,#e0e7ff,#ffffff);
+                 -webkit-background-clip:text;background-clip:text;
+                 -webkit-text-fill-color:transparent;
+                 text-shadow:0 3px 12px rgba(0,0,0,0.4);
+                 text-transform:uppercase;">
+      ASISTENCIA IPUC BOCHICA SUR
+    </span>
 
     <!-- ÍCONO MENÚ A LA DERECHA -->
     <div id="menuBtn" 
-         style="cursor:pointer;transition:transform .25s ease">
+         style="position:absolute;top:18px;right:18px;cursor:pointer;transition:transform .25s ease">
       <i class="fas fa-bars" style="font-size:38px;color:white;"></i>
     </div>
-
   </div>
+
+  <!-- FILA 2: BOTÓN ABAJO A LA IZQUIERDA -->
+  <div style="margin-top:12px;">
+    <button id="btnCargarAsistencia"
+            style="background:none;border:none;color:white;font-size:18px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;">
+      Cargar Asistencia
+    </button>
+  </div>
+
 </header>
 
 
@@ -1678,6 +1675,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
