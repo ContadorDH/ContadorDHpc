@@ -1697,7 +1697,8 @@ async function proyectar() {
     ? `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height}`
     : `width=1200,height=700`;
 
-  ventanaProyeccion = window.open("", "proyeccion", features);
+  // EL CAMBIO IMPORTANTE:
+  ventanaProyeccion = window.open("", "_blank", features);
 
   const headersSinTotal = headers.slice(inicio, fin);
   const valoresSinTotal = valores.slice(inicio, fin);
@@ -1754,7 +1755,8 @@ async function proyectar() {
 }
 
 
-function proyectarContenido(html) {
+
+  function proyectarContenido(html) {
   const btn = document.querySelector("button[onclick='proyectar()']");
 
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
@@ -1767,7 +1769,8 @@ function proyectarContenido(html) {
     return;
   }
 
-  ventanaProyeccion = window.open("", "proyeccion", "width=1200,height=700");
+  // CAMBIEDO AQUÍ TAMBIÉN:
+  ventanaProyeccion = window.open("", "_blank", "width=1200,height=700");
 
   const vars = {
     fondo: getComputedStyle(document.body).getPropertyValue('--fondo').trim(),
@@ -1800,7 +1803,6 @@ function proyectarContenido(html) {
     </div>
   `;
 }
-
 
 
   
@@ -1918,6 +1920,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
