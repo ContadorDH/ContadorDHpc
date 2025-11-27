@@ -1261,63 +1261,67 @@ function actualizarVentanaBiblia(ref, texto) {
         margin:0;padding:0;width:100vw;height:100vh;overflow:hidden;
         background:var(--fondo);color:var(--texto);
         font-family:'Segoe UI',Arial,sans-serif;
-        display:flex;justify-content:center;align-items:center;
         position:relative;
       }
-      
+
+      /* Contenedor principal con margen seguro para que el texto no toque los bordes */
       .biblia-contenedor{
-        width:100vw;height:100vh;
-        display:flex;flex-direction:column;
-        justify-content:center;align-items:center;
-        padding:8vh 12vw;
+        width:100vw;
+        height:100vh;
+        padding:10vh 12vw 18vh 12vw;   /* ← margen grande abajo para la referencia */
         box-sizing:border-box;
+        display:flex;
+        justify-content:center;
+        align-items:center;
         animation:entrada 0.9s ease-out;
       }
-      
-      /* Texto principal – ahora se adapta PERFECTAMENTE a cualquier pantalla */
+
+      /* Texto del versículo – ahora queda perfecto en cualquier resolución */
       .biblia-texto{
-        font-size:clamp(32px, 7.5vw, 160px);   /* más grande en pantallas grandes */
+        font-size:clamp(32px, 7.2vw, 140px);
         font-weight:500;
-        line-height:1.38;
+        line-height:1.4;
         text-align:center;
-        max-width:96%;
         color:var(--texto);
         text-shadow:0 4px 20px rgba(0,0,0,0.7);
         margin:0;
-        word-spacing:0.05em;
+        max-width:100%;
+        word-wrap:break-word;
       }
-      
-      /* Referencia fija en esquina inferior derecha */
+
+      /* Referencia fija en la esquina inferior derecha – NUNCA se superpone */
       .biblia-referencia{
         position:fixed;
         bottom:5vh;
         right:6vw;
-        font-size:clamp(26px, 3.8vw, 68px);
+        font-size:clamp(28px, 4vw, 72px);
         font-weight:700;
         color:var(--acento);
-        opacity:0.92;
-        letter-spacing:1.8px;
-        text-shadow:0 3px 12px rgba(0,0,0,0.6);
-        z-index:10;
+        opacity:0.95;
+        letter-spacing:2px;
+        text-shadow:0 3px 15px rgba(0,0,0,0.8);
+        z-index:100;
         pointer-events:none;
         font-style:normal;
       }
-      
+
       @keyframes entrada{
-        from{opacity:0;transform:translateY(60px)}
+        from{opacity:0;transform:translateY(50px)}
         to{opacity:1;transform:none}
       }
-      
-      /* Pequeña mejora: evita que el texto se corte en pantallas muy anchas */
-      @media (min-aspect-ratio: 16/9) {
-        .biblia-texto { font-size:clamp(32px, 6.5vw, 140px); }
+
+      /* En pantallas muy anchas (proyectores 21:9 o 4K) – ajusta un poco más */
+      @media (min-aspect-ratio: 18/9) {
+        .biblia-texto { font-size:clamp(32px, 6.2vw, 120px); }
+        .biblia-contenedor { padding:10vh 15vw 18vh 15vw; }
       }
     </style>
 
+    <!-- Texto centrado con margen -->
     <div class="biblia-contenedor">
       <div class="biblia-texto">${texto}</div>
     </div>
-    
+
     <!-- Referencia siempre visible en la esquina inferior derecha -->
     <div class="biblia-referencia">${ref}</div>
   `;
@@ -2017,6 +2021,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
