@@ -899,7 +899,11 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
 </head>
 <body>
 
-<header style="padding: 0 20px 10px 20px;">
+<header style="padding: 0 20px 10px 20px;
+               position:sticky;
+               top:0;
+               z-index:999;
+               overflow:hidden;">
   
   <!-- FILA 1: LOGO Y TÍTULO -->
   <div style="display:flex;align-items:center;justify-content:center;gap:22px;padding-top:14px;">
@@ -2605,6 +2609,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
