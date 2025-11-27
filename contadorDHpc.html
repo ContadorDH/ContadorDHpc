@@ -52,22 +52,9 @@ header {
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255,255,255,0.2);
 }
-.btnPrincipal {
-  padding: 14px 22px;
-  width: 100%;
-  font-size: 20px;
-  cursor: pointer;
-  background: #1E6FB8;
-  color: white;
-  border: none;
-  border-radius: 12px;
-  margin-top: 20px;
-}
 
-  
 /* SUBTÍTULO PRINCIPAL GRANDE Y MODERNO – AHORA CON EFECTO CRISTAL */
 #subtitulo {
-  display: none;
   margin-top: 22px;
   margin-bottom: 10px;
   text-align: center;
@@ -156,7 +143,7 @@ header {
 .btn-icono {
   width: 45px;
   height: 45px;
-  background: transparent;
+  background: white;
   color: #1E6FB8;
   border-radius: 50%;
   display: flex !important;
@@ -745,181 +732,37 @@ td, th { border-color: var(--borde) !important; }
   transform: scale(0.95);
 }
   
-
-:root { --fondo:${vars.fondo}; --acento:${vars.acento}; --texto:${vars.texto}; }
-
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800;900&display=swap');
-
-  html, body {
-    margin:0;
-    padding:0;
-    width:100vw;
-    height:100vh;
-    overflow:hidden;
-    background:var(--fondo);
-    color:var(--texto);
-    font-family:'Poppins', sans-serif; /* NUEVA FUENTE */
-  }
-
-  /* Contenedor GENERAL */
-  .biblia-wrapper {
-    position:relative;
-    width:100%;
-    height:100%;
-    padding:9vh 8vw 15vh 8vw;
-    box-sizing:border-box;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-  }
-
-  /* TEXTO DEL VERSÍCULO — MEJORADO */
-  .biblia-texto {
-    display:inline-block;
-    max-width:100%;
-    max-height:100%;
-    text-align:center;
-    line-height:1.28;
-    font-weight:800; /* MÁS GRUESO */
-    word-wrap:break-word;
-    overflow:hidden;
-
-    font-size:14vw; /* tamaño inicial — más grande */
-    text-shadow:0 5px 22px rgba(0,0,0,0.75);
-    letter-spacing:0.5px;
-  }
-
-  /* REFERENCIA — más gruesa y clara */
-  .biblia-referencia {
-    position:absolute;
-    right:4vw;
-    bottom:3vh;
-
-    font-size:clamp(28px, 3.8vw, 80px);
-    font-weight:900; /* super bold */
-    color:var(--acento);
-    text-shadow:0 4px 18px rgba(0,0,0,0.85);
-    letter-spacing:2px;
-
-    pointer-events:none;
-  }
-
-
   
 </style>
 </head>
 <body>
 
-<header style="padding: 0 20px 10px 20px;">
-  
-  <!-- FILA 1: LOGO Y TÍTULO -->
-  <div style="display:flex;align-items:center;justify-content:center;gap:22px;padding-top:14px;">
+<header>
+  <div style="display:flex;align-items:center;justify-content:center;gap:22px;height:100%;padding:14px 0">
     <img src="logo.png" alt="Logo IPUC Bochica Sur"
          style="height:78px;width:78px;object-fit:cover;border-radius:50%;box-shadow:0 8px 25px rgba(0,0,0,0.5);border:4px solid rgba(255,255,255,0.35);transition:all .3s">
     
-    <span style="font-family:'Poppins','Montserrat','Segoe UI',sans-serif;
-                 font-size:34px;font-weight:800;letter-spacing:3.2px;
-                 background:linear-gradient(90deg,#ffffff,#e0e7ff,#ffffff);
-                 -webkit-background-clip:text;background-clip:text;
+    <span style="font-family:'Poppins', 'Montserrat', 'Segoe UI', sans-serif;
+                 font-size:34px;
+                 font-weight:800;
+                 letter-spacing:3.2px;
+                 background:linear-gradient(90deg, #ffffff, #e0e7ff, #ffffff);
+                 -webkit-background-clip:text;
+                 background-clip:text;
                  -webkit-text-fill-color:transparent;
                  text-shadow:0 3px 12px rgba(0,0,0,0.4);
-                 text-transform:uppercase;">
+                 text-transform:uppercase">
       ASISTENCIA IPUC BOCHICA SUR
     </span>
-
-    <!-- ÍCONO MENÚ A LA DERECHA -->
-    <div id="menuBtn" 
-         style="position:absolute;top:18px;right:18px;cursor:pointer;transition:transform .25s ease">
-      <i class="fas fa-bars" style="font-size:38px;color:white;"></i>
-    </div>
   </div>
 
-  <!-- FILA 2: BOTONES -->
-  <div style="margin-top:12px; width:100%; text-align:left; display:flex; gap:18px;">
-
-    <!-- BOTÓN CARGAR ASISTENCIA -->
-    <button id="btnCargarAsistencia"
-            style="background:none;border:none;color:white;font-size:18px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;">
-      Cargar Asistencia
-    </button>
-
-    <!-- NUEVO BOTÓN BIBLIA -->
-    <button id="btnBiblia"
-            style="background:none;border:none;color:white;font-size:18px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;">
-      Biblia
-    </button>
-
-  </div>
-
-</header>
-
-
-
-<div id="biblia-container" style="display:flex;height:calc(100vh - 160px);">
-    
-  <!-- PANEL IZQUIERDO -->
-  <div id="izq" style="width:320px;background:#fff;border-right:2px solid #ddd;
-       overflow-y:auto;padding:15px;font-size:15px">
-
-    <!-- 🔍 BUSCADOR AGREGADO AQUÍ -->
-    <div style="background:#f0f8ff;padding:12px;border-radius:10px;
-                box-shadow:0 2px 6px rgba(0,0,0,0.12);margin-bottom:15px">
-
-      <input type="text" id="q" placeholder="Juan 3:16 | Salmos 23 | amor"
-             style="padding:10px;font-size:16px;width:100%;
-                    border-radius:8px;border:2px solid #aac;">
-
-      <button onclick="buscar()" 
-              style="padding:10px;font-size:16px;width:100%;margin-top:8px;
-                     background:#0066cc;color:white;border:none;border-radius:8px;
-                     font-weight:bold">
-        Buscar
-      </button>
-
-      <div id="status" class="ok" 
-           style="font-size:12px;text-align:center;color:#0066cc;margin-top:6px;">
-        Cargando Biblia completa...
-      </div>
-    </div>
-    <!-- 🔍 FIN DE BUSCADOR -->
-
-    <h3 style="text-align:center;color:#0066cc;margin:10px 0">Libros de la Biblia</h3>
-    <div id="lista-libros">Cargando libros...</div>
-  </div>
-
-  <!-- PANEL DERECHO -->
-  <div id="der" style="flex:1;overflow-y:auto;padding:25px;">
-    <div id="c" style="max-width:900px;margin:0 auto;background:#fff;padding:20px;
-         border-radius:12px;box-shadow:0 5px 20px rgba(0,0,0,0.2)">
-      
-      <h1 style="text-align:center;color:#0066cc">Reina Valera 1960</h1>
-
-
-      <div id="r" style="margin-top:15px"></div>
-    </div>
-  </div>
-
+<!-- BOTÓN MENÚ → SOLO EL ÍCONO, SIN FONDO, SIN CÍRCULO, SIN NADA -->
+<div id="menuBtn" style="position:fixed;top:18px;right:18px;z-index:999999;cursor:pointer;padding:10px;transition:transform .25s ease">
+  <i class="fas fa-bars" style="font-size:38px;color:white;"></i>
 </div>
-
-
-
-
-  <div id="s" onclick="cerrar()" style="position:fixed;top:0;left:0;width:100vw;
-height:100vh;background:#000;color:#fff;font-size:7vw;display:none;
-align-items:center;justify-content:center;text-align:center;padding:5%;
-line-height:2;z-index:99;">
-  <div id="t"></div>
-</div>
-
-<button class="x" onclick="cerrar()" 
-  style="position:fixed;top:15px;right:15px;padding:15px 28px;font-size:40px;
-  background:#c00;color:#fff;border-radius:50%;display:none;z-index:100;cursor:pointer">
-  X
-</button>
 
   
-
+</header>
 
 <div id="subtitulo" class="subtitulo-moderno">
   <span class="titulo-label">Asistencia de:</span>
@@ -957,12 +800,22 @@ line-height:2;z-index:99;">
 <button id="btnTema" class="btn-icono" title="Cambiar tema">
   <i class="fa-solid fa-palette"></i>
   
- 
+  <!-- SOLO ÍCONO AWESOME -->
+  <button class="btn-icono" onclick="Pantallas()">
+    <i class="fa-solid fa-tv"></i>
+  </button>
 
 
 </button>
   
 </div>
+
+
+
+<table id="tabla">
+  <thead></thead>
+  <tbody></tbody>
+</table>
 
   <div style="height: 120px;"></div>
 
@@ -995,44 +848,35 @@ line-height:2;z-index:99;">
 <!-- MENÚ LATERAL RESPONSIVE -->
 <div id="menuLateral" style="position:fixed;top:0;right:-100%;width:340px;max-width:92vw;height:100vh;background:rgba(15,25,45,0.98);backdrop-filter:blur(20px);border-left:1px solid rgba(255,255,255,0.1);box-shadow:-10px 0 50px rgba(0,0,0,0.7);transition:right .45s cubic-bezier(0.22,1,0.36,1);z-index:999998;padding:16px 20px;overflow-y:auto;color:white;font-family:'Poppins',sans-serif;box-sizing:border-box">
 
-<!-- Botón Proyección + Cerrar -->
+<!-- Botón Proyección + Cerrar (EFECTO HOVER PROFESIONAL 100%) -->
 <div style="display:flex;justify-content:space-between;align-items:center;padding:0 16px;margin-bottom:12px">
-
-  <!-- BLOQUE IZQUIERDO: Proyector + nuevo icono -->
-  <div style="display:flex;gap:12px;align-items:center">
-
-      <!-- BOTÓN PROYECCIÓN -->
-      <div onclick="abrirProyeccionDia()" 
-          style="cursor:pointer;padding:16px;border-radius:50%;transition:all .4s ease;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center">
-          
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--acento)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="z-index:2;position:relative;transition:all .4s">
-            <rect x="3" y="5" width="15" height="11" rx="2"/>
-            <path d="M18 7v8a2 2 0 0 1-2 2H8"/>
-            <circle cx="12" cy="10.5" r="2.5"/>
-            <path d="M12 13v4"/>
-            <path d="M7 19h10"/>
-            <path d="M9 19v-3"/>
-            <path d="M15 19v-3"/>
-          </svg>
-
-          <div style="position:absolute;inset:0;border-radius:50%;background:var(--acento);transform:scale(0);transition:transform .5s ease"></div>
-      </div>
-
-      <!-- ÍCONO AWESOME AL LADO DEL PROYECTOR -->
-      <button class="btn-icono" onclick="Pantallas()">
-        <i class="fa-solid fa-tv"></i>
-      </button>
+  
+  <!-- BOTÓN PROYECCIÓN – EFECTO HOVER DE LUJO -->
+  <div onclick="abrirProyeccionDia()" 
+       style="cursor:pointer;padding:16px;border-radius:50%;transition:all .4s ease;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center">
+    
+    <!-- ÍCONO PROYECTOR (color del tema) -->
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--acento)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="z-index:2;position:relative;transition:all .4s">
+      <rect x="3" y="5" width="15" height="11" rx="2"/>
+      <path d="M18 7v8a2 2 0 0 1-2 2H8"/>
+      <circle cx="12" cy="10.5" r="2.5"/>
+      <path d="M12 13v4"/>
+      <path d="M7 19h10"/>
+      <path d="M9 19v-3"/>
+      <path d="M15 19v-3"/>
+    </svg>
+    
+    <!-- ONDA DE COLOR QUE CRECE AL PASAR EL MOUSE (EFECTO MODERNO) -->
+    <div style="position:absolute;inset:0;border-radius:50%;background:var(--acento);transform:scale(0);transition:transform .5s ease"></div>
   </div>
-
-  <!-- BOTÓN CERRAR (SIN TOCAR) -->
+  
+  <!-- BOTÓN CERRAR (100% SIN TOCAR) -->
   <div onclick="cerrarMenu()" style="cursor:pointer;padding:8px;border-radius:50%;background:rgba(255,255,255,0.12);transition:all .3s">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="black">
       <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
     </svg>
   </div>
-
 </div>
-
 
   <!-- SOBRE NOSOTROS -->
   <div style="background:rgba(255,255,255,0.08);border-radius:16px;padding:18px;margin-bottom:18px;border:1px solid rgba(255,255,255,0.12);box-shadow:0 6px 24px rgba(0,0,0,0.3)">
@@ -1072,8 +916,6 @@ line-height:2;z-index:99;">
     © 2025 DECOM IPUC Bochica Sur<br>
     Todos los derechos reservados para la gloria de Dios
   </div>
-
-
   
 </div>
 
@@ -1097,11 +939,6 @@ line-height:2;z-index:99;">
 </div>
 
 
-
-
-
-
-
   
 <script>
 const URL = "https://script.google.com/macros/s/AKfycbwuad6LbOg5k2TFzphjhPTm-NwMJwURzhfFPsEb8a5oB9KXuXIhWxe5QzrR2xLnDjYVlA/exec";
@@ -1117,301 +954,6 @@ let intervaloPolling = null;         // ← para poder detenerlo cuando ya esté
 
 const URL_PROYECCION = "https://script.google.com/macros/s/AKfycbxf8jUb2catO-d_Fs0l7jfilwNiPXh8pqxMJ6sBUeCGvsOX0_1PE98w8U7-sm4UzUxA/exec";
 
-
-let biblia = {};
-let books = [];
-
-// 🚀 Al iniciar: intentar cargar desde localStorage
-document.addEventListener("DOMContentLoaded", () => {
-  const bibliaGuardada = localStorage.getItem("biblia_json");
-
-  if (bibliaGuardada) {
-    console.log("✔ Biblia cargada desde memoria local");
-    cargarBiblia(JSON.parse(bibliaGuardada));
-  } else {
-    console.log("⬇ Descargando Biblia por primera vez...");
-    descargarBiblia();
-  }
-});
-
-function descargarBiblia() {
-  fetch("RV1960_COMPLETA.json?" + Date.now())
-    .then(r => r.json())
-    .then(json => {
-      // 💾 Guardar JSON en localStorage UNA sola vez
-      localStorage.setItem("biblia_json", JSON.stringify(json));
-
-      console.log("✔ Biblia guardada permanentemente");
-      cargarBiblia(json);
-    })
-    .catch(err => {
-      document.getElementById("status").textContent =
-        "❌ No se pudo cargar la Biblia (sin conexión)";
-      console.error(err);
-    });
-}
-
-function cargarBiblia(json) {
-  books = json.books;
-  const lista = document.getElementById("lista-libros");
-  lista.innerHTML = "";
-
-  // 📘 Cargar lista de libros solo una vez
-  books.forEach((libro, i) => {
-    const div = document.createElement("div");
-    div.className = "libro";
-    div.textContent = libro.name;
-    div.onclick = () => mostrarCapitulos(i);
-    lista.appendChild(div);
-  });
-
-  // 🧠 Crear índice de búsqueda
-  let contador = 0;
-  biblia = {}; // reset
-
-  books.forEach(libro => {
-    libro.chapters.forEach(cap => {
-      cap.verses.forEach(v => {
-        const ref = `${libro.name} ${cap.chapter}:${v.verse}`;
-        biblia[ref.toLowerCase()] = v.text;
-        contador++;
-      });
-    });
-  });
-
-  document.getElementById("status").innerHTML =
-    `✔ Biblia lista (${contador.toLocaleString()} versículos)`;
-}
-
-// =============================
-//    RESTO: NO CAMBIA NADA
-// =============================
-
-function mostrarCapitulos(i) {
-  const libro = books[i];
-  const lista = document.getElementById("lista-libros");
-
-  lista.innerHTML = `<div class="libro" onclick="location.reload()" 
-    style="background:#0066cc;color:#fff">← ${libro.name}</div>`;
-
-  libro.chapters.forEach(cap => {
-    const div = document.createElement("div");
-    div.className = "capitulo";
-    div.textContent = `Capítulo ${cap.chapter}`;
-    div.onclick = () =>
-      mostrarVersiculos(libro.name, cap.chapter, cap.verses);
-    lista.appendChild(div);
-  });
-}
-
-function mostrarVersiculos(nombre, cap, versiculos) {
-  const r = document.getElementById("r");
-  r.innerHTML = `<h3 style="color:#0066cc">${nombre} ${cap}</h3>`;
-
-  versiculos.forEach(v => {
-    const ref = `${nombre} ${cap}:${v.verse}`;
-    r.innerHTML += `<div class="vers" onclick="ver('${ref}')">
-    <b>${v.verse}</b> ${v.text}</div>`;
-  });
-}
-
-function buscar() {
-  const q = document.getElementById("q").value.trim().toLowerCase();
-  const r = document.getElementById("r");
-  r.innerHTML = "";
-
-  if (!q) return;
-
-  let resultados = [];
-  for (let ref in biblia) {
-    if (ref.includes(q) || biblia[ref].toLowerCase().includes(q)) {
-      resultados.push(ref);
-      if (resultados.length > 120) break;
-    }
-  }
-
-  if (resultados.length === 0) {
-    r.innerHTML = "<i>No encontrado</i>";
-    return;
-  }
-
-  resultados.forEach(ref => {
-    r.innerHTML += `<div class="vers" onclick="ver('${ref}')">
-      <b>${ref}</b><br>${biblia[ref]}
-    </div>`;
-  });
-}
-
-// ====== FUNCIÓN PRINCIPAL: AL TOCAR UN VERSÍCULO EN BIBLIA ======
-function ver(ref) {
-  const contenedorTexto = document.getElementById("t");
-  contenedorTexto.innerHTML = `
-    <div style="font-size:1.5em;color:#ff0">${ref}</div><br>${biblia[ref]}
-  `;
-
-  // Solo si estamos en la sección Biblia → proyectar automáticamente
-  if (document.getElementById("biblia-container").style.display !== "none") {
-    proyectarBiblia(ref, biblia[ref]);
-  }
-}
-
-// ====== PROYECCIÓN AUTOMÁTICA DE BIBLIA (con pantalla seleccionada) ======
-async function proyectarBiblia(referencia, texto) {
-  // Si ya hay ventana abierta → solo actualiza contenido
-  if (ventanaProyeccion && !ventanaProyeccion.closed) {
-    actualizarVentanaBiblia(referencia, texto);
-    return;
-  }
-
-  // Si no hay ventana → la abre (con pantalla seleccionada)
-  await abrirVentanaBiblia(referencia, texto);
-}
-
-async function abrirVentanaBiblia(ref, texto) {
-  let scr = null;
-
-  // === RESPETAR LA PANTALLA SELECCIONADA (igual que asistencia) ===
-  if ("getScreenDetails" in window) {
-    try {
-      const details = await window.getScreenDetails();  // ← AQUÍ ESTABA EL ERROR ANTES
-      const indexPantalla = parseInt(document.getElementById("pantallaSelect").value);
-      if (!isNaN(indexPantalla) && details.screens[indexPantalla]) {
-        scr = details.screens[indexPantalla];
-      }
-    } catch (e) {
-      console.warn("No se pudo obtener pantalla:", e);
-    }
-  }
-
-  const features = scr
-    ? `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height},fullscreen=yes`
-    : `width=1200,height=700`;
-
-  ventanaProyeccion = window.open("", "proyeccion", features + ",scrollbars=no");
-
-  // Aplicar contenido
-  actualizarVentanaBiblia(ref, texto);
-
-  // Detectar cierre automático
-  const timer = setInterval(() => {
-    if (!ventanaProyeccion || ventanaProyeccion.closed) {
-      clearInterval(timer);
-      ventanaProyeccion = null;
-    }
-  }, 500);
-}
-
-function actualizarVentanaBiblia(ref, texto) {
-  if (!ventanaProyeccion || ventanaProyeccion.closed) return;
-
-  const vars = {
-    fondo: getComputedStyle(document.body).getPropertyValue("--fondo").trim(),
-    acento: getComputedStyle(document.body).getPropertyValue("--acento").trim(),
-    texto: getComputedStyle(document.body).getPropertyValue("--texto").trim()
-  };
-  const esOscuro = document.body.classList.contains("tema-oscuro");
-
-  ventanaProyeccion.document.body.innerHTML = `
-    <style>
-      :root { --fondo:${vars.fondo}; --acento:${vars.acento}; --texto:${vars.texto}; }
-
-      html, body {
-        margin:0;
-        padding:0;
-        width:100vw;
-        height:100vh;
-        overflow:hidden;
-        background:var(--fondo);
-        color:var(--texto);
-        font-family:'Segoe UI', sans-serif;
-      }
-
-      /* Contenedor GENERAL */
-      .biblia-wrapper {
-        position:relative;
-        width:100%;
-        height:100%;
-        padding:8vh 10vw 14vh 10vw; /* arriba - lados - abajo */
-        box-sizing:border-box;
-
-        display:flex;
-        justify-content:center;
-        align-items:center;
-      }
-
-      /* Texto del versículo */
-      .biblia-texto {
-        display:inline-block;
-        max-width:100%;
-        max-height:100%;
-        text-align:center;
-        line-height:1.35;
-        font-weight:500;
-        word-wrap:break-word;
-        overflow:hidden;
-
-        /* tamaño inicial alto para luego autoajustar */
-        font-size:12vw;
-
-        text-shadow:0 4px 20px rgba(0,0,0,0.7);
-      }
-
-      /* Referencia INFERIOR DERECHA – como solicitaste */
-      .biblia-referencia {
-        position:absolute;
-        right:4vw;
-        bottom:4vh;
-
-        font-size:clamp(24px, 3vw, 60px);
-        font-weight:700;
-        color:var(--acento);
-        letter-spacing:1.5px;
-        text-shadow:0 3px 15px rgba(0,0,0,0.8);
-
-        pointer-events:none;
-      }
-    </style>
-
-    <div class="biblia-wrapper">
-      <div id="textoAutoFit" class="biblia-texto">${texto}</div>
-      <div class="biblia-referencia">${ref}</div>
-    </div>
-  `;
-
-  // ======== AUTO-AJUSTE ULTRA PRECISO ========
-  const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
-
-  function autoFit() {
-  let size = 30;             // tamaño mínimo mayor
-let maxSize = 420;         // PERMITE MUCHO más tamaño
-
-const maxW = ventanaProyeccion.innerWidth * 0.88; // USA MÁS ANCHO
-const maxH = ventanaProyeccion.innerHeight * 0.72; // USA MÁS ALTO
-
-
-    caja.style.fontSize = size + "px";
-
-    // Aumentar hasta que toque los límites
-    while (size < maxSize) {
-      caja.style.fontSize = size + "px";
-
-      if (caja.scrollHeight > maxH || caja.scrollWidth > maxW) {
-        break;
-      }
-
-      size += 2; // crece suavemente
-    }
-
-    // Retroceder para quedar exacto
-    caja.style.fontSize = (size - 2) + "px";
-  }
-
-  autoFit();
-}
-
-
-  
-  
 function abrirProyeccionDia() {
   cerrarMenu();
   document.getElementById("modalProyeccion").style.display = "flex";
@@ -1490,7 +1032,7 @@ async function cargarCronogramaProyeccion(filtroPersona = null) {
           <tr>
             <th style="padding:20px 16px;text-align:left;color:white;font-weight:800;font-size:18.5px;width:38%">Fecha</th>
             <th style="padding:20px 16px;text-align:center;color:white;font-weight:800;font-size:18.5px;width:18%">Día</th>
-            <th style="padding:20px 16px;text-align:left;color:white;font-weight:800;font-size:18.5px">Hermano(a)</th>
+            <th style="padding:20px 16px;text-align:left;color:white;font-weight:800;font-size:18.5px">Persona</th>
           </tr>
         </thead>
         <tbody>`;
@@ -2068,52 +1610,11 @@ await verHoy();                  // mostramos automáticamente "Hoy"
 }
 
   
+// Ejecuta TODO apenas el HTML esté parseado (mucho antes que "load")
 document.addEventListener("DOMContentLoaded", () => {
   detectarPantallas();
-
-  const tablaArriba = document.getElementById("tabla");
-
-  // Ocultar ambas secciones al iniciar
-  document.getElementById("subtitulo").style.display = "none";
-  document.querySelector(".panel").style.display = "none";
-  document.getElementById("biblia-container").style.display = "none";
-  tablaArriba.style.display = "none"; // 🔥 también ocultar tabla arriba
-
-  // BOTÓN: CARGAR ASISTENCIA
-  document.getElementById("btnCargarAsistencia").addEventListener("click", () => {
-    document.getElementById("subtitulo").style.display = "flex";
-    document.querySelector(".panel").style.display = "flex";
-    document.getElementById("biblia-container").style.display = "none";
-    tablaArriba.style.display = "table"; // 🔥 mostrar tabla arriba
-    cargarAlIniciar();
-  });
-
-  // BOTÓN: BIBLIA
-  document.getElementById("btnBiblia").addEventListener("click", () => {
-    document.getElementById("subtitulo").style.display = "none";
-    document.querySelector(".panel").style.display = "none";
-    document.getElementById("biblia-container").style.display = "flex";
-    tablaArriba.style.display = "none"; // 🔥 ocultar tabla arriba
-  });
+  cargarAlIniciar();
 });
-
-
-
-
-
-
-
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
