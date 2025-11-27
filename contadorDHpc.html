@@ -13,6 +13,13 @@
 
 
 <style>
+
+html, body {
+  overflow: hidden;
+  height: 100%;
+}
+
+  
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -799,13 +806,15 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
   flex-shrink: 0;
   width: 320px;
   min-width: 320px;
+  max-height: 100vh;     /* 👉 evita que crezca más que la pantalla */
+  overflow-y: auto;      /* 👉 scroll solo dentro del panel */
   background: #fff;
   border-right: 2px solid #ddd;
-  overflow-y: auto;
   padding: 15px;
   font-size: 15px;
   box-sizing: border-box;
 }
+
 
 /* Contenedor de las dos pantallas – ahora perfecto */
 #pantallas-container {
@@ -870,12 +879,6 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
     padding: 10px;
   }
   
-  #izq {
-    width: 100% !important;
-    max-height: 45vh;
-    border-bottom: 2px solid #ddd;
-    border-right: none;
-  }
   
   #pantallas-container {
     flex-direction: column;
@@ -2602,6 +2605,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
