@@ -1319,33 +1319,35 @@ function actualizarVentanaBiblia(ref, texto) {
   // ======== AUTO-AJUSTE ULTRA PRECISO ========
   const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
 
- function autoFit() {
-  // 🔥 Tamaños ajustados para texto realmente grande
-  let size = 60;        // antes 20 → ahora arranca MUCHO más grande
-  let maxSize = 700;    // antes 300 → ahora permite tamaño gigante
+ function autoFit() { 
+  // Rango realista de tamaños
+  let min = 30;      // mínimo visible
+  let max = 300;     // máximo gigante inicial
+  let best = min;
 
-  // Área útil aumentada (más pantalla para el texto)
+  // Más área útil como EasyWorship
   const maxW = ventanaProyeccion.innerWidth * 0.92;
-  const maxH = ventanaProyeccion.innerHeight * 0.80;
+  const maxH = ventanaProyeccion.innerHeight * 0.82;
 
-  caja.style.fontSize = size + "px";
+  // Búsqueda binaria = ajuste perfecto al centro
+  while (min <= max) {
+    let mid = Math.floor((min + max) / 2);
+    caja.style.fontSize = mid + "px";
 
-  // Aumentar hasta que toque los límites
-  while (size < maxSize) {
-    caja.style.fontSize = size + "px";
-
-    if (caja.scrollHeight > maxH || caja.scrollWidth > maxW) {
-      break;
+    if (caja.scrollWidth <= maxW && caja.scrollHeight <= maxH) {
+      best = mid;   // cabe → probar más grande
+      min = mid + 2;
+    } else {
+      max = mid - 2; // no cabe → bajar tamaño
     }
-
-    size += 6; // crece más rápido y llega a tamaños grandes
   }
 
-  // Retroceder para quedar exacto
-  caja.style.fontSize = (size - 6) + "px";
+  // tamaño final
+  caja.style.fontSize = best + "px";
 }
 
 autoFit();
+
 }
 
 
@@ -2046,6 +2048,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
