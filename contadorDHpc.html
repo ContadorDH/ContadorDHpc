@@ -52,9 +52,22 @@ header {
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255,255,255,0.2);
 }
+.btnPrincipal {
+  padding: 14px 22px;
+  width: 100%;
+  font-size: 20px;
+  cursor: pointer;
+  background: #1E6FB8;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  margin-top: 20px;
+}
 
+  
 /* SUBTÍTULO PRINCIPAL GRANDE Y MODERNO – AHORA CON EFECTO CRISTAL */
 #subtitulo {
+  display: none;
   margin-top: 22px;
   margin-bottom: 10px;
   text-align: center;
@@ -143,7 +156,7 @@ header {
 .btn-icono {
   width: 45px;
   height: 45px;
-  background: white;
+  background: transparent;
   color: #1E6FB8;
   border-radius: 50%;
   display: flex !important;
@@ -732,37 +745,124 @@ td, th { border-color: var(--borde) !important; }
   transform: scale(0.95);
 }
   
+
+
+
+
   
 </style>
 </head>
 <body>
 
-<header>
-  <div style="display:flex;align-items:center;justify-content:center;gap:22px;height:100%;padding:14px 0">
+<header style="padding: 0 20px 10px 20px;">
+  
+  <!-- FILA 1: LOGO Y TÍTULO -->
+  <div style="display:flex;align-items:center;justify-content:center;gap:22px;padding-top:14px;">
     <img src="logo.png" alt="Logo IPUC Bochica Sur"
          style="height:78px;width:78px;object-fit:cover;border-radius:50%;box-shadow:0 8px 25px rgba(0,0,0,0.5);border:4px solid rgba(255,255,255,0.35);transition:all .3s">
     
-    <span style="font-family:'Poppins', 'Montserrat', 'Segoe UI', sans-serif;
-                 font-size:34px;
-                 font-weight:800;
-                 letter-spacing:3.2px;
-                 background:linear-gradient(90deg, #ffffff, #e0e7ff, #ffffff);
-                 -webkit-background-clip:text;
-                 background-clip:text;
+    <span style="font-family:'Poppins','Montserrat','Segoe UI',sans-serif;
+                 font-size:34px;font-weight:800;letter-spacing:3.2px;
+                 background:linear-gradient(90deg,#ffffff,#e0e7ff,#ffffff);
+                 -webkit-background-clip:text;background-clip:text;
                  -webkit-text-fill-color:transparent;
                  text-shadow:0 3px 12px rgba(0,0,0,0.4);
-                 text-transform:uppercase">
+                 text-transform:uppercase;">
       ASISTENCIA IPUC BOCHICA SUR
     </span>
+
+    <!-- ÍCONO MENÚ A LA DERECHA -->
+    <div id="menuBtn" 
+         style="position:absolute;top:18px;right:18px;cursor:pointer;transition:transform .25s ease">
+      <i class="fas fa-bars" style="font-size:38px;color:white;"></i>
+    </div>
   </div>
 
-<!-- BOTÓN MENÚ → SOLO EL ÍCONO, SIN FONDO, SIN CÍRCULO, SIN NADA -->
-<div id="menuBtn" style="position:fixed;top:18px;right:18px;z-index:999999;cursor:pointer;padding:10px;transition:transform .25s ease">
-  <i class="fas fa-bars" style="font-size:38px;color:white;"></i>
+  <!-- FILA 2: BOTONES -->
+  <div style="margin-top:12px; width:100%; text-align:left; display:flex; gap:18px;">
+
+    <!-- BOTÓN CARGAR ASISTENCIA -->
+    <button id="btnCargarAsistencia"
+            style="background:none;border:none;color:white;font-size:18px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;">
+      Cargar Asistencia
+    </button>
+
+    <!-- NUEVO BOTÓN BIBLIA -->
+    <button id="btnBiblia"
+            style="background:none;border:none;color:white;font-size:18px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;">
+      Biblia
+    </button>
+
+  </div>
+
+</header>
+
+
+
+<div id="biblia-container" style="display:flex;height:calc(100vh - 160px);">
+    
+  <!-- PANEL IZQUIERDO -->
+  <div id="izq" style="width:320px;background:#fff;border-right:2px solid #ddd;
+       overflow-y:auto;padding:15px;font-size:15px">
+
+    <!-- 🔍 BUSCADOR AGREGADO AQUÍ -->
+    <div style="background:#f0f8ff;padding:12px;border-radius:10px;
+                box-shadow:0 2px 6px rgba(0,0,0,0.12);margin-bottom:15px">
+
+      <input type="text" id="q" placeholder="Juan 3:16 | Salmos 23 | amor"
+             style="padding:10px;font-size:16px;width:100%;
+                    border-radius:8px;border:2px solid #aac;">
+
+      <button onclick="buscar()" 
+              style="padding:10px;font-size:16px;width:100%;margin-top:8px;
+                     background:#0066cc;color:white;border:none;border-radius:8px;
+                     font-weight:bold">
+        Buscar
+      </button>
+
+      <div id="status" class="ok" 
+           style="font-size:12px;text-align:center;color:#0066cc;margin-top:6px;">
+        Cargando Biblia completa...
+      </div>
+    </div>
+    <!-- 🔍 FIN DE BUSCADOR -->
+
+    <h3 style="text-align:center;color:#0066cc;margin:10px 0">Libros de la Biblia</h3>
+    <div id="lista-libros">Cargando libros...</div>
+  </div>
+
+  <!-- PANEL DERECHO -->
+  <div id="der" style="flex:1;overflow-y:auto;padding:25px;">
+    <div id="c" style="max-width:900px;margin:0 auto;background:#fff;padding:20px;
+         border-radius:12px;box-shadow:0 5px 20px rgba(0,0,0,0.2)">
+      
+      <h1 style="text-align:center;color:#0066cc">Reina Valera 1960</h1>
+
+
+      <div id="r" style="margin-top:15px"></div>
+    </div>
+  </div>
+
 </div>
 
+
+
+
+  <div id="s" onclick="cerrar()" style="position:fixed;top:0;left:0;width:100vw;
+height:100vh;background:#000;color:#fff;font-size:7vw;display:none;
+align-items:center;justify-content:center;text-align:center;padding:5%;
+line-height:2;z-index:99;">
+  <div id="t"></div>
+</div>
+
+<button class="x" onclick="cerrar()" 
+  style="position:fixed;top:15px;right:15px;padding:15px 28px;font-size:40px;
+  background:#c00;color:#fff;border-radius:50%;display:none;z-index:100;cursor:pointer">
+  X
+</button>
+
   
-</header>
+
 
 <div id="subtitulo" class="subtitulo-moderno">
   <span class="titulo-label">Asistencia de:</span>
@@ -800,22 +900,12 @@ td, th { border-color: var(--borde) !important; }
 <button id="btnTema" class="btn-icono" title="Cambiar tema">
   <i class="fa-solid fa-palette"></i>
   
-  <!-- SOLO ÍCONO AWESOME -->
-  <button class="btn-icono" onclick="Pantallas()">
-    <i class="fa-solid fa-tv"></i>
-  </button>
+ 
 
 
 </button>
   
 </div>
-
-
-
-<table id="tabla">
-  <thead></thead>
-  <tbody></tbody>
-</table>
 
   <div style="height: 120px;"></div>
 
@@ -848,35 +938,44 @@ td, th { border-color: var(--borde) !important; }
 <!-- MENÚ LATERAL RESPONSIVE -->
 <div id="menuLateral" style="position:fixed;top:0;right:-100%;width:340px;max-width:92vw;height:100vh;background:rgba(15,25,45,0.98);backdrop-filter:blur(20px);border-left:1px solid rgba(255,255,255,0.1);box-shadow:-10px 0 50px rgba(0,0,0,0.7);transition:right .45s cubic-bezier(0.22,1,0.36,1);z-index:999998;padding:16px 20px;overflow-y:auto;color:white;font-family:'Poppins',sans-serif;box-sizing:border-box">
 
-<!-- Botón Proyección + Cerrar (EFECTO HOVER PROFESIONAL 100%) -->
+<!-- Botón Proyección + Cerrar -->
 <div style="display:flex;justify-content:space-between;align-items:center;padding:0 16px;margin-bottom:12px">
-  
-  <!-- BOTÓN PROYECCIÓN – EFECTO HOVER DE LUJO -->
-  <div onclick="abrirProyeccionDia()" 
-       style="cursor:pointer;padding:16px;border-radius:50%;transition:all .4s ease;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center">
-    
-    <!-- ÍCONO PROYECTOR (color del tema) -->
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--acento)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="z-index:2;position:relative;transition:all .4s">
-      <rect x="3" y="5" width="15" height="11" rx="2"/>
-      <path d="M18 7v8a2 2 0 0 1-2 2H8"/>
-      <circle cx="12" cy="10.5" r="2.5"/>
-      <path d="M12 13v4"/>
-      <path d="M7 19h10"/>
-      <path d="M9 19v-3"/>
-      <path d="M15 19v-3"/>
-    </svg>
-    
-    <!-- ONDA DE COLOR QUE CRECE AL PASAR EL MOUSE (EFECTO MODERNO) -->
-    <div style="position:absolute;inset:0;border-radius:50%;background:var(--acento);transform:scale(0);transition:transform .5s ease"></div>
+
+  <!-- BLOQUE IZQUIERDO: Proyector + nuevo icono -->
+  <div style="display:flex;gap:12px;align-items:center">
+
+      <!-- BOTÓN PROYECCIÓN -->
+      <div onclick="abrirProyeccionDia()" 
+          style="cursor:pointer;padding:16px;border-radius:50%;transition:all .4s ease;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center">
+          
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--acento)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="z-index:2;position:relative;transition:all .4s">
+            <rect x="3" y="5" width="15" height="11" rx="2"/>
+            <path d="M18 7v8a2 2 0 0 1-2 2H8"/>
+            <circle cx="12" cy="10.5" r="2.5"/>
+            <path d="M12 13v4"/>
+            <path d="M7 19h10"/>
+            <path d="M9 19v-3"/>
+            <path d="M15 19v-3"/>
+          </svg>
+
+          <div style="position:absolute;inset:0;border-radius:50%;background:var(--acento);transform:scale(0);transition:transform .5s ease"></div>
+      </div>
+
+      <!-- ÍCONO AWESOME AL LADO DEL PROYECTOR -->
+      <button class="btn-icono" onclick="Pantallas()">
+        <i class="fa-solid fa-tv"></i>
+      </button>
   </div>
-  
-  <!-- BOTÓN CERRAR (100% SIN TOCAR) -->
+
+  <!-- BOTÓN CERRAR (SIN TOCAR) -->
   <div onclick="cerrarMenu()" style="cursor:pointer;padding:8px;border-radius:50%;background:rgba(255,255,255,0.12);transition:all .3s">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="black">
       <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
     </svg>
   </div>
+
 </div>
+
 
   <!-- SOBRE NOSOTROS -->
   <div style="background:rgba(255,255,255,0.08);border-radius:16px;padding:18px;margin-bottom:18px;border:1px solid rgba(255,255,255,0.12);box-shadow:0 6px 24px rgba(0,0,0,0.3)">
@@ -916,6 +1015,8 @@ td, th { border-color: var(--borde) !important; }
     © 2025 DECOM IPUC Bochica Sur<br>
     Todos los derechos reservados para la gloria de Dios
   </div>
+
+
   
 </div>
 
@@ -939,6 +1040,11 @@ td, th { border-color: var(--borde) !important; }
 </div>
 
 
+
+
+
+
+
   
 <script>
 const URL = "https://script.google.com/macros/s/AKfycbwuad6LbOg5k2TFzphjhPTm-NwMJwURzhfFPsEb8a5oB9KXuXIhWxe5QzrR2xLnDjYVlA/exec";
@@ -954,6 +1060,142 @@ let intervaloPolling = null;         // ← para poder detenerlo cuando ya esté
 
 const URL_PROYECCION = "https://script.google.com/macros/s/AKfycbxf8jUb2catO-d_Fs0l7jfilwNiPXh8pqxMJ6sBUeCGvsOX0_1PE98w8U7-sm4UzUxA/exec";
 
+
+let biblia = {};
+let books = [];
+
+// 🚀 Al iniciar: intentar cargar desde localStorage
+document.addEventListener("DOMContentLoaded", () => {
+  const bibliaGuardada = localStorage.getItem("biblia_json");
+
+  if (bibliaGuardada) {
+    console.log("✔ Biblia cargada desde memoria local");
+    cargarBiblia(JSON.parse(bibliaGuardada));
+  } else {
+    console.log("⬇ Descargando Biblia por primera vez...");
+    descargarBiblia();
+  }
+});
+
+function descargarBiblia() {
+  fetch("RV1960_COMPLETA.json?" + Date.now())
+    .then(r => r.json())
+    .then(json => {
+      // 💾 Guardar JSON en localStorage UNA sola vez
+      localStorage.setItem("biblia_json", JSON.stringify(json));
+
+      console.log("✔ Biblia guardada permanentemente");
+      cargarBiblia(json);
+    })
+    .catch(err => {
+      document.getElementById("status").textContent =
+        "❌ No se pudo cargar la Biblia (sin conexión)";
+      console.error(err);
+    });
+}
+
+function cargarBiblia(json) {
+  books = json.books;
+  const lista = document.getElementById("lista-libros");
+  lista.innerHTML = "";
+
+  // 📘 Cargar lista de libros solo una vez
+  books.forEach((libro, i) => {
+    const div = document.createElement("div");
+    div.className = "libro";
+    div.textContent = libro.name;
+    div.onclick = () => mostrarCapitulos(i);
+    lista.appendChild(div);
+  });
+
+  // 🧠 Crear índice de búsqueda
+  let contador = 0;
+  biblia = {}; // reset
+
+  books.forEach(libro => {
+    libro.chapters.forEach(cap => {
+      cap.verses.forEach(v => {
+        const ref = `${libro.name} ${cap.chapter}:${v.verse}`;
+        biblia[ref.toLowerCase()] = v.text;
+        contador++;
+      });
+    });
+  });
+
+  document.getElementById("status").innerHTML =
+    `✔ Biblia lista (${contador.toLocaleString()} versículos)`;
+}
+
+// =============================
+//    RESTO: NO CAMBIA NADA
+// =============================
+
+function mostrarCapitulos(i) {
+  const libro = books[i];
+  const lista = document.getElementById("lista-libros");
+
+  lista.innerHTML = `<div class="libro" onclick="location.reload()" 
+    style="background:#0066cc;color:#fff">← ${libro.name}</div>`;
+
+  libro.chapters.forEach(cap => {
+    const div = document.createElement("div");
+    div.className = "capitulo";
+    div.textContent = `Capítulo ${cap.chapter}`;
+    div.onclick = () =>
+      mostrarVersiculos(libro.name, cap.chapter, cap.verses);
+    lista.appendChild(div);
+  });
+}
+
+function mostrarVersiculos(nombre, cap, versiculos) {
+  const r = document.getElementById("r");
+  r.innerHTML = `<h3 style="color:#0066cc">${nombre} ${cap}</h3>`;
+
+  versiculos.forEach(v => {
+    const ref = `${nombre} ${cap}:${v.verse}`;
+    r.innerHTML += `<div class="vers" onclick="ver('${ref}')">
+    <b>${v.verse}</b> ${v.text}</div>`;
+  });
+}
+
+function buscar() {
+  const q = document.getElementById("q").value.trim().toLowerCase();
+  const r = document.getElementById("r");
+  r.innerHTML = "";
+
+  if (!q) return;
+
+  let resultados = [];
+  for (let ref in biblia) {
+    if (ref.includes(q) || biblia[ref].toLowerCase().includes(q)) {
+      resultados.push(ref);
+      if (resultados.length > 120) break;
+    }
+  }
+
+  if (resultados.length === 0) {
+    r.innerHTML = "<i>No encontrado</i>";
+    return;
+  }
+
+  resultados.forEach(ref => {
+    r.innerHTML += `<div class="vers" onclick="ver('${ref}')">
+      <b>${ref}</b><br>${biblia[ref]}
+    </div>`;
+  });
+}
+
+function ver(ref) {
+  document.getElementById("t").innerHTML =
+    `<div style="font-size:1.5em;color:#ff0">${ref}</div><br>${biblia[ref]}`;
+  mostrar();
+}
+
+
+
+
+  
+  
 function abrirProyeccionDia() {
   cerrarMenu();
   document.getElementById("modalProyeccion").style.display = "flex";
@@ -1032,7 +1274,7 @@ async function cargarCronogramaProyeccion(filtroPersona = null) {
           <tr>
             <th style="padding:20px 16px;text-align:left;color:white;font-weight:800;font-size:18.5px;width:38%">Fecha</th>
             <th style="padding:20px 16px;text-align:center;color:white;font-weight:800;font-size:18.5px;width:18%">Día</th>
-            <th style="padding:20px 16px;text-align:left;color:white;font-weight:800;font-size:18.5px">Persona</th>
+            <th style="padding:20px 16px;text-align:left;color:white;font-weight:800;font-size:18.5px">Hermano(a)</th>
           </tr>
         </thead>
         <tbody>`;
@@ -1383,157 +1625,162 @@ document.getElementById("selectMes").addEventListener("change", function() {
 
   
 
-// ============================================================
-// PROYECCIÓN MODERNA – CON AUTO-SELECCIÓN CUANDO HAY UNA SOLA FILA
-// ============================================================
 async function proyectar() {
-  const btn = document.querySelector("button[onclick='proyectar()']");
+  const btn = document.querySelector("button[onclick=\"proyectar()\"]") || 
+               document.querySelector("button[onclick='proyectar()']");
+  
+  // === DETENER PROYECCIÓN ===
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
     ventanaProyeccion.close();
     ventanaProyeccion = null;
-    btn.textContent = "Proyectar";
-    btn.classList.remove("boton-detener");
-    return;
-  }
-
-  const filasDatos = document.querySelectorAll("#tabla tbody tr");
-  if (filasDatos.length === 1) {
-    filaSeleccionada = filasDatos[0];
-    filasDatos[0].classList.add("filaSel");
-  }
-  if (!filaSeleccionada) {
-    mostrarAviso("Selecciona una fila antes de proyectar.");
-    return;
-  }
-
-  let headers = [...document.querySelectorAll("#tabla thead th")].map(th => th.innerText);
-  let valores = [...filaSeleccionada.querySelectorAll("td")].map(td => td.innerText);
-
-  let inicio = headers.findIndex(h => /hermano/i.test(h));
-  let fin = headers.findIndex(h => /total/i.test(h));
-
-  // VALIDACIÓN: si no encuentra "Hermanos" o "Total", o el total está vacío
-  if (inicio === -1 || fin === -1 || fin <= inicio) {
-    mostrarAviso("Error en los datos: No se encontró la asistencia de hoy.", "error");
-    return;
-  }
-
-  const totalAsistencia = valores[fin]?.trim();
-  if (!totalAsistencia || totalAsistencia === "" || totalAsistencia === "undefined") {
-    mostrarAviso("No se puede proyectar: El Total de asistencia no está disponible.", "alerta");
-    return;
-  }
-
-  let scr = null;
-  if ("getScreenDetails" in window) {
-    try {
-      const details = await window.getScreenDetails();
-      const indexPantalla = parseInt(document.getElementById("pantallaSelect").value);
-      if (!isNaN(indexPantalla) && details.screens[indexPantalla]) {
-        scr = details.screens[indexPantalla];
-      }
-    } catch (e) { }
-  }
-
-  const features = scr
-    ? `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height}`
-    : `width=1200,height=700`;
-
-  ventanaProyeccion = window.open("", "proyeccion", features);
-
-  const headersSinTotal = headers.slice(inicio, fin);
-  const valoresSinTotal = valores.slice(inicio, fin);
-
-  let fechaFila = valores[1] ? valores[1].trim() : "Fecha no disponible";
-  function formatearFechaLarga(fechaTexto) {
-    try {
-      let soloFecha = fechaTexto.split(" ")[0];
-      let [dia, mes, anio] = soloFecha.split("/").map(n => parseInt(n));
-      const meses = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
-      const diasSemana = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
-      const fechaObj = new Date(anio, mes - 1, dia);
-      const diaSemana = diasSemana[fechaObj.getDay()];
-      return `${diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1)} ${dia} de ${meses[mes - 1]} de ${anio}`;
-    } catch (e) {
-      return fechaTexto;
+    if (btn) {
+      btn.textContent = "Proyectar";
+      btn.classList.remove("boton-detener");
     }
+    return;
   }
-  fechaFila = formatearFechaLarga(fechaFila);
 
-  const actualizarProyeccion = () => {
-    if (!ventanaProyeccion || ventanaProyeccion.closed) return;
-    const vars = {
-      fondo: getComputedStyle(document.body).getPropertyValue('--fondo').trim(),
-      acento: getComputedStyle(document.body).getPropertyValue('--acento').trim(),
-      texto: getComputedStyle(document.body).getPropertyValue('--texto').trim()
-    };
-    const esOscuro = document.body.classList.contains("tema-oscuro");
-    ventanaProyeccion.document.body.innerHTML = `
-      <style>
-        :root{--fondo:${vars.fondo};--acento:${vars.acento};--texto:${vars.texto}}
-        html,body{margin:0;padding:0;width:100vw;height:100vh;overflow:hidden;background:var(--fondo);font-family:'Segoe UI',sans-serif;color:var(--texto);transition:all .5s ease}
-        .wrap{width:100%;height:100%;display:flex;justify-content:center;align-items:center}
-        .contenedor{
-          width:96%;max-width:1400px;min-height:78%;max-height:90%;padding:28px 32px;
-          background:rgba(255,255,255,${esOscuro?'0.06':'0.10'});border-radius:24px;
-          border:1px solid rgba(255,255,255,0.12);backdrop-filter:blur(12px);
-          box-shadow:0 20px 60px rgba(0,0,0,${esOscuro?'0.6':'0.3'});
-          display:flex;flex-direction:column;align-items:center;gap:20px;
-          animation:entrada .7s cubic-bezier(0.34,1.56,0.64,1);justify-content:space-between;
-          margin-bottom:2vh
-        }
-        h1{font-size:clamp(32px,5vw,80px);font-weight:900;margin:0;
-           background:linear-gradient(135deg,var(--acento),color-mix(in srgb,var(--acento) 70%,white));
-           -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
-           letter-spacing:1.2px}
-        .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:24px;width:100%}
-        .card{
-          background:rgba(255,255,255,${esOscuro?'0.08':'0.12'});border-radius:18px;
-          padding:24px 16px;text-align:center;box-shadow:0 8px 25px rgba(0,0,0,${esOscuro?'0.4':'0.2'});
-          border:1px solid rgba(255,255,255,0.1);transition:all .3s;display:flex;
-          flex-direction:column;justify-content:center;min-height:140px
-        }
-        .card:hover{transform:translateY(-8px);box-shadow:0 16px 40px rgba(0,0,0,${esOscuro?'0.6':'0.35'})}
-        .titulo{font-size:clamp(18px,2.8vw,22px);text-transform:uppercase;font-weight:800;letter-spacing:2.4px;color:var(--acento);opacity:0.95;margin-bottom:6px}
-        .valor{font-size:clamp(56px,9.5vw,160px);font-weight:900;color:var(--texto);line-height:1;margin:0}
-        .total-final{margin-top:auto;padding:20px 48px;background:linear-gradient(135deg,var(--acento),color-mix(in srgb,var(--acento) 80%,black));color:white;border-radius:28px;box-shadow:0 16px 50px rgba(0,0,0,0.6);text-align:center;display:flex;flex-direction:column;gap:6px;margin-bottom:1vh}
-        .total-numero{font-size:clamp(80px,12vw,220px);font-weight:900;line-height:1;letter-spacing:-2px}
-        .total-texto{font-size:clamp(24px,3.5vw,48px);font-weight:700;opacity:0.9;letter-spacing:2px}
-        @keyframes entrada{from{opacity:0;transform:scale(0.94) translateY(30px)}to{opacity:1;transform:none}}
-        @media(max-width:768px){.grid{grid-template-columns:repeat(2,1fr)};.contenedor{padding:20px}}
-      </style>
-      <div class="wrap"><div class="contenedor">
+  let esBiblia = false;
+  let contenidoHTML = "";
+  let tituloProyeccion = "";
+
+  // === DETECTAR SI ES VERSÍCULO DE LA BIBLIA ===
+  const contenedorTexto = document.getElementById("t");
+  if (contenedorTexto && contenedorTexto.innerHTML.trim() !== "") {
+    esBiblia = true;
+    const referencia = contenedorTexto.querySelector("div[style*='font-size:1.5em']")?.textContent || "Versículo";
+    const textoVersiculo = contenedorTexto.innerHTML.split("<br>")[1] || contenedorTexto.innerHTML;
+    tituloProyeccion = referencia;
+    contenidoHTML = `
+      <div class="biblia-fondo">
+        <div class="biblia-referencia">${referencia}</div>
+        <div class="biblia-texto">${textoVersiculo}</div>
+      </div>
+    `;
+  } 
+  // === SI NO, ES ASISTENCIA (comportamiento original) ===
+  else {
+    const filasDatos = document.querySelectorAll("#tabla tbody tr");
+    if (filasDatos.length === 1) {
+      filaSeleccionada = filasDatos[0];
+      filasDatos[0].classList.add("filaSel");
+    }
+    if (!filaSeleccionada) {
+      mostrarAviso("Selecciona una fila antes de proyectar.");
+      return;
+    }
+
+    let headers = [...document.querySelectorAll("#tabla thead th")].map(th => th.innerText);
+    let valores = [...filaSeleccionada.querySelectorAll("td")].map(td => td.innerText);
+    let inicio = headers.findIndex(h => /hermano|asistencia/i.test(h));
+    let fin = headers.findIndex(h => /total/i.test(h));
+
+    if (inicio === -1 || fin === -1 || fin <= inicio || !valores[fin]?.trim()) {
+      mostrarAviso("Error en los datos: No se encontró la asistencia de hoy.", "error");
+      return;
+    }
+
+    const totalAsistencia = valores[fin].trim();
+    let fechaFila = valores[1] ? valores[1].trim().split(" ")[0] : "Fecha no disponible";
+    fechaFila = formatearFechaLarga(fechaFila);
+
+    const headersSinTotal = headers.slice(inicio, fin);
+    const valoresSinTotal = valores.slice(inicio, fin);
+
+    tituloProyeccion = fechaFila;
+    contenidoHTML = `
+      <div class="contenedor">
         <h1>${fechaFila}</h1>
         <div class="grid">
-          ${headersSinTotal.map((h,i) => `<div class="card"><div class="titulo">${h}</div><div class="valor">${valoresSinTotal[i]}</div></div>`).join("")}
+          ${headersSinTotal.map((h,i) => `
+            <div class="card">
+              <div class="titulo">${h}</div>
+              <div class="valor">${valoresSinTotal[i]}</div>
+            </div>`).join("")}
         </div>
         <div class="total-final">
           <div class="total-numero">${totalAsistencia}</div>
           <div class="total-texto">Total</div>
         </div>
-      </div></div>
+      </div>
     `;
+  }
+
+  // === ABRIR VENTANA DE PROYECCIÓN ===
+  let scr = null;
+  if ("getScreenDetails" in window) {
+    try {
+      const details = await window.getScreenDetails();
+      const indexPantalla = parseInt(document.getElementById("pantallaSelect")?.value || "0");
+      if (details.screens[indexPantalla]) scr = details.screens[indexPantalla];
+    } catch (e) {}
+  }
+
+  const features = scr
+    ? `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height},fullscreen=yes`
+    : `width=1200,height=700`;
+
+  ventanaProyeccion = window.open("", "proyeccion", features + ",scrollbars=no");
+
+  const vars = {
+    fondo: getComputedStyle(document.body).getPropertyValue('--fondo').trim(),
+    acento: getComputedStyle(document.body).getPropertyValue('--acento').trim(),
+    texto: getComputedStyle(document.body).getPropertyValue('--texto').trim()
   };
+  const esOscuro = document.body.classList.contains("tema-oscuro");
 
-  actualizarProyeccion();
+  // === ESTILOS UNIFICADOS (asistencia + biblia) ===
+  ventanaProyeccion.document.body.innerHTML = `
+    <style>
+      :root{--fondo:${vars.fondo};--acento:${vars.acento};--texto:${vars.texto}}
+      html,body{margin:0;padding:0;width:100vw;height:100vh;overflow:hidden;background:var(--fondo);color:var(--texto);font-family:'Segoe UI',Arial,sans-serif;display:flex;justify-content:center;align-items:center}
+      
+      /* ==== PROYECCIÓN DE ASISTENCIA ==== */
+      .contenedor{width:96%;max-width:1400px;min-height:78%;padding:28px 32px;background:rgba(255,255,255,${esOscuro?'0.06':'0.10'});border-radius:24px;border:1px solid rgba(255,255,255,0.12);backdrop-filter:blur(12px);box-shadow:0 20px 60px rgba(0,0,0,${esOscuro?'0.6':'0.3'});display:flex;flex-direction:column;gap:20px;justify-content:space-between;margin-bottom:2vh}
+      h1{font-size:clamp(32px,5vw,80px);font-weight:900;background:linear-gradient(135deg,var(--acento),color-mix(in srgb,var(--acento) 70%,white));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+      .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:24px;width:100%}
+      .card{background:rgba(255,255,255,${esOscuro?'0.08':'0.12'});border-radius:18px;padding:24px 16px;text-align:center;box-shadow:0 8px 25px rgba(0,0,0,${esOscuro?'0.4':'0.2'});border:1px solid rgba(255,255,255,0.1);min-height:140px;display:flex;flex-direction:column;justify-content:center}
+      .titulo{font-size:clamp(18px,2.8vw,22px);text-transform:uppercase;font-weight:800;letter-spacing:2.4px;color:var(--acento);opacity:0.95}
+      .valor{font-size:clamp(56px,9.5vw,160px);font-weight:900;line-height:1}
+      .total-final{padding:20px 48px;background:linear-gradient(135deg,var(--acento),color-mix(in srgb,var(--acento) 80%,black));color:white;border-radius:28px;box-shadow:0 16px 50px rgba(0,0,0,0.6);text-align:center;display:flex;flex-direction:column;gap:6px}
+      .total-numero{font-size:clamp(80px,12vw,220px);font-weight:900;line-height:1}
+      .total-texto{font-size:clamp(24px,3.5vw,48px);font-weight:700}
 
-  const observer = new MutationObserver(actualizarProyeccion);
+      /* ==== PROYECCIÓN DE BIBLIA (pantalla completa) ==== */
+      .biblia-fondo{width:100vw;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:5vh 10vw;box-sizing:border-box;background:var(--fondo)}
+      .biblia-referencia{font-size:clamp(28px,4vw,60px);font-weight:700;color:var(--acento);margin-bottom:3vh;opacity:0.9;letter-spacing:1.5px;text-align:center}
+      .biblia-texto{font-size:clamp(32px,6vw,100px);font-weight:500;line-height:1.45;text-align:center;max-width:90%;color:var(--texto);text-shadow:0 2px 10px rgba(0,0,0,0.5)}
+
+      @keyframes entrada{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+      .contenedor, .biblia-fondo {animation:entrada .8s ease-out}
+    </style>
+    <div class="wrap">${contenidoHTML}</div>
+  `;
+
+  // Actualizar al cambiar tema
+  const observer = new MutationObserver(() => {
+    if (ventanaProyeccion && !ventanaProyeccion.closed) location.reload(); // recarga limpia
+  });
   observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
 
-  btn.textContent = "Detener";
-  btn.classList.add("boton-detener");
+  if (btn) {
+    btn.textContent = "Detener";
+    btn.classList.add("boton-detener");
+  }
 
+  // Auto-cerrar detección
   const timer = setInterval(() => {
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       clearInterval(timer);
       observer.disconnect();
       ventanaProyeccion = null;
-      btn.textContent = "Proyectar";
-      btn.classList.remove("boton-detener");
+      if (btn) {
+        btn.textContent = "Proyectar";
+        btn.classList.remove("boton-detener");
+      }
     }
   }, 500);
 }
-
 // ============================================================
 // CARGA AUTOMÁTICA INTELIGENTE AL INICIAR LA PÁGINA
 // ============================================================
@@ -1610,11 +1857,45 @@ await verHoy();                  // mostramos automáticamente "Hoy"
 }
 
   
-// Ejecuta TODO apenas el HTML esté parseado (mucho antes que "load")
 document.addEventListener("DOMContentLoaded", () => {
   detectarPantallas();
-  cargarAlIniciar();
+
+  const tablaArriba = document.getElementById("tabla");
+
+  // Ocultar ambas secciones al iniciar
+  document.getElementById("subtitulo").style.display = "none";
+  document.querySelector(".panel").style.display = "none";
+  document.getElementById("biblia-container").style.display = "none";
+  tablaArriba.style.display = "none"; // 🔥 también ocultar tabla arriba
+
+  // BOTÓN: CARGAR ASISTENCIA
+  document.getElementById("btnCargarAsistencia").addEventListener("click", () => {
+    document.getElementById("subtitulo").style.display = "flex";
+    document.querySelector(".panel").style.display = "flex";
+    document.getElementById("biblia-container").style.display = "none";
+    tablaArriba.style.display = "table"; // 🔥 mostrar tabla arriba
+    cargarAlIniciar();
+  });
+
+  // BOTÓN: BIBLIA
+  document.getElementById("btnBiblia").addEventListener("click", () => {
+    document.getElementById("subtitulo").style.display = "none";
+    document.querySelector(".panel").style.display = "none";
+    document.getElementById("biblia-container").style.display = "flex";
+    tablaArriba.style.display = "none"; // 🔥 ocultar tabla arriba
+  });
 });
+
+
+
+
+
+
+
 </script>
 </body>
 </html>
+
+
+
+
