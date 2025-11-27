@@ -784,14 +784,17 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
 
 
    /* CONTENEDOR CENTRAL – 2 PANTALLAS */
-  #biblia-container {
+#biblia-container {
     display: flex;
     justify-content: center;
     align-items: flex-start;
     gap: 30px;
     width: 100%;
     padding: 20px 10px;
-  }
+
+    /* 🔥 NUEVO — mueve las dos pantallas a la derecha */
+    margin-left: 340px;
+}
 
   /* PANTALLAS TIPO EASYWORSHIP */
   .pantalla-ew {
@@ -2462,6 +2465,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
