@@ -796,32 +796,58 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
   gap: 20px;
 }
 
-/* CADA PANTALLA */
 .pantalla {
-  width: 480px;     /* tamaño TV */
-  height: 270px;    /* 16:9 */
-  background: #000;
+  width: 480px;
+  height: 270px;
+  background: var(--fondo);
   border: 3px solid #333;
   border-radius: 8px;
   padding: 10px;
   display: flex;
-  flex-direction: column;
+  justify-content:center;
+  align-items:center;
   overflow: hidden;
-  color: #fff;
+  position: relative;
+  color: var(--texto);
 }
 
-/* TEXTO INTERNO */
 .pantalla-texto {
-  flex: 1;
   width: 100%;
   height: 100%;
   text-align: center;
-  font-weight: bold;
+  font-weight: 700;
+  line-height: 1.12;
   white-space: pre-wrap;
   overflow-wrap: break-word;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.pantalla-texto .cita-mini {
+  font-size: 0.65em;
+  font-family: "Segoe UI Semilight";
+  opacity: 0.85;
+}
+
+
+  .biblia-wrapper-local {
+  width: 100%;
+  height: 100%;
+  padding: 3% 4%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.biblia-texto-local {
+  width: 100%;
+  max-height: 100%;
+  text-align: center;
+  font-weight: 700;
+  line-height: 1.12;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
 }
 
 
@@ -1567,13 +1593,13 @@ contenedorTexto.innerHTML = `
   <div style="font-size:1.5em;color:#ff0">${ref}</div><br>${biblia[key]}
 `;
 
- // ⬇ NUEVO: PREVIEW
-  document.getElementById("preview-texto").innerHTML =
-    `<div style="font-size:1.2em;color:yellow">${ref}</div>${biblia[key]}`;
+ 
+  // ---- NUEVO: PREVIEW LOCAL ----
+  renderPantallaLocal("preview-texto", ref, biblia[key]);
 
-  // ⬇ NUEVO: PROYECCIÓN (COPIA LOCAL, NO LA VENTANA EXTERNA)
-  document.getElementById("proyeccion-texto").innerHTML =
-    `<div style="font-size:1.2em;color:yellow">${ref}</div>${biblia[key]}`;
+  // ---- NUEVO: PROYECCIÓN LOCAL (copia en miniatura) ----
+  renderPantallaLocal("proyeccion-texto", ref, biblia[key]);
+
   // Solo si estamos en la sección Biblia → proyectar automáticamente
   if (document.getElementById("biblia-container").style.display !== "none") {
    proyectarBiblia(ref, biblia[key]);
@@ -1736,6 +1762,50 @@ function actualizarVentanaBiblia(ref, texto) {
 
 
 
+function renderPantallaLocal(contenedor, ref, texto) {
+  const el = document.getElementById(contenedor);
+  if (!el) return;
+
+  // formatear igual que la proyección real
+  const textoFinal = `${texto} <span class="cita-mini">${ref}</span>`;
+
+  el.innerHTML = `
+    <div class="biblia-wrapper-local">
+      <div class="biblia-texto-local">${textoFinal}</div>
+    </div>
+  `;
+
+  // AUTOFIT agresivo igual que en ventana externa
+  const caja = el.querySelector(".biblia-texto-local");
+
+  let min = 10;
+  let max = 400;
+  let best = min;
+
+  const maxW = el.clientWidth * 0.95;
+  const maxH = el.clientHeight * 0.92;
+
+  while (min <= max) {
+    let mid = Math.floor((min + max) / 2);
+    caja.style.fontSize = mid + "px";
+
+    const fits =
+      caja.scrollWidth <= maxW &&
+      caja.scrollHeight <= maxH;
+
+    if (fits) {
+      best = mid;
+      min = mid + 2;
+    } else {
+      max = mid - 2;
+    }
+  }
+
+  caja.style.fontSize = best + "px";
+}
+
+
+  
 
 
   
@@ -2437,4 +2507,5 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
