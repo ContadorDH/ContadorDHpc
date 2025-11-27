@@ -746,7 +746,64 @@ td, th { border-color: var(--borde) !important; }
 }
   
 
+:root { --fondo:${vars.fondo}; --acento:${vars.acento}; --texto:${vars.texto}; }
 
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800;900&display=swap');
+
+  html, body {
+    margin:0;
+    padding:0;
+    width:100vw;
+    height:100vh;
+    overflow:hidden;
+    background:var(--fondo);
+    color:var(--texto);
+    font-family:'Poppins', sans-serif; /* NUEVA FUENTE */
+  }
+
+  /* Contenedor GENERAL */
+  .biblia-wrapper {
+    position:relative;
+    width:100%;
+    height:100%;
+    padding:9vh 8vw 15vh 8vw;
+    box-sizing:border-box;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+  }
+
+  /* TEXTO DEL VERSÍCULO — MEJORADO */
+  .biblia-texto {
+    display:inline-block;
+    max-width:100%;
+    max-height:100%;
+    text-align:center;
+    line-height:1.28;
+    font-weight:800; /* MÁS GRUESO */
+    word-wrap:break-word;
+    overflow:hidden;
+
+    font-size:14vw; /* tamaño inicial — más grande */
+    text-shadow:0 5px 22px rgba(0,0,0,0.75);
+    letter-spacing:0.5px;
+  }
+
+  /* REFERENCIA — más gruesa y clara */
+  .biblia-referencia {
+    position:absolute;
+    right:4vw;
+    bottom:3vh;
+
+    font-size:clamp(28px, 3.8vw, 80px);
+    font-weight:900; /* super bold */
+    color:var(--acento);
+    text-shadow:0 4px 18px rgba(0,0,0,0.85);
+    letter-spacing:2px;
+
+    pointer-events:none;
+  }
 
 
   
@@ -1325,11 +1382,12 @@ function actualizarVentanaBiblia(ref, texto) {
   const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
 
   function autoFit() {
-    let size = 20;           // tamaño mínimo
-    let maxSize = 300;       // máximo absoluto permitido
+  let size = 30;             // tamaño mínimo mayor
+let maxSize = 420;         // PERMITE MUCHO más tamaño
 
-    const maxW = ventanaProyeccion.innerWidth * 0.80;
-    const maxH = ventanaProyeccion.innerHeight * 0.65;
+const maxW = ventanaProyeccion.innerWidth * 0.88; // USA MÁS ANCHO
+const maxH = ventanaProyeccion.innerHeight * 0.72; // USA MÁS ALTO
+
 
     caja.style.fontSize = size + "px";
 
@@ -2048,6 +2106,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
