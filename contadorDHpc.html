@@ -1243,8 +1243,14 @@ async function abrirVentanaBiblia(ref, texto) {
     }
   }, 500);
 }
+
+
+  
 function actualizarVentanaBiblia(ref, texto) {
   if (!ventanaProyeccion || ventanaProyeccion.closed) return;
+
+  // 👉 Incluir referencia dentro del versículo como EW
+  const textoFinal = `${texto}\n\n(${ref})`;
 
   const vars = {
     fondo: getComputedStyle(document.body).getPropertyValue("--fondo").trim(),
@@ -1254,118 +1260,96 @@ function actualizarVentanaBiblia(ref, texto) {
 
   ventanaProyeccion.document.body.innerHTML = `
   <style>
-  :root { --fondo:${vars.fondo}; --acento:${vars.acento}; --texto:${vars.texto}; }
+    :root { --fondo:${vars.fondo}; --acento:${vars.acento}; --texto:${vars.texto}; }
 
-  html, body {
-    margin:0;
-    padding:0;
-    width:100vw;
-    height:100vh;
-    overflow:hidden;
-    background:var(--fondo);
-    color:var(--texto);
-    font-family:'Segoe UI', sans-serif;
-  }
+    html, body {
+      margin:0;
+      padding:0;
+      width:100vw;
+      height:100vh;
+      overflow:hidden;
+      background:var(--fondo);
+      color:var(--texto);
+      font-family:'Segoe UI', sans-serif;
+    }
 
-  .biblia-wrapper {
-    position:relative;
-    width:100%;
-    height:100%;
-    padding:6vh 6vw 10vh 6vw;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    box-sizing:border-box;
-  }
+    .biblia-wrapper {
+      position:relative;
+      width:100%;
+      height:100%;
+      padding:6vh 5vw 8vh 5vw;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      box-sizing:border-box;
+    }
 
-  .biblia-texto {
-    display:inline-block;
-    max-width:100%;
-    max-height:100%;
-    text-align:center;
-    line-height:1.22;
-    font-weight:700;
-    word-wrap:break-word;
-    overflow:hidden;
-    font-size:22vw; /* tamaño inicial gigante */
-    text-shadow:none;
-    white-space:pre-line; /* permite saltos limpios */
-  }
+    .biblia-texto {
+      display:block;
+      width:100%;
+      height:auto;
+      max-height:100%;
 
-  .biblia-referencia {
-    position:absolute;
-    right:3vw;
-    bottom:3vh;
-    font-size:clamp(30px, 4vw, 80px);
-    font-weight:700;
-    color:var(--acento);
-    text-shadow:none;
-    pointer-events:none;
-  }
-  </style>
+      text-align:center;
+      line-height:1.18;
+      font-weight:700;
 
-  <div class="biblia-wrapper">
-    <div id="textoAutoFit" class="biblia-texto"></div>
-    <div class="biblia-referencia">${ref}</div>
-  </div>
+      /* Mejor control de línea para que NO corte palabras */
+      white-space:pre-wrap;
+      overflow-wrap:break-word;
+      word-break:normal;
+
+      /* tamaño enorme inicial para luego ajustar */
+      font-size:22vw;
+    }
+</style>
+
+<div class="biblia-wrapper">
+  <div id="textoAutoFit" class="biblia-texto">${textoFinal}</div>
+</div>
   `;
 
-  // ============================
-  //  UTILIDADES EASYWORSHIP PRO
-  // ============================
+  // ======================================================
+  //              AUTO-FIT ESTILO EASYWORSHIP REAL
+  // ======================================================
 
   const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
 
-  // Limpia espacios y saltos feos
-  function limpiarTexto(str) {
-    return str
-      .replace(/\s+/g, " ")
-      .replace(/ ?\n ?/g, "\n")
-      .trim();
-  }
-
-  // Balancea las líneas para mejor legibilidad en pantalla
-  function balancearLineas(str) {
-    const palabras = str.split(" ");
-    if (palabras.length < 12) return str;
-
-    let mitad = Math.floor(palabras.length / 2);
-    return palabras.slice(0, mitad).join(" ") + "\n" +
-           palabras.slice(mitad).join(" ");
-  }
-
-  // Aplicar texto limpio y balanceado
-  caja.textContent = balancearLineas(limpiarTexto(texto));
-
-  // =============================
-  //  AUTO-FIT PROFESIONAL (EASYWORSHIP)
-  // =============================
-  function autoFit() { 
-    let min = 30;      // mínimo legible
-    let max = 350;     // máximo gigante
+  function autoFit() {
+    // Tamaños realistas usados por EW
+    let min = 20;
+    let max = 600;
     let best = min;
 
+    // Área similar a EW (más amplia arriba/abajo)
     const maxW = ventanaProyeccion.innerWidth * 0.92;
-    const maxH = ventanaProyeccion.innerHeight * 0.82;
+    const maxH = ventanaProyeccion.innerHeight * 0.88;
 
+    // Búsqueda binaria: ultra precisa
     while (min <= max) {
       let mid = Math.floor((min + max) / 2);
+
       caja.style.fontSize = mid + "px";
 
-      if (caja.scrollWidth <= maxW && caja.scrollHeight <= maxH) {
+      // Medir después del render real
+      const fits =
+        caja.scrollWidth   <= maxW &&
+        caja.scrollHeight  <= maxH;
+
+      if (fits) {
         best = mid;
-        min = mid + 2;   // probar más grande
+        min = mid + 2;
       } else {
-        max = mid - 2;   // muy grande → bajar
+        max = mid - 2;
       }
     }
 
     caja.style.fontSize = best + "px";
   }
 
-  // Ejecutar ajuste
   autoFit();
 }
+
 
 
 
@@ -2065,6 +2049,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
