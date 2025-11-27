@@ -747,54 +747,45 @@ td, th { border-color: var(--borde) !important; }
   
 
 
-/* 🔵 MENÚ SUPERIOR FIJO */
+/* ▬▬▬▬▬▬ MENÚ SUPERIOR FIJO DEBAJO DEL HEADER ▬▬▬▬▬▬ */
 #topMenu {
   position: fixed;
-  top: 0;
+  top: 110px; /* justo debajo del header actual */
   left: 0;
   width: 100%;
-  height: 60px;
-  background: #1E6FB8;
-  color: white;
+  height: 50px;
+  background: transparent; /* menú limpio */
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 15px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-  z-index: 9999;
+  padding-left: 25px; /* alineado a la izquierda */
+  gap: 35px;
+  z-index: 9998;
 }
 
-/* Contenedores del menú */
-.menu-left,
-.menu-right {
+/* Contenedor izquierda (para futuros botones) */
+.menu-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 25px;
 }
 
-/* Botón del menú */
+/* Botones minimalistas sin fondo */
 .menu-btn {
-  background: white;
-  color: #1E6FB8;
+  background: none;
   border: none;
-  padding: 10px 16px;
-  font-size: 16px;
-  border-radius: 8px;
-  cursor: pointer;
+  color: white;
+  font-size: 18px;
   font-weight: 600;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  transition: 0.2s ease;
+  cursor: pointer;
+  padding: 6px 0;
+  font-family: 'Poppins', sans-serif;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
+/* Hover elegante */
 .menu-btn:hover {
-  background: #e9eef5;
-}
-
-/* Para evitar que el menú tape el contenido */
-body {
-  padding-top: 70px;
+  color: #d9ecff;
+  transform: translateY(-2px);
 }
 
 
@@ -829,6 +820,18 @@ body {
 
   
 </header>
+
+  
+
+<!-- ▬▬▬▬▬▬ MENÚ SUPERIOR ▬▬▬▬▬▬ -->
+<nav id="topMenu">
+  <div class="menu-left">
+    <button class="menu-btn" onclick="mostrarControles()">
+      Cargar Asistencia
+    </button>
+  </div>
+</nav>
+
 
 <div id="subtitulo" class="subtitulo-moderno">
   <span class="titulo-label">Asistencia de:</span>
@@ -1726,5 +1729,6 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
