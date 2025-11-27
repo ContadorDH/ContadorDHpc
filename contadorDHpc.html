@@ -783,73 +783,102 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
 
 
 
-  #biblia-container {
+/* NUEVA ESTRUCTURA PRINCIPAL - Centrar todo el bloque de pantallas */
+#biblia-container {
   display: flex;
   align-items: flex-start;
   gap: 30px;
   width: 100%;
+  height: calc(100vh - 160px);
+  padding: 20px 0; /* un poco de espacio vertical */
 }
 
-/* CONTENEDOR DE LAS DOS PANTALLAS */
+/* El panel izquierdo sigue igual, pero lo fijamos a la izquierda */
+#izq {
+  flex-shrink: 0;           /* no se achica nunca */
+  width: 320px !important;  /* mantiene su ancho */
+  background: #fff;
+  border-right: 2px solid #ddd;
+  overflow-y: auto;
+  padding: 15px;
+  font-size: 15px;
+}
+
+/* Contenedor centrado y más grande para las pantallas */
 #pantallas-container {
   display: flex;
-  gap: 20px;
+  gap: 30px;                    /* más separación entre pantallas */
+  justify-content: center;     /* centra horizontalmente las dos pantallas */
+  align-items: center;
+  flex-grow: 1;                 /* ocupa todo el espacio disponible */
+  padding: 0 40px;              /* evita que peguen a los bordes en pantallas pequeñas */
 }
 
+/* Pantallas mucho más grandes y bien proporcionadas */
 .pantalla {
-  width: 480px;
-  height: 270px;
+  width: 720px !important;      /* antes 480px → ahora 720px (50% más grande) */
+  height: 405px !important;     /* relación 16:9 perfecta */
+  max-width: 45vw;              /* nunca excederá el 45% del ancho de pantalla */
   background: var(--fondo);
-  border: 3px solid #333;
-  border-radius: 8px;
-  padding: 10px;
+  border: 4px solid #333;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
   display: flex;
-  justify-content:center;
-  align-items:center;
+  justify-content: center;
+  align-items: center;
   overflow: hidden;
   position: relative;
   color: var(--texto);
+  flex-shrink: 0;
 }
 
+/* Texto dentro de las pantallas - más grande y legible */
 .pantalla-texto {
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  font-weight: 700;
-  line-height: 1.12;
-  white-space: pre-wrap;
-  overflow-wrap: break-word;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  font-size: 2.8rem !important;     /* mucho más grande */
+  line-height: 1.15;
+  padding: 20px;
 }
 
+/* Referencia pequeña debajo del versículo */
 .pantalla-texto .cita-mini {
-  font-size: 0.65em;
-  font-family: "Segoe UI Semilight";
-  opacity: 0.85;
+  font-size: 0.55em;        /* ajustada proporcionalmente */
+  margin-top: 12px;
+  display: block;
+  opacity: 0.9;
 }
 
-
-  .biblia-wrapper-local {
-  width: 100%;
-  height: 100%;
-  padding: 3% 4%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* En pantallas pequeñas (tablets/móviles) reducimos un poco para que quepa todo */
+@media (max-width: 1400px) {
+  .pantalla {
+    width: 640px !important;
+    height: 360px !important;
+  }
+  .pantalla-texto {
+    font-size: 2.4rem !important;
+  }
 }
 
-.biblia-texto-local {
-  width: 100%;
-  max-height: 100%;
-  text-align: center;
-  font-weight: 700;
-  line-height: 1.12;
-  white-space: pre-wrap;
-  overflow-wrap: break-word;
+@media (max-width: 1200px) {
+  #biblia-container {
+    flex-direction: column;
+    padding: 10px;
+  }
+  #izq {
+    width: 100% !important;
+    max-width: none;
+    border-right: none;
+    border-bottom: 2px solid #ddd;
+  }
+  #pantallas-container {
+    padding: 20px 0;
+  }
+  .pantalla {
+    width: 80vw !important;
+    height: calc(80vw * 0.5625) !important; /* mantiene 16:9 */
+    max-width: none;
+  }
 }
-
 
   
 </style>
@@ -2507,5 +2536,6 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
