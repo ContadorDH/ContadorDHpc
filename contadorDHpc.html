@@ -815,6 +815,10 @@ td, th { border-color: var(--borde) !important; }
 
 /* === AUTOCOMPLETADO INLINE (GHOST) - Reemplazar todo lo anterior relacionado === */
 
+/* ---------------------------
+   TU BLOQUE (NO TOCAR NADA)
+---------------------------- */
+
 /* Wrapper: relativo para posicionar el ghost exactamente bajo el input */
 #input-wrap {
   position: relative;
@@ -825,11 +829,11 @@ td, th { border-color: var(--borde) !important; }
 /* Input: al frente */
 #q {
   position: relative;
-  z-index: 3;                 /* siempre encima del ghost */
+  z-index: 3;
   background: transparent;
-  padding: 10px;              /* debe coincidir con ghost */
-  font-size: 16px;            /* debe coincidir con ghost */
-  line-height: 1.2;           /* igual para que alineen bien */
+  padding: 10px;
+  font-size: 16px;
+  line-height: 1.2;
   width: 100%;
   box-sizing: border-box;
 }
@@ -837,40 +841,72 @@ td, th { border-color: var(--borde) !important; }
 /* Contenedor fantasma EXACTAMENTE debajo del input */
 #ghost {
   position: absolute;
-  inset: 0 0 0 0;             /* ocupa exactamente la misma caja que el input */
+  inset: 0 0 0 0;
   pointer-events: none;
   z-index: 2;
   display: flex;
   align-items: center;
-  padding: 10px;              /* mismo padding que #q */
-  font-size: 16px;            /* mismo tamaño que #q */
-  line-height: 1.2;           /* mismo line-height que #q */
+  padding: 10px;
+  font-size: 16px;
+  line-height: 1.2;
   font-family: inherit;
-  color: transparent;         /* por defecto todo transparente, controlamos spans */
+  color: transparent;
   overflow: hidden;
   white-space: nowrap;
 }
 
-/* Texto "typed" — espejo de lo escrito (pero invisible) para alinear la sugerencia */
+/* Texto "typed" */
 #ghost-typed {
-  color: transparent;         /* invisible, solo sirve para alinear */
+  color: transparent;
   display: inline-block;
   white-space: pre;
 }
 
-/* Parte sugerida (lo que se ve sombreado) */
+/* Parte sugerida */
 #ghost-rest {
   display: inline-block;
   white-space: pre;
   opacity: 0.55;
-  color: rgba(0,0,0,0.35);    /* versión clara por defecto */
+  color: rgba(0,0,0,0.35);
 }
 
-/* Modo oscuro — cambiar colores del ghost-rest para tener contraste */
+/* Modo oscuro */
 body.tema-oscuro #ghost-rest,
 .app.dark #ghost-rest {
   color: rgba(255,255,255,0.40);
   opacity: 0.55;
+}
+
+
+
+/* --------------------------------------------
+   🔧 FIX EXTRA PARA QUE EL GHOST SE VEA SIEMPRE
+--------------------------------------------- */
+
+#ghost {
+  background: transparent !important;
+  z-index: 2 !important;
+}
+
+#q {
+  z-index: 3 !important;
+}
+
+/* Nada debe recortar el ghost */
+#input-wrap,
+#input-wrap * {
+  overflow: visible !important;
+}
+
+/* Texto claro en modo oscuro */
+body.tema-oscuro #q,
+.app.dark #q {
+  color: #ffffff !important;
+}
+
+body.tema-oscuro #input-wrap,
+.app.dark #input-wrap {
+  background: transparent !important;
 }
 
 /* Aseguramos que el input muestre su texto con normalidad (alto contraste en oscuro) */
@@ -1108,19 +1144,6 @@ body.tema-oscuro .resultados-biblia .resaltado,
 
   
 
-#input-wrap {
-  position: relative;
-}
-
-#ghost {
-  z-index: 1 !important;      /* ghost debajo del texto, encima del fondo */
-}
-
-#q {
-  position: relative;
-  z-index: 2 !important;      /* texto REAL encima de ghost */
-  background: transparent !important; /* (ya lo tienes, está bien) */
-}
 
 
 
@@ -2833,6 +2856,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
