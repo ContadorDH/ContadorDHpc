@@ -621,100 +621,6 @@ body {
   font-weight: 800;
 }
 
-
-
-/* ================= PANEL IZQUIERDO INTEGRADO CON TEMAS ================= */
-#izq {
-  background: var(--menu-bg) !important;
-  color: var(--menu-texto) !important;
-  border-right: 2px solid var(--menu-borde) !important;
-}
-#izq select,
-#izq button,
-#izq input {
-  color: var(--menu-texto) !important;
-  background: var(--tabla-fondo) !important;
-  border-color: var(--borde) !important;
-}
-#izq i {
-  color: var(--acento) !important;
-}
-
-
-/* ================================
-   TEMA OSCURO – Biblia y Predictivo
-   ================================ */
-
-/* Contenedor general de resultados */
-.dark-mode #r .vers {
-  background: #1c1c1c;
-  border: 1px solid #333;
-  color: #e8e8e8;
-}
-
-/* Hover */
-.dark-mode #r .vers:hover {
-  background: #2a2a2a;
-}
-
-/* Texto resaltado (verso buscado) */
-.dark-mode .resaltado {
-  background: #444;
-  color: #fff;
-  padding: 3px 4px;
-  border-radius: 4px;
-}
-
-/* ==========================
-   MODO OSCURO PARA .vers
-   ========================== */
-.app.dark .vers {
-  background: #0f0f0f !important;   /* Fondo oscuro */
-  border-color: #2b2b2b !important;
-  color: #ffffff !important;        /* TEXTO BLANCO */
-}
-
-.app.dark .vers b {
-  color: #ffffff !important;        /* Referencias en blanco */
-}
-
-.app.dark .vers:hover {
-  background: #1c1c1c !important;   /* Hover oscuro pero claro */
-}
-
-/* Resaltado del verso buscado */
-.app.dark .resaltado {
-  background: #333 !important;
-  color: #ffffff !important;
-}
-
-
-  
-/* Contenedor del predictivo */
-.app.dark #predictivo {
-  background: #0f0f0f !important;
-  border: 1px solid #2b2b2b !important;
-  color: #ffffff !important;       /* TEXTO BLANCO */
-}
-
-.app.dark #predictivo div:hover {
-  background: #1c1c1c !important;
-  color: #ffffff !important;
-}
-
-/* Ghost inline */
-.app.dark #ghost-typed {
-  color: #ffffff !important;
-  opacity: 0.35;
-}
-
-.app.dark #ghost-rest {
-  color: #ffffff !important;
-  opacity: 0.20;
-}
-
-  
-  
 /* MENSAJE FINAL "asignaciones cargadas" → TEXTO EN COLOR ACENTO DEL TEMA (verde, azul, rosado, etc.) */
 #modalProyeccion > div > div:last-child,
 #proyeccionContenido > div:last-child {
@@ -781,7 +687,28 @@ body.tema-oscuro #proyeccionContenido tbody tr td {
   body.tema-oscuro #menuLateral svg[stroke="var(--acento)"] {
   stroke: #ffffff !important;
 }
-
+/* BARRAS DEL BOTÓN MENÚ: NEGRAS EN TEMAS CLAROS 
+body.tema-claro #menuBtn svg,
+body.tema-rosado #menuBtn svg,
+body.tema-lila #menuBtn svg,
+body.tema-beige #menuBtn svg,
+body.tema-verde #menuBtn svg,
+body.tema-gris #menuBtn svg,
+body.tema-naranja #menuBtn svg {
+  stroke: #000000 !important;
+}
+*/
+/* Overlay al abrir menú 
+#menuOverlay { background: rgba(0,0,0,0.60) !important; }
+body.tema-claro #menuOverlay,
+body.tema-rosado #menuOverlay,
+body.tema-lila #menuOverlay,
+body.tema-beige #menuOverlay,
+body.tema-verde #menuOverlay,
+body.tema-gris #menuOverlay,
+body.tema-naranja #menuOverlay {
+  background: rgba(0,0,0,0.40) !important;
+} */
 
 /* Resto de estilos (intactos) */
 #subtitulo { background: var(--tabla-fondo) !important; color: var(--acento) !important; }
@@ -967,24 +894,7 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
   }
 }
 
-
-/* Contenedor de cada versículo */
-.vers {
-  background: #fff;
-  border: 1px solid #ddd;
-  padding: 10px;
-  margin: 6px 0;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.vers:hover {
-  background: #f3f3f3;
-}
-
-
-  /* Contenedor general de resultados (tema-aware) */
+/* Contenedor general de resultados (tema-aware) */
 .resultados-biblia {
   margin-top: 20px;
   padding: 12px;
@@ -1050,7 +960,7 @@ body.tema-oscuro .resultados-biblia .resaltado,
   color: #000;
 }
 
-
+  
   
 </style>
 </head>
@@ -1175,7 +1085,6 @@ body.tema-oscuro .resultados-biblia .resaltado,
 <div id="lista-libros"></div>
 
 
-<!-- RESULTADO DE LA BÚSQUEDA DE VERSÍCULOS -->
 <!-- RESULTADO DE LA BÚSQUEDA DE VERSÍCULOS -->
 <div id="r" class="resultados-biblia"></div>
 
@@ -2762,5 +2671,3 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
-
-
