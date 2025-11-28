@@ -827,44 +827,53 @@ td, th { border-color: var(--borde) !important; }
   
 
 /* --- AUTOCOMPLETADO INLINE (GHOST) --- */
+/* --- AUTOCOMPLETADO INLINE (GHOST) --- */
 #input-wrap {
   position: relative;
 }
 
-#ghost-typed,
-#ghost-rest {
+/* Contenedor fantasma debajo del input */
+#ghost {
   position: absolute;
+  left: 2px;
   top: 0;
-  left: 0;
+  bottom: 0;
+  padding: 10px;
+  font-size: 16px;
+  width: 100%;
   pointer-events: none;
-  font-family: inherit;
-  font-size: inherit;
-  padding: inherit;
-  height: 100%;
-  line-height: inherit;
-}
-
-#ghost-typed {
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  font-family: 'Segoe UI', sans-serif;
   color: rgba(0,0,0,0.35);
 }
 
-#ghost-rest {
-  color: rgba(0,0,0,0.25);
+/* Texto escrito (invisible) */
+#ghost-typed {
+  color: transparent;
 }
 
-/* Modo oscuro */
-body.tema-oscuro #ghost-typed {
+/* Parte sugerida */
+#ghost-rest {
+  color: rgba(0,0,0,0.35);
+}
+
+/* Tema oscuro */
+body.tema-oscuro #ghost {
+  color: rgba(255,255,255,0.35);
+}
+body.tema-oscuro #ghost-rest {
   color: rgba(255,255,255,0.40);
 }
 
-body.tema-oscuro #ghost-rest {
-  color: rgba(255,255,255,0.25);
-}
-
-/* Input al frente */
+/* Input encima del ghost */
 #q {
   position: relative;
   background: transparent;
+  z-index: 2;
 }
 
 /* --- LISTA PREDICTIVA (DESACTIVADA) --- */
@@ -874,7 +883,11 @@ body.tema-oscuro #ghost-rest {
   opacity: 0 !important;
   height: 0 !important;
   overflow: hidden !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
+
 
 
 
@@ -1074,28 +1087,26 @@ body.tema-oscuro #ghost-rest {
 <div style="background:#f0f8ff;padding:12px;border-radius:10px;
             box-shadow:0 2px 6px rgba(0,0,0,0.12);margin-bottom:15px">
 
-  <!-- WRAPPER PARA AUTOCOMPLETADO INLINE (GHOST) -->
-  <div style="position:relative;">
-    <div id="input-wrap" style="position:relative;">
+<!-- WRAPPER PARA AUTOCOMPLETADO INLINE (GHOST) -->
+<div style="position:relative;">
+  <div id="input-wrap">
 
-      <!-- INPUT REAL -->
-      <input type="text" id="q" placeholder="Juan 3:16 | Salmos 23 | amor"
-             autocomplete="off"
-             style="padding:10px;font-size:16px;width:100%;border-radius:8px;
-                    border:2px solid #aac;font-family:'Segoe UI',sans-serif;
-                    position:relative;background:transparent;z-index:2;">
+    <!-- INPUT REAL -->
+    <input type="text" id="q" placeholder="Juan 3:16 | Salmos 23 | amor"
+           autocomplete="off"
+           style="padding:10px;font-size:16px;width:100%;border-radius:8px;
+                  border:2px solid #aac;font-family:'Segoe UI',sans-serif;
+                  position:relative;background:transparent;z-index:2;">
 
-      <!-- GHOST (texto sombreado dentro del input) -->
-      <div id="ghost" aria-hidden="true"
-           style="position:absolute;left:2px;top:0;bottom:0;padding:10px;font-size:16px;width:100%;
-                  pointer-events:none;z-index:1;color:rgba(0,0,0,0.35);
-                  font-family:'Segoe UI',sans-serif;display:flex;
-                  align-items:center;white-space:nowrap;overflow:hidden;">
-        <span id="ghost-typed" style="color:transparent;"></span>
-        <span id="ghost-rest"></span>
-      </div>
-
+    <!-- GHOST (texto sombreado dentro del input) -->
+    <div id="ghost" aria-hidden="true">
+      <span id="ghost-typed"></span>
+      <span id="ghost-rest"></span>
     </div>
+
+  </div>
+</div>
+
 
     <!-- LISTA PREDICTIVA OPCIONAL -->
     <div id="predictivo" class="predictivo"
