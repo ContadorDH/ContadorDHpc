@@ -1087,30 +1087,47 @@ body.tema-oscuro #ghost-rest {
 <div style="background:#f0f8ff;padding:12px;border-radius:10px;
             box-shadow:0 2px 6px rgba(0,0,0,0.12);margin-bottom:15px">
 
-<!-- WRAPPER PARA AUTOCOMPLETADO INLINE (GHOST) -->
-<div style="position:relative;">
-  <div id="input-wrap">
+  <!-- WRAPPER GHOST AUTOCOMPLETE -->
+  <div style="position:relative;">
+    
+    <div id="input-wrap" style="position:relative;">
 
-    <!-- INPUT REAL -->
-    <input type="text" id="q" placeholder="Juan 3:16 | Salmos 23 | amor"
-           autocomplete="off"
-           style="padding:10px;font-size:16px;width:100%;border-radius:8px;
-                  border:2px solid #aac;font-family:'Segoe UI',sans-serif;
-                  position:relative;background:transparent;z-index:2;">
+      <!-- INPUT REAL -->
+      <input type="text" id="q" placeholder="Juan 3:16 | Salmos 23 | amor"
+             autocomplete="off"
+             style="padding:10px;font-size:16px;width:100%;border-radius:8px;
+                    border:2px solid #aac;font-family:'Segoe UI',sans-serif;
+                    position:relative;background:transparent;z-index:2;">
 
-    <!-- GHOST (texto sombreado dentro del input) -->
-    <div id="ghost" aria-hidden="true">
-      <span id="ghost-typed"></span>
-      <span id="ghost-rest"></span>
+      <!-- GHOST (AUTOCOMPLETADO INLINE) -->
+      <div id="ghost" aria-hidden="true"
+           style="
+             position:absolute;left:2px;top:0;bottom:0;
+             padding:10px;font-size:16px;width:100%;
+             pointer-events:none;z-index:1;
+             display:flex;align-items:center;
+             white-space:nowrap;overflow:hidden;
+             font-family:'Segoe UI',sans-serif;
+           ">
+        <span id="ghost-typed" style="color:transparent;"></span>
+        <span id="ghost-rest"></span>
+      </div>
+
     </div>
 
-  </div>
-</div>
-
-
-    <!-- LISTA PREDICTIVA OPCIONAL -->
+    <!-- LISTA PREDICTIVA (DESACTIVADA) -->
     <div id="predictivo" class="predictivo"
-         style="position:absolute;left:0;right:0;top:56px;z-index:10;"></div>
+         style="
+            display:none !important;
+            visibility:hidden !important;
+            opacity:0 !important;
+            height:0 !important;
+            overflow:hidden !important;
+            position:absolute;left:0;right:0;top:56px;
+            z-index:10;
+         ">
+    </div>
+
   </div>
 
   <!-- BOTÓN BUSCAR -->
@@ -1153,6 +1170,7 @@ body.tema-oscuro #ghost-rest {
 
     
   </div>
+
 
  <div id="pantallas-container"  style="margin-top:40px;">
 
@@ -2733,4 +2751,5 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
