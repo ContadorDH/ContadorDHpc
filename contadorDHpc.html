@@ -816,76 +816,76 @@ td, th { border-color: var(--borde) !important; }
 /* === AUTOCOMPLETADO INLINE (GHOST) - Reemplazar todo lo anterior relacionado === */
 
 /* Wrapper: relativo para posicionar el ghost exactamente bajo el input */
+/* ==================== AUTOCOMPLETADO INLINE (GHOST) - VERSIÓN FINAL QUE SÍ SE VE EN TODOS LOS TEMAS ==================== */
 #input-wrap {
   position: relative;
   width: 100%;
   box-sizing: border-box;
 }
 
-/* Input: al frente */
 #q {
   position: relative;
-  z-index: 3;                 /* siempre encima del ghost */
-  background: transparent;
-  padding: 10px;              /* debe coincidir con ghost */
-  font-size: 16px;            /* debe coincidir con ghost */
-  line-height: 1.2;           /* igual para que alineen bien */
+  z-index: 3;
+  background: transparent !important;
+  padding: 10px;
+  font-size: 16px;
+  line-height: 1.2;
   width: 100%;
   box-sizing: border-box;
+  caret-color: var(--acento); /* cursor del color del tema */
 }
 
-/* Contenedor fantasma EXACTAMENTE debajo del input */
 #ghost {
   position: absolute;
-  inset: 0 0 0 0;             /* ocupa exactamente la misma caja que el input */
+  inset: 0;
   pointer-events: none;
   z-index: 2;
   display: flex;
   align-items: center;
-  padding: 10px;              /* mismo padding que #q */
-  font-size: 16px;            /* mismo tamaño que #q */
-  line-height: 1.2;           /* mismo line-height que #q */
+  padding: 10px;
+  font-size: 16px;
+  line-height: 1.2;
   font-family: inherit;
-  color: transparent;         /* por defecto todo transparente, controlamos spans */
   overflow: hidden;
   white-space: nowrap;
+  color: transparent;
 }
 
-/* Texto "typed" — espejo de lo escrito (pero invisible) para alinear la sugerencia */
 #ghost-typed {
-  color: transparent;         /* invisible, solo sirve para alinear */
-  display: inline-block;
+  color: transparent;
   white-space: pre;
 }
 
-/* GHOST REST – VERSIÓN QUE SÍ SE VE EN TODOS LOS TEMAS (CLAROS Y OSCUROS) */
+/* ¡¡¡AQUÍ ESTÁ LA CLAVE: FONDO OSCURO + TEXTO CLARO EN TEMAS CLAROS!!! */
 #ghost-rest {
   display: inline-block;
   white-space: pre;
-  opacity: 1 !important;
-  color: var(--acento) !important;
   font-weight: 600;
-  
-  /* LO MÁS IMPORTANTE: fondo semi-opaco para que destaque sobre cualquier color de texto */
-  background: color-mix(in srgb, var(--acento) 18%, transparent) !important;
-  
-  /* Bordes redondeados + padding mínimo para que parezca una "píldora" sutil */
-  padding: 0 4px;
+  padding: 1px 5px;
   border-radius: 4px;
-  
-  /* Glow suave que funciona en claro y oscuro */
-  text-shadow: 
-    0 0 8px var(--acento),
-    0 0 16px var(--acento);
+  background: rgba(0, 0, 0, 0.58) !important;   /* fondo negro semi-transparente en temas claros */
+  color: #ffffff !important;                    /* texto siempre blanco */
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
 }
 
-/* Reforzamos en tema oscuro (queda espectacular) */
+/* En tema oscuro: fondo del acento + texto blanco con glow */
 body.tema-oscuro #ghost-rest,
 .app.dark #ghost-rest {
-  background: color-mix(in srgb, var(--acento) 28%, black) !important;
+  background: rgba(88, 166, 255, 0.35) !important;  /* azul suave semi-transparente */
+  color: #ffffff !important;
   text-shadow: 
-    0 0 10px var(--acento),
-    0 0 20px var(--acento);
+    0 0 8px #58a6ff,
+    0 0 16px #58a6ff;
+  backdrop-filter: blur(1px);
+}
+
+/* Extra: en temas claros con acento muy claro (beige, naranja, gris) forzamos más contraste */
+body.tema-beige #ghost-rest,
+body.tema-naranja #ghost-rest,
+body.tema-gris #ghost-rest,
+body.tema-verde #ghost-rest {
+  background: rgba(0, 0, 0, 0.68) !important;
+  color: #ffffff !important;
 }
 
 /* Aseguramos que el input muestre su texto con normalidad (alto contraste en oscuro) */
@@ -2831,5 +2831,6 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
