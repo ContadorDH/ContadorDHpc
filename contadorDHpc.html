@@ -1107,6 +1107,23 @@ body.tema-oscuro .resultados-biblia .resaltado,
 }
 
   
+
+#input-wrap {
+  position: relative;
+}
+
+#ghost {
+  z-index: 1 !important;      /* ghost debajo del texto, encima del fondo */
+}
+
+#q {
+  position: relative;
+  z-index: 2 !important;      /* texto REAL encima de ghost */
+  background: transparent !important; /* (ya lo tienes, está bien) */
+}
+
+
+
   
 </style>
 </head>
@@ -1174,7 +1191,7 @@ body.tema-oscuro .resultados-biblia .resaltado,
 <div style="background:#f0f8ff;padding:12px;border-radius:10px;
             box-shadow:0 2px 6px rgba(0,0,0,0.12);margin-bottom:15px">
 
-  <!-- WRAPPER PARA AUTOCOMPLETADO INLINE (GHOST) -->
+  <!-- WRAPPER PARA AUTOCOMPLETADO INLINE () -->
   <div style="position:relative;">
     <div id="input-wrap" style="position:relative;">
 
@@ -1185,14 +1202,14 @@ body.tema-oscuro .resultados-biblia .resaltado,
                     border:2px solid #aac;font-family:'Segoe UI',sans-serif;
                     position:relative;background:transparent;z-index:2;">
 
-      <!-- GHOST (texto sombreado dentro del input) -->
-      <div id="ghost" aria-hidden="true"
+      <!--  (texto sombreado dentro del input) -->
+      <div id="" aria-hidden="true"
            style="position:absolute;left:2px;top:0;bottom:0;padding:10px;font-size:16px;width:100%;
                   pointer-events:none;z-index:1;color:rgba(0,0,0,0.35);
                   font-family:'Segoe UI',sans-serif;display:flex;
                   align-items:center;white-space:nowrap;overflow:hidden;">
-        <span id="ghost-typed" style="color:transparent;"></span>
-        <span id="ghost-rest"></span>
+        <span id="-typed" style="color:transparent;"></span>
+        <span id="-rest"></span>
       </div>
 
     </div>
@@ -1695,11 +1712,11 @@ function buscar() {
 
 
 // ==========================
-// Autocompletado inline (ghost) para #q
+// Autocompletado inline () para #q
 // ==========================
 (function() {
   const input = document.getElementById("q");
-  const ghostTyped = document.getElementById("ghost-typed");
+  const Typed = document.getElementById("-typed");
   const ghostRest = document.getElementById("ghost-rest");
   const predictivo = document.getElementById("predictivo");
 
@@ -2816,5 +2833,6 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
