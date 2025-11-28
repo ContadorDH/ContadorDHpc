@@ -815,91 +815,72 @@ td, th { border-color: var(--borde) !important; }
 
 /* === AUTOCOMPLETADO INLINE (GHOST) - Reemplazar todo lo anterior relacionado === */
 
-/* ---------------------------
-   TU BLOQUE (NO TOCAR NADA)
----------------------------- */
-
-/* ==========================
-   GHOST AUTOCOMPLETADO (REEMPLAZAR)
-   ========================== */
-
+/* Wrapper: relativo para posicionar el ghost exactamente bajo el input */
 #input-wrap {
   position: relative;
   width: 100%;
   box-sizing: border-box;
-  /* permitir que el ghost no sea recortado por ancestros */
-  overflow: visible;
 }
 
+/* Input: al frente */
 #q {
   position: relative;
   z-index: 3;                 /* siempre encima del ghost */
   background: transparent;
-  padding: 10px;
-  font-size: 16px;
-  line-height: 1.2;
+  padding: 10px;              /* debe coincidir con ghost */
+  font-size: 16px;            /* debe coincidir con ghost */
+  line-height: 1.2;           /* igual para que alineen bien */
   width: 100%;
   box-sizing: border-box;
-  color: inherit;             /* hereda color según tema */
-  -webkit-appearance: none;   /* evitar estilos nativos que cambien padding/line-height */
-  appearance: none;
 }
 
-/* ghost ocupa exactamente la misma caja que el input */
+/* Contenedor fantasma EXACTAMENTE debajo del input */
 #ghost {
   position: absolute;
-  inset: 0 0 0 0;             /* mismo tamaño que input */
+  inset: 0 0 0 0;             /* ocupa exactamente la misma caja que el input */
   pointer-events: none;
   z-index: 2;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  padding: 10px;              /* debe coincidir con #q */
-  font-size: 16px;            /* debe coincidir con #q */
-  line-height: 1.2;
+  padding: 10px;              /* mismo padding que #q */
+  font-size: 16px;            /* mismo tamaño que #q */
+  line-height: 1.2;           /* mismo line-height que #q */
   font-family: inherit;
-  color: transparent;         /* todo transparente por defecto */
+  color: transparent;         /* por defecto todo transparente, controlamos spans */
   overflow: hidden;
-  white-space: pre;           /* respetar espacios y evitar wrap inesperado */
+  white-space: nowrap;
 }
 
-/* espejo invisible de lo escrito (alineación precisa) */
+/* Texto "typed" — espejo de lo escrito (pero invisible) para alinear la sugerencia */
 #ghost-typed {
+  color: transparent;         /* invisible, solo sirve para alinear */
   display: inline-block;
-  color: transparent;         /* invisible, sólo sirve para alinear */
   white-space: pre;
 }
 
-/* parte sugerida (lo que se ve sombreado) */
+/* Parte sugerida (lo que se ve sombreado) */
 #ghost-rest {
   display: inline-block;
   white-space: pre;
   opacity: 0.55;
   color: rgba(0,0,0,0.35);    /* versión clara por defecto */
-  -webkit-text-fill-color: currentColor;
 }
 
-/* contraste en modo oscuro */
+/* Modo oscuro — cambiar colores del ghost-rest para tener contraste */
 body.tema-oscuro #ghost-rest,
 .app.dark #ghost-rest {
-  color: rgba(255,255,255,0.50);
-  opacity: 0.65;
+  color: rgba(255,255,255,0.40);
+  opacity: 0.55;
 }
 
-/* asegurar que el input muestre texto en oscuro */
+/* Aseguramos que el input muestre su texto con normalidad (alto contraste en oscuro) */
 body.tema-oscuro #q,
 .app.dark #q {
   color: var(--menu-texto, #eaeaea);
 }
 
-/* protecciones: evitar que ancestros recorten el ghost */
-#input-wrap, #input-wrap * {
-  overflow: visible !important;
-}
-
-/* ==========================
-   PREDICTIVO (MANTENIDO EN DOM PERO OCULTO)
-   ========================== */
-/* por defecto mantenemos la lista dropdown desactivada (la UX será el ghost inline) */
+/* === PREDICTIVO (DESACTIVADO: forzamos que NUNCA aparezca como dropdown) ===
+   Si en el futuro quieres volver a habilitar la lista bajo el input, cambia esto */
 #predictivo,
 .predictivo {
   display: none !important;
@@ -910,7 +891,7 @@ body.tema-oscuro #q,
   pointer-events: none !important;
 }
 
-/* estilo opcional si en el futuro activas el dropdown: clase .predictivo--visible */
+/* --- (Opcional) Si quieres mantener un estilo para predictivo cuando lo actives: */
 .predictivo--visible {
   position: absolute;
   left: 0;
@@ -924,17 +905,14 @@ body.tema-oscuro #q,
   overflow-y: auto;
   box-shadow: 0 8px 24px rgba(0,0,0,0.12);
 }
+
+/* Predicción interna cuando está visible */
 .predictivo--visible div {
   padding: 10px;
   cursor: pointer;
   border-bottom: 1px solid rgba(0,0,0,0.05);
 }
-.predictivo--visible div:hover {
-  background: color-mix(in srgb, var(--acento, #0066cc) 8%, var(--tabla-fondo, #fff));
-}
-
-/* fin del bloque */
-
+.predictivo--visible div:hover { background: color-mix(in srgb, var(--acento) 8%, var(--tabla-fondo)); }
 
 
 
@@ -1129,10 +1107,6 @@ body.tema-oscuro .resultados-biblia .resaltado,
 }
 
   
-
-
-
-
   
 </style>
 </head>
@@ -1200,7 +1174,7 @@ body.tema-oscuro .resultados-biblia .resaltado,
 <div style="background:#f0f8ff;padding:12px;border-radius:10px;
             box-shadow:0 2px 6px rgba(0,0,0,0.12);margin-bottom:15px">
 
-  <!-- WRAPPER PARA AUTOCOMPLETADO INLINE () -->
+  <!-- WRAPPER PARA AUTOCOMPLETADO INLINE (GHOST) -->
   <div style="position:relative;">
     <div id="input-wrap" style="position:relative;">
 
@@ -1211,14 +1185,14 @@ body.tema-oscuro .resultados-biblia .resaltado,
                     border:2px solid #aac;font-family:'Segoe UI',sans-serif;
                     position:relative;background:transparent;z-index:2;">
 
-      <!--  (texto sombreado dentro del input) -->
-      <div id="" aria-hidden="true"
+      <!-- GHOST (texto sombreado dentro del input) -->
+      <div id="ghost" aria-hidden="true"
            style="position:absolute;left:2px;top:0;bottom:0;padding:10px;font-size:16px;width:100%;
                   pointer-events:none;z-index:1;color:rgba(0,0,0,0.35);
                   font-family:'Segoe UI',sans-serif;display:flex;
                   align-items:center;white-space:nowrap;overflow:hidden;">
-        <span id="-typed" style="color:transparent;"></span>
-        <span id="-rest"></span>
+        <span id="ghost-typed" style="color:transparent;"></span>
+        <span id="ghost-rest"></span>
       </div>
 
     </div>
@@ -1721,11 +1695,11 @@ function buscar() {
 
 
 // ==========================
-// Autocompletado inline () para #q
+// Autocompletado inline (ghost) para #q
 // ==========================
 (function() {
   const input = document.getElementById("q");
-  const Typed = document.getElementById("-typed");
+  const ghostTyped = document.getElementById("ghost-typed");
   const ghostRest = document.getElementById("ghost-rest");
   const predictivo = document.getElementById("predictivo");
 
@@ -2842,8 +2816,4 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
-
-
-
-
 
