@@ -687,76 +687,28 @@ body.tema-oscuro #proyeccionContenido tbody tr td {
   body.tema-oscuro #menuLateral svg[stroke="var(--acento)"] {
   stroke: #ffffff !important;
 }
-
-
-
-/* --- AUTOCOMPLETADO INLINE (GHOST) --- */
-/* ============================
-   AUTOCOMPLETADO GHOST INLINE
-   ============================ */
-/* --- AUTOCOMPLETADO INLINE (GHOST) --- */
-#input-wrap {
-  position: relative;
+/* BARRAS DEL BOTÓN MENÚ: NEGRAS EN TEMAS CLAROS 
+body.tema-claro #menuBtn svg,
+body.tema-rosado #menuBtn svg,
+body.tema-lila #menuBtn svg,
+body.tema-beige #menuBtn svg,
+body.tema-verde #menuBtn svg,
+body.tema-gris #menuBtn svg,
+body.tema-naranja #menuBtn svg {
+  stroke: #000000 !important;
 }
-
-/* Contenedor fantasma debajo del input */
-#ghost {
-  position: absolute;
-  left: 2px;
-  top: 0;
-  bottom: 0;
-  padding: 10px;
-  font-size: 16px;
-  width: 100%;
-  pointer-events: none;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
-  overflow: hidden;
-  font-family: 'Segoe UI', sans-serif;
-  color: rgba(0,0,0,0.35);
-}
-
-/* Texto escrito (invisible) */
-#ghost-typed {
-  color: transparent;
-}
-
-/* Parte sugerida */
-#ghost-rest {
-  color: rgba(0,0,0,0.35);
-}
-
-/* Tema oscuro */
-body.tema-oscuro #ghost {
-  color: rgba(255,255,255,0.35);
-}
-body.tema-oscuro #ghost-rest {
-  color: rgba(255,255,255,0.40);
-}
-
-/* Input encima del ghost */
-#q {
-  position: relative;
-  background: transparent;
-  z-index: 2;
-}
-
-/* --- LISTA PREDICTIVA (DESACTIVADA) --- */
-.predictivo {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  height: 0 !important;
-  overflow: hidden !important;
-  border: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
-
-
+*/
+/* Overlay al abrir menú 
+#menuOverlay { background: rgba(0,0,0,0.60) !important; }
+body.tema-claro #menuOverlay,
+body.tema-rosado #menuOverlay,
+body.tema-lila #menuOverlay,
+body.tema-beige #menuOverlay,
+body.tema-verde #menuOverlay,
+body.tema-gris #menuOverlay,
+body.tema-naranja #menuOverlay {
+  background: rgba(0,0,0,0.40) !important;
+} */
 
 /* Resto de estilos (intactos) */
 #subtitulo { background: var(--tabla-fondo) !important; color: var(--acento) !important; }
@@ -801,9 +753,33 @@ td, th { border-color: var(--borde) !important; }
 }
   
 
+/* --- AUTOCOMPLETADO INLINE (GHOST) --- */
+#input-wrap { position:relative; }
+#ghost { color: rgba(0,0,0,0.35); font-size:16px; }
+#ghost-typed { color: transparent; }
+#ghost-rest { opacity:0.55; }
 
+body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
 
+/* --- LISTA PREDICTIVA OPCIONAL --- */
+.predictivo {
+  background:#fff;
+  border:1px solid #aac;
+  border-radius:8px;
+  overflow:hidden;
+  display:none;
+  max-height:200px;
+  overflow-y:auto;
+}
 
+.predictivo div {
+  padding:8px;
+  cursor:pointer;
+  border-bottom:1px solid #eee;
+}
+.predictivo div:hover {
+  background:#def;
+}
 
 
   .resaltado {
@@ -1052,9 +1028,8 @@ body.tema-oscuro .resultados-biblia .resaltado,
 <div style="background:#f0f8ff;padding:12px;border-radius:10px;
             box-shadow:0 2px 6px rgba(0,0,0,0.12);margin-bottom:15px">
 
-  <!-- WRAPPER GHOST AUTOCOMPLETE -->
+  <!-- WRAPPER PARA AUTOCOMPLETADO INLINE (GHOST) -->
   <div style="position:relative;">
-    
     <div id="input-wrap" style="position:relative;">
 
       <!-- INPUT REAL -->
@@ -1064,35 +1039,21 @@ body.tema-oscuro .resultados-biblia .resaltado,
                     border:2px solid #aac;font-family:'Segoe UI',sans-serif;
                     position:relative;background:transparent;z-index:2;">
 
-      <!-- GHOST (AUTOCOMPLETADO INLINE) -->
+      <!-- GHOST (texto sombreado dentro del input) -->
       <div id="ghost" aria-hidden="true"
-           style="
-             position:absolute;left:2px;top:0;bottom:0;
-             padding:10px;font-size:16px;width:100%;
-             pointer-events:none;z-index:1;
-             display:flex;align-items:center;
-             white-space:nowrap;overflow:hidden;
-             font-family:'Segoe UI',sans-serif;
-           ">
+           style="position:absolute;left:2px;top:0;bottom:0;padding:10px;font-size:16px;width:100%;
+                  pointer-events:none;z-index:1;color:rgba(0,0,0,0.35);
+                  font-family:'Segoe UI',sans-serif;display:flex;
+                  align-items:center;white-space:nowrap;overflow:hidden;">
         <span id="ghost-typed" style="color:transparent;"></span>
         <span id="ghost-rest"></span>
       </div>
 
     </div>
 
-    <!-- LISTA PREDICTIVA (DESACTIVADA) -->
+    <!-- LISTA PREDICTIVA OPCIONAL -->
     <div id="predictivo" class="predictivo"
-         style="
-            display:none !important;
-            visibility:hidden !important;
-            opacity:0 !important;
-            height:0 !important;
-            overflow:hidden !important;
-            position:absolute;left:0;right:0;top:56px;
-            z-index:10;
-         ">
-    </div>
-
+         style="position:absolute;left:0;right:0;top:56px;z-index:10;"></div>
   </div>
 
   <!-- BOTÓN BUSCAR -->
@@ -1125,17 +1086,11 @@ body.tema-oscuro .resultados-biblia .resaltado,
 
 
 <!-- RESULTADO DE LA BÚSQUEDA DE VERSÍCULOS -->
-<div id="r" style="
-  margin-top:20px;
-  padding:12px;
-  background:#fdfdfd;
-  border-radius:10px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.15);
-"></div>
+<div id="r" class="resultados-biblia"></div>
+
 
     
   </div>
-
 
  <div id="pantallas-container"  style="margin-top:40px;">
 
@@ -2716,7 +2671,3 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
-
-
-
-
