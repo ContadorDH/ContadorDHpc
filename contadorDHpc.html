@@ -687,28 +687,59 @@ body.tema-oscuro #proyeccionContenido tbody tr td {
   body.tema-oscuro #menuLateral svg[stroke="var(--acento)"] {
   stroke: #ffffff !important;
 }
-/* BARRAS DEL BOTÓN MENÚ: NEGRAS EN TEMAS CLAROS 
-body.tema-claro #menuBtn svg,
-body.tema-rosado #menuBtn svg,
-body.tema-lila #menuBtn svg,
-body.tema-beige #menuBtn svg,
-body.tema-verde #menuBtn svg,
-body.tema-gris #menuBtn svg,
-body.tema-naranja #menuBtn svg {
-  stroke: #000000 !important;
+
+
+
+  /* --- AUTOCOMPLETADO INLINE (GHOST) --- */
+#input-wrap {
+  position: relative;
 }
-*/
-/* Overlay al abrir menú 
-#menuOverlay { background: rgba(0,0,0,0.60) !important; }
-body.tema-claro #menuOverlay,
-body.tema-rosado #menuOverlay,
-body.tema-lila #menuOverlay,
-body.tema-beige #menuOverlay,
-body.tema-verde #menuOverlay,
-body.tema-gris #menuOverlay,
-body.tema-naranja #menuOverlay {
-  background: rgba(0,0,0,0.40) !important;
-} */
+
+#ghost-typed,
+#ghost-rest {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  font-family: inherit;
+  font-size: inherit;
+  padding: inherit;
+  height: 100%;
+  line-height: inherit;
+}
+
+#ghost-typed {
+  color: rgba(0,0,0,0.35);
+}
+
+#ghost-rest {
+  color: rgba(0,0,0,0.25);
+}
+
+/* Modo oscuro */
+body.tema-oscuro #ghost-typed {
+  color: rgba(255,255,255,0.40);
+}
+
+body.tema-oscuro #ghost-rest {
+  color: rgba(255,255,255,0.25);
+}
+
+/* Input al frente */
+#q {
+  position: relative;
+  background: transparent;
+}
+
+/* --- LISTA PREDICTIVA (DESACTIVADA) --- */
+.predictivo {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
 
 /* Resto de estilos (intactos) */
 #subtitulo { background: var(--tabla-fondo) !important; color: var(--acento) !important; }
@@ -753,33 +784,9 @@ td, th { border-color: var(--borde) !important; }
 }
   
 
-/* --- AUTOCOMPLETADO INLINE (GHOST) --- */
-#input-wrap { position:relative; }
-#ghost { color: rgba(0,0,0,0.35); font-size:16px; }
-#ghost-typed { color: transparent; }
-#ghost-rest { opacity:0.55; }
 
-body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
 
-/* --- LISTA PREDICTIVA OPCIONAL --- */
-.predictivo {
-  background:#fff;
-  border:1px solid #aac;
-  border-radius:8px;
-  overflow:hidden;
-  display:none;
-  max-height:200px;
-  overflow-y:auto;
-}
 
-.predictivo div {
-  padding:8px;
-  cursor:pointer;
-  border-bottom:1px solid #eee;
-}
-.predictivo div:hover {
-  background:#def;
-}
 
 
   .resaltado {
@@ -2671,3 +2678,4 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
