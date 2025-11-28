@@ -822,79 +822,68 @@ td, th { border-color: var(--borde) !important; }
   box-sizing: border-box;
 }
 
-/* Input: texto real invisible, PERO placeholder visible */
+/* Input: al frente */
 #q {
   position: relative;
-  z-index: 3 !important;
-  background: transparent !important;
-
-  /* El texto que escribe el usuario: invisible */
-  color: transparent !important;
-  -webkit-text-fill-color: transparent !important;
-
-  /* Caret visible */
-  caret-color: var(--menu-texto, #000) !important;
-
-  padding: 10px;
-  font-size: 16px;
-  line-height: 1.2;
+  z-index: 3;                 /* siempre encima del ghost */
+  background: transparent;
+  padding: 10px;              /* debe coincidir con ghost */
+  font-size: 16px;            /* debe coincidir con ghost */
+  line-height: 1.2;           /* igual para que alineen bien */
   width: 100%;
   box-sizing: border-box;
 }
 
-/* Placeholder visible */
-#q::placeholder {
-  color: rgba(0,0,0,0.45) !important;
-}
-body.tema-oscuro #q::placeholder,
-.app.dark #q::placeholder {
-  color: #666 !important;
-   opacity: 1 !important;
-}
-
-/* Ghost encima del input */
+/* Contenedor fantasma EXACTAMENTE debajo del input */
 #ghost {
   position: absolute;
-  inset: 0 0 0 0;
+  inset: 0 0 0 0;             /* ocupa exactamente la misma caja que el input */
   pointer-events: none;
-  z-index: 4 !important;
+  z-index: 2;
   display: flex;
   align-items: center;
-  padding: 10px;
-  font-size: 16px;
-  line-height: 1.2;
+  padding: 10px;              /* mismo padding que #q */
+  font-size: 16px;            /* mismo tamaño que #q */
+  line-height: 1.2;           /* mismo line-height que #q */
   font-family: inherit;
-  white-space: nowrap;
+  color: transparent;         /* por defecto todo transparente, controlamos spans */
   overflow: hidden;
+  white-space: nowrap;
 }
 
-   input, input::placeholder {
-    color: #000 !important;
-  }
-/* Texto ya escrito (visible) */
+/* Texto "typed" — espejo de lo escrito (pero invisible) para alinear la sugerencia */
 #ghost-typed {
-  color: var(--menu-texto, #000) !important;
+  color: transparent;         /* invisible, solo sirve para alinear */
   display: inline-block;
   white-space: pre;
 }
-body.tema-oscuro #ghost-typed,
-.app.dark #ghost-typed {
-  color: #eaeaea !important;
-}
 
-/* Parte sugerida */
+/* Parte sugerida (lo que se ve sombreado) */
+/* Parte sugerida – AHORA SÍ SE VE EN TODOS LOS TEMAS */
 #ghost-rest {
   display: inline-block;
   white-space: pre;
-  opacity: 0.55;
-  color: rgba(0,0,0,0.35);
-}
-body.tema-oscuro #ghost-rest,
-.app.dark #ghost-rest {
-  color: rgba(255,255,255,0.4);
+  opacity: 1;
+  color: var(--acento) !important;        /* usa el color de acento del tema */
+  font-weight: 500;
+  text-shadow: 0 0 8px var(--acento);     /* brillo opcional pero queda brutal */
 }
 
-/* Predictivo oculto */
+/* Tema oscuro – un poco más de brillo para que destaque */
+body.tema-oscuro #ghost-rest,
+.app.dark #ghost-rest {
+  color: var(--acento) !important;
+  text-shadow: 0 0 12px var(--acento), 0 0 20px var(--acento);
+}
+
+/* Aseguramos que el input muestre su texto con normalidad (alto contraste en oscuro) */
+body.tema-oscuro #q,
+.app.dark #q {
+  color: var(--menu-texto, #eaeaea);
+}
+
+/* === PREDICTIVO (DESACTIVADO: forzamos que NUNCA aparezca como dropdown) ===
+   Si en el futuro quieres volver a habilitar la lista bajo el input, cambia esto */
 #predictivo,
 .predictivo {
   display: none !important;
@@ -905,8 +894,7 @@ body.tema-oscuro #ghost-rest,
   pointer-events: none !important;
 }
 
-
-/* --- Estilos del dropdown (por si lo activas en el futuro) --- */
+/* --- (Opcional) Si quieres mantener un estilo para predictivo cuando lo actives: */
 .predictivo--visible {
   position: absolute;
   left: 0;
@@ -921,15 +909,13 @@ body.tema-oscuro #ghost-rest,
   box-shadow: 0 8px 24px rgba(0,0,0,0.12);
 }
 
+/* Predicción interna cuando está visible */
 .predictivo--visible div {
   padding: 10px;
   cursor: pointer;
   border-bottom: 1px solid rgba(0,0,0,0.05);
 }
-
-.predictivo--visible div:hover {
-  background: color-mix(in srgb, var(--acento) 8%, var(--tabla-fondo));
-}
+.predictivo--visible div:hover { background: color-mix(in srgb, var(--acento) 8%, var(--tabla-fondo)); }
 
 
 
@@ -1123,22 +1109,6 @@ body.tema-oscuro .resultados-biblia .resaltado,
   color: #000;
 }
 
-
-/* 🔥 FIX: asegurar que el input sea realmente transparente
-   y deje ver el texto ghost debajo */
-#q {
-  background: transparent !important;
-  position: relative;
-  z-index: 3 !important;
-  color: #000 !important;
-}
-
-/* 🔥 FIX: asegurar que el ghost quede justo debajo pero visible */
-#ghost {
-  z-index: 2 !important;
-}
-
-
   
   
 </style>
@@ -1212,12 +1182,11 @@ body.tema-oscuro .resultados-biblia .resaltado,
     <div id="input-wrap" style="position:relative;">
 
       <!-- INPUT REAL -->
-<input type="text" id="q" placeholder="Juan 3:16 | Salmos 23 | amor"
-       autocomplete="off"
-       style="padding:10px;font-size:16px;width:100%;border-radius:8px;
-              border:2px solid #aac;font-family:'Segoe UI',sans-serif;
-              position:relative;background:#fff;z-index:2;color:#000;">
-
+      <input type="text" id="q" placeholder="Juan 3:16 | Salmos 23 | amor"
+             autocomplete="off"
+             style="padding:10px;font-size:16px;width:100%;border-radius:8px;
+                    border:2px solid #aac;font-family:'Segoe UI',sans-serif;
+                    position:relative;background:transparent;z-index:2;">
 
       <!-- GHOST (texto sombreado dentro del input) -->
       <div id="ghost" aria-hidden="true"
@@ -2850,8 +2819,4 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
-
-
-
-
 
