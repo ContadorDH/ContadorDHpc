@@ -894,77 +894,6 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
   }
 }
 
-/* Contenedor general de resultados (tema-aware) */
-.resultados-biblia {
-  margin-top: 20px;
-  padding: 12px;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  background: var(--tabla-fondo, #fdfdfd);  /* usa variable del tema, fallback claro */
-  color: var(--tabla-texto, #222);          /* texto según tema */
-  transition: background .18s ease, color .18s ease;
-  overflow: auto;
-}
-
-/* Cada versículo (tarjeta ligera) */
-.resultados-biblia .vers {
-  display: block;
-  padding: 10px;
-  margin-bottom: 8px;
-  border-radius: 8px;
-  background: transparent;     /* transparente por defecto, tema decide */
-  color: inherit;              /* hereda color del contenedor */
-  border: 1px solid transparent;
-  cursor: pointer;
-}
-
-/* Hover claro */
-.resultados-biblia .vers:hover {
-  background: color-mix(in srgb, var(--acento) 8%, var(--tabla-fondo));
-  border-color: color-mix(in srgb, var(--acento) 12%, var(--tabla-fondo));
-}
-
-/* Resaltado (verso buscado) */
-.resultados-biblia .resaltado {
-  background: yellow;
-  color: black;
-  padding: 2px 6px;
-  border-radius: 4px;
-}
-
-/* ===== MODO OSCURO (usa tu clase/theme-flag) =====
-   Ajusta la selector según cómo aplicas el tema: aquí uso body.tema-oscuro y .app.dark (ambos) */
-body.tema-oscuro .resultados-biblia,
-.app.dark .resultados-biblia {
-  background: var(--tabla-fondo, #121212);   /* variable del tema (ya definida en tu CSS) */
-  color: var(--tabla-texto, #eaeaea);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.6);
-}
-
-body.tema-oscuro .resultados-biblia .vers,
-.app.dark .resultados-biblia .vers {
-  background: transparent;   /* tarjetas transparentes sobre contenedor oscuro */
-  color: inherit;
-  border-color: rgba(255,255,255,0.04);
-}
-
-body.tema-oscuro .resultados-biblia .vers:hover,
-.app.dark .resultados-biblia .vers:hover {
-  background: rgba(255,255,255,0.03);
-}
-
-/* Verso resaltado en oscuro: mantener contraste */
-body.tema-oscuro .resultados-biblia .resaltado,
-.app.dark .resultados-biblia .resaltado {
-  background: #ffda55;
-  color: #000;
-}
-
-
-
-
-
-  
   
 </style>
 </head>
@@ -1090,8 +1019,13 @@ body.tema-oscuro .resultados-biblia .resaltado,
 
 
 <!-- RESULTADO DE LA BÚSQUEDA DE VERSÍCULOS -->
-<div id="r" class="resultados-biblia"></div>
-
+<div id="r" style="
+  margin-top:20px;
+  padding:12px;
+  background:#fdfdfd;
+  border-radius:10px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.15);
+"></div>
 
     
   </div>
