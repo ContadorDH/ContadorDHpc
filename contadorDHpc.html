@@ -835,6 +835,16 @@ td, th { border-color: var(--borde) !important; }
   caret-color: var(--acento); /* cursor del color del tema */
 }
 
+/* ==================== GHOST AUTOCOMPLETADO – VERSIÓN FINAL QUE SÍ SE VE EN TODOS LOS TEMAS ==================== */
+#input-wrap { position: relative; }
+
+#q {
+  position: relative;
+  z-index: 3;
+  background: transparent !important;
+  caret-color: var(--acento);
+}
+
 #ghost {
   position: absolute;
   inset: 0;
@@ -848,59 +858,52 @@ td, th { border-color: var(--borde) !important; }
   font-family: inherit;
   overflow: hidden;
   white-space: nowrap;
-  color: transparent;
+  color: transparent !important;   /* ← clave */
 }
 
 #ghost-typed {
-  color: transparent;
+  color: transparent !important;
   white-space: pre;
 }
 
-/* ¡¡¡AQUÍ ESTÁ LA CLAVE: FONDO OSCURO + TEXTO CLARO EN TEMAS CLAROS!!! */
-/* ==================== GHOST AUTOCOMPLETADO – VERSIÓN QUE SE VE COMO UN NEÓN EN TODOS LOS TEMAS ==================== */
 #ghost-rest {
   display: inline-block;
   white-space: pre;
-  font-weight: 700 !important;
-  opacity: 1 !important;
-  
-  /* CLAVE: color blanco puro con múltiples sombras negras + glow del acento */
+  font-weight: 700;
   color: #ffffff !important;
+  -webkit-text-stroke: 0.6px #000;
   text-shadow:
-    /* Borde negro grueso para que resalte contra cualquier fondo claro */
     0 0 8px #000,
     0 0 12px #000,
-    /* Glow del color del tema (azul, rosa, lila, etc.) */
     0 0 10px var(--acento),
     0 0 20px var(--acento),
     0 0 30px var(--acento),
     0 0 40px var(--acento) !important;
-  
-  /* Pequeño truco visual para que no se "coma" el texto real */
-  -webkit-text-stroke: 0.5px black;
-  paint-order: stroke fill;
 }
 
-/* En tema oscuro: más glow azul y sin borde negro (no hace falta) */
+/* Tema oscuro → glow azul brutal */
 body.tema-oscuro #ghost-rest,
 .app.dark #ghost-rest {
-  color: #ffffff !important;
-  -webkit-text-stroke: 0.6px #000;
   text-shadow:
-    0 0 8px #58a6ff,
-    0 0 16px #58a6ff,
-    0 0 24px #58a6ff,
-    0 0 32px #58a6ff,
-    0 0 50px #58a6ff !important;
+    0 0 10px #58a6ff,
+    0 0 20px #58a6ff,
+    0 0 30px #58a6ff,
+    0 0 50px #58a6ff,
+    0 0 70px #58a6ff !important;
 }
 
-/* Extra: en temas claros con acento muy claro (beige, naranja, gris) forzamos más contraste */
+/* Temas con acento muy claro (beige, naranja, gris, verde claro) → más contraste */
 body.tema-beige #ghost-rest,
 body.tema-naranja #ghost-rest,
 body.tema-gris #ghost-rest,
 body.tema-verde #ghost-rest {
-  background: rgba(0, 0, 0, 0.68) !important;
-  color: #ffffff !important;
+  text-shadow:
+    0 0 10px #000,
+    0 0 15px #000,
+    0 0 12px var(--acento),
+    0 0 25px var(--acento),
+    0 0 40px var(--acento),
+    0 0 55px var(--acento) !important;
 }
 
 /* Aseguramos que el input muestre su texto con normalidad (alto contraste en oscuro) */
@@ -1216,14 +1219,14 @@ body.tema-oscuro .resultados-biblia .resaltado,
                     position:relative;background:transparent;z-index:2;">
 
       <!-- GHOST (texto sombreado dentro del input) -->
-      <div id="ghost" aria-hidden="true"
-           style="position:absolute;left:2px;top:0;bottom:0;padding:10px;font-size:16px;width:100%;
-                  pointer-events:none;z-index:1;color:rgba(0,0,0,0.35);
-                  font-family:'Segoe UI',sans-serif;display:flex;
-                  align-items:center;white-space:nowrap;overflow:hidden;">
-        <span id="ghost-typed" style="color:transparent;"></span>
-        <span id="ghost-rest"></span>
-      </div>
+     <div id="ghost" aria-hidden="true"
+     style="position:absolute;inset:0;padding:10px;font-size:16px;
+            pointer-events:none;z-index:2;display:flex;align-items:center;
+            white-space:nowrap;overflow:hidden;font-family:'Segoe UI',sans-serif;
+            color:transparent !important;">
+  <span id="ghost-typed" style="color:transparent;white-space:pre;"></span>
+  <span id="ghost-rest"></span>
+</div>
 
     </div>
 
@@ -2846,6 +2849,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
