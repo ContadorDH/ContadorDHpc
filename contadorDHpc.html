@@ -817,25 +817,7 @@ td, th { border-color: var(--borde) !important; }
 
 /* Wrapper: relativo para posicionar el ghost exactamente bajo el input */
 /* ==================== AUTOCOMPLETADO INLINE (GHOST) - VERSIÓN FINAL QUE SÍ SE VE EN TODOS LOS TEMAS ==================== */
-#input-wrap {
-  position: relative;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-#q {
-  position: relative;
-  z-index: 3;
-  background: transparent !important;
-  padding: 10px;
-  font-size: 16px;
-  line-height: 1.2;
-  width: 100%;
-  box-sizing: border-box;
-  caret-color: var(--acento); /* cursor del color del tema */
-}
-
-/* ==================== GHOST AUTOCOMPLETADO – VERSIÓN FINAL QUE SÍ SE VE EN TODOS LOS TEMAS ==================== */
+/* ==================== GHOST AUTOCOMPLETADO – VERSIÓN LIMPIA Y ELEGANTE (FUNCIONA EN TODOS LOS TEMAS) ==================== */
 #input-wrap { position: relative; }
 
 #q {
@@ -849,7 +831,7 @@ td, th { border-color: var(--borde) !important; }
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 2;
+  z-index: 2 !important;
   display: flex;
   align-items: center;
   padding: 10px;
@@ -858,7 +840,7 @@ td, th { border-color: var(--borde) !important; }
   font-family: inherit;
   overflow: hidden;
   white-space: nowrap;
-  color: transparent !important;   /* ← clave */
+  color: transparent !important;
 }
 
 #ghost-typed {
@@ -866,46 +848,25 @@ td, th { border-color: var(--borde) !important; }
   white-space: pre;
 }
 
+/* Versión limpia, legible y discreta – se ve perfecto en los 8 temas */
 #ghost-rest {
   display: inline-block;
   white-space: pre;
-  font-weight: 700;
-  color: #ffffff !important;
-  -webkit-text-stroke: 0.6px #000;
-  text-shadow:
-    0 0 8px #000,
-    0 0 12px #000,
-    0 0 10px var(--acento),
-    0 0 20px var(--acento),
-    0 0 30px var(--acento),
-    0 0 40px var(--acento) !important;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.45) !important;           /* gris oscuro sutil en temas claros */
+  background: rgba(255, 255, 255, 0.65) !important; /* fondo blanco muy suave para destacar */
+  padding: 0 3px;
+  border-radius: 3px;
 }
 
-/* Tema oscuro → glow azul brutal */
+/* En tema oscuro → gris claro sobre fondo oscuro sutil */
 body.tema-oscuro #ghost-rest,
 .app.dark #ghost-rest {
-  text-shadow:
-    0 0 10px #58a6ff,
-    0 0 20px #58a6ff,
-    0 0 30px #58a6ff,
-    0 0 50px #58a6ff,
-    0 0 70px #58a6ff !important;
+  color: rgba(255, 255, 255, 0.55) !important;
+  background: rgba(88, 166, 255, 0.18) !important;   /* toque azul muy suave */
+  border-radius: 3px;
+  padding: 0 3px;
 }
-
-/* Temas con acento muy claro (beige, naranja, gris, verde claro) → más contraste */
-body.tema-beige #ghost-rest,
-body.tema-naranja #ghost-rest,
-body.tema-gris #ghost-rest,
-body.tema-verde #ghost-rest {
-  text-shadow:
-    0 0 10px #000,
-    0 0 15px #000,
-    0 0 12px var(--acento),
-    0 0 25px var(--acento),
-    0 0 40px var(--acento),
-    0 0 55px var(--acento) !important;
-}
-
 /* Aseguramos que el input muestre su texto con normalidad (alto contraste en oscuro) */
 body.tema-oscuro #q,
 .app.dark #q {
@@ -2849,6 +2810,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
