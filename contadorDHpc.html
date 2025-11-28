@@ -690,55 +690,126 @@ body.tema-oscuro #proyeccionContenido tbody tr td {
 
 
 
-  /* --- AUTOCOMPLETADO INLINE (GHOST) --- */
-#input-wrap {
-  position: relative;
-}
+/* --- AUTOCOMPLETADO INLINE (GHOST) --- */
+/* ============================
+   AUTOCOMPLETADO GHOST INLINE
+   ============================ */
 
-#ghost-typed,
-#ghost-rest {
+#input-wrap { position: relative; }
+
+/* Contenedor ghost */
+#ghost {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 10px;
+  left: 12px;
   pointer-events: none;
-  font-family: inherit;
-  font-size: inherit;
-  padding: inherit;
-  height: 100%;
-  line-height: inherit;
+  font-size: 16px;
+  color: rgba(0,0,0,0.35);
+  white-space: pre;
 }
 
+/* Parte escrita del usuario (invisible) */
 #ghost-typed {
+  color: transparent;
+}
+
+/* Parte sugerida */
+#ghost-rest {
   color: rgba(0,0,0,0.35);
 }
 
-#ghost-rest {
-  color: rgba(0,0,0,0.25);
+/* Tema oscuro */
+.app.dark #ghost {
+  color: rgba(255,255,255,0.30);
 }
 
-/* Modo oscuro */
-body.tema-oscuro #ghost-typed {
-  color: rgba(255,255,255,0.40);
-}
-
-body.tema-oscuro #ghost-rest {
+.app.dark #ghost-rest {
   color: rgba(255,255,255,0.25);
 }
 
-/* Input al frente */
-#q {
-  position: relative;
-  background: transparent;
+.app.dark #ghost-typed {
+  color: transparent; /* mantiene ghost correcto */
 }
 
-/* --- LISTA PREDICTIVA (DESACTIVADA) --- */
-.predictivo {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  height: 0 !important;
-  overflow: hidden !important;
+/* ============================
+   LISTA PREDICTIVA
+   ============================ */
+
+#predictivo {
+  background: #fff;
+  border: 1px solid #aac;
+  border-radius: 8px;
+  overflow: hidden;
+  display: none;
+  max-height: 200px;
+  overflow-y: auto;
+  color: #000;
 }
+
+#predictivo div {
+  padding: 8px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+#predictivo div:hover {
+  background: #def;
+}
+
+/* Tema oscuro */
+.app.dark #predictivo {
+  background: #0f0f0f !important;
+  border: 1px solid #2b2b2b !important;
+  color: #ffffff !important;
+}
+
+.app.dark #predictivo div:hover {
+  background: #1c1c1c !important;
+  color: #ffffff !important;
+}
+
+/* ============================
+   PANEL IZQUIERDO + BIBLIA
+   ============================ */
+
+.app.dark #izq {
+  background: #0f0f0f !important;
+  color: #e8e8e8 !important;
+}
+
+.app.dark #izq select,
+.app.dark #izq button,
+.app.dark #izq input {
+  background: #1a1a1a !important;
+  color: #ffffff !important;
+  border-color: #333 !important;
+}
+
+.app.dark #izq i {
+  color: #bbb !important;
+}
+
+/* Versículos */
+.app.dark .vers {
+  background: #0f0f0f !important;
+  border-color: #2b2b2b !important;
+  color: #ffffff !important;
+}
+
+.app.dark .vers:hover {
+  background: #1c1c1c !important;
+}
+
+.app.dark .vers b {
+  color: #ffffff !important;
+}
+
+/* resaltado */
+.app.dark .resaltado {
+  background: #333 !important;
+  color: #ffffff !important;
+}
+
 
 
 /* Resto de estilos (intactos) */
@@ -1035,8 +1106,9 @@ body.tema-oscuro .resultados-biblia .resaltado,
 <div style="background:#f0f8ff;padding:12px;border-radius:10px;
             box-shadow:0 2px 6px rgba(0,0,0,0.12);margin-bottom:15px">
 
-  <!-- WRAPPER PARA AUTOCOMPLETADO INLINE (GHOST) -->
+  <!-- WRAPPER GHOST AUTOCOMPLETE -->
   <div style="position:relative;">
+    
     <div id="input-wrap" style="position:relative;">
 
       <!-- INPUT REAL -->
@@ -1046,21 +1118,35 @@ body.tema-oscuro .resultados-biblia .resaltado,
                     border:2px solid #aac;font-family:'Segoe UI',sans-serif;
                     position:relative;background:transparent;z-index:2;">
 
-      <!-- GHOST (texto sombreado dentro del input) -->
+      <!-- GHOST (AUTOCOMPLETADO INLINE) -->
       <div id="ghost" aria-hidden="true"
-           style="position:absolute;left:2px;top:0;bottom:0;padding:10px;font-size:16px;width:100%;
-                  pointer-events:none;z-index:1;color:rgba(0,0,0,0.35);
-                  font-family:'Segoe UI',sans-serif;display:flex;
-                  align-items:center;white-space:nowrap;overflow:hidden;">
+           style="
+             position:absolute;left:2px;top:0;bottom:0;
+             padding:10px;font-size:16px;width:100%;
+             pointer-events:none;z-index:1;
+             display:flex;align-items:center;
+             white-space:nowrap;overflow:hidden;
+             font-family:'Segoe UI',sans-serif;
+           ">
         <span id="ghost-typed" style="color:transparent;"></span>
         <span id="ghost-rest"></span>
       </div>
 
     </div>
 
-    <!-- LISTA PREDICTIVA OPCIONAL -->
+    <!-- LISTA PREDICTIVA (DESACTIVADA) -->
     <div id="predictivo" class="predictivo"
-         style="position:absolute;left:0;right:0;top:56px;z-index:10;"></div>
+         style="
+            display:none !important;
+            visibility:hidden !important;
+            opacity:0 !important;
+            height:0 !important;
+            overflow:hidden !important;
+            position:absolute;left:0;right:0;top:56px;
+            z-index:10;
+         ">
+    </div>
+
   </div>
 
   <!-- BOTÓN BUSCAR -->
@@ -1093,11 +1179,17 @@ body.tema-oscuro .resultados-biblia .resaltado,
 
 
 <!-- RESULTADO DE LA BÚSQUEDA DE VERSÍCULOS -->
-<div id="r" class="resultados-biblia"></div>
-
+<div id="r" style="
+  margin-top:20px;
+  padding:12px;
+  background:#fdfdfd;
+  border-radius:10px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.15);
+"></div>
 
     
   </div>
+
 
  <div id="pantallas-container"  style="margin-top:40px;">
 
@@ -2678,4 +2770,5 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
