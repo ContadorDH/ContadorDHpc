@@ -819,104 +819,87 @@ td, th { border-color: var(--borde) !important; }
    TU BLOQUE (NO TOCAR NADA)
 ---------------------------- */
 
-/* Wrapper: relativo para posicionar el ghost exactamente bajo el input */
+/* ==========================
+   GHOST AUTOCOMPLETADO (REEMPLAZAR)
+   ========================== */
+
 #input-wrap {
   position: relative;
   width: 100%;
   box-sizing: border-box;
+  /* permitir que el ghost no sea recortado por ancestros */
+  overflow: visible;
 }
 
-/* Input: al frente */
 #q {
   position: relative;
-  z-index: 3;
+  z-index: 3;                 /* siempre encima del ghost */
   background: transparent;
   padding: 10px;
   font-size: 16px;
   line-height: 1.2;
   width: 100%;
   box-sizing: border-box;
+  color: inherit;             /* hereda color según tema */
+  -webkit-appearance: none;   /* evitar estilos nativos que cambien padding/line-height */
+  appearance: none;
 }
 
-/* Contenedor fantasma EXACTAMENTE debajo del input */
+/* ghost ocupa exactamente la misma caja que el input */
 #ghost {
   position: absolute;
-  inset: 0 0 0 0;
+  inset: 0 0 0 0;             /* mismo tamaño que input */
   pointer-events: none;
   z-index: 2;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  padding: 10px;
-  font-size: 16px;
+  padding: 10px;              /* debe coincidir con #q */
+  font-size: 16px;            /* debe coincidir con #q */
   line-height: 1.2;
   font-family: inherit;
-  color: transparent;
+  color: transparent;         /* todo transparente por defecto */
   overflow: hidden;
-  white-space: nowrap;
+  white-space: pre;           /* respetar espacios y evitar wrap inesperado */
 }
 
-/* Texto "typed" */
+/* espejo invisible de lo escrito (alineación precisa) */
 #ghost-typed {
-  color: transparent;
   display: inline-block;
+  color: transparent;         /* invisible, sólo sirve para alinear */
   white-space: pre;
 }
 
-/* Parte sugerida */
+/* parte sugerida (lo que se ve sombreado) */
 #ghost-rest {
   display: inline-block;
   white-space: pre;
   opacity: 0.55;
-  color: rgba(0,0,0,0.35);
+  color: rgba(0,0,0,0.35);    /* versión clara por defecto */
+  -webkit-text-fill-color: currentColor;
 }
 
-/* Modo oscuro */
+/* contraste en modo oscuro */
 body.tema-oscuro #ghost-rest,
 .app.dark #ghost-rest {
-  color: rgba(255,255,255,0.40);
-  opacity: 0.55;
+  color: rgba(255,255,255,0.50);
+  opacity: 0.65;
 }
 
-
-
-/* --------------------------------------------
-   🔧 FIX EXTRA PARA QUE EL GHOST SE VEA SIEMPRE
---------------------------------------------- */
-
-#ghost {
-  background: transparent !important;
-  z-index: 2 !important;
-}
-
-#q {
-  z-index: 3 !important;
-}
-
-/* Nada debe recortar el ghost */
-#input-wrap,
-#input-wrap * {
-  overflow: visible !important;
-}
-
-/* Texto claro en modo oscuro */
-body.tema-oscuro #q,
-.app.dark #q {
-  color: #ffffff !important;
-}
-
-body.tema-oscuro #input-wrap,
-.app.dark #input-wrap {
-  background: transparent !important;
-}
-
-/* Aseguramos que el input muestre su texto con normalidad (alto contraste en oscuro) */
+/* asegurar que el input muestre texto en oscuro */
 body.tema-oscuro #q,
 .app.dark #q {
   color: var(--menu-texto, #eaeaea);
 }
 
-/* === PREDICTIVO (DESACTIVADO: forzamos que NUNCA aparezca como dropdown) ===
-   Si en el futuro quieres volver a habilitar la lista bajo el input, cambia esto */
+/* protecciones: evitar que ancestros recorten el ghost */
+#input-wrap, #input-wrap * {
+  overflow: visible !important;
+}
+
+/* ==========================
+   PREDICTIVO (MANTENIDO EN DOM PERO OCULTO)
+   ========================== */
+/* por defecto mantenemos la lista dropdown desactivada (la UX será el ghost inline) */
 #predictivo,
 .predictivo {
   display: none !important;
@@ -927,7 +910,7 @@ body.tema-oscuro #q,
   pointer-events: none !important;
 }
 
-/* --- (Opcional) Si quieres mantener un estilo para predictivo cuando lo actives: */
+/* estilo opcional si en el futuro activas el dropdown: clase .predictivo--visible */
 .predictivo--visible {
   position: absolute;
   left: 0;
@@ -941,14 +924,17 @@ body.tema-oscuro #q,
   overflow-y: auto;
   box-shadow: 0 8px 24px rgba(0,0,0,0.12);
 }
-
-/* Predicción interna cuando está visible */
 .predictivo--visible div {
   padding: 10px;
   cursor: pointer;
   border-bottom: 1px solid rgba(0,0,0,0.05);
 }
-.predictivo--visible div:hover { background: color-mix(in srgb, var(--acento) 8%, var(--tabla-fondo)); }
+.predictivo--visible div:hover {
+  background: color-mix(in srgb, var(--acento, #0066cc) 8%, var(--tabla-fondo, #fff));
+}
+
+/* fin del bloque */
+
 
 
 
@@ -2856,6 +2842,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
