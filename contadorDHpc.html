@@ -689,29 +689,6 @@ body {
 }
 
 
-  
-/* Contenedor del predictivo */
-.app.dark #predictivo {
-  background: #0f0f0f !important;
-  border: 1px solid #2b2b2b !important;
-  color: #ffffff !important;       /* TEXTO BLANCO */
-}
-
-.app.dark #predictivo div:hover {
-  background: #1c1c1c !important;
-  color: #ffffff !important;
-}
-
-/* Ghost inline */
-.app.dark #ghost-typed {
-  color: #ffffff !important;
-  opacity: 0.35;
-}
-
-.app.dark #ghost-rest {
-  color: #ffffff !important;
-  opacity: 0.20;
-}
 
   
   
@@ -826,33 +803,7 @@ td, th { border-color: var(--borde) !important; }
 }
   
 
-/* --- AUTOCOMPLETADO INLINE (GHOST) --- */
-#input-wrap { position:relative; }
-#ghost { color: rgba(0,0,0,0.35); font-size:16px; }
-#ghost-typed { color: transparent; }
-#ghost-rest { opacity:0.55; }
 
-body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
-
-/* --- LISTA PREDICTIVA OPCIONAL --- */
-.predictivo {
-  background:#fff;
-  border:1px solid #aac;
-  border-radius:8px;
-  overflow:hidden;
-  display:none;
-  max-height:200px;
-  overflow-y:auto;
-}
-
-.predictivo div {
-  padding:8px;
-  cursor:pointer;
-  border-bottom:1px solid #eee;
-}
-.predictivo div:hover {
-  background:#def;
-}
 
 
   .resaltado {
@@ -862,6 +813,110 @@ body.tema-oscuro #ghost { color: rgba(255,255,255,0.35); }
 }
 
 
+/* === AUTOCOMPLETADO INLINE (GHOST) - Reemplazar todo lo anterior relacionado === */
+
+/* Wrapper: relativo para posicionar el ghost exactamente bajo el input */
+#input-wrap {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Input: al frente */
+#q {
+  position: relative;
+  z-index: 3;                 /* siempre encima del ghost */
+  background: transparent;
+  padding: 10px;              /* debe coincidir con ghost */
+  font-size: 16px;            /* debe coincidir con ghost */
+  line-height: 1.2;           /* igual para que alineen bien */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Contenedor fantasma EXACTAMENTE debajo del input */
+#ghost {
+  position: absolute;
+  inset: 0 0 0 0;             /* ocupa exactamente la misma caja que el input */
+  pointer-events: none;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  padding: 10px;              /* mismo padding que #q */
+  font-size: 16px;            /* mismo tamaño que #q */
+  line-height: 1.2;           /* mismo line-height que #q */
+  font-family: inherit;
+  color: transparent;         /* por defecto todo transparente, controlamos spans */
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Texto "typed" — espejo de lo escrito (pero invisible) para alinear la sugerencia */
+#ghost-typed {
+  color: transparent;         /* invisible, solo sirve para alinear */
+  display: inline-block;
+  white-space: pre;
+}
+
+/* Parte sugerida (lo que se ve sombreado) */
+#ghost-rest {
+  display: inline-block;
+  white-space: pre;
+  opacity: 0.55;
+  color: rgba(0,0,0,0.35);    /* versión clara por defecto */
+}
+
+/* Modo oscuro — cambiar colores del ghost-rest para tener contraste */
+body.tema-oscuro #ghost-rest,
+.app.dark #ghost-rest {
+  color: rgba(255,255,255,0.40);
+  opacity: 0.55;
+}
+
+/* Aseguramos que el input muestre su texto con normalidad (alto contraste en oscuro) */
+body.tema-oscuro #q,
+.app.dark #q {
+  color: var(--menu-texto, #eaeaea);
+}
+
+/* === PREDICTIVO (DESACTIVADO: forzamos que NUNCA aparezca como dropdown) ===
+   Si en el futuro quieres volver a habilitar la lista bajo el input, cambia esto */
+#predictivo,
+.predictivo {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+
+/* --- (Opcional) Si quieres mantener un estilo para predictivo cuando lo actives: */
+.predictivo--visible {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 12;
+  background: var(--tabla-fondo, #fff);
+  border: 1px solid var(--borde, #aac);
+  border-radius: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+/* Predicción interna cuando está visible */
+.predictivo--visible div {
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.predictivo--visible div:hover { background: color-mix(in srgb, var(--acento) 8%, var(--tabla-fondo)); }
+
+
+
+  
 
 /* Contenedor principal – sin cambios importantes */
 #biblia-container {
@@ -2761,4 +2816,5 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
