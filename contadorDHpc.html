@@ -848,7 +848,8 @@ td, th { border-color: var(--borde) !important; }
 }
 body.tema-oscuro #q::placeholder,
 .app.dark #q::placeholder {
-  color: rgba(255,255,255,0.45) !important;
+  color: #666 !important;
+   opacity: 1 !important;
 }
 
 /* Ghost encima del input */
@@ -867,6 +868,9 @@ body.tema-oscuro #q::placeholder,
   overflow: hidden;
 }
 
+   input, input::placeholder {
+    color: #000 !important;
+  }
 /* Texto ya escrito (visible) */
 #ghost-typed {
   color: var(--menu-texto, #000) !important;
@@ -1126,6 +1130,7 @@ body.tema-oscuro .resultados-biblia .resaltado,
   background: transparent !important;
   position: relative;
   z-index: 3 !important;
+  color: #000 !important;
 }
 
 /* 🔥 FIX: asegurar que el ghost quede justo debajo pero visible */
@@ -1207,11 +1212,12 @@ body.tema-oscuro .resultados-biblia .resaltado,
     <div id="input-wrap" style="position:relative;">
 
       <!-- INPUT REAL -->
-      <input type="text" id="q" placeholder="Juan 3:16 | Salmos 23 | amor"
-             autocomplete="off"
-             style="padding:10px;font-size:16px;width:100%;border-radius:8px;
-                    border:2px solid #aac;font-family:'Segoe UI',sans-serif;
-                    position:relative;background:transparent;z-index:2;">
+<input type="text" id="q" placeholder="Juan 3:16 | Salmos 23 | amor"
+       autocomplete="off"
+       style="padding:10px;font-size:16px;width:100%;border-radius:8px;
+              border:2px solid #aac;font-family:'Segoe UI',sans-serif;
+              position:relative;background:#fff;z-index:2;color:#000;">
+
 
       <!-- GHOST (texto sombreado dentro del input) -->
       <div id="ghost" aria-hidden="true"
@@ -2844,6 +2850,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
