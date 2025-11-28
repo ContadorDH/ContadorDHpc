@@ -858,22 +858,34 @@ td, th { border-color: var(--borde) !important; }
   white-space: pre;
 }
 
-/* Parte sugerida (lo que se ve sombreado) */
-/* Parte sugerida – AHORA SÍ SE VE EN TODOS LOS TEMAS */
+/* GHOST REST – VERSIÓN QUE SÍ SE VE EN TODOS LOS TEMAS (CLAROS Y OSCUROS) */
 #ghost-rest {
   display: inline-block;
   white-space: pre;
-  opacity: 1;
-  color: var(--acento) !important;        /* usa el color de acento del tema */
-  font-weight: 500;
-  text-shadow: 0 0 8px var(--acento);     /* brillo opcional pero queda brutal */
+  opacity: 1 !important;
+  color: var(--acento) !important;
+  font-weight: 600;
+  
+  /* LO MÁS IMPORTANTE: fondo semi-opaco para que destaque sobre cualquier color de texto */
+  background: color-mix(in srgb, var(--acento) 18%, transparent) !important;
+  
+  /* Bordes redondeados + padding mínimo para que parezca una "píldora" sutil */
+  padding: 0 4px;
+  border-radius: 4px;
+  
+  /* Glow suave que funciona en claro y oscuro */
+  text-shadow: 
+    0 0 8px var(--acento),
+    0 0 16px var(--acento);
 }
 
-/* Tema oscuro – un poco más de brillo para que destaque */
+/* Reforzamos en tema oscuro (queda espectacular) */
 body.tema-oscuro #ghost-rest,
 .app.dark #ghost-rest {
-  color: var(--acento) !important;
-  text-shadow: 0 0 12px var(--acento), 0 0 20px var(--acento);
+  background: color-mix(in srgb, var(--acento) 28%, black) !important;
+  text-shadow: 
+    0 0 10px var(--acento),
+    0 0 20px var(--acento);
 }
 
 /* Aseguramos que el input muestre su texto con normalidad (alto contraste en oscuro) */
@@ -2819,4 +2831,5 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
