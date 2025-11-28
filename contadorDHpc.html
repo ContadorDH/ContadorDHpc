@@ -1904,9 +1904,11 @@ async function abrirVentanaBiblia(ref, texto) {
   
 // ==================== FONDO PERSONALIZADO + LIMPIAR TEXTO (MODO BIBLIA) ====================
 
+// Variable CSS personalizada para el fondo
+// Se mantiene aunque cambies de tema o recargues versículos
 let fondoUrlGlobal = "";
 
-// Botón: CAMBIAR FONDO
+// Botón: CAMBIAR FONDO → preview local + ventana de proyección
 document.getElementById("btnFondoBiblia").addEventListener("click", () => {
   const input = document.createElement("input");
   input.type = "file";
@@ -1917,18 +1919,17 @@ document.getElementById("btnFondoBiblia").addEventListener("click", () => {
     const reader = new FileReader();
     reader.onload = (ev) => {
       fondoUrlGlobal = ev.target.result;
+      // Guardar en CSS personalizado
       document.body.style.setProperty("--fondo-proyeccion-personalizado", `url("${fondoUrlGlobal}")`);
-      
-      ["preview-biblia", "proyeccion-biblia"].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-          el.style.background = `url("${fondoUrlGlobal}")`;
-          el.style.backgroundSize = "cover";
-          el.style.backgroundPosition = "center";
-          el.style.backgroundRepeat = "no-repeat";
-        }
-      });
-
+      // Aplicar al preview local
+      const preview = document.getElementById("preview-biblia");
+      if (preview) {
+        preview.style.background = `url("${fondoUrlGlobal}")`;
+        preview.style.backgroundSize = "cover";
+        preview.style.backgroundPosition = "center";
+        preview.style.backgroundRepeat = "no-repeat";
+      }
+      // Aplicar a ventana de proyección si está abierta
       if (ventanaProyeccion && !ventanaProyeccion.closed) {
         ventanaProyeccion.document.body.style.background = `url("${fondoUrlGlobal}")`;
         ventanaProyeccion.document.body.style.backgroundSize = "cover";
@@ -1941,48 +1942,30 @@ document.getElementById("btnFondoBiblia").addEventListener("click", () => {
   input.click();
 });
 
-// Botón: LIMPIAR TEXTO → limpia y deja todo listo para nuevo texto (con auto-fit futuro)
+// Botón: LIMPIAR TEXTO → deja TODO completamente vacío (sin palabra "vacío")
 document.getElementById("btnLimpiarTexto").addEventListener("click", () => {
-  // Ventana real
+  // 1. Ventana de proyección externa
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
-    const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
-    if (caja) caja.textContent = "";
+    const wrapper = ventanaProyeccion.document.querySelector(".biblia-wrapper");
+    if (wrapper) {
+      wrapper.innerHTML = "";   // ← Completamente vacío
+    }
   }
 
-  // Preview + proyección local → solo vacía el texto (estructura queda intacta)
-  ["preview-biblia", "proyeccion-biblia"].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      const cajaLocal = el.querySelector("#textoAutoFitLocal");
-      if (cajaLocal) cajaLocal.textContent = "";
-    }
-  });
+  // 2. Preview local en la página principal
+  const preview = document.getElementById("preview-biblia");
+  if (preview) {
+    preview.innerHTML = "";   // ← Completamente vacío
+  }
+
+  // 3. Segundo contenedor (proyección local simulada)
+  const proyeccionLocal = document.getElementById("proyeccion-biblia");
+  if (proyeccionLocal) {
+    proyeccionLocal.innerHTML = "";   // ← Completamente vacío
+  }
 });
 
-// === SINCRONIZACIÓN PERFECTA + AUTO-FIT EN PANTALLAS LOCALES ===
-const originalActualizarVentanaBiblia = actualizarVentanaBiblia;
-window.actualizarVentanaBiblia = function(ref, texto) {
-  // 1. Actualizar ventana real (tu código original)
-  originalActualizarVentanaBiblia(ref, texto);
-
-  // 2. Actualizar preview y proyección local con renderPantallaLocal (incluye auto-fit)
-  renderPantallaLocal("preview-biblia", ref, texto);
-  renderPantallaLocal("proyeccion-biblia", ref, texto);
-
-  // 3. Aplicar fondo personalizado a las pantallas locales (por si se perdió)
-  const fondoPers = getComputedStyle(document.body).getPropertyValue("--fondo-proyeccion-personalizado").trim();
-  if (fondoPers && fondoPers !== "none" && fondoPers !== "") {
-    ["preview-biblia", "proyeccion-biblia"].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.style.background = fondoPers;
-        el.style.backgroundSize = "cover";
-        el.style.backgroundPosition = "center";
-        el.style.backgroundRepeat = "no-repeat";
-      }
-    });
-  }
-};
+// === TUS FUNCIONES MODIFICADAS (exactamente como querías) ===
 
 // Función auxiliar
 function aplicarFondoPersonalizado(ventana) {
@@ -2856,16 +2839,3 @@ document.getElementById("btnFondoBiblia").style.display = "inline-flex";
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
