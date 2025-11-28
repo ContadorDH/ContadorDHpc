@@ -1106,6 +1106,21 @@ body.tema-oscuro .resultados-biblia .resaltado,
   color: #000;
 }
 
+
+/* 🔥 FIX: asegurar que el input sea realmente transparente
+   y deje ver el texto ghost debajo */
+#q {
+  background: transparent !important;
+  position: relative;
+  z-index: 3 !important;
+}
+
+/* 🔥 FIX: asegurar que el ghost quede justo debajo pero visible */
+#ghost {
+  z-index: 2 !important;
+}
+
+
   
   
 </style>
@@ -2816,4 +2831,5 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
