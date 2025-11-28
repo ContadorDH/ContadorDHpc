@@ -1100,6 +1100,14 @@ body.tema-oscuro .resultados-biblia .resaltado,
   color: #000;
 }
 
+
+#preview-biblia {
+  background: var(--fondo);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: background 0.5s ease;
+}
   
   
 </style>
@@ -1283,33 +1291,21 @@ line-height:2;z-index:99;">
 
 <!-- PANEL AHORA ABAJO -->
 <div class="panel">
-  <button onclick="verMesActual()">
-    <i class="fa-solid fa-calendar-days"></i> Mes Actual
-  </button>
-  <button onclick="verHoy()">
-    <i class="fa-solid fa-calendar-check"></i> Hoy
-  </button>
+  <button onclick="verMesActual()"><i class="fa-solid fa-calendar-days"></i> Mes Actual</button>
+  <button onclick="verHoy()"><i class="fa-solid fa-calendar-check"></i> Hoy</button>
   <select id="selectMes"></select>
-  <select id="pantallaSelect">
-    <option>Selecciona pantalla</option>
-  </select>
-  <button onclick="proyectar()">
-    <i class="fa-solid fa-display"></i> Proyectar
-  </button>
+  <select id="pantallaSelect"><option>Selecciona pantalla</option></select>
+  <button onclick="proyectar()"><i class="fa-solid fa-display"></i> Proyectar</button>
 
-  <!-- NUEVOS BOTONES (solo visibles en modo Biblia) -->
-  <button id="btnLimpiarBiblia" title="Limpiar proyección y vista previa">
-    <i class="fa-solid fa-broom"></i> Limpiar
+  <!-- BOTONES EXCLUSIVOS DE BIBLIA -->
+  <button id="btnLimpiarTexto" title="Limpiar solo el texto">
+    <i class="fa-solid fa-eraser"></i> Limpiar
   </button>
-
-  <button id="btnFondoBiblia" title="Cambiar fondo de la proyección">
+  <button id="btnFondoBiblia" title="Cambiar fondo (preview + proyección)">
     <i class="fa-solid fa-image"></i> Fondo
   </button>
 
-  <!-- BOTÓN DE TEMAS -->
-  <button id="btnTema" class="btn-icono" title="Cambiar tema">
-    <i class="fa-solid fa-palette"></i>
-  </button>
+  <button id="btnTema" class="btn-icono" title="Cambiar tema"><i class="fa-solid fa-palette"></i></button>
 </div>
 
   <div style="height: 120px;"></div>
@@ -1906,24 +1902,13 @@ async function abrirVentanaBiblia(ref, texto) {
 
 
   
-// ==================== NUEVOS BOTONES: LIMPIAR Y FONDO (SOLO EN MODO BIBLIA) ====================
+// ==================== FONDO PERSONALIZADO + LIMPIAR TEXTO (MODO BIBLIA) ====================
 
-// Botón LIMPIAR → borra proyección y vista previa local
-document.getElementById("btnLimpiarBiblia").addEventListener("click", () => {
-  // Cerrar ventana de proyección si está abierta
-  if (ventanaProyeccion && !ventanaProyeccion.closed) {
-    ventanaProyeccion.close();
-    ventanaProyeccion = null;
-  }
-  // Limpiar vista previa local (si tienes un contenedor con id="previewBiblia" o similar)
-  const preview = document.getElementById("previewBiblia") || document.querySelector(".biblia-preview");
-  if (preview) preview.innerHTML = "";
+// Variable CSS personalizada para el fondo
+// Se mantiene aunque cambies de tema o recargues versículos
+let fondoUrlGlobal = "";
 
-  // Opcional: limpiar fondo personalizado
-  document.body.style.removeProperty("--fondo-proyeccion-personalizado");
-});
-
-// Botón FONDO → seleccionar imagen de fondo para la proyección
+// Botón: CAMBIAR FONDO → preview local + ventana de proyección
 document.getElementById("btnFondoBiblia").addEventListener("click", () => {
   const input = document.createElement("input");
   input.type = "file";
@@ -1934,14 +1919,26 @@ document.getElementById("btnFondoBiblia").addEventListener("click", () => {
 
     const reader = new FileReader();
     reader.onload = (ev) => {
-      const imagenUrl = ev.target.result;
+      fondoUrlGlobal = ev.target.result;
 
-      // Guardar en variable CSS personalizada
-      document.body.style.setProperty("--fondo-proyeccion-personalizado", `url(${imagenUrl})`);
+      // Guardar en CSS personalizado
+      document.body.style.setProperty("--fondo-proyeccion-personalizado", `url("${fondoUrlGlobal}")`);
 
-      // Aplicar inmediatamente si hay ventana abierta
+      // Aplicar al preview local
+      const preview = document.getElementById("preview-biblia");
+      if (preview) {
+        preview.style.background = `url("${fondoUrlGlobal}")`;
+        preview.style.backgroundSize = "cover";
+        preview.style.backgroundPosition = "center";
+        preview.style.backgroundRepeat = "no-repeat";
+      }
+
+      // Aplicar a ventana de proyección si está abierta
       if (ventanaProyeccion && !ventanaProyeccion.closed) {
-        aplicarFondoPersonalizado(ventanaProyeccion);
+        ventanaProyeccion.document.body.style.background = `url("${fondoUrlGlobal}")`;
+        ventanaProyeccion.document.body.style.backgroundSize = "cover";
+        ventanaProyeccion.document.body.style.backgroundPosition = "center";
+        ventanaProyeccion.document.body.style.backgroundRepeat = "no-repeat";
       }
     };
     reader.readAsDataURL(file);
@@ -1949,11 +1946,30 @@ document.getElementById("btnFondoBiblia").addEventListener("click", () => {
   input.click();
 });
 
-// Función auxiliar: aplica el fondo personalizado a la ventana de proyección
+// Botón: LIMPIAR TEXTO → solo borra el versículo (mantiene fondo y ventana)
+document.getElementById("btnLimpiarTexto").addEventListener("click", () => {
+  // Ventana de proyección
+  if (ventanaProyeccion && !ventanaProyeccion.closed) {
+    const wrapper = ventanaProyeccion.document.querySelector(".biblia-wrapper");
+    if (wrapper) {
+      wrapper.innerHTML = `<div class="biblia-texto" style="font-size:8vw; opacity:0.4;">(vacío)</div>`;
+    }
+  }
+
+  // Preview local
+  const preview = document.getElementById("preview-biblia");
+  if (preview) {
+    preview.innerHTML = `<div class="pantalla-texto" style="font-size:4vw; opacity:0.4; color:var(--texto);">(vacío)</div>`;
+  }
+});
+
+// === TUS FUNCIONES MODIFICADAS (exactamente como querías) ===
+
+// Función auxiliar
 function aplicarFondoPersonalizado(ventana) {
   if (!ventana || ventana.closed) return;
   const fondoUrl = getComputedStyle(document.body).getPropertyValue("--fondo-proyeccion-personalizado").trim();
-  if (fondoUrl && fondoUrl !== "none") {
+  if (fondoUrl && fondoUrl !== "none" && fondoUrl !== "") {
     ventana.document.body.style.background = fondoUrl;
     ventana.document.body.style.backgroundSize = "cover";
     ventana.document.body.style.backgroundPosition = "center";
@@ -1961,33 +1977,30 @@ function aplicarFondoPersonalizado(ventana) {
   }
 }
 
-// Modificar actualizarVentanaBiblia() para respetar fondo personalizado
+// TU FUNCIÓN ORIGINAL MEJORADA (respeta fondo personalizado)
 function actualizarVentanaBiblia(ref, texto) {
   if (!ventanaProyeccion || ventanaProyeccion.closed) return;
 
   const textoFinal = `${texto} <span class="cita-mini">${ref}</span>`;
   const vars = {
+    fondo: getComputedStyle(document.body).getPropertyValue("--fondo").trim(),
     acento: getComputedStyle(document.body).getPropertyValue("--acento").trim(),
     texto: getComputedStyle(document.body).getPropertyValue("--texto").trim()
   };
 
-  // Detectar si hay fondo personalizado
   const fondoPersonalizado = getComputedStyle(document.body).getPropertyValue("--fondo-proyeccion-personalizado").trim();
-  const fondoFinal = fondoPersonalizado && fondoPersonalizado !== "none" 
-    ? fondoPersonalizado 
-    : vars.fondo || "var(--fondo)";
+  const fondoFinal = (fondoPersonalizado && fondoPersonalizado !== "none" && fondoPersonalizado !== "")
+    ? fondoPersonalizado
+    : vars.fondo;
 
   ventanaProyeccion.document.body.innerHTML = `
   <style>
-    :root { --acento:${vars.acento}; --texto:${vars.texto}; }
+    :root { --fondo:${vars.fondo}; --acento:${vars.acento}; --texto:${vars.texto}; }
     html, body {
       margin:0; padding:0; width:100vw; height:100vh; overflow:hidden;
-      background: ${fondoFinal};
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      color: var(--texto);
-      font-family: 'Segoe UI', sans-serif;
+      background:${fondoFinal};
+      background-size:cover; background-position:center; background-repeat:no-repeat;
+      color:var(--texto); font-family:'Segoe UI',sans-serif;
     }
     .biblia-wrapper { width:100%; height:100%; padding:5vh 4vw; display:flex; justify-content:center; align-items:center; box-sizing:border-box; }
     .biblia-texto { font-size:25vw; font-weight:700; line-height:1.12; text-align:center; white-space:pre-wrap; overflow-wrap:break-word; }
@@ -1997,10 +2010,10 @@ function actualizarVentanaBiblia(ref, texto) {
     <div id="textoAutoFit" class="biblia-texto">${textoFinal}</div>
   </div>`;
 
-  // Aplicar fondo personalizado también (por si ya estaba)
+  // Asegurar fondo personalizado
   aplicarFondoPersonalizado(ventanaProyeccion);
 
-  // Auto-fit (igual que antes)
+  // Auto-fit (sin cambios)
   const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
   function autoFit() {
     let min = 20, max = 900, best = min;
@@ -2017,7 +2030,6 @@ function actualizarVentanaBiblia(ref, texto) {
   }
   autoFit();
 }
-
 
 
 function renderPantallaLocal(contenedor, ref, texto) {
@@ -2825,6 +2837,7 @@ document.getElementById("btnFondoBiblia").style.display = "inline-flex";
 </script>
 </body>
 </html>
+
 
 
 
