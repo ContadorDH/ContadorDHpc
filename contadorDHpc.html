@@ -694,21 +694,31 @@ body.tema-oscuro #proyeccionContenido tbody tr td {
 /* ============================
    AUTOCOMPLETADO GHOST INLINE
    ============================ */
-
-#input-wrap { position: relative; }
-
-/* Contenedor ghost */
-#ghost {
-  position: absolute;
-  top: 10px;
-  left: 12px;
-  pointer-events: none;
-  font-size: 16px;
-  color: rgba(0,0,0,0.35);
-  white-space: pre;
+/* --- AUTOCOMPLETADO INLINE (GHOST) --- */
+#input-wrap {
+  position: relative;
 }
 
-/* Parte escrita del usuario (invisible) */
+/* Contenedor fantasma debajo del input */
+#ghost {
+  position: absolute;
+  left: 2px;
+  top: 0;
+  bottom: 0;
+  padding: 10px;
+  font-size: 16px;
+  width: 100%;
+  pointer-events: none;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  font-family: 'Segoe UI', sans-serif;
+  color: rgba(0,0,0,0.35);
+}
+
+/* Texto escrito (invisible) */
 #ghost-typed {
   color: transparent;
 }
@@ -719,61 +729,32 @@ body.tema-oscuro #proyeccionContenido tbody tr td {
 }
 
 /* Tema oscuro */
-.app.dark #ghost {
-  color: rgba(255,255,255,0.30);
+body.tema-oscuro #ghost {
+  color: rgba(255,255,255,0.35);
+}
+body.tema-oscuro #ghost-rest {
+  color: rgba(255,255,255,0.40);
 }
 
-.app.dark #ghost-rest {
-  color: rgba(255,255,255,0.25);
+/* Input encima del ghost */
+#q {
+  position: relative;
+  background: transparent;
+  z-index: 2;
 }
 
-.app.dark #ghost-typed {
-  color: transparent; /* mantiene ghost correcto */
+/* --- LISTA PREDICTIVA (DESACTIVADA) --- */
+.predictivo {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
-/* ============================
-   LISTA PREDICTIVA
-   ============================ */
-
-#predictivo {
-  background: #fff;
-  border: 1px solid #aac;
-  border-radius: 8px;
-  overflow: hidden;
-  display: none;
-  max-height: 200px;
-  overflow-y: auto;
-  color: #000;
-}
-
-#predictivo div {
-  padding: 8px;
-  cursor: pointer;
-  border-bottom: 1px solid #eee;
-}
-
-#predictivo div:hover {
-  background: #def;
-}
-
-/* Tema oscuro */
-.app.dark #predictivo {
-  background: #0f0f0f !important;
-  border: 1px solid #2b2b2b !important;
-  color: #ffffff !important;
-}
-
-.app.dark #predictivo div:hover {
-  background: #1c1c1c !important;
-  color: #ffffff !important;
-}
-
-
-/* resaltado */
-.app.dark .resaltado {
-  background: #333 !important;
-  color: #ffffff !important;
-}
 
 
 
@@ -2735,6 +2716,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
