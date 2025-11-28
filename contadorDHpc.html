@@ -857,26 +857,41 @@ td, th { border-color: var(--borde) !important; }
 }
 
 /* ¡¡¡AQUÍ ESTÁ LA CLAVE: FONDO OSCURO + TEXTO CLARO EN TEMAS CLAROS!!! */
+/* ==================== GHOST AUTOCOMPLETADO – VERSIÓN QUE SE VE COMO UN NEÓN EN TODOS LOS TEMAS ==================== */
 #ghost-rest {
   display: inline-block;
   white-space: pre;
-  font-weight: 600;
-  padding: 1px 5px;
-  border-radius: 4px;
-  background: rgba(0, 0, 0, 0.58) !important;   /* fondo negro semi-transparente en temas claros */
-  color: #ffffff !important;                    /* texto siempre blanco */
-  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  font-weight: 700 !important;
+  opacity: 1 !important;
+  
+  /* CLAVE: color blanco puro con múltiples sombras negras + glow del acento */
+  color: #ffffff !important;
+  text-shadow:
+    /* Borde negro grueso para que resalte contra cualquier fondo claro */
+    0 0 8px #000,
+    0 0 12px #000,
+    /* Glow del color del tema (azul, rosa, lila, etc.) */
+    0 0 10px var(--acento),
+    0 0 20px var(--acento),
+    0 0 30px var(--acento),
+    0 0 40px var(--acento) !important;
+  
+  /* Pequeño truco visual para que no se "coma" el texto real */
+  -webkit-text-stroke: 0.5px black;
+  paint-order: stroke fill;
 }
 
-/* En tema oscuro: fondo del acento + texto blanco con glow */
+/* En tema oscuro: más glow azul y sin borde negro (no hace falta) */
 body.tema-oscuro #ghost-rest,
 .app.dark #ghost-rest {
-  background: rgba(88, 166, 255, 0.35) !important;  /* azul suave semi-transparente */
   color: #ffffff !important;
-  text-shadow: 
+  -webkit-text-stroke: 0.6px #000;
+  text-shadow:
     0 0 8px #58a6ff,
-    0 0 16px #58a6ff;
-  backdrop-filter: blur(1px);
+    0 0 16px #58a6ff,
+    0 0 24px #58a6ff,
+    0 0 32px #58a6ff,
+    0 0 50px #58a6ff !important;
 }
 
 /* Extra: en temas claros con acento muy claro (beige, naranja, gris) forzamos más contraste */
@@ -2831,6 +2846,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
