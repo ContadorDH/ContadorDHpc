@@ -822,14 +822,18 @@ td, th { border-color: var(--borde) !important; }
   box-sizing: border-box;
 }
 
-/* Input: al frente */
+/* Input: al frente, pero transparente DE VERDAD */
 #q {
   position: relative;
-  z-index: 3;                 /* siempre encima del ghost */
-  background: transparent;
+  z-index: 3 !important;                 /* encima del ghost */
+  background: transparent !important;    /* evita que otros estilos lo tapen */
+  color: transparent !important;         /* texto real invisible */
+  -webkit-text-fill-color: transparent !important; /* Safari/Chrome */
+  caret-color: var(--menu-texto, #000) !important; /* caret visible */
+  
   padding: 10px;              /* debe coincidir con ghost */
   font-size: 16px;            /* debe coincidir con ghost */
-  line-height: 1.2;           /* igual para que alineen bien */
+  line-height: 1.2;           /* igual para alinear */
   width: 100%;
   box-sizing: border-box;
 }
@@ -837,50 +841,55 @@ td, th { border-color: var(--borde) !important; }
 /* Contenedor fantasma EXACTAMENTE debajo del input */
 #ghost {
   position: absolute;
-  inset: 0 0 0 0;             /* ocupa exactamente la misma caja que el input */
+  inset: 0 0 0 0;             
   pointer-events: none;
-  z-index: 2;
+  z-index: 4 !important;      /* LO SUBIMOS para que no lo tape nada */
   display: flex;
   align-items: center;
-  padding: 10px;              /* mismo padding que #q */
-  font-size: 16px;            /* mismo tamaño que #q */
-  line-height: 1.2;           /* mismo line-height que #q */
+  padding: 10px;
+  font-size: 16px;
+  line-height: 1.2;
   font-family: inherit;
-  color: transparent;         /* por defecto todo transparente, controlamos spans */
-  overflow: hidden;
   white-space: nowrap;
+  overflow: hidden;
+  color: transparent; 
 }
 
-/* Texto "typed" — espejo de lo escrito (pero invisible) para alinear la sugerencia */
+/* Texto que el usuario "ha escrito" pero visible en el ghost */
 #ghost-typed {
-  color: transparent;         /* invisible, solo sirve para alinear */
+  color: var(--menu-texto, #000) !important;
   display: inline-block;
   white-space: pre;
+  opacity: 1 !important;
 }
 
-/* Parte sugerida (lo que se ve sombreado) */
+/* Parte sugerida (sombreado) */
 #ghost-rest {
   display: inline-block;
   white-space: pre;
   opacity: 0.55;
-  color: rgba(0,0,0,0.35);    /* versión clara por defecto */
+  color: rgba(0,0,0,0.35);
 }
 
-/* Modo oscuro — cambiar colores del ghost-rest para tener contraste */
+/* Modo oscuro — colores del ghost */
+body.tema-oscuro #ghost-typed,
+.app.dark #ghost-typed {
+  color: #eaeaea !important;
+}
+
 body.tema-oscuro #ghost-rest,
 .app.dark #ghost-rest {
   color: rgba(255,255,255,0.40);
   opacity: 0.55;
 }
 
-/* Aseguramos que el input muestre su texto con normalidad (alto contraste en oscuro) */
+/* El input en modo oscuro: SOLO caret visible, no texto */
 body.tema-oscuro #q,
 .app.dark #q {
-  color: var(--menu-texto, #eaeaea);
+  caret-color: var(--menu-texto, #eaeaea) !important;
 }
 
-/* === PREDICTIVO (DESACTIVADO: forzamos que NUNCA aparezca como dropdown) ===
-   Si en el futuro quieres volver a habilitar la lista bajo el input, cambia esto */
+/* === PREDICTIVO (DESACTIVADO) === */
 #predictivo,
 .predictivo {
   display: none !important;
@@ -891,7 +900,7 @@ body.tema-oscuro #q,
   pointer-events: none !important;
 }
 
-/* --- (Opcional) Si quieres mantener un estilo para predictivo cuando lo actives: */
+/* --- Estilos del dropdown (por si lo activas en el futuro) --- */
 .predictivo--visible {
   position: absolute;
   left: 0;
@@ -906,13 +915,15 @@ body.tema-oscuro #q,
   box-shadow: 0 8px 24px rgba(0,0,0,0.12);
 }
 
-/* Predicción interna cuando está visible */
 .predictivo--visible div {
   padding: 10px;
   cursor: pointer;
   border-bottom: 1px solid rgba(0,0,0,0.05);
 }
-.predictivo--visible div:hover { background: color-mix(in srgb, var(--acento) 8%, var(--tabla-fondo)); }
+
+.predictivo--visible div:hover {
+  background: color-mix(in srgb, var(--acento) 8%, var(--tabla-fondo));
+}
 
 
 
@@ -2831,5 +2842,6 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
