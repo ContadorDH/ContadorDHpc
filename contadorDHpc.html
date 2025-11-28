@@ -822,28 +822,41 @@ td, th { border-color: var(--borde) !important; }
   box-sizing: border-box;
 }
 
-/* Input: al frente, pero transparente DE VERDAD */
+/* Input: texto real invisible, PERO placeholder visible */
 #q {
   position: relative;
-  z-index: 3 !important;                 /* encima del ghost */
-  background: transparent !important;    /* evita que otros estilos lo tapen */
-  color: transparent !important;         /* texto real invisible */
-  -webkit-text-fill-color: transparent !important; /* Safari/Chrome */
-  caret-color: var(--menu-texto, #000) !important; /* caret visible */
-  
-  padding: 10px;              /* debe coincidir con ghost */
-  font-size: 16px;            /* debe coincidir con ghost */
-  line-height: 1.2;           /* igual para alinear */
+  z-index: 3 !important;
+  background: transparent !important;
+
+  /* El texto que escribe el usuario: invisible */
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+
+  /* Caret visible */
+  caret-color: var(--menu-texto, #000) !important;
+
+  padding: 10px;
+  font-size: 16px;
+  line-height: 1.2;
   width: 100%;
   box-sizing: border-box;
 }
 
-/* Contenedor fantasma EXACTAMENTE debajo del input */
+/* Placeholder visible */
+#q::placeholder {
+  color: rgba(0,0,0,0.45) !important;
+}
+body.tema-oscuro #q::placeholder,
+.app.dark #q::placeholder {
+  color: rgba(255,255,255,0.45) !important;
+}
+
+/* Ghost encima del input */
 #ghost {
   position: absolute;
-  inset: 0 0 0 0;             
+  inset: 0 0 0 0;
   pointer-events: none;
-  z-index: 4 !important;      /* LO SUBIMOS para que no lo tape nada */
+  z-index: 4 !important;
   display: flex;
   align-items: center;
   padding: 10px;
@@ -852,44 +865,32 @@ td, th { border-color: var(--borde) !important; }
   font-family: inherit;
   white-space: nowrap;
   overflow: hidden;
-  color: transparent; 
 }
 
-/* Texto que el usuario "ha escrito" pero visible en el ghost */
+/* Texto ya escrito (visible) */
 #ghost-typed {
   color: var(--menu-texto, #000) !important;
   display: inline-block;
   white-space: pre;
-  opacity: 1 !important;
+}
+body.tema-oscuro #ghost-typed,
+.app.dark #ghost-typed {
+  color: #eaeaea !important;
 }
 
-/* Parte sugerida (sombreado) */
+/* Parte sugerida */
 #ghost-rest {
   display: inline-block;
   white-space: pre;
   opacity: 0.55;
   color: rgba(0,0,0,0.35);
 }
-
-/* Modo oscuro — colores del ghost */
-body.tema-oscuro #ghost-typed,
-.app.dark #ghost-typed {
-  color: #eaeaea !important;
-}
-
 body.tema-oscuro #ghost-rest,
 .app.dark #ghost-rest {
-  color: rgba(255,255,255,0.40);
-  opacity: 0.55;
+  color: rgba(255,255,255,0.4);
 }
 
-/* El input en modo oscuro: SOLO caret visible, no texto */
-body.tema-oscuro #q,
-.app.dark #q {
-  caret-color: var(--menu-texto, #eaeaea) !important;
-}
-
-/* === PREDICTIVO (DESACTIVADO) === */
+/* Predictivo oculto */
 #predictivo,
 .predictivo {
   display: none !important;
@@ -899,6 +900,7 @@ body.tema-oscuro #q,
   overflow: hidden !important;
   pointer-events: none !important;
 }
+
 
 /* --- Estilos del dropdown (por si lo activas en el futuro) --- */
 .predictivo--visible {
@@ -2842,6 +2844,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
