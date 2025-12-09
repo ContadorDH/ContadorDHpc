@@ -1911,39 +1911,48 @@ async function abrirVentanaBiblia(ref, texto) {
 // Se mantiene aunque cambies de tema o recargues versículos
 let fondoUrlGlobal = "";
 
-// Botón: CAMBIAR FONDO → preview local + ventana de proyección
+// Botón: CAMBIAR FONDO → SOLO preview (NO afecta pantalla física)
 document.getElementById("btnFondoBiblia").addEventListener("click", () => {
   const input = document.createElement("input");
   input.type = "file";
   input.accept = "image/*";
+
   input.onchange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
     const reader = new FileReader();
     reader.onload = (ev) => {
+
       fondoUrlGlobal = ev.target.result;
-      // Guardar en CSS personalizado
-      document.body.style.setProperty("--fondo-proyeccion-personalizado", `url("${fondoUrlGlobal}")`);
-      // Aplicar al preview local
+
+      // Guardar en variable CSS personalizada (se mantiene igual)
+      document.body.style.setProperty(
+        "--fondo-proyeccion-personalizado",
+        `url("${fondoUrlGlobal}")`
+      );
+
+      // ================================
+      //   SOLO APLICAR AL PREVIEW
+      // ================================
       const preview = document.getElementById("preview-biblia");
       if (preview) {
-        preview.style.background = `url("${fondoUrlGlobal}")`;
+        preview.style.backgroundImage = `url("${fondoUrlGlobal}")`;
         preview.style.backgroundSize = "cover";
         preview.style.backgroundPosition = "center";
         preview.style.backgroundRepeat = "no-repeat";
       }
-      // Aplicar a ventana de proyección si está abierta
-      if (ventanaProyeccion && !ventanaProyeccion.closed) {
-        ventanaProyeccion.document.body.style.background = `url("${fondoUrlGlobal}")`;
-        ventanaProyeccion.document.body.style.backgroundSize = "cover";
-        ventanaProyeccion.document.body.style.backgroundPosition = "center";
-        ventanaProyeccion.document.body.style.backgroundRepeat = "no-repeat";
-      }
+
+      // ❌ YA NO SE APLICA A LA VENTANA FÍSICA AQUÍ
+      //    Eso ahora solo lo hace el botón "En Vivo".
     };
+
     reader.readAsDataURL(file);
   };
+
   input.click();
 });
+
 
 document.getElementById("btnLimpiarTexto").addEventListener("click", () => {
   // 1. Limpiar SOLO texto en ventana de proyección externa
@@ -1981,33 +1990,45 @@ function aplicarFondoPersonalizado(ventana) {
 
 
 
-document.getElementById("btnEnVivo").addEventListener("click", () => {
+document.getElementById("btnEnVivo").addEventListener("click", () => { 
   if (!ventanaProyeccion || ventanaProyeccion.closed) {
     console.warn("La pantalla física no está abierta aún.");
     return;
   }
 
-  // Aplicar fondo al LIVE OUTPUT
-  const fondoUrl = getComputedStyle(document.getElementById("preview-biblia"))
-                     .backgroundImage;
+  // 1️⃣ FONDO DESDE PREVIEW
+  const preview = document.getElementById("preview-biblia");
+  const fondoPreview = getComputedStyle(preview).backgroundImage;
 
-  if (fondoUrl && fondoUrl !== "none") {
-    ventanaProyeccion.document.body.style.backgroundImage = fondoUrl;
+  if (fondoPreview && fondoPreview !== "none") {
+    ventanaProyeccion.document.body.style.backgroundImage = fondoPreview;
     ventanaProyeccion.document.body.style.backgroundSize = "cover";
     ventanaProyeccion.document.body.style.backgroundPosition = "center";
     ventanaProyeccion.document.body.style.backgroundRepeat = "no-repeat";
   }
 
-  // Copiar texto actual del preview al Live
-  const previewTexto = document.getElementById("preview-texto").innerHTML;
-  
+  // 2️⃣ TEXTO DEL PREVIEW (HTML)
+  const textoPreviewHTML = document.getElementById("preview-texto").innerHTML;
   const cajaLive = ventanaProyeccion.document.getElementById("textoAutoFit");
+
   if (cajaLive) {
-    cajaLive.innerHTML = previewTexto;
+    cajaLive.innerHTML = textoPreviewHTML;
   }
 
-  console.log("Contenido enviado EN VIVO (como EasyWorship)");
+  // 3️⃣ NUEVO: LEER ref y texto original desde dataset
+  const previewEl = document.getElementById("preview-texto");
+
+  const refPreview = previewEl.dataset.ref;
+  const textoPreviewPlano = previewEl.dataset.texto;
+
+  // 4️⃣ Guardar para permitir reabrir después
+  if (refPreview) ventanaProyeccion.referenciaActual = refPreview;
+  if (textoPreviewPlano) ventanaProyeccion.textoActual = textoPreviewPlano;
+
+  console.log("Contenido enviado EN VIVO con referencia y texto reales desde preview.");
 });
+
+
 
   
 
@@ -2120,7 +2141,7 @@ function renderPantallaLocal(contenedor, ref, texto) {
         line-height: 1.12;
         white-space: pre-wrap;
         overflow-wrap: break-word;
-        font-size: 25vw; /* inicial gigante para auto-fit */
+        font-size: 25vw;
       }
 
       .cita-mini {
@@ -2131,9 +2152,7 @@ function renderPantallaLocal(contenedor, ref, texto) {
     </style>
   `;
 
-  // ====================================
-  //         AUTO-FIT AGRESIVO
-  // ====================================
+  // ----- AUTO-FIT (sin cambios) -----
   const caja = el.querySelector("#textoAutoFitLocal");
 
   let min = 20;
@@ -2160,6 +2179,10 @@ function renderPantallaLocal(contenedor, ref, texto) {
   }
 
   caja.style.fontSize = best + "px";
+
+  // ----- NUEVO: Guardar referencia y texto -----
+  el.dataset.ref = ref;
+  el.dataset.texto = texto;
 }
 
   
@@ -2894,4 +2917,5 @@ document.getElementById("btnFondoBiblia").style.display = "inline-flex";
 </script>
 </body>
 </html>
+
 
