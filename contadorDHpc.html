@@ -1836,29 +1836,45 @@ function actualizarEspejoLocal() {
   const contenedor = document.getElementById("proyeccion-texto");
   if (!contenedor) return;
 
-  // Si la ventana física aún no existe → mostrar preview igual al preview real
+  // Si no existe la ventana real → espejo del preview
   if (!ventanaProyeccion || ventanaProyeccion.closed) {
     contenedor.innerHTML = document.getElementById("preview-texto").innerHTML;
     return;
   }
 
-  // ⚡ COPIAR EXACTO lo que está proyectando la pantalla real
   const nodoReal = ventanaProyeccion.document.getElementById("textoAutoFit");
   if (!nodoReal) return;
 
-  // Copia de HTML EXACTA (misma cita, mismo estilo, mismo contorno)
+  // Copiar el HTML EXACTO de la pantalla real
   contenedor.innerHTML = `
-    <div class="biblia-wrapper-local">
-      <div class="biblia-texto-local">
-        ${nodoReal.innerHTML}
-      </div>
+    <div class="espejo-escala">
+      ${nodoReal.outerHTML}
     </div>
   `;
 
-  // Aplicar los mismos estilos de tamaño para que sea espejo perfecto
-  const font = window.getComputedStyle(nodoReal).fontSize;
-  contenedor.querySelector(".biblia-texto-local").style.fontSize = font;
+  // ---- AJUSTE DE ESCALA AUTOMÁTICO ----
+  const wrapperReal = contenedor.querySelector('.espejo-escala');
+  const textoReal = wrapperReal.firstElementChild;
+
+  // Medidas reales del proyector
+  const realW = ventanaProyeccion.innerWidth;
+  const realH = ventanaProyeccion.innerHeight;
+
+  // Medidas del contenedor mini
+  const miniW = contenedor.clientWidth;
+  const miniH = contenedor.clientHeight;
+
+  // determinar escala proporcional
+  const escala = Math.min(miniW / realW, miniH / realH);
+
+  wrapperReal.style.transformOrigin = "top left";
+  wrapperReal.style.transform = `scale(${escala})`;
+
+  // wrapper debe ocupar el tamaño real sin afectar el contenedor
+  wrapperReal.style.width = realW + "px";
+  wrapperReal.style.height = realH + "px";
 }
+
 
 
   
@@ -2973,3 +2989,4 @@ document.getElementById("btnFondoBiblia").style.display = "inline-flex";
 </script>
 </body>
 </html>
+
