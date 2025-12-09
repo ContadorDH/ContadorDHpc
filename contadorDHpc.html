@@ -2149,7 +2149,7 @@ document.getElementById("btnEnVivo").addEventListener("click", () => {
     return;
   }
 
-  // 1️⃣ FONDO — IGUAL
+  // 1️⃣ FONDO — IGUAL QUE EL PREVIEW
   const preview = document.getElementById("preview-biblia");
   const fondoPreview = getComputedStyle(preview).backgroundImage;
 
@@ -2161,11 +2161,11 @@ document.getElementById("btnEnVivo").addEventListener("click", () => {
   }
 
   // 2️⃣ COPIAR EXACTAMENTE EL HTML DEL PREVIEW
-  const previewHTML = document.querySelector("#preview-texto .biblia-texto-local").innerHTML;
+  const previewHTML = document.getElementById("preview-texto").innerHTML;
 
   const cajaLive = ventanaProyeccion.document.getElementById("textoAutoFit");
   if (cajaLive) {
-    cajaLive.innerHTML = previewHTML;   // ← AQUÍ LA MAGIA
+    cajaLive.innerHTML = previewHTML; 
   }
 
   // 3️⃣ GUARDAR ESTADO REAL
@@ -2176,9 +2176,7 @@ document.getElementById("btnEnVivo").addEventListener("click", () => {
   console.log("EN VIVO enviado (formato idéntico al preview).");
 
   actualizarEspejoLocal();
-
 });
-
 
 
 
