@@ -1597,104 +1597,7 @@ const meses = [
 // ====== CARGAR CANCIONES DESDE ARCHIVO JSON ======
 let cancionesDB = [];
 
-async function cargarCanciones() {
-  try {
-    const respuesta = await fetch("canciones.json?" + Date.now()); // evita caché
-    if (!respuesta.ok) throw new Error("No se pudo cargar canciones.json");
-    cancionesDB = await respuesta.json();
-    console.log(`Se cargaron ${cancionesDB.length} canciones`);
-    cargarListaCanciones(); // refrescar lista si ya está abierta la sección
-  } catch (err) {
-    console.error("Error cargando canciones:", err);
-    document.getElementById("listaCanciones").innerHTML = `
-      <div style="color:#f88; grid-column:1/-1; text-align:center; padding:30px;">
-        <p>No se pudo cargar canciones.json</p>
-        <small>Asegúrate de que el archivo esté en la misma carpeta</small>
-      </div>`;
-  }
-}
 
-// ====== AL ABRIR LA SECCIÓN CÁNTICOS ======
-document.getElementById("btnCanticos").addEventListener("click", () => {
-  document.getElementById("subtitulo").style.display = "none";
-  document.querySelector(".panel").style.display = "flex";
-  document.getElementById("biblia-container").style.display = "none";
-  document.getElementById("canticos-container").style.display = "block";
-  document.getElementById("tabla")?.style.display = "none";
-
-  // Cargar canciones solo si no están cargadas
-  if (cancionesDB.length === 0) {
-    cargarCanciones();
-  } else {
-    cargarListaCanciones();
-  }
-});
-
-// ====== FUNCIÓN: Mostrar lista de canciones ======
-function cargarListaCanciones(filtro = "") {
-  const contenedor = document.getElementById("listaCanciones");
-  if (cancionesDB.length === 0) {
-    contenedor.innerHTML = "<p style='color:#aaa; grid-column:1/-1; text-align:center;'>Cargando canciones...</p>";
-    return;
-  }
-
-  const filtradas = cancionesDB.filter(c =>
-    c.titulo.toLowerCase().includes(filtro.toLowerCase()) ||
-    (c.autor && c.autor.toLowerCase().includes(filtro.toLowerCase()))
-  );
-
-  contenedor.innerHTML = filtradas.length > 0
-    ? filtradas.map((c, i) => `
-      <div onclick="proyectarCancion(${i})"
-           style="background:#222;padding:16px;border-radius:10px;cursor:pointer;transition:all .2s;border:2px solid transparent;"
-           onmouseover="this.style.borderColor='#1e88e5';this.style.background='#2a2a2a'"
-           onmouseout="this.style.borderColor='transparent';this.style.background='#222'">
-        <strong style="font-size:18px;display:block;">${c.titulo}</strong>
-        <small style="color:#aaa;">${c.autor || "Anónimo"}</small>
-      </div>
-    `).join("")
-    : "<p style='color:#aaa; grid-column:1/-1; text-align:center;'>No se encontraron canciones</p>";
-}
-
-// ====== BÚSQUEDA EN VIVO ======
-document.getElementById("buscarCancion").addEventListener("input", (e) => {
-  cargarListaCanciones(e.target.value);
-});
-
-// ====== PROYECTAR CANCIÓN (igual que EasyWorship) ======
-window.proyectarCancion = async function(index) {
-  const cancion = cancionesDB[index];
-  if (!ventanaProyeccion || ventanaProyeccion.closed) {
-    await abrirVentanaBiblia("", "");
-  }
-
-  const estrofas = cancion.letra.trim().split("\n\n");
-
-  ventanaProyeccion.document.body.innerHTML = `
-    <div style="width:100vw;height:100vh;background:#000;color:white;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:'Segoe UI',sans-serif;padding:10vh;box-sizing:border-box;">
-      <h1 style="font-size:4.5vw;margin-bottom:2vh;text-align:center;opacity:0.9;">${cancion.titulo}</h1>
-      <div id="estrofaActual" style="font-size:3.5vw;line-height:1.6;text-align:center;max-width:90vw;">
-        ${estrofas[0].replace(/\n/g, "<br>")}
-      </div>
-      <small style="margin-top:4vh;font-size:1.6vw;color:#666;">${cancion.autor || ""}</small>
-    </div>
-  `;
-
-  let actual = 0;
-  ventanaProyeccion.document.onkeydown = (e) => {
-    if (e.key === "ArrowRight" || e.key === " ") actual = (actual + 1) % estrofas.length;
-    if (e.key === "ArrowLeft") actual = actual <= 0 ? estrofas.length - 1 : actual - 1;
-    if (e.key === "Escape") {
-      ventanaProyeccion.document.body.innerHTML = "<div style='width:100vw;height:100vh;background:#000;'></div>";
-      return;
-    }
-    ventanaProyeccion.document.getElementById("estrofaActual").innerHTML = 
-      estrofas[actual].replace(/\n/g, "<br>");
-  };
-
-  setTimeout(actualizarEspejoLocal, 200);
-  actualizarIndicadorEnVivo();
-};
   
 let biblia = {};
 let books = [];
@@ -3635,6 +3538,109 @@ document.addEventListener("DOMContentLoaded", () => {
   actualizarIconoLogo();
 
 
+  // ========= CÁNTICOS (todo aquí dentro) =========
+  async function cargarCanciones() {
+    try {
+      const respuesta = await fetch("canciones.json?" + Date.now());
+      if (!respuesta.ok) throw new Error("No se pudo cargar canciones.json");
+      cancionesDB = await respuesta.json();
+      console.log(`Se cargaron ${cancionesDB.length} canciones`);
+      if (document.getElementById("canticos-container").style.display === "block") {
+        cargarListaCanciones();
+      }
+    } catch (err) {
+      console.error("Error cargando canciones:", err);
+      const cont = document.getElementById("listaCanciones");
+      if (cont) {
+        cont.innerHTML = `<div style="color:#f88;grid-column:1/-1;text-align:center;padding:30px;">
+          <p>Error: No se encontró canciones.json</p>
+          <small>Colócalo en la misma carpeta que index.html</small>
+        </div>`;
+      }
+    }
+  }
+
+  // Botón Cánticos
+  document.getElementById("btnCanticos")?.addEventListener("click", () => {
+    document.getElementById("subtitulo").style.display = "none";
+    document.querySelector(".panel").style.display = "flex";
+    document.getElementById("biblia-container").style.display = "none";
+    document.getElementById("canticos-container").style.display = "block";
+    document.getElementById("tabla")?.style.display = "none";
+
+    if (cancionesDB.length === 0) {
+      cargarCanciones();
+    } else {
+      cargarListaCanciones();
+    }
+  });
+
+  function cargarListaCanciones(filtro = "") {
+    const contenedor = document.getElementById("listaCanciones");
+    if (!contenedor) return;
+
+    if (cancionesDB.length === 0) {
+      contenedor.innerHTML = "<p style='color:#aaa;grid-column:1/-1;text-align:center;'>Cargando canciones...</p>";
+      return;
+    }
+
+    const filtradas = cancionesDB.filter(c =>
+      c.titulo.toLowerCase().includes(filtro.toLowerCase()) ||
+      (c.autor && c.autor.toLowerCase().includes(filtro.toLowerCase()))
+    );
+
+    contenedor.innerHTML = filtradas.length > 0
+      ? filtradas.map((c, i) => `
+        <div onclick="proyectarCancion(${i})"
+             style="background:#222;padding:16px;border-radius:10px;cursor:pointer;transition:all .2s;border:2px solid transparent;"
+             onmouseover="this.style.borderColor='#1e88e5';this.style.background='#2a2a2a'"
+             onmouseout="this.style.borderColor='transparent';this.style.background='#222'">
+          <strong style="font-size:18px;display:block;">${c.titulo}</strong>
+          <small style="color:#aaa;">${c.autor || "Anónimo"}</small>
+        </div>
+      `).join("")
+      : "<p style='color:#aaa;grid-column:1/-1;text-align:center;'>No se encontraron canciones</p>";
+  }
+
+  document.getElementById("buscarCancion")?.addEventListener("input", (e) => {
+    cargarListaCanciones(e.target.value);
+  });
+
+  window.proyectarCancion = async function(index) {
+    const cancion = cancionesDB[index];
+    if (!ventanaProyeccion || ventanaProyeccion.closed) {
+      await abrirVentanaBiblia("", "");
+    }
+    const estrofas = cancion.letra.trim().split("\n\n");
+    ventanaProyeccion.document.body.innerHTML = `
+      <div style="width:100vw;height:100vh;background:#000;color:white;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:'Segoe UI',sans-serif;padding:10vh;box-sizing:border-box;">
+        <h1 style="font-size:4.5vw;margin-bottom:2vh;text-align:center;opacity:0.9;">${cancion.titulo}</h1>
+        <div id="estrofaActual" style="font-size:3.5vw;line-height:1.6;text-align:center;max-width:90vw;">
+          ${estrofas[0].replace(/\n/g, "<br>")}
+        </div>
+        <small style="margin-top:4vh;font-size:1.6vw;color:#666;">${cancion.autor || ""}</small>
+      </div>
+    `;
+
+    let actual = 0;
+    ventanaProyeccion.document.onkeydown = (e) => {
+      if (e.key === "ArrowRight" || e.key === " ") actual = (actual + 1) % estrofas.length;
+      if (e.key === "ArrowLeft") actual = actual <= 0 ? estrofas.length - 1 : actual - 1;
+      if (e.key === "Escape") {
+        ventanaProyeccion.document.body.innerHTML = "<div style='width:100vw;height:100vh;background:#000;'></div>";
+        return;
+      }
+      ventanaProyeccion.document.getElementById("estrofaActual").innerHTML = 
+        estrofas[actual].replace(/\n/g, "<br>");
+    };
+
+    setTimeout(actualizarEspejoLocal, 200);
+    actualizarIndicadorEnVivo();
+  };
+
+  // ... aquí sigue todo tu código de Biblia: descargarBiblia, cargarBiblia, etc.
+  // (déjalo exactamente como lo tenías)
+
 });
 
 
@@ -3644,6 +3650,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
