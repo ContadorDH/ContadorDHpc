@@ -2110,14 +2110,23 @@ document.getElementById("btnLimpiarTexto").addEventListener("click", () => {
     if (caja) caja.textContent = "";
   }
 
-  // 2. Limpiar solo el texto del preview local
+  // 2. Limpiar preview local
   const previewTexto = document.getElementById("preview-texto");
-  if (previewTexto) previewTexto.textContent = "";
+  if (previewTexto) {
+    previewTexto.textContent = "";
+    previewTexto.dataset.ref = "";
+    previewTexto.dataset.texto = "";
+  }
 
-  // 3. Limpiar solo el texto de la proyección local
-  const proyTexto = document.getElementById("proyeccion-texto");
-  if (proyTexto) proyTexto.textContent = "";
+  // 3. Limpiar espejo solo si NO hay pantalla física
+  if (!ventanaProyeccion || ventanaProyeccion.closed) {
+    const cont = document.getElementById("proyeccion-texto");
+    if (cont) cont.innerHTML = "";
+  }
+
+  console.log("Texto limpiado sin afectar el fondo.");
 });
+
 
 
 // === TUS FUNCIONES MODIFICADAS (exactamente como querías) ===
@@ -3132,6 +3141,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
