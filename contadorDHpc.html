@@ -1871,6 +1871,12 @@ function actualizarEspejoLocal() {
     contenedor.innerHTML = document.getElementById("preview-biblia").innerHTML;
     return;
   }
+  // 🔥 Extra seguridad: si la variable ventanaProyeccion ni siquiera existe
+if (!window.ventanaProyeccion) {
+    contenedor.innerHTML = document.getElementById("preview-biblia")?.innerHTML || "";
+    return;
+}
+
 
   // dimensiones reales del proyector
   const realW = (ventanaProyeccion.innerWidth || ventanaProyeccion.document.documentElement.clientWidth) || 1280;
@@ -1937,7 +1943,6 @@ function actualizarEspejoLocal() {
 
   contenedor.style.backgroundImage = "none";
 }
-
 
 
 
@@ -2143,8 +2148,17 @@ document.getElementById("btnEnVivo").addEventListener("click", () => {
   }
 
   // 1️⃣ FONDO — IGUAL
-  const preview = document.getElementById("preview-biblia");
-  const fondoPreview = getComputedStyle(preview).backgroundImage;
+const preview = document.getElementById("preview-biblia");
+
+if (!preview) return; // si no existe, nada de esto debe correr
+
+let fondoPreview = "";
+try {
+    fondoPreview = getComputedStyle(preview).backgroundImage;
+} catch (e) {
+    fondoPreview = "";
+}
+
 
   if (fondoPreview && fondoPreview !== "none") {
     ventanaProyeccion.document.body.style.backgroundImage = fondoPreview;
@@ -3138,6 +3152,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
