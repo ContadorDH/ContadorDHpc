@@ -1960,21 +1960,15 @@ function actualizarEspejoLocal() {
 function ver(ref) {
   const contenedorTexto = document.getElementById("t");
   const key = ref.toLowerCase();
+  contenedorTexto.innerHTML = `
+    <div style="font-size:1.5em;color:#ff0">${ref}</div><br>${biblia[key]}
+  `;
 
-contenedorTexto.innerHTML = `
-  <div style="font-size:1.5em;color:#ff0">${ref}</div><br>${biblia[key]}
-`;
-
- 
-  // ---- NUEVO: PREVIEW LOCAL ----
+  // Solo mostramos en el preview local
   renderPantallaLocal("preview-texto", ref, biblia[key]);
 
-  // ---- NUEVO: PROYECCIÓN LOCAL (copia en miniatura) ----
-// ---- PROYECCIÓN LOCAL — ESPEJO EXACTO DE LA PANTALLA FÍSICA ----
-actualizarEspejoLocal();
-
-
- 
+  // ¡NADA DE actualizarEspejoLocal() aquí!
+  // El espejo solo se actualiza cuando realmente proyectas con EN VIVO o doble clic
 }
 
 
@@ -3151,6 +3145,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
