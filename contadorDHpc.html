@@ -1016,6 +1016,26 @@ body.tema-oscuro #q,
   }
 }
 
+/* asegurar que la miniatura no desborde ni toque la pantalla vecina */
+#proyeccion-texto {
+  position: relative;   /* ya lo fijamos desde JS, pero por si vuelve a renderizarlo ponemos CSS */
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* el wrapper del espejo se posiciona absolute para no empujar elementos hermanos */
+#proyeccion-texto #espejo-wrapper {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+  pointer-events: none; /* evita interceptar clicks en la mini pantalla */
+}
+
+  
 
 /* Contenedor de cada versículo */
 .vers {
@@ -1836,50 +1856,81 @@ function actualizarEspejoLocal() {
   const contenedor = document.getElementById("proyeccion-texto");
   if (!contenedor) return;
 
-  // Si no existe la ventana real → usar preview
+  // Asegurar que el contenedor recorte y esté posicionado para el espejo
+  contenedor.style.position = "relative";
+  contenedor.style.overflow = "hidden";
+
+  // Si no existe la ventana real → usar preview (manteniendo recorte)
   if (!ventanaProyeccion || ventanaProyeccion.closed) {
+    // Insertar el contenido del preview dentro del contenedor (ya viene con estilos locales)
     contenedor.innerHTML = document.getElementById("preview-biblia").innerHTML;
+    // limpiar posibles transforms antiguos
+    const old = contenedor.querySelector("#espejo-wrapper");
+    if (old) old.style.transform = "";
     return;
   }
 
-  const bodyReal = ventanaProyeccion.document.body;
-
+  // Tomar el body real y su HTML
+  const bodyReal = ventanaProyeccion.document && ventanaProyeccion.document.body;
   if (!bodyReal) return;
 
-  // Copiar el HTML completo del body de la proyección real
-  contenedor.innerHTML = `
-    <div id="espejo-wrapper">
-      ${bodyReal.innerHTML}
-    </div>
-  `;
+  // Copiar TODO el HTML del body dentro de un wrapper que vamos a escalar
+  contenedor.innerHTML = `<div id="espejo-wrapper">${bodyReal.innerHTML}</div>`;
 
-  const wrapper = document.getElementById("espejo-wrapper");
+  const wrapper = contenedor.querySelector("#espejo-wrapper");
+  if (!wrapper) return;
 
-  // Medidas reales del proyector
-  const realW = ventanaProyeccion.innerWidth;
-  const realH = ventanaProyeccion.innerHeight;
+  // Hacer que el wrapper se posicione y no influya en otros elementos
+  wrapper.style.position = "absolute";
+  wrapper.style.top = "0";
+  wrapper.style.left = "0";
+  wrapper.style.transformOrigin = "top left";
+  wrapper.style.willChange = "transform";
+  wrapper.style.boxSizing = "border-box";
+  // Aseguramos que el wrapper no provoque scroll en el contenedor
+  wrapper.style.pointerEvents = "none";
 
-  // Medidas del preview pequeño
+  // MEDIDAS: usar las dimensiones reales de la ventana de proyección
+  const realW = (ventanaProyeccion.innerWidth || ventanaProyeccion.document.documentElement.clientWidth) || 1280;
+  const realH = (ventanaProyeccion.innerHeight || ventanaProyeccion.document.documentElement.clientHeight) || 720;
+
+  // Dimensiones del mini contenedor (ya con padding interno de .pantalla)
   const miniW = contenedor.clientWidth;
   const miniH = contenedor.clientHeight;
 
-  // Escala proporcional
+  // Si mini es 0 (a veces en hidden) evitamos dividir por 0
+  if (miniW === 0 || miniH === 0) return;
+
+  // escala proporcional
   const escala = Math.min(miniW / realW, miniH / realH);
 
-  // Aplicar escala
-  wrapper.style.transformOrigin = "top left";
-  wrapper.style.transform = `scale(${escala})`;
-
-  // Wrapper debe tener tamaño real sin deformarse
+  // Asignar tamaño "real" al wrapper antes de escalar (para que el layout dentro conserve proporciones)
   wrapper.style.width = realW + "px";
   wrapper.style.height = realH + "px";
 
-  // Copiar también los estilos del body real
-  contenedor.style.background = ventanaProyeccion.document.body.style.background;
-  contenedor.style.backgroundSize = ventanaProyeccion.document.body.style.backgroundSize;
-  contenedor.style.backgroundPosition = ventanaProyeccion.document.body.style.backgroundPosition;
-  contenedor.style.backgroundRepeat = ventanaProyeccion.document.body.style.backgroundRepeat;
+  // Aplicar la escala
+  wrapper.style.transform = `scale(${escala})`;
+
+  // --- COPIAR ESTILOS COMPUTADOS DEL BODY real (para background exacto) ---
+  try {
+    const comp = ventanaProyeccion.getComputedStyle(ventanaProyeccion.document.body);
+    const bgImage = comp.getPropertyValue("background-image");
+    const bgSize = comp.getPropertyValue("background-size");
+    const bgPos = comp.getPropertyValue("background-position");
+    const bgRepeat = comp.getPropertyValue("background-repeat");
+    const bgColor = comp.getPropertyValue("background-color");
+    // Aplicar al contenedor para que se vea igual (el body interno también puede tener <style>, pero esto asegura el fondo)
+    contenedor.style.backgroundImage = bgImage !== "none" ? bgImage : "";
+    contenedor.style.backgroundSize = bgSize || "cover";
+    contenedor.style.backgroundPosition = bgPos || "center";
+    contenedor.style.backgroundRepeat = bgRepeat || "no-repeat";
+    contenedor.style.backgroundColor = bgColor || "transparent";
+  } catch (e) {
+    // si por alguna razón no tenemos acceso, no rompemos nada
+    console.warn("No se pudo copiar estilos computados del proyector:", e);
+  }
 }
+
 
 
 
@@ -2996,4 +3047,5 @@ document.getElementById("btnFondoBiblia").style.display = "inline-flex";
 </script>
 </body>
 </html>
+
 
