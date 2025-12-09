@@ -1990,13 +1990,13 @@ function aplicarFondoPersonalizado(ventana) {
 
 
 
-document.getElementById("btnEnVivo").addEventListener("click", () => { 
+document.getElementById("btnEnVivo").addEventListener("click", () => {  
   if (!ventanaProyeccion || ventanaProyeccion.closed) {
     console.warn("La pantalla física no está abierta aún.");
     return;
   }
 
-  // 1️⃣ FONDO DESDE PREVIEW
+  // 1️⃣ FONDO — IGUAL
   const preview = document.getElementById("preview-biblia");
   const fondoPreview = getComputedStyle(preview).backgroundImage;
 
@@ -2007,21 +2007,22 @@ document.getElementById("btnEnVivo").addEventListener("click", () => {
     ventanaProyeccion.document.body.style.backgroundRepeat = "no-repeat";
   }
 
-  // 2️⃣ TEXTO EXACTO DEL PREVIEW (incluye cita en línea)
-  const previewEl = document.getElementById("preview-texto");
-  const previewHTML = previewEl.innerHTML; 
+  // 2️⃣ COPIAR EXACTAMENTE EL HTML DEL PREVIEW
+  const previewHTML = document.querySelector("#preview-texto .biblia-texto-local").innerHTML;
 
   const cajaLive = ventanaProyeccion.document.getElementById("textoAutoFit");
   if (cajaLive) {
-    cajaLive.innerHTML = previewHTML;  // ← AQUI LA MAGIA
+    cajaLive.innerHTML = previewHTML;   // ← AQUÍ LA MAGIA
   }
 
-  // 3️⃣ Guardar valores para restaurar al reabrir
-  ventanaProyeccion.referenciaActual = previewEl.dataset.ref;
-  ventanaProyeccion.textoActual = previewEl.dataset.texto;
+  // 3️⃣ GUARDAR ESTADO REAL
+  const previewEl = document.getElementById("preview-texto");
+  ventanaProyeccion.referenciaActual = previewEl.dataset.ref || "";
+  ventanaProyeccion.textoActual = previewEl.dataset.texto || "";
 
-  console.log("Contenido enviado EN VIVO con posición de cita respetada.");
+  console.log("EN VIVO enviado (formato idéntico al preview).");
 });
+
 
 
 
@@ -2913,6 +2914,7 @@ document.getElementById("btnFondoBiblia").style.display = "inline-flex";
 </script>
 </body>
 </html>
+
 
 
 
