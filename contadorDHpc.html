@@ -1211,22 +1211,6 @@ body.tema-oscuro .resultados-biblia .resaltado,
 </head>
 <body>
 
-<!-- SECCIÓN CÁNTICOS (inicialmente oculta) -->
-<div id="canticos-container" style="display:none; height:100%; padding:20px; background:var(--fondo-panel, #111); color:white; font-family:'Segoe UI',sans-serif;">
-  <div style="display:flex; gap:15px; margin-bottom:20px; align-items:center;">
-    <input type="text" id="buscarCancion" placeholder="Buscar canción..." 
-           style="flex:1; padding:12px; border-radius:8px; border:none; font-size:16px; background:#333; color:white;">
-    <button id="btnNuevaCancion" style="padding:12px 20px; background:#1e88e5; color:white; border:none; border-radius:8px; cursor:pointer;">
-      + Nueva
-    </button>
-  </div>
-
-  <div id="listaCanciones" style="max-height:calc(100% - 80px); overflow-y:auto; display:grid; gap:12px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
-    <!-- Las canciones se cargarán aquí con JS -->
-  </div>
-</div>
-
-  
 <header style="padding: 0 20px 10px 20px;
                position:sticky;
                top:0;
@@ -1255,26 +1239,22 @@ body.tema-oscuro .resultados-biblia .resaltado,
     </div>
   </div>
 
-<!-- FILA 2: BOTONES -->
-<div style="margin-top:12px; width:100%; text-align:left; display:flex; gap:18px;">
-  <!-- BOTÓN CARGAR ASISTENCIA -->
-  <button id="btnCargarAsistencia"
-          style="background:none;border:none;color:white;font-size:18px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;">
-    Cargar Asistencia
-  </button>
-  
-  <!-- BOTÓN BIBLIA -->
-  <button id="btnBiblia"
-          style="background:none;border:none;color:white;font-size:18px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;">
-    Biblia
-  </button>
-  
-  <!-- NUEVO BOTÓN CÁNTICOS (exacto estilo, al lado) -->
-  <button id="btnCanticos"
-          style="background:none;border:none;color:white;font-size:18px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;">
-    Cánticos
-  </button>
-</div>
+  <!-- FILA 2: BOTONES -->
+  <div style="margin-top:12px; width:100%; text-align:left; display:flex; gap:18px;">
+
+    <!-- BOTÓN CARGAR ASISTENCIA -->
+    <button id="btnCargarAsistencia"
+            style="background:none;border:none;color:white;font-size:18px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;">
+      Cargar Asistencia
+    </button>
+
+    <!-- NUEVO BOTÓN BIBLIA -->
+    <button id="btnBiblia"
+            style="background:none;border:none;color:white;font-size:18px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;">
+      Biblia
+    </button>
+
+  </div>
 
 </header>
 
@@ -1594,11 +1574,14 @@ const meses = [
   "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
 ];
 
-// ====== CARGAR CANCIONES DESDE ARCHIVO JSON ======
-let cancionesDB = [];
+let filaSeleccionada = null;
+let ventanaProyeccion = null;
+  let yaEstaHoyCargado = false;        // ← indica si ya mostramos la asistencia de hoy
+let intervaloPolling = null;         // ← para poder detenerlo cuando ya esté
+
+const URL_PROYECCION = "https://script.google.com/macros/s/AKfycbxf8jUb2catO-d_Fs0l7jfilwNiPXh8pqxMJ6sBUeCGvsOX0_1PE98w8U7-sm4UzUxA/exec";
 
 
-  
 let biblia = {};
 let books = [];
 
@@ -3538,109 +3521,6 @@ document.addEventListener("DOMContentLoaded", () => {
   actualizarIconoLogo();
 
 
-  // ========= CÁNTICOS (todo aquí dentro) =========
-  async function cargarCanciones() {
-    try {
-      const respuesta = await fetch("canciones.json?" + Date.now());
-      if (!respuesta.ok) throw new Error("No se pudo cargar canciones.json");
-      cancionesDB = await respuesta.json();
-      console.log(`Se cargaron ${cancionesDB.length} canciones`);
-      if (document.getElementById("canticos-container").style.display === "block") {
-        cargarListaCanciones();
-      }
-    } catch (err) {
-      console.error("Error cargando canciones:", err);
-      const cont = document.getElementById("listaCanciones");
-      if (cont) {
-        cont.innerHTML = `<div style="color:#f88;grid-column:1/-1;text-align:center;padding:30px;">
-          <p>Error: No se encontró canciones.json</p>
-          <small>Colócalo en la misma carpeta que index.html</small>
-        </div>`;
-      }
-    }
-  }
-
-  // Botón Cánticos
-  document.getElementById("btnCanticos")?.addEventListener("click", () => {
-    document.getElementById("subtitulo").style.display = "none";
-    document.querySelector(".panel").style.display = "flex";
-    document.getElementById("biblia-container").style.display = "none";
-    document.getElementById("canticos-container").style.display = "block";
-    document.getElementById("tabla")?.style.display = "none";
-
-    if (cancionesDB.length === 0) {
-      cargarCanciones();
-    } else {
-      cargarListaCanciones();
-    }
-  });
-
-  function cargarListaCanciones(filtro = "") {
-    const contenedor = document.getElementById("listaCanciones");
-    if (!contenedor) return;
-
-    if (cancionesDB.length === 0) {
-      contenedor.innerHTML = "<p style='color:#aaa;grid-column:1/-1;text-align:center;'>Cargando canciones...</p>";
-      return;
-    }
-
-    const filtradas = cancionesDB.filter(c =>
-      c.titulo.toLowerCase().includes(filtro.toLowerCase()) ||
-      (c.autor && c.autor.toLowerCase().includes(filtro.toLowerCase()))
-    );
-
-    contenedor.innerHTML = filtradas.length > 0
-      ? filtradas.map((c, i) => `
-        <div onclick="proyectarCancion(${i})"
-             style="background:#222;padding:16px;border-radius:10px;cursor:pointer;transition:all .2s;border:2px solid transparent;"
-             onmouseover="this.style.borderColor='#1e88e5';this.style.background='#2a2a2a'"
-             onmouseout="this.style.borderColor='transparent';this.style.background='#222'">
-          <strong style="font-size:18px;display:block;">${c.titulo}</strong>
-          <small style="color:#aaa;">${c.autor || "Anónimo"}</small>
-        </div>
-      `).join("")
-      : "<p style='color:#aaa;grid-column:1/-1;text-align:center;'>No se encontraron canciones</p>";
-  }
-
-  document.getElementById("buscarCancion")?.addEventListener("input", (e) => {
-    cargarListaCanciones(e.target.value);
-  });
-
-  window.proyectarCancion = async function(index) {
-    const cancion = cancionesDB[index];
-    if (!ventanaProyeccion || ventanaProyeccion.closed) {
-      await abrirVentanaBiblia("", "");
-    }
-    const estrofas = cancion.letra.trim().split("\n\n");
-    ventanaProyeccion.document.body.innerHTML = `
-      <div style="width:100vw;height:100vh;background:#000;color:white;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:'Segoe UI',sans-serif;padding:10vh;box-sizing:border-box;">
-        <h1 style="font-size:4.5vw;margin-bottom:2vh;text-align:center;opacity:0.9;">${cancion.titulo}</h1>
-        <div id="estrofaActual" style="font-size:3.5vw;line-height:1.6;text-align:center;max-width:90vw;">
-          ${estrofas[0].replace(/\n/g, "<br>")}
-        </div>
-        <small style="margin-top:4vh;font-size:1.6vw;color:#666;">${cancion.autor || ""}</small>
-      </div>
-    `;
-
-    let actual = 0;
-    ventanaProyeccion.document.onkeydown = (e) => {
-      if (e.key === "ArrowRight" || e.key === " ") actual = (actual + 1) % estrofas.length;
-      if (e.key === "ArrowLeft") actual = actual <= 0 ? estrofas.length - 1 : actual - 1;
-      if (e.key === "Escape") {
-        ventanaProyeccion.document.body.innerHTML = "<div style='width:100vw;height:100vh;background:#000;'></div>";
-        return;
-      }
-      ventanaProyeccion.document.getElementById("estrofaActual").innerHTML = 
-        estrofas[actual].replace(/\n/g, "<br>");
-    };
-
-    setTimeout(actualizarEspejoLocal, 200);
-    actualizarIndicadorEnVivo();
-  };
-
-  // ... aquí sigue todo tu código de Biblia: descargarBiblia, cargarBiblia, etc.
-  // (déjalo exactamente como lo tenías)
-
 });
 
 
@@ -3650,46 +3530,3 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
