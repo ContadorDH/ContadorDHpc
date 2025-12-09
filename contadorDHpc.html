@@ -2162,16 +2162,25 @@ document.getElementById("btnEnVivo").addEventListener("click", () => {
     cajaLive.innerHTML = previewHTML;   // ← AQUÍ LA MAGIA
   }
 
-  // 3️⃣ GUARDAR ESTADO REAL
+  // 3️⃣ GUARDAR ESTADO REAL (AQUÍ AGREGO)
   const previewEl = document.getElementById("preview-texto");
-  ventanaProyeccion.referenciaActual = previewEl.dataset.ref || "";
-  ventanaProyeccion.textoActual = previewEl.dataset.texto || "";
+
+  // 🔥 Nuevo: tomar los dataset que tú guardas así:
+  //    el.dataset.ref = ref;
+  //    el.dataset.texto = texto;
+
+  const ref = previewEl.dataset.ref || "";
+  const texto = previewEl.dataset.texto || "";
+
+  // Guardarlos en la ventana real
+  ventanaProyeccion.referenciaActual = ref;
+  ventanaProyeccion.textoActual = texto;
 
   console.log("EN VIVO enviado (formato idéntico al preview).");
 
   actualizarEspejoLocal();
-
 });
+
 
 
 
@@ -3111,6 +3120,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
