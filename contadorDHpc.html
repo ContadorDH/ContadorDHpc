@@ -1865,21 +1865,16 @@ function actualizarEspejoLocal() {
   contenedor.style.overflow = "hidden";
   contenedor.style.padding = "0";
 
-  // ⭐ 1) SI NO HAY PANTALLA FÍSICA → Mostrar PREVIEW LOCAL
+  // ⛔ NUEVO → si NO hay proyección, NO mostrar preview
   if (!ventanaProyeccion || ventanaProyeccion.closed) {
-    const iframe = contenedor.querySelector("#espejo-iframe");
-    if (iframe) iframe.remove(); // quitar espejo
+    const oldFrame = contenedor.querySelector("#espejo-iframe");
+    if (oldFrame) oldFrame.remove();
 
-    // usar preview-biblia como miniatura
-    const preview = document.getElementById("preview-biblia");
-    if (preview) {
-      contenedor.innerHTML = preview.innerHTML;
-    }
-
+    // ✔ Antes mostrabas el preview aquí — pero ya no debe mostrarse
+    contenedor.innerHTML = ""; // ← limpiar pantallita cuando no se proyecta
     return;
   }
 
-  // ⭐ 2) SI HAY PANTALLA FÍSICA → mostrar espejo exacto con iframe
   const realW = ventanaProyeccion.innerWidth || 1280;
   const realH = ventanaProyeccion.innerHeight || 720;
 
@@ -1887,10 +1882,18 @@ function actualizarEspejoLocal() {
   const miniH = contenedor.clientHeight;
   if (miniW === 0 || miniH === 0) return;
 
+  // 🔥 AJUSTE “CONTAIN” — NO RECORTA NADA, AJUSTA TODO
   const escala = Math.min(miniW / realW, miniH / realH);
 
-  // buscar iframe
   let iframe = contenedor.querySelector("#espejo-iframe");
+  if (iframe) {
+    try {
+      iframe.srcdoc = ventanaProyeccion.document.documentElement.outerHTML;
+    } catch (e) {
+      iframe.remove();
+      iframe = null;
+    }
+  }
 
   if (!iframe) {
     iframe = document.createElement("iframe");
@@ -1898,21 +1901,24 @@ function actualizarEspejoLocal() {
     iframe.setAttribute("sandbox", "");
     iframe.style.border = "0";
     iframe.style.position = "absolute";
+    iframe.style.top = "0";
+    iframe.style.left = "0";
+    iframe.style.width = realW + "px";
+    iframe.style.height = realH + "px";
+    iframe.style.transformOrigin = "top left";
     iframe.style.pointerEvents = "none";
-    iframe.style.imageRendering = "crisp-edges";
+    iframe.style.imageRendering = "crisp-edges"; // 🆕 nitidez
     contenedor.innerHTML = "";
     contenedor.appendChild(iframe);
+  } else {
+    iframe.style.width = realW + "px";
+    iframe.style.height = realH + "px";
   }
 
-  // tamaño real
-  iframe.style.width = realW + "px";
-  iframe.style.height = realH + "px";
-
-  // recargar contenido espejo
   try {
     iframe.srcdoc = ventanaProyeccion.document.documentElement.outerHTML;
-  } catch {
-    iframe.srcdoc = "<html>" + ventanaProyeccion.document.documentElement.innerHTML + "</html>";
+  } catch (e) {
+    iframe.srcdoc = `<!doctype html><html>${ventanaProyeccion.document.documentElement.innerHTML}</html>`;
   }
 
   iframe.onload = () => {
@@ -1921,17 +1927,21 @@ function actualizarEspejoLocal() {
       body.style.backgroundSize = "cover";
       body.style.backgroundPosition = "center";
       body.style.backgroundRepeat = "no-repeat";
+
+      // 🆕 Evitar borrosidad al escalar texto
       body.style.transform = "translateZ(0)";
       body.style.backfaceVisibility = "hidden";
     } catch {}
   };
 
-  // centrar y escalar
+  // 🔥 CENTRADO SIN RECORTE (contain)
   const offsetX = (miniW - realW * escala) / 2;
   const offsetY = (miniH - realH * escala) / 2;
 
   iframe.style.left = offsetX + "px";
   iframe.style.top = offsetY + "px";
+
+  // 🆕 Escalado nítido y suave
   iframe.style.transform = `scale(${escala})`;
   iframe.style.transformOrigin = "top left";
   iframe.style.willChange = "transform";
@@ -3134,4 +3144,5 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
