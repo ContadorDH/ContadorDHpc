@@ -2463,11 +2463,33 @@ document.getElementById("btnConfigLogo")?.addEventListener("touchstart", (e) => 
 
 
   
-// Variable global para recordar el contenido anterior
+// ========= VARIABLES GLOBALES =========
+let logoEstaActivo = false;
 let contenidoAnteriorProyeccion = null;
 
-let logoEstaActivo = false;  // ← Esta es la clave
+// ========= PRIMERO: añade estas clases a tu CSS (una sola vez) =========
+const estiloIndicadorLogo = `
+<style id="estilo-boton-logo-activo">
+  #btnLogo.logo-activo {
+    background: #1e88e5 !important;
+    color: white !important;
+    box-shadow: 0 0 16px rgba(30, 136, 229, 0.9) !important;
+    transform: scale(1.07) !important;
+    transition: all 0.3s ease !important;
+  }
+  #btnLogo.logo-inactivo {
+    background: "" !important;
+    color: "" !important;
+    box-shadow: none !important;
+    transform: scale(1) !important;
+  }
+</style>`;
+document.head.insertAdjacentHTML("beforeend", estiloIndicadorLogo);
 
+  
+
+// ========= EVENTO DEL BOTÓN LOGO (versión infalible) =========
+// ========= EVENTO DEL BOTÓN LOGO (versión infalible) =========
 document.getElementById("btnLogo").addEventListener("click", async () => {
   const logoUrl = localStorage.getItem("logoProyeccion");
   const btnLogo = document.getElementById("btnLogo");
@@ -2478,64 +2500,54 @@ document.getElementById("btnLogo").addEventListener("click", async () => {
   }
   if (!ventanaProyeccion || ventanaProyeccion.closed) return;
 
-  // Si no hay logo → solo aviso
+  // Si no hay logo
   if (!logoUrl) {
     ventanaProyeccion.document.body.innerHTML = `
       <div style="width:100vw;height:100vh;background:#000;color:#555;display:flex;flex-direction:column;
         justify-content:center;align-items:center;gap:32px;font-family:'Segoe UI',sans-serif">
         <i class="fa-solid fa-image fa-7x" style="opacity:0.15"></i>
         <h2 style="opacity:0.7;font-size:2.4em;margin:0">No hay logo configurado</h2>
-      </div>
-    `;
+      </div>`;
     setTimeout(actualizarEspejoLocal, 150);
     actualizarIndicadorEnVivo();
     return;
   }
 
   if (logoEstaActivo) {
-    // === OCULTAR LOGO → volver al contenido anterior ===
+    // QUITAR LOGO → volver atrás
     if (contenidoAnteriorProyeccion) {
       ventanaProyeccion.document.body.innerHTML = contenidoAnteriorProyeccion;
     }
     logoEstaActivo = false;
     contenidoAnteriorProyeccion = null;
 
-    // Botón vuelve a su color normal
-    btnLogo.style.backgroundColor = "";
-    btnLogo.style.color = "";
-    btnLogo.style.boxShadow = "";
+    // Botón vuelve a normal
+    btnLogo.classList.remove("logo-activo");
+    btnLogo.classList.add("logo-inactivo");
 
   } else {
-    // === MOSTRAR LOGO ===
+    // MOSTRAR LOGO
     contenidoAnteriorProyeccion = ventanaProyeccion.document.body.innerHTML;
 
     ventanaProyeccion.document.body.innerHTML = `
       <style>
         * { margin:0; padding:0; }
         body, html { width:100vw; height:100vh; overflow:hidden; background:#000; }
-        .logo-estirado {
-          width: 100vw; height: 100vh; object-fit: fill;
-          animation: entrar 1s ease-out;
-        }
-        @keyframes entrar {
-          from { opacity: 0; transform: scale(1.04); }
-          to   { opacity: 1; transform: scale(1); }
-        }
+        .logo-estirado { width:100vw; height:100vh; object-fit:fill;
+          animation: entrar 1s ease-out; }
+        @keyframes entrar { from { opacity:0; transform:scale(1.04); }
+                            to   { opacity:1; transform:scale(1); } }
       </style>
       <img src="${logoUrl}" class="logo-estirado">
     `;
 
     logoEstaActivo = true;
 
-    // Botón se pone azul brillante (indicador claro de que está activo)
-    btnLogo.style.backgroundColor = "#1e88e5";
-    btnLogo.style.color = "white";
-    btnLogo.style.boxShadow = "0 0 15px rgba(30, 136, 229, 0.8)";
-    btnLogo.style.transform = "scale(1.05)";
-    btnLogo.style.transition = "all 0.3s ease";
+    // Botón se pone AZUL BRILLANTE
+    btnLogo.classList.remove("logo-inactivo");
+    btnLogo.classList.add("logo-activo");
   }
 
-  // Actualizar espejo y estado
   setTimeout(actualizarEspejoLocal, 150);
   actualizarIndicadorEnVivo();
 });
@@ -3506,6 +3518,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
