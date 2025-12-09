@@ -1483,7 +1483,7 @@ line-height:2;z-index:99;">
 
       <!-- NUEVO: ÍCONO PARA CONFIGURAR LOGO (minimalista) -->
       <button id="btnConfigLogo" class="btn-icono" title="Configurar logo para proyección">
-        <i class="fa-solid fa-image-polaroid"></i>
+      <i class="fa-solid fa-badge"></i>
       </button>
 
     
@@ -2358,7 +2358,7 @@ document.getElementById("btnConfigLogo")?.addEventListener("click", () => {
         icono.style.transform = "scale(1)";
       }, 300);
 
-      alert("Logo guardado correctamente\nAhora puedes proyectarlo con el botón Logo");
+      mostrarAvisoa("Logo guardado correctamente\nAhora puedes proyectarlo con el botón Logo");
     };
     reader.readAsDataURL(file);
   };
@@ -2378,7 +2378,7 @@ document.getElementById("btnConfigLogo")?.addEventListener("mousedown", (e) => {
       const icono = document.querySelector("#btnConfigLogo i");
       icono.classList.replace("fa-circle-check", "fa-image-polaroid");
       icono.style.color = "";
-      alert("Logo eliminado");
+      mostrarAvisoa("Logo eliminado");
     }
   }, 1500);
 });
@@ -3361,6 +3361,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
