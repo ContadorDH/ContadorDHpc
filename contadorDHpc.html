@@ -959,7 +959,7 @@ body.tema-oscuro #q,
   background: var(--fondo);
   border: 4px solid #333;
   border-radius: 14px;
-  padding: 2% 3%;
+  padding: 0;
   box-shadow: 0 15px 40px rgba(0,0,0,0.5);
   display: flex;
   justify-content: center;
@@ -981,7 +981,7 @@ body.tema-oscuro #q,
   line-height: 1.15;
   white-space: pre-wrap;
   word-wrap: break-word;
-  padding: 10px;
+   padding: 2% 3%;
   box-sizing: border-box;
   font-size: clamp(1.8rem, 4.8vw, 6rem);   /* tamaño ideal en cualquier pantalla */
 }
@@ -1859,11 +1859,13 @@ function actualizarEspejoLocal() {
   // Asegurar que el contenedor recorte y esté posicionado para el espejo
   contenedor.style.position = "relative";
   contenedor.style.overflow = "hidden";
+  contenedor.style.padding = "0"; // ← EVITA que el padding mueva el espejo
 
   // Si no existe la ventana real → usar preview (manteniendo recorte)
   if (!ventanaProyeccion || ventanaProyeccion.closed) {
     // Insertar el contenido del preview dentro del contenedor (ya viene con estilos locales)
     contenedor.innerHTML = document.getElementById("preview-biblia").innerHTML;
+
     // limpiar posibles transforms antiguos
     const old = contenedor.querySelector("#espejo-wrapper");
     if (old) old.style.transform = "";
@@ -1887,14 +1889,14 @@ function actualizarEspejoLocal() {
   wrapper.style.transformOrigin = "top left";
   wrapper.style.willChange = "transform";
   wrapper.style.boxSizing = "border-box";
-  // Aseguramos que el wrapper no provoque scroll en el contenedor
+  wrapper.style.padding = "0"; // ← SIN padding para que no desplace el contenido
   wrapper.style.pointerEvents = "none";
 
   // MEDIDAS: usar las dimensiones reales de la ventana de proyección
   const realW = (ventanaProyeccion.innerWidth || ventanaProyeccion.document.documentElement.clientWidth) || 1280;
   const realH = (ventanaProyeccion.innerHeight || ventanaProyeccion.document.documentElement.clientHeight) || 720;
 
-  // Dimensiones del mini contenedor (ya con padding interno de .pantalla)
+  // Dimensiones del mini contenedor (ya sin padding)
   const miniW = contenedor.clientWidth;
   const miniH = contenedor.clientHeight;
 
@@ -1919,14 +1921,13 @@ function actualizarEspejoLocal() {
     const bgPos = comp.getPropertyValue("background-position");
     const bgRepeat = comp.getPropertyValue("background-repeat");
     const bgColor = comp.getPropertyValue("background-color");
-    // Aplicar al contenedor para que se vea igual (el body interno también puede tener <style>, pero esto asegura el fondo)
+
     contenedor.style.backgroundImage = bgImage !== "none" ? bgImage : "";
     contenedor.style.backgroundSize = bgSize || "cover";
     contenedor.style.backgroundPosition = bgPos || "center";
     contenedor.style.backgroundRepeat = bgRepeat || "no-repeat";
     contenedor.style.backgroundColor = bgColor || "transparent";
   } catch (e) {
-    // si por alguna razón no tenemos acceso, no rompemos nada
     console.warn("No se pudo copiar estilos computados del proyector:", e);
   }
 }
@@ -3047,5 +3048,6 @@ document.getElementById("btnFondoBiblia").style.display = "inline-flex";
 </script>
 </body>
 </html>
+
 
 
