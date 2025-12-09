@@ -1130,27 +1130,46 @@ body.tema-oscuro .resultados-biblia .resaltado,
 }
 
 
-  /* AÑADE ESTO A TU CSS */
-#indicadorVivo {
-  font-size: 0.65em;
-  color: #ff0000;
-  margin-left: 8px;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
-  position: relative;
-  top: -1px;
+/* Icono de antena: visible por defecto, desaparece cuando está en vivo */
+#iconoAntena {
+  margin-right: 8px;
+  transition: opacity 0.35s ease, transform 0.35s ease;
 }
 
-/* Animación de pulso suave cuando está en vivo */
+#iconoAntena.hidden {
+  opacity: 0;
+  transform: scale(0.3);
+  pointer-events: none;
+}
+
+/* Círculo rojo: oculto por defecto, aparece con pulso cuando está en vivo */
+#indicadorVivo {
+  font-size: 0.65em;
+  margin-left: 8px;
+  color: #ff0000;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+
 #indicadorVivo.activo {
   opacity: 1;
-  animation: pulsoVivo 2.5s infinite ease-in-out;
+  animation: pulsoVivo 2.2s infinite ease-in-out;
+}
+
+/* Texto EN VIVO: cambia a rojo fuerte cuando está activo */
+#textoEnVivo {
+  transition: color 0.4s ease, font-weight 0.3s ease;
+}
+
+#textoEnVivo.activo {
+  color: #ff0000;
+  font-weight: 900;
 }
 
 @keyframes pulsoVivo {
-  0%, 100% { opacity: 0.6; transform: scale(1); }
-  50%      { opacity: 1;   transform: scale(1.15); }
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.25); }
 }
   
 </style>
@@ -1350,9 +1369,9 @@ line-height:2;z-index:99;">
 
 <!-- TU BOTÓN ACTUALIZADO (reemplaza el actual) -->
 <button id="btnEnVivo" class="btn-accion">
-  <i class="fas fa-broadcast-tower"></i>
+  <i id="iconoAntena" class="fas fa-broadcast-tower"></i>
   <span id="textoEnVivo">EN VIVO</span>
-  <i id="indicadorVivo" class="fas fa-circle indicador-vivo"></i>
+  <i id="indicadorVivo" class="fas fa-circle"></i>
 </button>
 
   <button id="btnTema" class="btn-icono" title="Cambiar tema"><i class="fa-solid fa-palette"></i></button>
@@ -2171,16 +2190,20 @@ function aplicarFondoPersonalizado(ventana) {
 
 // ====== FUNCIÓN PARA ACTUALIZAR EL INDICADOR EN VIVO (nueva) ======
 function actualizarIndicadorEnVivo() {
-  const indicador = document.getElementById("indicadorVivo");
-  const textoBtn = document.getElementById("textoEnVivo");
+  const antena = document.getElementById("iconoAntena");
+  const circulo = document.getElementById("indicadorVivo");
+  const texto = document.getElementById("textoEnVivo");
 
-  if (ventanaProyeccion && !ventanaProyeccion.closed) {
-    indicador?.classList.add("activo");
-    textoBtn?.classList.add("activo");
-  } else {
-    indicador?.classList.remove("activo");
-    textoBtn?.classList.remove("activo");
-  }
+  const enVivo = ventanaProyeccion && !ventanaProyeccion.closed;
+
+  // Antena: visible solo cuando NO está en vivo
+  antena.classList.toggle("hidden", enVivo);
+
+  // Círculo: visible y pulsando solo cuando SÍ está en vivo
+  circulo.classList.toggle("activo", enVivo);
+
+  // Texto: rojo y fuerte solo cuando está en vivo
+  texto.classList.toggle("activo", enVivo);
 }
   
 
@@ -3172,6 +3195,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
