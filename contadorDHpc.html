@@ -2467,13 +2467,12 @@ document.getElementById("btnConfigLogo")?.addEventListener("touchstart", (e) => 
 let logoEstaActivo = false;
 let contenidoAnteriorProyeccion = null;
 
-// REEMPLAZA SOLO ESTE BLOQUE (el estilo)
+// REEMPLAZA SOLO ESTE BLOQUE (el estilo del botón)
 const estiloIndicadorLogo = `
 <style id="estilo-boton-logo-activo">
   #btnLogo {
-    transition: all 0.45s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+    transition: all 0.3s ease !important;
     position: relative !important;
-    overflow: hidden !important;
   }
 
   /* Estado normal */
@@ -2481,55 +2480,22 @@ const estiloIndicadorLogo = `
     background: transparent !important;
     color: inherit !important;
     box-shadow: none !important;
-    transform: scale(1) !important;
+    animation: none !important;
   }
 
-  /* Estado ACTIVO → rojo potente con entrada brutal */
+  /* Estado ACTIVO → rojo con parpadeo desvanecido constante */
   #btnLogo.logo-activo {
-    background: #ff0000 !important;           /* Rojo puro */
+    background: #ff0000 !important;
     color: white !important;
-    box-shadow: 
-      0 0 20px #ff0000,
-      0 0 40px rgba(255, 0, 0, 0.6) !important;
-    transform: scale(1.1) !important;
-    animation: encenderLogo 0.6s ease-out forwards !important;
+    box-shadow: 0 0 18px rgba(255, 0, 0, 0.8) !important;
+    animation: parpadeoSuave 1.8s ease-in-out infinite !important;
   }
 
-  /* Animación que SE VE y SE SIENTE cada vez que activas */
-  @keyframes encenderLogo {
-    0% {
-      background: transparent;
-      transform: scale(1);
-      box-shadow: none;
-      opacity: 0.7;
-    }
-    50% {
-      transform: scale(1.15);
-      opacity: 1;
-    }
-    100% {
-      background: #ff0000;
-      transform: scale(1.1);
-      box-shadow: 0 0 20px #ff0000, 0 0 40px rgba(255, 0, 0, 0.6);
-    }
-  }
-
-  /* Cuando se quita → vuelve suavemente */
-  #btnLogo:not(.logo-activo) {
-    animation: apagarLogo 0.5s ease-in forwards;
-  }
-
-  @keyframes apagarLogo {
-    from {
-      background: #ff0000;
-      transform: scale(1.1);
-      box-shadow: 0 0 20px #ff0000, 0 0 40px rgba(255, 0, 0, 0.6);
-    }
-    to {
-      background: transparent;
-      transform: scale(1);
-      box-shadow: none;
-    }
+  /* PARPADEO DESVANECIDO DE 0 → 100 → 0 (suave y profesional) */
+  @keyframes parpadeoSuave {
+    0%   { opacity: 0.4;  transform: scale(1);    box-shadow: 0 0 10px rgba(255,0,0,0.4); }
+    50%  { opacity: 1;    transform: scale(1.08); box-shadow: 0 0 30px rgba(255,0,0,1); }
+    100% { opacity: 0.4;  transform: scale(1);    box-shadow: 0 0 10px rgba(255,0,0,0.4); }
   }
 </style>`;
 document.head.insertAdjacentHTML("beforeend", estiloIndicadorLogo);
@@ -3565,6 +3531,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
