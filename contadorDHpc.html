@@ -1979,6 +1979,25 @@ function aplicarFondoPersonalizado(ventana) {
   }
 }
 
+
+  // === ACTUALIZAR BIBLIA CUANDO SE CAMBIA DE PANTALLA ===
+document.getElementById("pantallaSelect").addEventListener("change", async () => {
+  // Si la ventana de Biblia ya está abierta, reabrirla en la nueva pantalla
+  if (ventanaProyeccion && !ventanaProyeccion.closed) {
+    const refActual = ventanaProyeccion?.referenciaActual || "";
+    const textoActual = ventanaProyeccion?.textoActual || "";
+
+    // cerrar ventana anterior
+    ventanaProyeccion.close();
+    ventanaProyeccion = null;
+
+    // reabrir inmediatamente en la pantalla correcta
+    await abrirVentanaBiblia(refActual, textoActual);
+  }
+});
+
+
+  
 // TU FUNCIÓN ORIGINAL MEJORADA (respeta fondo personalizado)
 function actualizarVentanaBiblia(ref, texto) {
   if (!ventanaProyeccion || ventanaProyeccion.closed) return;
@@ -2031,6 +2050,11 @@ function actualizarVentanaBiblia(ref, texto) {
     caja.style.fontSize = best + "px";
   }
   autoFit();
+
+  // ⭐ NUEVO — necesario para reabrir Biblia al mover pantallas
+  ventanaProyeccion.referenciaActual = ref;
+  ventanaProyeccion.textoActual = texto;
+  
 }
 
 
