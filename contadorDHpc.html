@@ -2007,26 +2007,23 @@ document.getElementById("btnEnVivo").addEventListener("click", () => {
     ventanaProyeccion.document.body.style.backgroundRepeat = "no-repeat";
   }
 
-  // 2️⃣ TEXTO DEL PREVIEW (HTML)
-  const textoPreviewHTML = document.getElementById("preview-texto").innerHTML;
-  const cajaLive = ventanaProyeccion.document.getElementById("textoAutoFit");
-
-  if (cajaLive) {
-    cajaLive.innerHTML = textoPreviewHTML;
-  }
-
-  // 3️⃣ NUEVO: LEER ref y texto original desde dataset
+  // 2️⃣ NUEVO: TEXTO LIMPIO, SIN CAMBIAR DISEÑO
   const previewEl = document.getElementById("preview-texto");
-
   const refPreview = previewEl.dataset.ref;
   const textoPreviewPlano = previewEl.dataset.texto;
 
-  // 4️⃣ Guardar para permitir reabrir después
+  const cajaLive = ventanaProyeccion.document.getElementById("textoAutoFit");
+  if (cajaLive) {
+    cajaLive.textContent = textoPreviewPlano + " " + refPreview;
+  }
+
+  // 3️⃣ Guardar valores reales para reabrir después
   if (refPreview) ventanaProyeccion.referenciaActual = refPreview;
   if (textoPreviewPlano) ventanaProyeccion.textoActual = textoPreviewPlano;
 
-  console.log("Contenido enviado EN VIVO con referencia y texto reales desde preview.");
+  console.log("Contenido enviado EN VIVO sin reestilizar texto.");
 });
+
 
 
 
@@ -2917,5 +2914,6 @@ document.getElementById("btnFondoBiblia").style.display = "inline-flex";
 </script>
 </body>
 </html>
+
 
 
