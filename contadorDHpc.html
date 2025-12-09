@@ -2155,56 +2155,59 @@ function aplicarFondoPersonalizado(ventana) {
 
 
 document.getElementById("btnEnVivo").addEventListener("click", async () => {
-  if (!document.getElementById) return; // seguridad leve
-
-  // 1️⃣ Obtener ref/texto del preview (si no hay preview no hay nada que enviar)
   const previewEl = document.getElementById("preview-texto");
   const ref = previewEl?.dataset.ref || "";
   const texto = previewEl?.dataset.texto || "";
 
-  if (!ref || !texto) {
-    console.warn("No hay contenido en el preview para enviar en vivo.");
-    return;
-  }
-
-  // 2️⃣ Si la ventana no existe o está cerrada → abrirla correctamente (igual que doble click)
-  if (!ventanaProyeccion || ventanaProyeccion.closed) {
-    try {
-      // abrirVentanaBiblia ya coloca el contenido llamando a actualizarVentanaBiblia internamente
+  // CASO 1: Hay texto → comportamiento normal (como siempre)
+  if (ref && texto) {
+    if (!ventanaProyeccion || ventanaProyeccion.closed) {
       await abrirVentanaBiblia(ref, texto);
-    } catch (e) {
-      console.error("Error abriendo ventana de proyección:", e);
-      return;
+    } else {
+      actualizarVentanaBiblia(ref, texto);
     }
-  } else {
-    // 3️⃣ Si ya existe → actualizarla (misma función que el doble-click)
-    actualizarVentanaBiblia(ref, texto);
+  } 
+  // CASO 2: NO hay texto → pero igual proyectamos solo el fondo actual
+  else {
+    console.log("Sin texto → proyectando solo el fondo personalizado");
+
+    // Si no hay ventana abierta → la abrimos (vacía)
+    if (!ventanaProyeccion || ventanaProyeccion.closed) {
+      // Usamos una referencia dummy para abrir la ventana
+      await abrirVentanaBiblia("", "");
+    }
+
+    // Limpiamos el texto (por si quedó algo viejo)
+    if (ventanaProyeccion && !ventanaProyeccion.closed) {
+      const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
+      if (caja) caja.textContent = "";
+    }
+
+    // Forzamos aplicar el fondo del preview (el que el usuario acaba de elegir)
+    const preview = document.getElementById("preview-biblia");
+    const fondoPreview = preview ? getComputedStyle(preview).backgroundImage : "";
+
+    if (fondoPreview && fondoPreview !== "none" && ventanaProyeccion && !ventanaProyeccion.closed) {
+      try {
+        const body = ventanaProyeccion.document.body;
+        body.style.backgroundImage = fondoPreview;
+        body.style.backgroundSize = "cover";
+        body.style.backgroundPosition = "center";
+        body.style.backgroundRepeat = "no-repeat";
+      } catch (e) {
+        console.warn("No se pudo aplicar fondo (posible timing)", e);
+      }
+    }
   }
 
-  // 4️⃣ Asegurar fondo igual al preview (no rompe nada; si ya se aplicó también no pasa)
-  const preview = document.getElementById("preview-biblia");
-  const fondoPreview = preview ? getComputedStyle(preview).backgroundImage : "";
-  if (fondoPreview && fondoPreview !== "none" && ventanaProyeccion && !ventanaProyeccion.closed) {
-    try {
-      ventanaProyeccion.document.body.style.backgroundImage = fondoPreview;
-      ventanaProyeccion.document.body.style.backgroundSize = "cover";
-      ventanaProyeccion.document.body.style.backgroundPosition = "center";
-      ventanaProyeccion.document.body.style.backgroundRepeat = "no-repeat";
-    } catch (e) {
-      // posible cross-origin o timing; no romper nada
-    }
-  }
-
-  // 5️⃣ Guardar estado real en la ventana
+  // Siempre: actualizar espejo local y guardar estado
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
     ventanaProyeccion.referenciaActual = ref;
     ventanaProyeccion.textoActual = texto;
   }
 
-  console.log("EN VIVO enviado (abrir/actualizar según necesidad).");
-
-  // 6️⃣ Actualizar espejo local (tu lógica existente)
   actualizarEspejoLocal();
+  console.log("EN VIVO activado → fondo proyectado (con o sin texto)");
 });
 
 
@@ -3148,6 +3151,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
