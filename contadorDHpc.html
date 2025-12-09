@@ -1481,11 +1481,10 @@ line-height:2;z-index:99;">
         <i class="fa-solid fa-tv"></i>
       </button>
 
-      <!-- NUEVO: ÍCONO PARA CONFIGURAR LOGO (minimalista) -->
-   <button id="btnConfigLogo" class="btn-icono" title="Configurar logo para proyección">
-  <i class="fa-solid fa-certificate"></i>
+ <!-- NUEVO: ÍCONO PARA CONFIGURAR LOGO (minimalista y coherente) -->
+<button id="btnConfigLogo" class="btn-icono" title="Configurar logo para proyección">
+  <i class="fa-solid fa-image"></i> <!-- Icono más lógico: una imagen -->
 </button>
-
     
   </div>
 
@@ -2333,13 +2332,11 @@ document.getElementById("btnParar").addEventListener("click", () => {
   console.log("Proyección detenida completamente");
 });
 
-// ====== BOTÓN CONFIGURAR LOGO (el ícono del menú lateral) ======
-// Al hacer clic → abre selector de imagen + guarda + feedback visual
 document.getElementById("btnConfigLogo")?.addEventListener("click", () => {
   const input = document.createElement("input");
   input.type = "file";
   input.accept = "image/png,image/jpeg,image/gif,image/webp,image/svg+xml";
-
+  
   input.onchange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -2348,12 +2345,13 @@ document.getElementById("btnConfigLogo")?.addEventListener("click", () => {
     reader.onload = (ev) => {
       const urlLogo = ev.target.result;
       localStorage.setItem("logoProyeccion", urlLogo);
-
-      // Feedback visual: ícono cambia a check azul y pulsa
+      
+      // Feedback visual bonito
       const icono = document.querySelector("#btnConfigLogo i");
-      icono.classList.replace("fa-image-polaroid", "fa-circle-check");
-      icono.style.color = "#58a6ff";
-      icono.style.transform = "scale(1.4)";
+      actualizarIconoLogo(); // ← ¡SIEMPRE usamos la función central!
+      
+      icono.style.transform = "scale(1.5)";
+      icono.style.transition = "transform 0.3s ease";
       setTimeout(() => {
         icono.style.transform = "scale(1)";
       }, 300);
@@ -2362,29 +2360,29 @@ document.getElementById("btnConfigLogo")?.addEventListener("click", () => {
     };
     reader.readAsDataURL(file);
   };
-
   input.click();
 });
 
-// ====== QUITAR LOGO (mantén presionado el ícono 2 segundos) ======
-// Opción avanzada: mantener pulsado el ícono para borrar el logo
+// ====== ELIMINAR LOGO: mantener pulsado 1.5 segundos ======
 let pressTimer;
 document.getElementById("btnConfigLogo")?.addEventListener("mousedown", (e) => {
   if (!localStorage.getItem("logoProyeccion")) return;
 
   pressTimer = setTimeout(() => {
-    if (confirm("¿Quitar el logo guardado?")) {
+    if (confirm("¿Eliminar el logo guardado permanentemente?")) {
       localStorage.removeItem("logoProyeccion");
-      const icono = document.querySelector("#btnConfigLogo i");
-      icono.classList.replace("fa-circle-check", "fa-image-polaroid");
-      icono.style.color = "";
+      actualizarIconoLogo(); // ← ¡SIEMPRE usamos la función!
       mostrarAviso("Logo eliminado");
     }
   }, 1500);
 });
+
 document.getElementById("btnConfigLogo")?.addEventListener("mouseup", () => clearTimeout(pressTimer));
 document.getElementById("btnConfigLogo")?.addEventListener("mouseleave", () => clearTimeout(pressTimer));
-
+document.getElementById("btnConfigLogo")?.addEventListener("touchstart", (e) => {
+  e.preventDefault();
+  // (Opcional) soporte táctil para móviles
+});
 // ====== BOTÓN LOGO DEL PANEL PRINCIPAL (proyecta el logo guardado) ======
 document.getElementById("btnLogo").addEventListener("click", async () => {
   const logoUrl = localStorage.getItem("logoProyeccion");
@@ -3258,26 +3256,27 @@ await verHoy();                  // mostramos automáticamente "Hoy"
   }
 }
 
-
-// Función reutilizable para actualizar el ícono según si hay o no logo
+// ====== FUNCIÓN ÚNICA Y CENTRALIZADA (NUNCA DUPLICAR) ======
 function actualizarIconoLogo() {
   const btn = document.getElementById("btnConfigLogo");
+  if (!btn) return;
+  
   const icono = btn.querySelector("i");
   const tieneLogo = !!localStorage.getItem("logoProyeccion");
 
-  // Forzamos las clases correctas
-  icono.classList.remove("fa-certificate", "fa-circle-check");
+  // Siempre limpiamos todas las clases posibles relacionadas
+  icono.classList.remove("fa-image", "fa-circle-check");
+
   if (tieneLogo) {
     icono.classList.add("fa-circle-check");
     icono.style.color = "#58a6ff";
-    btn.title = "Logo configurado - Click para cambiar";
+    btn.title = "Logo configurado - Click para cambiar o mantener pulsado para eliminar";
   } else {
-    icono.classList.add("fa-certificate");
-    icono.style.color = ""; // color por defecto
+    icono.classList.add("fa-image");
+    icono.style.color = "";
     btn.title = "Configurar logo para proyección";
   }
 }
-
 
 
 function eliminarLogo() {
@@ -3368,49 +3367,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // Mostrar Biblia automáticamente al abrir
   document.getElementById("btnBiblia").click();
 
-  // ==================================================================
-  // ÍCONO DE LOGO CONFIGURADO (siempre correcto)
-  // ==================================================================
-  function actualizarIconoLogo() {
-    const btn = document.getElementById("btnConfigLogo");
-    if (!btn) return; // seguridad por si no existe aún
 
-    const icono = btn.querySelector("i");
-    const tieneLogo = !!localStorage.getItem("logoProyeccion");
-
-    // Quitamos ambas clases posibles y ponemos la correcta
-    icono.classList.remove("fa-certificate", "fa-circle-check");
-
-    if (tieneLogo) {
-      icono.classList.add("fa-circle-check");
-      icono.style.color = "#58a6ff";
-      btn.title = "Logo configurado - Click para cambiar";
-    } else {
-      icono.classList.add("fa-certificate");
-      icono.style.color = "";
-      btn.title = "Configurar logo para proyección";
-    }
-  }
 
   // Ejecutar al cargar la página
   actualizarIconoLogo();
 
-  // ==================================================================
-  // IMPORTANTE: Llama a esta función cada vez que guardes o elimines el logo
-  // ==================================================================
-  // Ejemplo (ajústalo al nombre real de tu función):
-  // window.guardarLogoProyeccion = function(datos) {
-  //   localStorage.setItem("logoProyeccion", datos);
-  //   actualizarIconoLogo();
-  // };
-  // window.eliminarLogoProyeccion = function() {
-  //   localStorage.removeItem("logoProyeccion");
-  //   actualizarIconoLogo();
-  // };
 
-  // Si ya tienes funciones que guardan/borran el logo, solo agrégales:
-  // actualizarIconoLogo();
-  // al final de cada una.
 });
 
 
@@ -3420,6 +3382,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
