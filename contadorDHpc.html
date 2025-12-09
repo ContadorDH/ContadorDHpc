@@ -1856,27 +1856,21 @@ function actualizarEspejoLocal() {
   const contenedor = document.getElementById("proyeccion-texto");
   if (!contenedor) return;
 
-  /* 🔥 AGREGADO: forzar que el contenedor sea un viewport 16:9 */
-  contenedor.style.aspectRatio = "16 / 9";
-  contenedor.style.width = "100%";
-  contenedor.style.maxHeight = "100%";
+  // Asegurar recorte y reset de padding del contenedor
   contenedor.style.position = "relative";
   contenedor.style.overflow = "hidden";
   contenedor.style.padding = "0";
 
-  // Si no existe la ventana real → usar preview
+  // Si no existe la ventana real → usar preview (manteniendo recorte)
   if (!ventanaProyeccion || ventanaProyeccion.closed) {
+    // eliminar iframe antiguo si existe
     const oldFrame = contenedor.querySelector("#espejo-iframe");
     if (oldFrame) oldFrame.remove();
+
+    // mostrar preview
     contenedor.innerHTML = document.getElementById("preview-biblia").innerHTML;
     return;
   }
-  // 🔥 Extra seguridad: si la variable ventanaProyeccion ni siquiera existe
-if (!window.ventanaProyeccion) {
-    contenedor.innerHTML = document.getElementById("preview-biblia")?.innerHTML || "";
-    return;
-}
-
 
   // dimensiones reales del proyector
   const realW = (ventanaProyeccion.innerWidth || ventanaProyeccion.document.documentElement.clientWidth) || 1280;
@@ -1893,18 +1887,21 @@ if (!window.ventanaProyeccion) {
   // eliminar iframe viejo si existe
   let iframe = contenedor.querySelector("#espejo-iframe");
   if (iframe) {
+    // si existe, reemplazamos su srcdoc para actualizar inmediatamente
     try {
       iframe.srcdoc = ventanaProyeccion.document.documentElement.outerHTML;
     } catch (e) {
+      // fallback: reconstruir iframe
       iframe.remove();
       iframe = null;
     }
   }
 
   if (!iframe) {
+    // crear iframe aislado
     iframe = document.createElement("iframe");
     iframe.id = "espejo-iframe";
-    iframe.setAttribute("sandbox", "");
+    iframe.setAttribute("sandbox", ""); // mayor aislamiento (puedes quitar si necesitas scripts)
     iframe.style.border = "0";
     iframe.style.position = "absolute";
     iframe.style.top = "0";
@@ -1913,34 +1910,42 @@ if (!window.ventanaProyeccion) {
     iframe.style.height = realH + "px";
     iframe.style.transformOrigin = "top left";
     iframe.style.willChange = "transform";
-    iframe.style.pointerEvents = "none";
-
+    iframe.style.pointerEvents = "none"; // no interrumpir clicks
+    // insertar antes de setear srcdoc por velocidad
     contenedor.innerHTML = "";
     contenedor.appendChild(iframe);
   } else {
+    // asegurar tamaño correcto si existe
     iframe.style.width = realW + "px";
     iframe.style.height = realH + "px";
   }
 
+  // volcar el HTML completo de la ventana de proyección dentro del iframe
   try {
+    // usar outerHTML del documentElement para incluir <style> y todo
     iframe.srcdoc = ventanaProyeccion.document.documentElement.outerHTML;
   } catch (e) {
+    // fallback: copiar body.innerHTML dentro de un simple HTML
     iframe.srcdoc = `<!doctype html><html>${ventanaProyeccion.document.documentElement.innerHTML}</html>`;
   }
 
-  // centrar antes del escalado
+  // Centrar visualmente el iframe dentro del contenedor:
+  // El iframe se escala con transform: scale(escala). Para que visualmente esté centrado,
+  // la posición que hay que asignar antes de escalar es: top = (miniH/escala - realH)/2, left = (miniW/escala - realW)/2
   const topBeforeScale = (miniH / escala - realH) / 2;
   const leftBeforeScale = (miniW / escala - realW) / 2;
 
+  // Evitar NaN o valores demasiado grandes
   const safeTop = Number.isFinite(topBeforeScale) ? topBeforeScale : 0;
   const safeLeft = Number.isFinite(leftBeforeScale) ? leftBeforeScale : 0;
 
   iframe.style.top = safeTop + "px";
   iframe.style.left = safeLeft + "px";
 
-  // aplicar escala real → mini
+  // Aplicar escala
   iframe.style.transform = `scale(${escala})`;
 
+  // (Opcional) asegurar que el contenedor no tenga fondo que tape el iframe
   contenedor.style.backgroundImage = "none";
 }
 
@@ -2031,6 +2036,7 @@ async function abrirVentanaBiblia(ref, texto) {
 let fondoUrlGlobal = "";
 
 // Botón: CAMBIAR FONDO → SOLO preview (NO afecta pantalla física)
+// Botón: CAMBIAR FONDO (solo preview)
 document.getElementById("btnFondoBiblia").addEventListener("click", () => {
   const input = document.createElement("input");
   input.type = "file";
@@ -2042,25 +2048,28 @@ document.getElementById("btnFondoBiblia").addEventListener("click", () => {
 
     const reader = new FileReader();
     reader.onload = (ev) => {
+
       fondoUrlGlobal = ev.target.result;
 
-      // Guardar en localStorage para persistencia
-      try {
-        localStorage.setItem("fondoProyeccion", fondoUrlGlobal);
-      } catch (err) {
-        console.warn("No se pudo guardar fondo en localStorage:", err);
-      }
+      // 🟢 **GUARDAR EN LOCALSTORAGE**
+      localStorage.setItem("fondoProyeccion", fondoUrlGlobal);
 
-      // Guardar en variable CSS personalizada (se mantiene igual)
+      // Variable CSS
       document.body.style.setProperty(
         "--fondo-proyeccion-personalizado",
         `url("${fondoUrlGlobal}")`
       );
 
-      // Aplicar al preview y asegurar cover
-      aplicarFondoEnPreviewYVar(fondoUrlGlobal);
+      // Aplicar SOLO al preview
+      const preview = document.getElementById("preview-biblia");
+      if (preview) {
+        preview.style.backgroundImage = `url("${fondoUrlGlobal}")`;
+        preview.style.backgroundSize = "cover";
+        preview.style.backgroundPosition = "center";
+        preview.style.backgroundRepeat = "no-repeat";
+      }
 
-      // Nota: la ventana física se actualizará cuando pulses "En Vivo" o al abrirla
+      // ❌ NO SE APLICA A LA VENTANA FÍSICA AQUÍ
     };
 
     reader.readAsDataURL(file);
@@ -2068,7 +2077,6 @@ document.getElementById("btnFondoBiblia").addEventListener("click", () => {
 
   input.click();
 });
-
 
 
 document.getElementById("btnLimpiarTexto").addEventListener("click", () => {
@@ -2090,52 +2098,17 @@ document.getElementById("btnLimpiarTexto").addEventListener("click", () => {
 
 // === TUS FUNCIONES MODIFICADAS (exactamente como querías) ===
 
-// Función auxiliar
 function aplicarFondoPersonalizado(ventana) {
   if (!ventana || ventana.closed) return;
 
-  // Preferir el fondo global guardado si existe
   const preview = document.getElementById("preview-biblia");
   const fondoPreview = getComputedStyle(preview).backgroundImage;
-  const fondoParaUsar = (fondoUrlGlobal && fondoUrlGlobal !== "") ? `url("${fondoUrlGlobal}")` : (fondoPreview && fondoPreview !== "none" ? fondoPreview : "");
 
-  if (fondoParaUsar) {
-    // Aplicar inline al body de la ventana de proyección con cover/center/no-repeat
-    ventana.document.body.style.backgroundImage = fondoParaUsar;
+  if (fondoPreview && fondoPreview !== "none") {
+    ventana.document.body.style.backgroundImage = fondoPreview;
     ventana.document.body.style.backgroundSize = "cover";
     ventana.document.body.style.backgroundPosition = "center";
     ventana.document.body.style.backgroundRepeat = "no-repeat";
-
-    // Asegurar que el html también no tenga márgenes que muevan el contenido
-    try {
-      ventana.document.documentElement.style.margin = "0";
-      ventana.document.body.style.margin = "0";
-    } catch (e) {
-      // no romper si cross-origin o similar
-    }
-  }
-}
-
-
-// carga inicial: si hay fondo guardado en localStorage, lo usamos
-let fondoUrlGlobal = localStorage.getItem("fondoProyeccion") || "";
-
-
-
-  // Aplica el fondo guardado al preview y a la variable CSS --fondo-proyeccion-personalizado
-function aplicarFondoEnPreviewYVar(fondoUrl) {
-  if (!fondoUrl) return;
-
-  // Guardar la variable CSS para que otras funciones la usen
-  document.body.style.setProperty("--fondo-proyeccion-personalizado", `url("${fondoUrl}")`);
-
-  // Aplicar al preview visualmente (cover, center)
-  const preview = document.getElementById("preview-biblia");
-  if (preview) {
-    preview.style.backgroundImage = `url("${fondoUrl}")`;
-    preview.style.backgroundSize = "cover";
-    preview.style.backgroundPosition = "center";
-    preview.style.backgroundRepeat = "no-repeat";
   }
 }
 
@@ -2148,17 +2121,8 @@ document.getElementById("btnEnVivo").addEventListener("click", () => {
   }
 
   // 1️⃣ FONDO — IGUAL
-const preview = document.getElementById("preview-biblia");
-
-if (!preview) return; // si no existe, nada de esto debe correr
-
-let fondoPreview = "";
-try {
-    fondoPreview = getComputedStyle(preview).backgroundImage;
-} catch (e) {
-    fondoPreview = "";
-}
-
+  const preview = document.getElementById("preview-biblia");
+  const fondoPreview = getComputedStyle(preview).backgroundImage;
 
   if (fondoPreview && fondoPreview !== "none") {
     ventanaProyeccion.document.body.style.backgroundImage = fondoPreview;
@@ -3032,117 +2996,89 @@ await verHoy();                  // mostramos automáticamente "Hoy"
 
   
 document.addEventListener("DOMContentLoaded", () => {
-  // Aplicar fondo guardado (si existe) al inicio
-  try {
-    if (typeof fondoUrlGlobal !== "undefined" && fondoUrlGlobal && fondoUrlGlobal !== "") {
-      if (typeof aplicarFondoEnPreviewYVar === "function") {
-        aplicarFondoEnPreviewYVar(fondoUrlGlobal);
-      } else {
-        // por si la función no está todavía definida
-        document.body.style.setProperty("--fondo-proyeccion-personalizado", `url("${fondoUrlGlobal}")`);
-      }
-      document.body.style.setProperty("--fondo-proyeccion-personalizado", `url("${fondoUrlGlobal}")`);
-    }
-  } catch (e) {
-    console.warn("Error aplicando fondo inicial:", e);
-  }
-
-  // detectarPantallas puede no existir en entornos de prueba — comprobamos antes
-  if (typeof detectarPantallas === "function") {
-    try { detectarPantallas(); } catch (e) { console.warn("detectarPantallas falló:", e); }
-  }
+  detectarPantallas();
 
   const tablaArriba = document.getElementById("tabla");
 
-  // Ocultar/mostrar con comprobaciones para no lanzar excepción si no existe el elemento
-  const subtituloEl = document.getElementById("subtitulo");
-  const panelEl = document.querySelector(".panel");
-  const bibliaContainer = document.getElementById("biblia-container");
+  // ==========================================
+  // 🔥 CARGAR FONDO GUARDADO (sin afectar nada)
+  // ==========================================
+  const fondoGuardado = localStorage.getItem("fondoProyeccion");
 
-  if (subtituloEl) subtituloEl.style.display = "none";
-  if (panelEl) panelEl.style.display = "none";
-  if (bibliaContainer) bibliaContainer.style.display = "flex";
-  if (tablaArriba) tablaArriba.style.display = "none";
+  if (fondoGuardado) {
+    document.body.style.setProperty(
+      "--fondo-proyeccion-personalizado",
+      `url("${fondoGuardado}")`
+    );
+
+    const preview = document.getElementById("preview-biblia");
+    if (preview) {
+      preview.style.backgroundImage = `url("${fondoGuardado}")`;
+      preview.style.backgroundSize = "cover";
+      preview.style.backgroundPosition = "center";
+      preview.style.backgroundRepeat = "no-repeat";
+    }
+  }
+  // ==========================================
+  // FIN de la carga del fondo
+  // ==========================================
+
+
+
+  // Ocultar ambas secciones al iniciar
+  document.getElementById("subtitulo").style.display = "none";
+  document.querySelector(".panel").style.display = "none";  
+  document.getElementById("biblia-container").style.display = "flex";
+  tablaArriba.style.display = "none"; 
 
   // BOTÓN: CARGAR ASISTENCIA
-  const btnCargarAsistencia = document.getElementById("btnCargarAsistencia");
-  if (btnCargarAsistencia) {
-    btnCargarAsistencia.addEventListener("click", () => {
-      if (subtituloEl) subtituloEl.style.display = "flex";
-      if (panelEl) panelEl.style.display = "flex";
-      if (bibliaContainer) bibliaContainer.style.display = "none";
-      if (tablaArriba) tablaArriba.style.display = "table";
+  document.getElementById("btnCargarAsistencia").addEventListener("click", () => {
+    document.getElementById("subtitulo").style.display = "flex";
+    document.querySelector(".panel").style.display = "flex";
+    document.getElementById("biblia-container").style.display = "none";
+    tablaArriba.style.display = "table";
+    cargarAlIniciar();
 
-      // Llamada segura a cargarAlIniciar()
-      if (typeof cargarAlIniciar === "function") {
-        try { cargarAlIniciar(); } catch (e) { console.warn("cargarAlIniciar falló:", e); }
-      }
+    // Mostrar todos los botones al entrar a asistencia
+    document.querySelector('button[onclick="verMesActual()"]').style.display = "inline-flex";
+    document.querySelector('button[onclick="verHoy()"]').style.display = "inline-flex";
+    document.getElementById("selectMes").style.display = "inline-flex";
+    document.querySelector('button[onclick="proyectar()"]').style.display = "inline-flex";
+    document.getElementById("pantallaSelect").style.display = "inline-flex";
+    document.getElementById("btnTema").style.display = "inline-flex";
 
-      // Mostrar botones solo si existen
-      const btnVerMes = document.querySelector('button[onclick="verMesActual()"]');
-      const btnVerHoy = document.querySelector('button[onclick="verHoy()"]');
-      const selectMes = document.getElementById("selectMes");
-      const btnProyectar = document.querySelector('button[onclick="proyectar()"]');
-      const pantallaSelect = document.getElementById("pantallaSelect");
-      const btnTema = document.getElementById("btnTema");
+    document.getElementById("btnLimpiarTexto").style.display = "none";
+    document.getElementById("btnFondoBiblia").style.display = "none";
+  });
 
-      if (btnVerMes) btnVerMes.style.display = "inline-flex";
-      if (btnVerHoy) btnVerHoy.style.display = "inline-flex";
-      if (selectMes) selectMes.style.display = "inline-flex";
-      if (btnProyectar) btnProyectar.style.display = "inline-flex";
-      if (pantallaSelect) pantallaSelect.style.display = "inline-flex";
-      if (btnTema) btnTema.style.display = "inline-flex";
 
-      // Dentro del click de btnCargarAsistencia
-      const btnLimpiar = document.getElementById("btnLimpiarTexto");
-      const btnFondo = document.getElementById("btnFondoBiblia");
-      if (btnLimpiar) btnLimpiar.style.display = "none";
-      if (btnFondo) btnFondo.style.display = "none";
-    });
-  }
 
   // BOTÓN: BIBLIA
-  const btnBiblia = document.getElementById("btnBiblia");
-  if (btnBiblia) {
-    btnBiblia.addEventListener("click", () => {
-      if (subtituloEl) subtituloEl.style.display = "none";
-      if (panelEl) panelEl.style.display = "flex";
-      if (bibliaContainer) bibliaContainer.style.display = "flex";
-      if (tablaArriba) tablaArriba.style.display = "none";
+  document.getElementById("btnBiblia").addEventListener("click", () => {
+    document.getElementById("subtitulo").style.display = "none";
+    document.querySelector(".panel").style.display = "flex";  
+    document.getElementById("biblia-container").style.display = "flex";
+    tablaArriba.style.display = "none";
 
-      // Ocultar los botones que NO van en Biblia:
-      const btnVerMes = document.querySelector('button[onclick="verMesActual()"]');
-      const btnVerHoy = document.querySelector('button[onclick="verHoy()"]');
-      const selectMes = document.getElementById("selectMes");
-      const btnProyectar = document.querySelector('button[onclick="proyectar()"]');
+    // Ocultar botones que no van en Biblia
+    document.querySelector('button[onclick="verMesActual()"]').style.display = "none";
+    document.querySelector('button[onclick="verHoy()"]').style.display = "none";
+    document.getElementById("selectMes").style.display = "none";
+    document.querySelector('button[onclick="proyectar()"]').style.display = "none";
 
-      if (btnVerMes) btnVerMes.style.display = "none";
-      if (btnVerHoy) btnVerHoy.style.display = "none";
-      if (selectMes) selectMes.style.display = "none";
-      if (btnProyectar) btnProyectar.style.display = "none";
+    // Mostrar solo estos dos
+    document.getElementById("pantallaSelect").style.display = "inline-flex";
+    document.getElementById("btnTema").style.display = "inline-flex";
 
-      // Mostrar solo estos dos:
-      const pantallaSelect = document.getElementById("pantallaSelect");
-      const btnTema = document.getElementById("btnTema");
+    document.getElementById("btnLimpiarTexto").style.display = "inline-flex";
+    document.getElementById("btnFondoBiblia").style.display = "inline-flex";
+  });
 
-      if (pantallaSelect) pantallaSelect.style.display = "inline-flex";
-      if (btnTema) btnTema.style.display = "inline-flex";
 
-      // Dentro del click de btnBiblia (ya lo tienes)
-      const btnLimpiar = document.getElementById("btnLimpiarTexto");
-      const btnFondo = document.getElementById("btnFondoBiblia");
-      if (btnLimpiar) btnLimpiar.style.display = "inline-flex";
-      if (btnFondo) btnFondo.style.display = "inline-flex";
-    });
-  }
 
-  // 🔥 Mostrar Biblia automáticamente al abrir (solo si existe el botón)
-  if (btnBiblia) {
-    try { btnBiblia.click(); } catch (e) { console.warn("No se pudo hacer click en btnBiblia:", e); }
-  }
+  // 🔥 Mostrar Biblia automáticamente al abrir
+  document.getElementById("btnBiblia").click();
 });
-
-
 
 
 
@@ -3152,10 +3088,6 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
-
-
-
-
 
 
 
