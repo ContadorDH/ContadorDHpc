@@ -994,6 +994,11 @@ body.tema-oscuro #q,
 .pantallita-mirror-viewport { width:100%; height:100%; box-sizing:border-box; }
 .pantallita-mirror-viewport > .pantallita-mirror-scale { display:block; box-sizing:border-box; }
 
+  /* Mirror helpers (aseguran que el viewport del mirror ocupe el 100% y no rompa layout) */
+#proyeccion-biblia .pantallita-mirror-viewport { width:100%; height:100%; box-sizing:border-box; position:relative; }
+#proyeccion-biblia .pantallita-mirror-scale { display:block; box-sizing:border-box; transform-origin: top left; }
+
+
 
 .pantalla-texto .cita-mini {
   font-size: 0.5em;
@@ -2071,84 +2076,91 @@ document.getElementById("pantallaSelect").addEventListener("change", async () =>
 
 
 
-// --- Espejo escalado: copia contenido real y lo ajusta proporcionalmente ---
+// --- Espejo escalado (VERSIÓN CORREGIDA) ---
 function sincronizarPantallitaConProyeccion() {
   const destino = document.getElementById("proyeccion-texto");
   if (!destino) return;
 
-  // Si no hay ventana física abierta → no sincronizar
+  // si la ventana no existe, limpiar interval si lo hay y salir
   if (!ventanaProyeccion || ventanaProyeccion.closed) {
-    // si había interval de sync, limpiarlo
     if (window._syncIntervalId) { clearInterval(window._syncIntervalId); window._syncIntervalId = null; }
     return;
   }
 
   try {
-    // Obtener HTML y CSS reales
-    const htmlReal = ventanaProyeccion.document.body.innerHTML;
-    const estilosHead = ventanaProyeccion.document.head ? ventanaProyeccion.document.head.innerHTML : "";
+    // 1) Obtener HTML del body de la ventana física, pero quitar scripts
+    let htmlReal = ventanaProyeccion.document.body.innerHTML || "";
+    // eliminar scripts por seguridad (no queremos ejecutar nada aquí)
+    htmlReal = htmlReal.replace(/<script[\s\S]*?<\/script>/gi, "");
 
-    // Limpiar destino y montar wrapper (usamos un wrapper con tamaño real)
+    // 2) Recopilar SOLO el CSS desde <style> en la ventana física (no todo el head)
+    const estilosArr = [];
+    const styleEls = ventanaProyeccion.document.querySelectorAll("style");
+    styleEls.forEach(s => { if (s.innerHTML && s.innerHTML.trim()) estilosArr.push(s.innerHTML); });
+    const estilosConcat = estilosArr.join("\n\n");
+
+    // 3) Montar wrapper (inner tendrá las dimensiones reales en px)
     destino.innerHTML = `
       <div class="pantallita-mirror-viewport">
-        <div class="pantallita-mirror-scale" id="__mirror_inner">
+        <div class="pantallita-mirror-scale" id="__mirror_inner" aria-hidden="true">
           ${htmlReal}
         </div>
       </div>
     `;
 
-    // Insertar CSS real dentro del mirror para que se vea igual
+    // 4) Añadir los estilos reales dentro de un <style> en el destino
+    //    (solo el CSS, no el head completo)
     const styleTag = document.createElement("style");
-    styleTag.innerHTML = estilosHead;
+    styleTag.dataset.from = "proyeccion-mirror";
+    styleTag.innerHTML = estilosConcat;
+    // eliminar estilos anteriores generados por el mirror
+    const prev = destino.querySelector('style[data-from="proyeccion-mirror"]');
+    if (prev) prev.remove();
     destino.appendChild(styleTag);
 
-    // Ahora calcular escala: fuente = tamaño real de la ventana física (px)
+    // 5) Calcular dimensiones reales de la ventana física (fuente para el scale)
     const srcW = ventanaProyeccion.innerWidth || ventanaProyeccion.document.documentElement.clientWidth || 1280;
     const srcH = ventanaProyeccion.innerHeight || ventanaProyeccion.document.documentElement.clientHeight || 720;
 
-    // destino viewport disponible
+    // 6) Obtener viewport del destino y el inner
     const viewport = destino.querySelector(".pantallita-mirror-viewport");
     const inner = destino.querySelector("#__mirror_inner");
     if (!viewport || !inner) return;
 
+    // asegurar que inner actúe como un lienzo con las dimensiones reales
+    inner.style.width = srcW + "px";
+    inner.style.height = srcH + "px";
+    inner.style.boxSizing = "border-box";
+    inner.style.transformOrigin = "top left";
+    inner.style.pointerEvents = "none"; // evitar interacciones accidentales
+
+    // 7) Calcular escala para que el inner quepa proporcionalmente en el viewport
     const dstRect = viewport.getBoundingClientRect();
     const dstW = Math.max(10, dstRect.width);
     const dstH = Math.max(10, dstRect.height);
-
-    // Escala para ajustar sin recortar (mantiene proporción)
     const scale = Math.min(dstW / srcW, dstH / srcH);
 
-    // Aplicar tamaño real al contenedor escalado y luego transform: scale(...)
-    inner.style.width = srcW + "px";
-    inner.style.height = srcH + "px";
-    inner.style.transformOrigin = "top left";
     inner.style.transform = `scale(${scale})`;
 
-    // Centrar el contenido escalado dentro del viewport
-    const scaledW = Math.ceil(srcW * scale);
-    const scaledH = Math.ceil(srcH * scale);
+    // 8) Centrar el contenido escalado dentro del viewport
     viewport.style.display = "flex";
     viewport.style.justifyContent = "center";
     viewport.style.alignItems = "center";
     viewport.style.overflow = "hidden";
-
-    // Asegurar que el wrapper tenga el tamaño del destino
     viewport.style.width = "100%";
     viewport.style.height = "100%";
 
-    // Si no existe un interval global para mantenerlo actualizado, crear uno
+    // 9) Mantener actualizado el scale si cambia tamaño (ligero interval)
     if (!window._syncIntervalId) {
       window._syncIntervalId = setInterval(() => {
-        // si la ventana se cerró, limpiar
-        if (!ventanaProyeccion || ventanaProyeccion.closed) {
-          clearInterval(window._syncIntervalId);
-          window._syncIntervalId = null;
-          return;
-        }
-        // re-ejecutar sincronización ligera: sólo recalcula escala
         try {
-          const sW = ventanaProyeccion.innerWidth || 1280;
-          const sH = ventanaProyeccion.innerHeight || 720;
+          if (!ventanaProyeccion || ventanaProyeccion.closed) {
+            clearInterval(window._syncIntervalId);
+            window._syncIntervalId = null;
+            return;
+          }
+          const sW = ventanaProyeccion.innerWidth || ventanaProyeccion.document.documentElement.clientWidth || srcW;
+          const sH = ventanaProyeccion.innerHeight || ventanaProyeccion.document.documentElement.clientHeight || srcH;
           const vRect = destino.querySelector(".pantallita-mirror-viewport").getBoundingClientRect();
           const dW = Math.max(10, vRect.width), dH = Math.max(10, vRect.height);
           const sc = Math.min(dW / sW, dH / sH);
@@ -2158,14 +2170,15 @@ function sincronizarPantallitaConProyeccion() {
             inn.style.height = sH + "px";
             inn.style.transform = `scale(${sc})`;
           }
-        } catch (err) { /* fail silently */ }
-      }, 300); // actualiza 300ms: ligero y fluido
+        } catch (err) { /* silencioso */ }
+      }, 300);
     }
 
-  } catch (e) {
-    console.warn("No se pudo sincronizar la pantallita:", e);
+  } catch (err) {
+    console.warn("sincronizarPantallitaConProyeccion fallo:", err);
   }
 }
+
 
 
 
@@ -3062,6 +3075,7 @@ document.getElementById("btnFondoBiblia").style.display = "inline-flex";
 </script>
 </body>
 </html>
+
 
 
 
