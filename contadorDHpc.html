@@ -2007,24 +2007,20 @@ document.getElementById("btnEnVivo").addEventListener("click", () => {
     ventanaProyeccion.document.body.style.backgroundRepeat = "no-repeat";
   }
 
-  // 2️⃣ TEXTO + CITA (CON FORMATO CORRECTO)
+  // 2️⃣ TEXTO EXACTO DEL PREVIEW (incluye cita en línea)
   const previewEl = document.getElementById("preview-texto");
-  const refPreview = previewEl.dataset.ref;
-  const textoPreviewPlano = previewEl.dataset.texto;
+  const previewHTML = previewEl.innerHTML; 
 
   const cajaLive = ventanaProyeccion.document.getElementById("textoAutoFit");
   if (cajaLive) {
-    cajaLive.innerHTML = `
-      ${textoPreviewPlano}
-      <span class="cita-mini">${refPreview}</span>
-    `;
+    cajaLive.innerHTML = previewHTML;  // ← AQUI LA MAGIA
   }
 
-  // 3️⃣ Guardar valores reales para reabrir después
-  if (refPreview) ventanaProyeccion.referenciaActual = refPreview;
-  if (textoPreviewPlano) ventanaProyeccion.textoActual = textoPreviewPlano;
+  // 3️⃣ Guardar valores para restaurar al reabrir
+  ventanaProyeccion.referenciaActual = previewEl.dataset.ref;
+  ventanaProyeccion.textoActual = previewEl.dataset.texto;
 
-  console.log("Contenido enviado EN VIVO con cita formateada correctamente.");
+  console.log("Contenido enviado EN VIVO con posición de cita respetada.");
 });
 
 
@@ -2917,6 +2913,7 @@ document.getElementById("btnFondoBiblia").style.display = "inline-flex";
 </script>
 </body>
 </html>
+
 
 
 
