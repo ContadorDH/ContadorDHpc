@@ -2154,32 +2154,19 @@ document.getElementById("btnEnVivo").addEventListener("click", () => {
     ventanaProyeccion.document.body.style.backgroundRepeat = "no-repeat";
   }
 
-  // 2️⃣ COPIAR EXACTAMENTE EL HTML DEL PREVIEW
-  const previewHTML = document.querySelector("#preview-texto .biblia-texto-local").innerHTML;
-
-  const cajaLive = ventanaProyeccion.document.getElementById("textoAutoFit");
-  if (cajaLive) {
-    cajaLive.innerHTML = previewHTML;   // ← AQUÍ LA MAGIA
-  }
-
-  // 3️⃣ GUARDAR ESTADO REAL (AQUÍ AGREGO)
+  // 2️⃣ TOMAR REF Y TEXTO DEL PREVIEW
   const previewEl = document.getElementById("preview-texto");
-
-  // 🔥 Nuevo: tomar los dataset que tú guardas así:
-  //    el.dataset.ref = ref;
-  //    el.dataset.texto = texto;
-
   const ref = previewEl.dataset.ref || "";
   const texto = previewEl.dataset.texto || "";
 
-  // Guardarlos en la ventana real
-  ventanaProyeccion.referenciaActual = ref;
-  ventanaProyeccion.textoActual = texto;
+  // 3️⃣ PROYECTAR *CORRECTAMENTE* (igual que doble-click)
+  actualizarVentanaBiblia(ref, texto);
 
-  console.log("EN VIVO enviado (formato idéntico al preview).");
+  console.log("EN VIVO enviado (idéntico al doble-click).");
 
   actualizarEspejoLocal();
 });
+
 
 
 
@@ -3120,6 +3107,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
