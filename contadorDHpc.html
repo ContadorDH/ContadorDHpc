@@ -1856,54 +1856,41 @@ function actualizarEspejoLocal() {
   const contenedor = document.getElementById("proyeccion-texto");
   if (!contenedor) return;
 
-  // Asegurar recorte y reset de padding del contenedor
   contenedor.style.position = "relative";
   contenedor.style.overflow = "hidden";
   contenedor.style.padding = "0";
 
-  // Si no existe la ventana real → usar preview (manteniendo recorte)
   if (!ventanaProyeccion || ventanaProyeccion.closed) {
-    // eliminar iframe antiguo si existe
     const oldFrame = contenedor.querySelector("#espejo-iframe");
     if (oldFrame) oldFrame.remove();
-
-    // mostrar preview
     contenedor.innerHTML = document.getElementById("preview-biblia").innerHTML;
     return;
   }
 
-  // dimensiones reales del proyector
-  const realW = (ventanaProyeccion.innerWidth || ventanaProyeccion.document.documentElement.clientWidth) || 1280;
-  const realH = (ventanaProyeccion.innerHeight || ventanaProyeccion.document.documentElement.clientHeight) || 720;
+  const realW = ventanaProyeccion.innerWidth || 1280;
+  const realH = ventanaProyeccion.innerHeight || 720;
 
-  // dimensiones del contenedor mini
   const miniW = contenedor.clientWidth;
   const miniH = contenedor.clientHeight;
   if (miniW === 0 || miniH === 0) return;
 
-  // calcular escala proporcional
-  // 🔥 Ajuste tipo "cover" para llenar la pantallita
-const escala = Math.max(miniW / realW, miniH / realH);
+  // 🔥 AJUSTE “CONTAIN” — NO RECORTA NADA, AJUSTA TODO
+  const escala = Math.min(miniW / realW, miniH / realH);
 
-
-  // eliminar iframe viejo si existe
   let iframe = contenedor.querySelector("#espejo-iframe");
   if (iframe) {
-    // si existe, reemplazamos su srcdoc para actualizar inmediatamente
     try {
       iframe.srcdoc = ventanaProyeccion.document.documentElement.outerHTML;
     } catch (e) {
-      // fallback: reconstruir iframe
       iframe.remove();
       iframe = null;
     }
   }
 
   if (!iframe) {
-    // crear iframe aislado
     iframe = document.createElement("iframe");
     iframe.id = "espejo-iframe";
-    iframe.setAttribute("sandbox", ""); // mayor aislamiento (puedes quitar si necesitas scripts)
+    iframe.setAttribute("sandbox", "");
     iframe.style.border = "0";
     iframe.style.position = "absolute";
     iframe.style.top = "0";
@@ -1911,61 +1898,50 @@ const escala = Math.max(miniW / realW, miniH / realH);
     iframe.style.width = realW + "px";
     iframe.style.height = realH + "px";
     iframe.style.transformOrigin = "top left";
-    iframe.style.willChange = "transform";
-    iframe.style.pointerEvents = "none"; // no interrumpir clicks
-    // insertar antes de setear srcdoc por velocidad
+    iframe.style.pointerEvents = "none";
+    iframe.style.imageRendering = "crisp-edges"; // 🆕 nitidez
     contenedor.innerHTML = "";
     contenedor.appendChild(iframe);
   } else {
-    // asegurar tamaño correcto si existe
     iframe.style.width = realW + "px";
     iframe.style.height = realH + "px";
   }
 
-  // volcar el HTML completo de la ventana de proyección dentro del iframe
   try {
     iframe.srcdoc = ventanaProyeccion.document.documentElement.outerHTML;
   } catch (e) {
     iframe.srcdoc = `<!doctype html><html>${ventanaProyeccion.document.documentElement.innerHTML}</html>`;
   }
 
-  // ============================================
-  // 🔥🔥 AGREGADO: FORZAR FONDO EN EL IFRAME 🔥🔥
-  // ============================================
   iframe.onload = () => {
     try {
       const body = iframe.contentDocument.body;
       body.style.backgroundSize = "cover";
       body.style.backgroundPosition = "center";
       body.style.backgroundRepeat = "no-repeat";
-    } catch (err) {
-      console.warn("No se pudo ajustar el fondo del iframe", err);
-    }
+
+      // 🆕 Evitar borrosidad al escalar texto
+      body.style.transform = "translateZ(0)";
+      body.style.backfaceVisibility = "hidden";
+
+    } catch {}
   };
-  // ============================================
 
+  // 🔥 CENTRADO SIN RECORTE (contain)
+  const offsetX = (miniW - realW * escala) / 2;
+  const offsetY = (miniH - realH * escala) / 2;
 
-  // Centrar visualmente el iframe dentro del contenedor:
-  // --- NUEVO: evitar recortes al escalar ---
-  // después de escalar siempre se corta un lado, así que corregimos el offset real
-  const scaledW = realW * escala;
-  const scaledH = realH * escala;
-
-  // centrado correcto estilo "object-fit: cover"
-  const offsetX = (miniW - scaledW) / 2;
-  const offsetY = (miniH - scaledH) / 2;
-
-  iframe.style.top = offsetY + "px";
   iframe.style.left = offsetX + "px";
+  iframe.style.top = offsetY + "px";
 
-  // aplicar escala manteniendo top-left como referencia
-  iframe.style.transformOrigin = "top left";
+  // 🆕 Escalado nítido y suave
   iframe.style.transform = `scale(${escala})`;
+  iframe.style.transformOrigin = "top left";
+  iframe.style.willChange = "transform";
 
-
-  // evitar fondo que tape el iframe
   contenedor.style.backgroundImage = "none";
 }
+
 
 
 
@@ -3105,6 +3081,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
