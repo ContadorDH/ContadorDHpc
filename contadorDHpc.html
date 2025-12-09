@@ -2073,7 +2073,21 @@ function actualizarVentanaBiblia(ref, texto) {
       color:var(--texto); font-family:'Segoe UI',sans-serif;
     }
     .biblia-wrapper { width:100%; height:100%; padding:5vh 4vw; display:flex; justify-content:center; align-items:center; box-sizing:border-box; }
-    .biblia-texto { font-size:25vw; font-weight:700; line-height:1.12; text-align:center; white-space:pre-wrap; overflow-wrap:break-word; }
+    .biblia-texto {
+      font-size:25vw;
+      font-weight:700;
+      line-height:1.12;
+      text-align:center;
+      white-space:pre-wrap;
+      overflow-wrap:break-word;
+
+      /* CONTORNO BLANCO */
+      text-shadow:
+        -3px -3px 6px #fff,
+         3px -3px 6px #fff,
+        -3px  3px 6px #fff,
+         3px  3px 6px #fff;
+    }
     .cita-mini { font-size:0.65em; font-family:"Segoe UI Semilight"; opacity:0.85; }
   </style>
   <div class="biblia-wrapper">
@@ -2126,7 +2140,7 @@ function renderPantallaLocal(contenedor, ref, texto) {
         display: flex;
         justify-content: center;
         align-items: center;
-        box-sizing: border-box;
+        box-sizing:border-box;
       }
 
       .biblia-texto-local {
@@ -2139,12 +2153,19 @@ function renderPantallaLocal(contenedor, ref, texto) {
         white-space: pre-wrap;
         overflow-wrap: break-word;
         font-size: 25vw;
+
+        /* CONTORNO BLANCO */
+        text-shadow:
+          -3px -3px 6px #fff,
+           3px -3px 6px #fff,
+          -3px  3px 6px #fff,
+           3px  3px 6px #fff;
       }
 
       .cita-mini {
         font-size: 0.65em;
         font-family: "Segoe UI Semilight", sans-serif;
-        opacity: 0.85;
+        opacity:0.85;
       }
     </style>
   `;
@@ -2181,6 +2202,7 @@ function renderPantallaLocal(contenedor, ref, texto) {
   el.dataset.ref = ref;
   el.dataset.texto = texto;
 }
+
 
   
 
@@ -2914,6 +2936,7 @@ document.getElementById("btnFondoBiblia").style.display = "inline-flex";
 </script>
 </body>
 </html>
+
 
 
 
