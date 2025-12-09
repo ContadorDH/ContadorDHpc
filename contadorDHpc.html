@@ -1866,7 +1866,12 @@ function actualizarEspejoLocal() {
   if (!ventanaProyeccion || ventanaProyeccion.closed) {
     const oldFrame = contenedor.querySelector("#espejo-iframe");
     if (oldFrame) oldFrame.remove();
-    contenedor.innerHTML = document.getElementById("preview-biblia").innerHTML;
+   // 🔥 Si no hay proyección → NO mostrar último versículo (evita la confusión)
+const preview = document.getElementById("preview-biblia");
+contenedor.innerHTML = preview && preview.dataset.activo === "1"
+  ? preview.innerHTML 
+  : `<div class="sin-proyeccion">Sin proyección</div>`;
+
     return;
   }
 
@@ -1954,6 +1959,7 @@ function actualizarEspejoLocal() {
 
 // ====== FUNCIÓN PRINCIPAL: AL TOCAR UN VERSÍCULO EN BIBLIA ======
 function ver(ref) {
+  document.getElementById("preview-biblia").dataset.activo = "1";
   const contenedorTexto = document.getElementById("t");
   const key = ref.toLowerCase();
 
@@ -3111,6 +3117,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
