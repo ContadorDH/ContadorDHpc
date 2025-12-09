@@ -2473,50 +2473,42 @@ document.getElementById("btnLogo").addEventListener("click", async () => {
 
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
     if (logoUrl) {
+      // VERSIÓN DEFINITIVA: logo completo, sin recortar, llena al máximo
       ventanaProyeccion.document.body.innerHTML = `
-        <div style="
-          width: 100vw;
-          height: 100vh;
-          background: #000;
-          margin: 0;
-          padding: 0;
-          overflow: hidden;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        ">
-          <img src="${logoUrl}" style="
+        <style>
+          body, html {
+            margin:0; padding:0; height:100%; width:100%; 
+            background: #000;
+            overflow:hidden;
+          }
+          .logo-full {
             width: 100vw;
             height: 100vh;
-            object-fit: cover;           /* ESTO ES LO QUE LO HACE LLENAR TODO */
-            object-position: center;
-            image-rendering: -webkit-optimize-contrast;
-            filter: brightness(1.05) contrast(1.1); /* leve mejora visual */
-          ">
-        </div>
-
-        <!-- EFECTO DE ENTRADA SUAVE (opcional pero queda brutal) -->
-        <style>
-          img {
-            animation: entradaLogo 1.2s ease-out forwards;
+            background: url("${logoUrl}") center center / contain no-repeat;
+            background-color: #000;
           }
-          @keyframes entradaLogo {
-            from { opacity: 0; transform: scale(1.08); }
+          /* Efecto de entrada suave (opcional pero queda precioso) */
+          .logo-full {
+            animation: fadeIn 1s ease-out;
+          }
+          @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
             to   { opacity: 1; transform: scale(1); }
           }
         </style>
+        <div class="logo-full"></div>
       `;
 
-      // Forzamos que el espejo local también se actualice bien
+      // Forzar espejo local (siempre funciona)
       setTimeout(actualizarEspejoLocal, 150);
 
     } else {
+      // Sin logo → mensaje bonito
       ventanaProyeccion.document.body.innerHTML = `
         <div style="width:100vw;height:100vh;background:#000;color:#555;display:flex;flex-direction:column;
           justify-content:center;align-items:center;gap:32px;font-family:'Segoe UI',sans-serif">
           <i class="fa-solid fa-image fa-7x" style="opacity:0.15"></i>
-          <p style="font-size:2.2em;opacity:0.7">No hay logo configurado</p>
-          <p style="opacity:0.5;font-size:1.3em">Toca el ícono en el menú lateral</p>
+          <h2 style="opacity:0.7;font-size:2.4em;margin:0">No hay logo configurado</h2>
         </div>
       `;
       setTimeout(actualizarEspejoLocal, 150);
@@ -3491,6 +3483,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
