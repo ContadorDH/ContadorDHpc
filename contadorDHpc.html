@@ -1326,7 +1326,7 @@ line-height:2;z-index:99;">
   </button>
 
  <button id="btnEnVivo" class="btn-accion">
-    <i class="fas fa-broadcast-tower"></i> EN VIVO
+   <i class="fas fa-video"></i> EN VIVO
 </button>
 
 
@@ -1865,21 +1865,41 @@ function actualizarEspejoLocal() {
   contenedor.style.overflow = "hidden";
   contenedor.style.padding = "0";
 
-  // ⭐ 1) SI NO HAY PANTALLA FÍSICA → Mostrar PREVIEW LOCAL
-  if (!ventanaProyeccion || ventanaProyeccion.closed) {
-    const iframe = contenedor.querySelector("#espejo-iframe");
-    if (iframe) iframe.remove(); // quitar espejo
+  // 🔍 Detectar si la pantalla real está vacía
+  const proyeccionRealVacia =
+    ventanaProyeccion &&
+    !ventanaProyeccion.closed &&
+    ventanaProyeccion.document.getElementById("texto-proyectado") &&
+    ventanaProyeccion.document.getElementById("texto-proyectado").innerHTML.trim() === "";
 
-    // usar preview-biblia como miniatura
-    const preview = document.getElementById("preview-biblia");
-    if (preview) {
-      contenedor.innerHTML = preview.innerHTML;
-    }
+  // -------------------------------------------------------
+  // 🛑 CASO: No hay pantalla real abierta
+  // -------------------------------------------------------
+  if (!ventanaProyeccion || ventanaProyeccion.closed) {
+    const oldFrame = contenedor.querySelector("#espejo-iframe");
+    if (oldFrame) oldFrame.remove();
+
+    // 🆕 Si no hay nada proyectado realmente → espejo vacío también
+    const textoPreview = document.getElementById("preview-biblia")?.innerHTML || "";
+    contenedor.innerHTML = textoPreview.trim() === "" ? "" : textoPreview;
 
     return;
   }
 
-  // ⭐ 2) SI HAY PANTALLA FÍSICA → mostrar espejo exacto con iframe
+  // -------------------------------------------------------
+  // 🛑 CASO: La pantalla real está abierta pero está limpia
+  // -------------------------------------------------------
+  if (proyeccionRealVacia) {
+    const oldFrame = contenedor.querySelector("#espejo-iframe");
+    if (oldFrame) oldFrame.remove();
+    contenedor.innerHTML = ""; // 🆕 mostrar vacío como la proyección real
+    return;
+  }
+
+  // -------------------------------------------------------
+  // 🟢 ESPEJO NORMAL (pantalla real activa con contenido)
+  // -------------------------------------------------------
+
   const realW = ventanaProyeccion.innerWidth || 1280;
   const realH = ventanaProyeccion.innerHeight || 720;
 
@@ -1889,8 +1909,15 @@ function actualizarEspejoLocal() {
 
   const escala = Math.min(miniW / realW, miniH / realH);
 
-  // buscar iframe
   let iframe = contenedor.querySelector("#espejo-iframe");
+  if (iframe) {
+    try {
+      iframe.srcdoc = ventanaProyeccion.document.documentElement.outerHTML;
+    } catch (e) {
+      iframe.remove();
+      iframe = null;
+    }
+  }
 
   if (!iframe) {
     iframe = document.createElement("iframe");
@@ -1898,21 +1925,24 @@ function actualizarEspejoLocal() {
     iframe.setAttribute("sandbox", "");
     iframe.style.border = "0";
     iframe.style.position = "absolute";
+    iframe.style.top = "0";
+    iframe.style.left = "0";
+    iframe.style.width = realW + "px";
+    iframe.style.height = realH + "px";
+    iframe.style.transformOrigin = "top left";
     iframe.style.pointerEvents = "none";
     iframe.style.imageRendering = "crisp-edges";
     contenedor.innerHTML = "";
     contenedor.appendChild(iframe);
+  } else {
+    iframe.style.width = realW + "px";
+    iframe.style.height = realH + "px";
   }
 
-  // tamaño real
-  iframe.style.width = realW + "px";
-  iframe.style.height = realH + "px";
-
-  // recargar contenido espejo
   try {
     iframe.srcdoc = ventanaProyeccion.document.documentElement.outerHTML;
-  } catch {
-    iframe.srcdoc = "<html>" + ventanaProyeccion.document.documentElement.innerHTML + "</html>";
+  } catch (e) {
+    iframe.srcdoc = `<!doctype html><html>${ventanaProyeccion.document.documentElement.innerHTML}</html>`;
   }
 
   iframe.onload = () => {
@@ -1926,7 +1956,6 @@ function actualizarEspejoLocal() {
     } catch {}
   };
 
-  // centrar y escalar
   const offsetX = (miniW - realW * escala) / 2;
   const offsetY = (miniH - realH * escala) / 2;
 
@@ -1938,6 +1967,7 @@ function actualizarEspejoLocal() {
 
   contenedor.style.backgroundImage = "none";
 }
+
 
 
 
@@ -3134,6 +3164,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
