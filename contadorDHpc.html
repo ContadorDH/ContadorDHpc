@@ -939,24 +939,22 @@ body.tema-oscuro #q,
 
 
 /* Contenedor de las dos pantallas – ahora perfecto */
-/* Contenedor de las dos pantallas */
 #pantallas-container {
   display: flex;
-  gap: 30px;
+  gap: 30px;                /* separación bonita entre pantallas */
   justify-content: center;
   align-items: center;
-  flex: 1;
+  flex: 1;                  /* ocupa TODO el espacio que sobra */
   padding: 0 20px;
   box-sizing: border-box;
-  min-width: 0;
+  min-width: 0;             /* necesario para que flex funcione bien */
 }
 
-/* LAS PANTALLAS – única definición (mantén esta) */
+/* LAS PANTALLAS – esta es la clave mágica que nunca falla */
 .pantalla {
-  /* deja que el layout flex las posicione, pero forzamos proporción 16:9 */
-  flex: 1 1 0;
-  max-width: 48%;
-  min-width: 320px;
+  flex: 1;                          /* cada pantalla ocupa el mismo espacio */
+  max-width: 48%;                   /* nunca más del 48% cada una → caben seguro */
+  min-width: 380px;                 /* tamaño mínimo legible */
   aspect-ratio: 16 / 9;
   background: var(--fondo);
   border: 4px solid #333;
@@ -968,10 +966,9 @@ body.tema-oscuro #q,
   align-items: center;
   box-sizing: border-box;
   position: relative;
-  overflow: hidden; /* importante: recorta el espejo si algo se sale */
 }
 
-/* Control de texto en cada pantalla (sin cambios importantes) */
+/* Texto perfectamente adaptativo y centrado */
 .pantalla-texto {
   width: 100%;
   height: 100%;
@@ -986,19 +983,8 @@ body.tema-oscuro #q,
   word-wrap: break-word;
   padding: 10px;
   box-sizing: border-box;
-  font-size: clamp(1.8rem, 4.8vw, 6rem);
+  font-size: clamp(1.8rem, 4.8vw, 6rem);   /* tamaño ideal en cualquier pantalla */
 }
-
-
-  /* Helpers para el mirror escalado */
-.pantallita-mirror-viewport { width:100%; height:100%; box-sizing:border-box; }
-.pantallita-mirror-viewport > .pantallita-mirror-scale { display:block; box-sizing:border-box; }
-
-  /* Mirror helpers (aseguran que el viewport del mirror ocupe el 100% y no rompa layout) */
-#proyeccion-biblia .pantallita-mirror-viewport { width:100%; height:100%; box-sizing:border-box; position:relative; }
-#proyeccion-biblia .pantallita-mirror-scale { display:block; box-sizing:border-box; transform-origin: top left; }
-
-
 
 .pantalla-texto .cita-mini {
   font-size: 0.5em;
@@ -1846,6 +1832,35 @@ function cerrarCapitulos() {
   lista.innerHTML = "";
 }
 
+function actualizarEspejoLocal() {
+  const contenedor = document.getElementById("proyeccion-texto");
+  if (!contenedor) return;
+
+  // Si la ventana física aún no existe → mostrar preview igual al preview real
+  if (!ventanaProyeccion || ventanaProyeccion.closed) {
+    contenedor.innerHTML = document.getElementById("preview-texto").innerHTML;
+    return;
+  }
+
+  // ⚡ COPIAR EXACTO lo que está proyectando la pantalla real
+  const nodoReal = ventanaProyeccion.document.getElementById("textoAutoFit");
+  if (!nodoReal) return;
+
+  // Copia de HTML EXACTA (misma cita, mismo estilo, mismo contorno)
+  contenedor.innerHTML = `
+    <div class="biblia-wrapper-local">
+      <div class="biblia-texto-local">
+        ${nodoReal.innerHTML}
+      </div>
+    </div>
+  `;
+
+  // Aplicar los mismos estilos de tamaño para que sea espejo perfecto
+  const font = window.getComputedStyle(nodoReal).fontSize;
+  contenedor.querySelector(".biblia-texto-local").style.fontSize = font;
+}
+
+
   
 
 // ====== FUNCIÓN PRINCIPAL: AL TOCAR UN VERSÍCULO EN BIBLIA ======
@@ -1862,7 +1877,9 @@ contenedorTexto.innerHTML = `
   renderPantallaLocal("preview-texto", ref, biblia[key]);
 
   // ---- NUEVO: PROYECCIÓN LOCAL (copia en miniatura) ----
-  renderPantallaLocal("proyeccion-texto", ref, biblia[key]);
+// ---- PROYECCIÓN LOCAL — ESPEJO EXACTO DE LA PANTALLA FÍSICA ----
+actualizarEspejoLocal();
+
 
   // Solo si estamos en la sección Biblia → proyectar automáticamente
   if (document.getElementById("biblia-container").style.display !== "none") {
@@ -1908,25 +1925,14 @@ async function abrirVentanaBiblia(ref, texto) {
   // Aplicar contenido
   actualizarVentanaBiblia(ref, texto);
 
-  // --- 🔥 AÑADIDO: sincronizar espejo inmediatamente ---
-  try { sincronizarPantallitaConProyeccion(); } catch(e){}
-
   // Detectar cierre automático
   const timer = setInterval(() => {
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       clearInterval(timer);
-      
-      // --- 🔥 AÑADIDO: limpiar interval de sincronización ---
-      if (window._syncIntervalId) {
-        clearInterval(window._syncIntervalId);
-        window._syncIntervalId = null;
-      }
-
       ventanaProyeccion = null;
     }
   }, 500);
 }
-
 
 
   
@@ -2032,12 +2038,12 @@ document.getElementById("btnEnVivo").addEventListener("click", () => {
     ventanaProyeccion.document.body.style.backgroundRepeat = "no-repeat";
   }
 
-  // 2️⃣ COPIAR HTML EXACTO DEL PREVIEW
+  // 2️⃣ COPIAR EXACTAMENTE EL HTML DEL PREVIEW
   const previewHTML = document.querySelector("#preview-texto .biblia-texto-local").innerHTML;
 
   const cajaLive = ventanaProyeccion.document.getElementById("textoAutoFit");
   if (cajaLive) {
-    cajaLive.innerHTML = previewHTML;
+    cajaLive.innerHTML = previewHTML;   // ← AQUÍ LA MAGIA
   }
 
   // 3️⃣ GUARDAR ESTADO REAL
@@ -2047,10 +2053,9 @@ document.getElementById("btnEnVivo").addEventListener("click", () => {
 
   console.log("EN VIVO enviado (formato idéntico al preview).");
 
-  // ⭐⭐⭐ NUEVO: actualizar pantallita espejo
-  sincronizarPantallitaConProyeccion();
-});
+  actualizarEspejoLocal();
 
+});
 
 
 
@@ -2073,113 +2078,6 @@ document.getElementById("pantallaSelect").addEventListener("change", async () =>
     await abrirVentanaBiblia(refActual, textoActual);
   }
 });
-
-
-
-// --- Espejo escalado (VERSIÓN CORREGIDA) ---
-function sincronizarPantallitaConProyeccion() {
-  const destino = document.getElementById("proyeccion-texto");
-  if (!destino) return;
-
-  // si la ventana no existe, limpiar interval si lo hay y salir
-  if (!ventanaProyeccion || ventanaProyeccion.closed) {
-    if (window._syncIntervalId) { clearInterval(window._syncIntervalId); window._syncIntervalId = null; }
-    return;
-  }
-
-  try {
-    // 1) Obtener HTML del body de la ventana física, pero quitar scripts
-    let htmlReal = ventanaProyeccion.document.body.innerHTML || "";
-    // eliminar scripts por seguridad (no queremos ejecutar nada aquí)
-    htmlReal = htmlReal.replace(/<script[\s\S]*?<\/script>/gi, "");
-
-    // 2) Recopilar SOLO el CSS desde <style> en la ventana física (no todo el head)
-    const estilosArr = [];
-    const styleEls = ventanaProyeccion.document.querySelectorAll("style");
-    styleEls.forEach(s => { if (s.innerHTML && s.innerHTML.trim()) estilosArr.push(s.innerHTML); });
-    const estilosConcat = estilosArr.join("\n\n");
-
-    // 3) Montar wrapper (inner tendrá las dimensiones reales en px)
-    destino.innerHTML = `
-      <div class="pantallita-mirror-viewport">
-        <div class="pantallita-mirror-scale" id="__mirror_inner" aria-hidden="true">
-          ${htmlReal}
-        </div>
-      </div>
-    `;
-
-    // 4) Añadir los estilos reales dentro de un <style> en el destino
-    //    (solo el CSS, no el head completo)
-    const styleTag = document.createElement("style");
-    styleTag.dataset.from = "proyeccion-mirror";
-    styleTag.innerHTML = estilosConcat;
-    // eliminar estilos anteriores generados por el mirror
-    const prev = destino.querySelector('style[data-from="proyeccion-mirror"]');
-    if (prev) prev.remove();
-    destino.appendChild(styleTag);
-
-    // 5) Calcular dimensiones reales de la ventana física (fuente para el scale)
-    const srcW = ventanaProyeccion.innerWidth || ventanaProyeccion.document.documentElement.clientWidth || 1280;
-    const srcH = ventanaProyeccion.innerHeight || ventanaProyeccion.document.documentElement.clientHeight || 720;
-
-    // 6) Obtener viewport del destino y el inner
-    const viewport = destino.querySelector(".pantallita-mirror-viewport");
-    const inner = destino.querySelector("#__mirror_inner");
-    if (!viewport || !inner) return;
-
-    // asegurar que inner actúe como un lienzo con las dimensiones reales
-    inner.style.width = srcW + "px";
-    inner.style.height = srcH + "px";
-    inner.style.boxSizing = "border-box";
-    inner.style.transformOrigin = "top left";
-    inner.style.pointerEvents = "none"; // evitar interacciones accidentales
-
-    // 7) Calcular escala para que el inner quepa proporcionalmente en el viewport
-    const dstRect = viewport.getBoundingClientRect();
-    const dstW = Math.max(10, dstRect.width);
-    const dstH = Math.max(10, dstRect.height);
-    const scale = Math.min(dstW / srcW, dstH / srcH);
-
-    inner.style.transform = `scale(${scale})`;
-
-    // 8) Centrar el contenido escalado dentro del viewport
-    viewport.style.display = "flex";
-    viewport.style.justifyContent = "center";
-    viewport.style.alignItems = "center";
-    viewport.style.overflow = "hidden";
-    viewport.style.width = "100%";
-    viewport.style.height = "100%";
-
-    // 9) Mantener actualizado el scale si cambia tamaño (ligero interval)
-    if (!window._syncIntervalId) {
-      window._syncIntervalId = setInterval(() => {
-        try {
-          if (!ventanaProyeccion || ventanaProyeccion.closed) {
-            clearInterval(window._syncIntervalId);
-            window._syncIntervalId = null;
-            return;
-          }
-          const sW = ventanaProyeccion.innerWidth || ventanaProyeccion.document.documentElement.clientWidth || srcW;
-          const sH = ventanaProyeccion.innerHeight || ventanaProyeccion.document.documentElement.clientHeight || srcH;
-          const vRect = destino.querySelector(".pantallita-mirror-viewport").getBoundingClientRect();
-          const dW = Math.max(10, vRect.width), dH = Math.max(10, vRect.height);
-          const sc = Math.min(dW / sW, dH / sH);
-          const inn = destino.querySelector("#__mirror_inner");
-          if (inn) {
-            inn.style.width = sW + "px";
-            inn.style.height = sH + "px";
-            inn.style.transform = `scale(${sc})`;
-          }
-        } catch (err) { /* silencioso */ }
-      }, 300);
-    }
-
-  } catch (err) {
-    console.warn("sincronizarPantallitaConProyeccion fallo:", err);
-  }
-}
-
-
 
 
   
@@ -2254,10 +2152,10 @@ function actualizarVentanaBiblia(ref, texto) {
   ventanaProyeccion.referenciaActual = ref;
   ventanaProyeccion.textoActual = texto;
 
-  // ⭐⭐ NUEVO: sin afectar nada → copiar exactamente lo proyectado
-  sincronizarPantallitaConProyeccion();
-}
+  
+  actualizarEspejoLocal();
 
+}
 
 
 function renderPantallaLocal(contenedor, ref, texto) {
@@ -3075,13 +2973,3 @@ document.getElementById("btnFondoBiblia").style.display = "inline-flex";
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
