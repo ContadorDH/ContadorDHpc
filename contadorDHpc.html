@@ -1588,8 +1588,9 @@ function mostrarVersiculos(nombre, cap, versiculos) {
 
   versiculos.forEach(v => {
     const ref = `${nombre} ${cap}:${v.verse}`;
-    r.innerHTML += `<div class="vers" onclick="ver('${ref}')">
+   r.innerHTML += `<div class="vers" onclick="verDobleClick('${ref}')">
     <b>${v.verse}</b> ${v.text}</div>`;
+
   });
 }
 
@@ -1663,7 +1664,8 @@ function buscar() {
         : biblia[ref];
 
       r.innerHTML += `
-        <div class="vers" onclick="ver('${ref}')" ${marca}>
+      <div class="vers" onclick="verDobleClick('${ref}')" ${marca}>
+
           <b>${ref}</b><br>${texto}
         </div>`;
     });
@@ -1698,9 +1700,10 @@ function buscar() {
   }
 
   resultados.forEach(ref => {
-    r.innerHTML += `<div class="vers" onclick="ver('${ref}')">
+   r.innerHTML += `<div class="vers" onclick="verDobleClick('${ref}')">
       <b>${ref}</b><br>${biblia[ref]}
     </div>`;
+
   });
 }
 
@@ -1967,12 +1970,39 @@ contenedorTexto.innerHTML = `
 actualizarEspejoLocal();
 
 
-  // Solo si estamos en la sección Biblia → proyectar automáticamente
-  if (document.getElementById("biblia-container").style.display !== "none") {
-   proyectarBiblia(ref, biblia[key]);
-
-  }
+ 
 }
+
+
+// === DOBLE CLIC PARA PROYECTAR DE UNA ===
+let ultimoClick = 0;
+
+function verDobleClick(ref) {
+  const ahora = Date.now();
+
+  if (ahora - ultimoClick < 300) {
+    // 🔥 Doble clic → preview + proyección
+    ver(ref); // preview normal
+
+    const clave = ref.toLowerCase();
+    if (biblia[clave]) {
+      proyectarBiblia(ref, biblia[clave]);
+    } else {
+      console.warn("Versículo no encontrado en biblia:", ref);
+    }
+
+  } else {
+    // 👆 Un solo clic → solo preview
+    ver(ref);
+  }
+
+  ultimoClick = ahora;
+}
+
+
+
+
+  
 
 // ====== PROYECCIÓN AUTOMÁTICA DE BIBLIA (con pantalla seleccionada) ======
 async function proyectarBiblia(referencia, texto) {
@@ -3081,6 +3111,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
