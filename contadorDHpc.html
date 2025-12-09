@@ -3018,74 +3018,116 @@ await verHoy();                  // mostramos automáticamente "Hoy"
 
   
 document.addEventListener("DOMContentLoaded", () => {
-// Aplicar fondo guardado (si existe) al inicio
-if (fondoUrlGlobal && fondoUrlGlobal !== "") {
-  aplicarFondoEnPreviewYVar(fondoUrlGlobal);
-  // También aplicar en la variable CSS por compatibilidad
-  document.body.style.setProperty("--fondo-proyeccion-personalizado", `url("${fondoUrlGlobal}")`);
-}
+  // Aplicar fondo guardado (si existe) al inicio
+  try {
+    if (typeof fondoUrlGlobal !== "undefined" && fondoUrlGlobal && fondoUrlGlobal !== "") {
+      if (typeof aplicarFondoEnPreviewYVar === "function") {
+        aplicarFondoEnPreviewYVar(fondoUrlGlobal);
+      } else {
+        // por si la función no está todavía definida
+        document.body.style.setProperty("--fondo-proyeccion-personalizado", `url("${fondoUrlGlobal}")`);
+      }
+      document.body.style.setProperty("--fondo-proyeccion-personalizado", `url("${fondoUrlGlobal}")`);
+    }
+  } catch (e) {
+    console.warn("Error aplicando fondo inicial:", e);
+  }
 
-  
-  detectarPantallas();
+  // detectarPantallas puede no existir en entornos de prueba — comprobamos antes
+  if (typeof detectarPantallas === "function") {
+    try { detectarPantallas(); } catch (e) { console.warn("detectarPantallas falló:", e); }
+  }
 
   const tablaArriba = document.getElementById("tabla");
 
-  // Ocultar ambas secciones al iniciar
-  document.getElementById("subtitulo").style.display = "none";
-  document.querySelector(".panel").style.display = "none";  
-  document.getElementById("biblia-container").style.display = "flex";
-  tablaArriba.style.display = "none"; 
+  // Ocultar/mostrar con comprobaciones para no lanzar excepción si no existe el elemento
+  const subtituloEl = document.getElementById("subtitulo");
+  const panelEl = document.querySelector(".panel");
+  const bibliaContainer = document.getElementById("biblia-container");
+
+  if (subtituloEl) subtituloEl.style.display = "none";
+  if (panelEl) panelEl.style.display = "none";
+  if (bibliaContainer) bibliaContainer.style.display = "flex";
+  if (tablaArriba) tablaArriba.style.display = "none";
 
   // BOTÓN: CARGAR ASISTENCIA
-  document.getElementById("btnCargarAsistencia").addEventListener("click", () => {
-    document.getElementById("subtitulo").style.display = "flex";
-    document.querySelector(".panel").style.display = "flex";
-    document.getElementById("biblia-container").style.display = "none";
-    tablaArriba.style.display = "table";
-    cargarAlIniciar();
+  const btnCargarAsistencia = document.getElementById("btnCargarAsistencia");
+  if (btnCargarAsistencia) {
+    btnCargarAsistencia.addEventListener("click", () => {
+      if (subtituloEl) subtituloEl.style.display = "flex";
+      if (panelEl) panelEl.style.display = "flex";
+      if (bibliaContainer) bibliaContainer.style.display = "none";
+      if (tablaArriba) tablaArriba.style.display = "table";
 
-    // ✅🔥 MOSTRAR TODOS LOS BOTONES AL ENTRAR A ASISTENCIA
-    document.querySelector('button[onclick="verMesActual()"]').style.display = "inline-flex";
-    document.querySelector('button[onclick="verHoy()"]').style.display = "inline-flex";
-    document.getElementById("selectMes").style.display = "inline-flex";
-    document.querySelector('button[onclick="proyectar()"]').style.display = "inline-flex";
-    document.getElementById("pantallaSelect").style.display = "inline-flex";
-    document.getElementById("btnTema").style.display = "inline-flex";
+      // Llamada segura a cargarAlIniciar()
+      if (typeof cargarAlIniciar === "function") {
+        try { cargarAlIniciar(); } catch (e) { console.warn("cargarAlIniciar falló:", e); }
+      }
 
-    // Dentro del click de btnCargarAsistencia
-document.getElementById("btnLimpiarTexto").style.display = "none";
-document.getElementById("btnFondoBiblia").style.display = "none";
-  });
+      // Mostrar botones solo si existen
+      const btnVerMes = document.querySelector('button[onclick="verMesActual()"]');
+      const btnVerHoy = document.querySelector('button[onclick="verHoy()"]');
+      const selectMes = document.getElementById("selectMes");
+      const btnProyectar = document.querySelector('button[onclick="proyectar()"]');
+      const pantallaSelect = document.getElementById("pantallaSelect");
+      const btnTema = document.getElementById("btnTema");
 
+      if (btnVerMes) btnVerMes.style.display = "inline-flex";
+      if (btnVerHoy) btnVerHoy.style.display = "inline-flex";
+      if (selectMes) selectMes.style.display = "inline-flex";
+      if (btnProyectar) btnProyectar.style.display = "inline-flex";
+      if (pantallaSelect) pantallaSelect.style.display = "inline-flex";
+      if (btnTema) btnTema.style.display = "inline-flex";
 
+      // Dentro del click de btnCargarAsistencia
+      const btnLimpiar = document.getElementById("btnLimpiarTexto");
+      const btnFondo = document.getElementById("btnFondoBiblia");
+      if (btnLimpiar) btnLimpiar.style.display = "none";
+      if (btnFondo) btnFondo.style.display = "none";
+    });
+  }
 
   // BOTÓN: BIBLIA
-  document.getElementById("btnBiblia").addEventListener("click", () => {
-    document.getElementById("subtitulo").style.display = "none";
-    document.querySelector(".panel").style.display = "flex";  
-    document.getElementById("biblia-container").style.display = "flex";
-    tablaArriba.style.display = "none";
+  const btnBiblia = document.getElementById("btnBiblia");
+  if (btnBiblia) {
+    btnBiblia.addEventListener("click", () => {
+      if (subtituloEl) subtituloEl.style.display = "none";
+      if (panelEl) panelEl.style.display = "flex";
+      if (bibliaContainer) bibliaContainer.style.display = "flex";
+      if (tablaArriba) tablaArriba.style.display = "none";
 
-    // 🔥 Ocultar los botones que NO van en Biblia:
-    document.querySelector('button[onclick="verMesActual()"]').style.display = "none";
-    document.querySelector('button[onclick="verHoy()"]').style.display = "none";
-    document.getElementById("selectMes").style.display = "none";
-    document.querySelector('button[onclick="proyectar()"]').style.display = "none";
+      // Ocultar los botones que NO van en Biblia:
+      const btnVerMes = document.querySelector('button[onclick="verMesActual()"]');
+      const btnVerHoy = document.querySelector('button[onclick="verHoy()"]');
+      const selectMes = document.getElementById("selectMes");
+      const btnProyectar = document.querySelector('button[onclick="proyectar()"]');
 
-    // 🔥 Mostrar solo estos dos:
-    document.getElementById("pantallaSelect").style.display = "inline-flex";
-    document.getElementById("btnTema").style.display = "inline-flex";
+      if (btnVerMes) btnVerMes.style.display = "none";
+      if (btnVerHoy) btnVerHoy.style.display = "none";
+      if (selectMes) selectMes.style.display = "none";
+      if (btnProyectar) btnProyectar.style.display = "none";
 
-    // Dentro del click de btnBiblia (ya lo tienes)
-document.getElementById("btnLimpiarTexto").style.display = "inline-flex";
-document.getElementById("btnFondoBiblia").style.display = "inline-flex";
-  });
+      // Mostrar solo estos dos:
+      const pantallaSelect = document.getElementById("pantallaSelect");
+      const btnTema = document.getElementById("btnTema");
 
+      if (pantallaSelect) pantallaSelect.style.display = "inline-flex";
+      if (btnTema) btnTema.style.display = "inline-flex";
 
+      // Dentro del click de btnBiblia (ya lo tienes)
+      const btnLimpiar = document.getElementById("btnLimpiarTexto");
+      const btnFondo = document.getElementById("btnFondoBiblia");
+      if (btnLimpiar) btnLimpiar.style.display = "inline-flex";
+      if (btnFondo) btnFondo.style.display = "inline-flex";
+    });
+  }
 
-  // 🔥 Mostrar Biblia automáticamente al abrir
-  document.getElementById("btnBiblia").click();
+  // 🔥 Mostrar Biblia automáticamente al abrir (solo si existe el botón)
+  if (btnBiblia) {
+    try { btnBiblia.click(); } catch (e) { console.warn("No se pudo hacer click en btnBiblia:", e); }
+  }
 });
+
 
 
 
@@ -3096,6 +3138,7 @@ document.getElementById("btnFondoBiblia").style.display = "inline-flex";
 </script>
 </body>
 </html>
+
 
 
 
