@@ -1882,7 +1882,9 @@ function actualizarEspejoLocal() {
   if (miniW === 0 || miniH === 0) return;
 
   // calcular escala proporcional
-  const escala = Math.min(miniW / realW, miniH / realH);
+  // 🔥 Ajuste tipo "cover" para llenar la pantallita
+const escala = Math.max(miniW / realW, miniH / realH);
+
 
   // eliminar iframe viejo si existe
   let iframe = contenedor.querySelector("#espejo-iframe");
@@ -3099,6 +3101,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
