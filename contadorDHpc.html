@@ -2007,21 +2007,24 @@ document.getElementById("btnEnVivo").addEventListener("click", () => {
     ventanaProyeccion.document.body.style.backgroundRepeat = "no-repeat";
   }
 
-  // 2️⃣ NUEVO: TEXTO LIMPIO, SIN CAMBIAR DISEÑO
+  // 2️⃣ TEXTO + CITA (CON FORMATO CORRECTO)
   const previewEl = document.getElementById("preview-texto");
   const refPreview = previewEl.dataset.ref;
   const textoPreviewPlano = previewEl.dataset.texto;
 
   const cajaLive = ventanaProyeccion.document.getElementById("textoAutoFit");
   if (cajaLive) {
-    cajaLive.textContent = textoPreviewPlano + " " + refPreview;
+    cajaLive.innerHTML = `
+      ${textoPreviewPlano}
+      <span class="cita-mini">${refPreview}</span>
+    `;
   }
 
   // 3️⃣ Guardar valores reales para reabrir después
   if (refPreview) ventanaProyeccion.referenciaActual = refPreview;
   if (textoPreviewPlano) ventanaProyeccion.textoActual = textoPreviewPlano;
 
-  console.log("Contenido enviado EN VIVO sin reestilizar texto.");
+  console.log("Contenido enviado EN VIVO con cita formateada correctamente.");
 });
 
 
@@ -2914,6 +2917,7 @@ document.getElementById("btnFondoBiblia").style.display = "inline-flex";
 </script>
 </body>
 </html>
+
 
 
 
