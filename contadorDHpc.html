@@ -3280,7 +3280,22 @@ function actualizarIconoLogo() {
 
 
 
+function eliminarLogo() {
+  // Borras el logo de localStorage
+  localStorage.removeItem("logoProyeccion");
 
+  // Limpias la vista previa o donde se muestre el logo (si aplica)
+  const previewLogo = document.getElementById("preview-logo"); // ajusta el ID si es diferente
+  if (previewLogo) {
+    previewLogo.src = ""; 
+    previewLogo.style.display = "none";
+  }
+
+  // 🔥 ESTO ES LO QUE FALTABA: volver el ícono al estado "sin logo"
+  actualizarIconoLogo();
+}
+
+  
 
   
 document.addEventListener("DOMContentLoaded", () => {
@@ -3405,6 +3420,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
