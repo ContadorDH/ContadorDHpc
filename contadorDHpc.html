@@ -1171,6 +1171,41 @@ body.tema-oscuro .resultados-biblia .resaltado,
   0%, 100% { opacity: 0.7; transform: scale(1); }
   50%      { opacity: 1;   transform: scale(1.25); }
 }
+
+/* Botón Logo - estilo limpio */
+#btnLogo {
+  background: #2c3e50;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1em;
+}
+
+/* Botón PARAR - rojo fuerte, bien visible */
+#btnParar {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.4);
+  transition: all 0.3s ease;
+}
+
+#btnParar:hover {
+  background: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.6);
+}
+
+#btnParar:active {
+  transform: translateY(0);
+}
+
   
 </style>
 </head>
@@ -1367,12 +1402,22 @@ line-height:2;z-index:99;">
     <i class="fa-solid fa-image"></i> Fondo
   </button>
 
-<!-- TU BOTÓN ACTUALIZADO (reemplaza el actual) -->
-<button id="btnEnVivo" class="btn-accion">
-  <i id="iconoAntena" class="fas fa-broadcast-tower"></i>
-  <span id="textoEnVivo">EN VIVO</span>
-  <i id="indicadorVivo" class="fas fa-circle"></i>
-</button>
+  <!-- BOTÓN EN VIVO (con estado visual) -->
+  <button id="btnEnVivo" class="btn-accion">
+    <i id="iconoAntena" class="fas fa-broadcast-tower"></i>
+    <span id="textoEnVivo">EN VIVO</span>
+    <i id="indicadorVivo" class="fas fa-circle"></i>
+  </button>
+
+  <!-- NUEVO: Botón Logo (puedes poner tu logo aquí) -->
+  <button id="btnLogo" class="btn-icono" title="Mostrar logo">
+    <i class="fa-solid fa-play"></i> <!-- Cambia este ícono por tu logo o imagen -->
+  </button>
+
+  <!-- NUEVO: Botón PARAR (detiene todo) -->
+  <button id="btnParar" class="btn-parar" title="Detener proyección">
+    <i class="fa-solid fa-stop"></i> PARAR
+  </button>
 
   <button id="btnTema" class="btn-icono" title="Cambiar tema"><i class="fa-solid fa-palette"></i></button>
 </div>
@@ -2256,7 +2301,47 @@ document.getElementById("btnEnVivo").addEventListener("click", async () => {
 
 
 
+// ====== BOTÓN PARAR: Detiene todo y vuelve EN VIVO al estado inicial ======
+document.getElementById("btnParar").addEventListener("click", () => {
+  // 1. Cerrar ventana de proyección si está abierta
+  if (ventanaProyeccion && !ventanaProyeccion.closed) {
+    ventanaProyeccion.close();
+    ventanaProyeccion = null;
+  }
 
+  // 2. Limpiar preview local
+  const previewTexto = document.getElementById("preview-texto");
+  if (previewTexto) {
+    previewTexto.textContent = "";
+    previewTexto.dataset.ref = "";
+    previewTexto.dataset.texto = "";
+  }
+
+  // 3. Limpiar espejo
+  actualizarEspejoLocal();
+
+  // 4. Volver botón EN VIVO al estado inicial (antena visible, sin círculo)
+  actualizarIndicadorEnVivo();
+
+  console.log("Proyección detenida completamente");
+});
+
+// ====== (Opcional) Botón Logo: ejemplo para proyectar un logo (puedes personalizar) ======
+document.getElementById("btnLogo").addEventListener("click", async () => {
+  // Aquí puedes proyectar un logo, fondo negro, o lo que quieras
+  if (!ventanaProyeccion || ventanaProyeccion.closed) {
+    await abrirVentanaBiblia("", ""); // abre ventana vacía
+  }
+  if (ventanaProyeccion && !ventanaProyeccion.closed) {
+    ventanaProyeccion.document.body.innerHTML = `
+      <div style="width:100vw;height:100vh;display:flex;justify-content:center;align-items:center;background:#000">
+        <img src="ruta/a/tu/logo.png" style="max-width:80%;max-height:80%;object-fit:contain;">
+      </div>
+    `;
+    actualizarEspejoLocal();
+    actualizarIndicadorEnVivo();
+  }
+});
 
 
 
@@ -3195,6 +3280,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
