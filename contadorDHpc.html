@@ -1856,18 +1856,18 @@ function actualizarEspejoLocal() {
   const contenedor = document.getElementById("proyeccion-texto");
   if (!contenedor) return;
 
-  // Asegurar recorte y reset de padding del contenedor
+  /* 🔥 AGREGADO: forzar que el contenedor sea un viewport 16:9 */
+  contenedor.style.aspectRatio = "16 / 9";
+  contenedor.style.width = "100%";
+  contenedor.style.maxHeight = "100%";
   contenedor.style.position = "relative";
   contenedor.style.overflow = "hidden";
   contenedor.style.padding = "0";
 
-  // Si no existe la ventana real → usar preview (manteniendo recorte)
+  // Si no existe la ventana real → usar preview
   if (!ventanaProyeccion || ventanaProyeccion.closed) {
-    // eliminar iframe antiguo si existe
     const oldFrame = contenedor.querySelector("#espejo-iframe");
     if (oldFrame) oldFrame.remove();
-
-    // mostrar preview
     contenedor.innerHTML = document.getElementById("preview-biblia").innerHTML;
     return;
   }
@@ -1887,21 +1887,18 @@ function actualizarEspejoLocal() {
   // eliminar iframe viejo si existe
   let iframe = contenedor.querySelector("#espejo-iframe");
   if (iframe) {
-    // si existe, reemplazamos su srcdoc para actualizar inmediatamente
     try {
       iframe.srcdoc = ventanaProyeccion.document.documentElement.outerHTML;
     } catch (e) {
-      // fallback: reconstruir iframe
       iframe.remove();
       iframe = null;
     }
   }
 
   if (!iframe) {
-    // crear iframe aislado
     iframe = document.createElement("iframe");
     iframe.id = "espejo-iframe";
-    iframe.setAttribute("sandbox", ""); // mayor aislamiento (puedes quitar si necesitas scripts)
+    iframe.setAttribute("sandbox", "");
     iframe.style.border = "0";
     iframe.style.position = "absolute";
     iframe.style.top = "0";
@@ -1910,44 +1907,37 @@ function actualizarEspejoLocal() {
     iframe.style.height = realH + "px";
     iframe.style.transformOrigin = "top left";
     iframe.style.willChange = "transform";
-    iframe.style.pointerEvents = "none"; // no interrumpir clicks
-    // insertar antes de setear srcdoc por velocidad
+    iframe.style.pointerEvents = "none";
+
     contenedor.innerHTML = "";
     contenedor.appendChild(iframe);
   } else {
-    // asegurar tamaño correcto si existe
     iframe.style.width = realW + "px";
     iframe.style.height = realH + "px";
   }
 
-  // volcar el HTML completo de la ventana de proyección dentro del iframe
   try {
-    // usar outerHTML del documentElement para incluir <style> y todo
     iframe.srcdoc = ventanaProyeccion.document.documentElement.outerHTML;
   } catch (e) {
-    // fallback: copiar body.innerHTML dentro de un simple HTML
     iframe.srcdoc = `<!doctype html><html>${ventanaProyeccion.document.documentElement.innerHTML}</html>`;
   }
 
-  // Centrar visualmente el iframe dentro del contenedor:
-  // El iframe se escala con transform: scale(escala). Para que visualmente esté centrado,
-  // la posición que hay que asignar antes de escalar es: top = (miniH/escala - realH)/2, left = (miniW/escala - realW)/2
+  // centrar antes del escalado
   const topBeforeScale = (miniH / escala - realH) / 2;
   const leftBeforeScale = (miniW / escala - realW) / 2;
 
-  // Evitar NaN o valores demasiado grandes
   const safeTop = Number.isFinite(topBeforeScale) ? topBeforeScale : 0;
   const safeLeft = Number.isFinite(leftBeforeScale) ? leftBeforeScale : 0;
 
   iframe.style.top = safeTop + "px";
   iframe.style.left = safeLeft + "px";
 
-  // Aplicar escala
+  // aplicar escala real → mini
   iframe.style.transform = `scale(${escala})`;
 
-  // (Opcional) asegurar que el contenedor no tenga fondo que tape el iframe
   contenedor.style.backgroundImage = "none";
 }
+
 
 
 
@@ -2047,8 +2037,14 @@ document.getElementById("btnFondoBiblia").addEventListener("click", () => {
 
     const reader = new FileReader();
     reader.onload = (ev) => {
-
       fondoUrlGlobal = ev.target.result;
+
+      // Guardar en localStorage para persistencia
+      try {
+        localStorage.setItem("fondoProyeccion", fondoUrlGlobal);
+      } catch (err) {
+        console.warn("No se pudo guardar fondo en localStorage:", err);
+      }
 
       // Guardar en variable CSS personalizada (se mantiene igual)
       document.body.style.setProperty(
@@ -2056,19 +2052,10 @@ document.getElementById("btnFondoBiblia").addEventListener("click", () => {
         `url("${fondoUrlGlobal}")`
       );
 
-      // ================================
-      //   SOLO APLICAR AL PREVIEW
-      // ================================
-      const preview = document.getElementById("preview-biblia");
-      if (preview) {
-        preview.style.backgroundImage = `url("${fondoUrlGlobal}")`;
-        preview.style.backgroundSize = "cover";
-        preview.style.backgroundPosition = "center";
-        preview.style.backgroundRepeat = "no-repeat";
-      }
+      // Aplicar al preview y asegurar cover
+      aplicarFondoEnPreviewYVar(fondoUrlGlobal);
 
-      // ❌ YA NO SE APLICA A LA VENTANA FÍSICA AQUÍ
-      //    Eso ahora solo lo hace el botón "En Vivo".
+      // Nota: la ventana física se actualizará cuando pulses "En Vivo" o al abrirla
     };
 
     reader.readAsDataURL(file);
@@ -2076,6 +2063,7 @@ document.getElementById("btnFondoBiblia").addEventListener("click", () => {
 
   input.click();
 });
+
 
 
 document.getElementById("btnLimpiarTexto").addEventListener("click", () => {
@@ -2101,14 +2089,48 @@ document.getElementById("btnLimpiarTexto").addEventListener("click", () => {
 function aplicarFondoPersonalizado(ventana) {
   if (!ventana || ventana.closed) return;
 
+  // Preferir el fondo global guardado si existe
   const preview = document.getElementById("preview-biblia");
   const fondoPreview = getComputedStyle(preview).backgroundImage;
+  const fondoParaUsar = (fondoUrlGlobal && fondoUrlGlobal !== "") ? `url("${fondoUrlGlobal}")` : (fondoPreview && fondoPreview !== "none" ? fondoPreview : "");
 
-  if (fondoPreview && fondoPreview !== "none") {
-    ventana.document.body.style.backgroundImage = fondoPreview;
+  if (fondoParaUsar) {
+    // Aplicar inline al body de la ventana de proyección con cover/center/no-repeat
+    ventana.document.body.style.backgroundImage = fondoParaUsar;
     ventana.document.body.style.backgroundSize = "cover";
     ventana.document.body.style.backgroundPosition = "center";
     ventana.document.body.style.backgroundRepeat = "no-repeat";
+
+    // Asegurar que el html también no tenga márgenes que muevan el contenido
+    try {
+      ventana.document.documentElement.style.margin = "0";
+      ventana.document.body.style.margin = "0";
+    } catch (e) {
+      // no romper si cross-origin o similar
+    }
+  }
+}
+
+
+// carga inicial: si hay fondo guardado en localStorage, lo usamos
+let fondoUrlGlobal = localStorage.getItem("fondoProyeccion") || "";
+
+
+
+  // Aplica el fondo guardado al preview y a la variable CSS --fondo-proyeccion-personalizado
+function aplicarFondoEnPreviewYVar(fondoUrl) {
+  if (!fondoUrl) return;
+
+  // Guardar la variable CSS para que otras funciones la usen
+  document.body.style.setProperty("--fondo-proyeccion-personalizado", `url("${fondoUrl}")`);
+
+  // Aplicar al preview visualmente (cover, center)
+  const preview = document.getElementById("preview-biblia");
+  if (preview) {
+    preview.style.backgroundImage = `url("${fondoUrl}")`;
+    preview.style.backgroundSize = "cover";
+    preview.style.backgroundPosition = "center";
+    preview.style.backgroundRepeat = "no-repeat";
   }
 }
 
@@ -2996,6 +3018,14 @@ await verHoy();                  // mostramos automáticamente "Hoy"
 
   
 document.addEventListener("DOMContentLoaded", () => {
+// Aplicar fondo guardado (si existe) al inicio
+if (fondoUrlGlobal && fondoUrlGlobal !== "") {
+  aplicarFondoEnPreviewYVar(fondoUrlGlobal);
+  // También aplicar en la variable CSS por compatibilidad
+  document.body.style.setProperty("--fondo-proyeccion-personalizado", `url("${fondoUrlGlobal}")`);
+}
+
+  
   detectarPantallas();
 
   const tablaArriba = document.getElementById("tabla");
@@ -3066,6 +3096,7 @@ document.getElementById("btnFondoBiblia").style.display = "inline-flex";
 </script>
 </body>
 </html>
+
 
 
 
