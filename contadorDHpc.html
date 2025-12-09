@@ -1922,16 +1922,28 @@ function actualizarEspejoLocal() {
 
   // volcar el HTML completo de la ventana de proyección dentro del iframe
   try {
-    // usar outerHTML del documentElement para incluir <style> y todo
     iframe.srcdoc = ventanaProyeccion.document.documentElement.outerHTML;
   } catch (e) {
-    // fallback: copiar body.innerHTML dentro de un simple HTML
     iframe.srcdoc = `<!doctype html><html>${ventanaProyeccion.document.documentElement.innerHTML}</html>`;
   }
 
+  // ============================================
+  // 🔥🔥 AGREGADO: FORZAR FONDO EN EL IFRAME 🔥🔥
+  // ============================================
+  iframe.onload = () => {
+    try {
+      const body = iframe.contentDocument.body;
+      body.style.backgroundSize = "cover";
+      body.style.backgroundPosition = "center";
+      body.style.backgroundRepeat = "no-repeat";
+    } catch (err) {
+      console.warn("No se pudo ajustar el fondo del iframe", err);
+    }
+  };
+  // ============================================
+
+
   // Centrar visualmente el iframe dentro del contenedor:
-  // El iframe se escala con transform: scale(escala). Para que visualmente esté centrado,
-  // la posición que hay que asignar antes de escalar es: top = (miniH/escala - realH)/2, left = (miniW/escala - realW)/2
   const topBeforeScale = (miniH / escala - realH) / 2;
   const leftBeforeScale = (miniW / escala - realW) / 2;
 
@@ -1945,10 +1957,9 @@ function actualizarEspejoLocal() {
   // Aplicar escala
   iframe.style.transform = `scale(${escala})`;
 
-  // (Opcional) asegurar que el contenedor no tenga fondo que tape el iframe
+  // evitar fondo que tape el iframe
   contenedor.style.backgroundImage = "none";
 }
-
 
 
 
@@ -3088,6 +3099,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
