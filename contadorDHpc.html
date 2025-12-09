@@ -2459,6 +2459,10 @@ document.getElementById("btnConfigLogo")?.addEventListener("touchstart", (e) => 
   e.preventDefault();
   // (Opcional) soporte táctil para móviles
 });
+
+
+
+  
 // BOTÓN LOGO DEL PANEL PRINCIPAL (proyecta el logo guardado) 
 document.getElementById("btnLogo").addEventListener("click", async () => {
   const logoUrl = localStorage.getItem("logoProyeccion");
@@ -2469,33 +2473,53 @@ document.getElementById("btnLogo").addEventListener("click", async () => {
 
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
     if (logoUrl) {
-      // VERSIÓN PRO: llena toda la pantalla grande, pero se ve bien en el espejo
       ventanaProyeccion.document.body.innerHTML = `
         <div style="
-          width:100vw; height:100vh; background:#000; 
-          display:flex; justify-content:center; align-items:center;
-          margin:0; padding:0; overflow:hidden;
+          width: 100vw;
+          height: 100vh;
+          background: #000;
+          margin: 0;
+          padding: 0;
+          overflow: hidden;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         ">
           <img src="${logoUrl}" style="
-            width:100%; height:100%; 
-            object-fit: contain;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;           /* ESTO ES LO QUE LO HACE LLENAR TODO */
             object-position: center;
+            image-rendering: -webkit-optimize-contrast;
+            filter: brightness(1.05) contrast(1.1); /* leve mejora visual */
           ">
         </div>
+
+        <!-- EFECTO DE ENTRADA SUAVE (opcional pero queda brutal) -->
+        <style>
+          img {
+            animation: entradaLogo 1.2s ease-out forwards;
+          }
+          @keyframes entradaLogo {
+            from { opacity: 0; transform: scale(1.08); }
+            to   { opacity: 1; transform: scale(1); }
+          }
+        </style>
       `;
 
-      // AÑADE ESTO: fuerza que el espejo local también lo muestre bien
-      setTimeout(actualizarEspejoLocal, 100);
+      // Forzamos que el espejo local también se actualice bien
+      setTimeout(actualizarEspejoLocal, 150);
 
     } else {
       ventanaProyeccion.document.body.innerHTML = `
         <div style="width:100vw;height:100vh;background:#000;color:#555;display:flex;flex-direction:column;
-          justify-content:center;align-items:center;gap:28px;font-family:'Segoe UI',sans-serif">
-          <i class="fa-solid fa-image fa-6x" style="opacity:0.15"></i>
-          <p style="font-size:2em;opacity:0.7">No hay logo configurado</p>
+          justify-content:center;align-items:center;gap:32px;font-family:'Segoe UI',sans-serif">
+          <i class="fa-solid fa-image fa-7x" style="opacity:0.15"></i>
+          <p style="font-size:2.2em;opacity:0.7">No hay logo configurado</p>
+          <p style="opacity:0.5;font-size:1.3em">Toca el ícono en el menú lateral</p>
         </div>
       `;
-      setTimeout(actualizarEspejoLocal, 100);
+      setTimeout(actualizarEspejoLocal, 150);
     }
 
     actualizarIndicadorEnVivo();
@@ -3467,6 +3491,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
