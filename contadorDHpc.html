@@ -1305,6 +1305,9 @@ line-height:2;z-index:99;">
     <i class="fa-solid fa-image"></i> Fondo
   </button>
 
+  <button id="btnEnVivo" class="btn-accion">EN VIVO</button>
+
+
   <button id="btnTema" class="btn-icono" title="Cambiar tema"><i class="fa-solid fa-palette"></i></button>
 </div>
 
@@ -1964,15 +1967,49 @@ document.getElementById("btnLimpiarTexto").addEventListener("click", () => {
 // Función auxiliar
 function aplicarFondoPersonalizado(ventana) {
   if (!ventana || ventana.closed) return;
-  const fondoUrl = getComputedStyle(document.body).getPropertyValue("--fondo-proyeccion-personalizado").trim();
-  if (fondoUrl && fondoUrl !== "none" && fondoUrl !== "") {
-    ventana.document.body.style.background = fondoUrl;
+
+  const preview = document.getElementById("preview-biblia");
+  const fondoPreview = getComputedStyle(preview).backgroundImage;
+
+  if (fondoPreview && fondoPreview !== "none") {
+    ventana.document.body.style.backgroundImage = fondoPreview;
     ventana.document.body.style.backgroundSize = "cover";
     ventana.document.body.style.backgroundPosition = "center";
     ventana.document.body.style.backgroundRepeat = "no-repeat";
   }
 }
 
+
+
+document.getElementById("btnEnVivo").addEventListener("click", () => {
+  if (!ventanaProyeccion || ventanaProyeccion.closed) {
+    console.warn("La pantalla física no está abierta aún.");
+    return;
+  }
+
+  // Aplicar fondo al LIVE OUTPUT
+  const fondoUrl = getComputedStyle(document.getElementById("preview-biblia"))
+                     .backgroundImage;
+
+  if (fondoUrl && fondoUrl !== "none") {
+    ventanaProyeccion.document.body.style.backgroundImage = fondoUrl;
+    ventanaProyeccion.document.body.style.backgroundSize = "cover";
+    ventanaProyeccion.document.body.style.backgroundPosition = "center";
+    ventanaProyeccion.document.body.style.backgroundRepeat = "no-repeat";
+  }
+
+  // Copiar texto actual del preview al Live
+  const previewTexto = document.getElementById("preview-texto").innerHTML;
+  
+  const cajaLive = ventanaProyeccion.document.getElementById("textoAutoFit");
+  if (cajaLive) {
+    cajaLive.innerHTML = previewTexto;
+  }
+
+  console.log("Contenido enviado EN VIVO (como EasyWorship)");
+});
+
+  
 
   // === ACTUALIZAR BIBLIA CUANDO SE CAMBIA DE PANTALLA ===
 document.getElementById("pantallaSelect").addEventListener("change", async () => {
@@ -2857,3 +2894,4 @@ document.getElementById("btnFondoBiblia").style.display = "inline-flex";
 </script>
 </body>
 </html>
+
