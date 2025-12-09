@@ -2007,12 +2007,12 @@ document.getElementById("btnEnVivo").addEventListener("click", () => {
     ventanaProyeccion.document.body.style.backgroundRepeat = "no-repeat";
   }
 
-  // 2️⃣ COPIAR EXACTAMENTE EL HTML DEL PREVIEW
+  // 2️⃣ COPIAR HTML EXACTO DEL PREVIEW
   const previewHTML = document.querySelector("#preview-texto .biblia-texto-local").innerHTML;
 
   const cajaLive = ventanaProyeccion.document.getElementById("textoAutoFit");
   if (cajaLive) {
-    cajaLive.innerHTML = previewHTML;   // ← AQUÍ LA MAGIA
+    cajaLive.innerHTML = previewHTML;
   }
 
   // 3️⃣ GUARDAR ESTADO REAL
@@ -2021,7 +2021,11 @@ document.getElementById("btnEnVivo").addEventListener("click", () => {
   ventanaProyeccion.textoActual = previewEl.dataset.texto || "";
 
   console.log("EN VIVO enviado (formato idéntico al preview).");
+
+  // ⭐⭐⭐ NUEVO: actualizar pantallita espejo
+  sincronizarPantallitaConProyeccion();
 });
+
 
 
 
@@ -2044,6 +2048,36 @@ document.getElementById("pantallaSelect").addEventListener("change", async () =>
     await abrirVentanaBiblia(refActual, textoActual);
   }
 });
+
+
+
+ function sincronizarPantallitaConProyeccion() {
+  const destino = document.getElementById("proyeccion-texto");
+  if (!destino) return;
+
+  // Si no hay ventana física abierta → no sincronizar
+  if (!ventanaProyeccion || ventanaProyeccion.closed) return;
+
+  try {
+    const htmlReal = ventanaProyeccion.document.body.innerHTML;
+    const estilos = ventanaProyeccion.document.head ? ventanaProyeccion.document.head.innerHTML : "";
+
+    // COPIA EXACTA del contenido real de la pantalla física
+    destino.innerHTML = `
+      <div class="pantallita-mirror">
+        ${htmlReal}
+      </div>
+    `;
+
+    // Copia del CSS real dentro de la pantallita
+    const styleTag = document.createElement("style");
+    styleTag.innerHTML = estilos;
+    destino.appendChild(styleTag);
+
+  } catch (e) {
+    console.warn("No se pudo sincronizar la pantallita:", e);
+  }
+}
 
 
   
@@ -2117,8 +2151,11 @@ function actualizarVentanaBiblia(ref, texto) {
   // ⭐ NUEVO — necesario para reabrir Biblia al mover pantallas
   ventanaProyeccion.referenciaActual = ref;
   ventanaProyeccion.textoActual = texto;
-  
+
+  // ⭐⭐ NUEVO: sin afectar nada → copiar exactamente lo proyectado
+  sincronizarPantallitaConProyeccion();
 }
+
 
 
 function renderPantallaLocal(contenedor, ref, texto) {
@@ -2936,6 +2973,7 @@ document.getElementById("btnFondoBiblia").style.display = "inline-flex";
 </script>
 </body>
 </html>
+
 
 
 
