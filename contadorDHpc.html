@@ -1480,6 +1480,35 @@ line-height:2;z-index:99;">
       <button class="btn-icono" onclick="Pantallas()">
         <i class="fa-solid fa-tv"></i>
       </button>
+
+
+
+  <!-- CONFIGURAR LOGO PERSONALIZADO -->
+  <div style="background:rgba(255,255,255,0.08);border-radius:16px;padding:18px;margin:18px 0;border:1px solid rgba(255,255,255,0.12);box-shadow:0 6px 24px rgba(0,0,0,0.3)">
+    <h3 style="margin:0 0 14px;font-size:17px;color:#58a6ff;font-weight:700;display:flex;align-items:center;gap:10px">
+      <i class="fa-solid fa-image"></i> Logo Personalizado
+    </h3>
+    <p style="margin:0 0 16px;font-size:14px;opacity:0.9;line-height:1.5">
+      Selecciona una imagen para mostrar con el botón <strong>Logo</strong> en el panel principal.
+    </p>
+    
+    <div id="contenedorLogoPreview" style="width:100%;height:140px;background:#111;border:2px dashed rgba(255,255,255,0.2);border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:14px;position:relative">
+      <img id="previewLogo" src="" style="max-width:90%;max-height:90%;object-fit:contain;display:none;border-radius:8px">
+      <div id="placeholderLogo" style="color:rgba(255,255,255,0.4);font-size:14px;text-align:center">
+        <i class="fa-solid fa-image fa-3x" style="margin-bottom:8px;opacity:0.3"></i><br>
+        Ningún logo seleccionado
+      </div>
+    </div>
+
+    <button id="btnSeleccionarLogo" style="width:100%;background:var(--acento);color:white;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;transition:all .3s">
+      <i class="fa-solid fa-upload"></i> Seleccionar Imagen
+    </button>
+    <button id="btnQuitarLogo" style="width:100%;margin-top:8px;background:#e74c3c;color:white;border:none;padding:12px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;display:none;transition:all .3s">
+      <i class="fa-solid fa-trash"></i> Quitar Logo
+    </button>
+  </div>
+
+    
   </div>
 
   <!-- BOTÓN CERRAR (SIN TOCAR) -->
@@ -2327,23 +2356,83 @@ document.getElementById("btnParar").addEventListener("click", () => {
 });
 
 // ====== (Opcional) Botón Logo: ejemplo para proyectar un logo (puedes personalizar) ======
+// ====== BOTÓN PARA SELECCIONAR LOGO ======
+document.getElementById("btnSeleccionarLogo").addEventListener("click", () => {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "image/png,image/jpeg,image/gif,image/webp,image/svg";
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const url = ev.target.result;
+
+      // Guardar en localStorage
+      localStorage.setItem("logoProyeccion", url);
+
+      // Mostrar preview
+      const preview = document.getElementById("previewLogo");
+      const placeholder = document.getElementById("placeholderLogo");
+      const btnQuitar = document.getElementById("btnQuitarLogo");
+
+      preview.src = url;
+      preview.style.display = "block";
+      placeholder.style.display = "none";
+      btnQuitar.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  };
+  input.click();
+});
+
+// ====== BOTÓN QUITAR LOGO ======
+document.getElementById("btnQuitarLogo").addEventListener("click", () => {
+  localStorage.removeItem("logoProyeccion");
+  document.getElementById("previewLogo").src = "";
+  document.getElementById("previewLogo").style.display = "none";
+  document.getElementById("placeholderLogo").style.display = "flex";
+  document.getElementById("btnQuitarLogo").style.display = "none";
+});
+
+// ====== MODIFICAR EL BOTÓN LOGO DEL PANEL PRINCIPAL (ahora usa el logo guardado) ======
 document.getElementById("btnLogo").addEventListener("click", async () => {
-  // Aquí puedes proyectar un logo, fondo negro, o lo que quieras
+  const logoUrl = localStorage.getItem("logoProyeccion");
+
+  // Abrir ventana si no existe
   if (!ventanaProyeccion || ventanaProyeccion.closed) {
-    await abrirVentanaBiblia("", ""); // abre ventana vacía
+    await abrirVentanaBiblia("", "");
   }
+
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
-    ventanaProyeccion.document.body.innerHTML = `
-      <div style="width:100vw;height:100vh;display:flex;justify-content:center;align-items:center;background:#000">
-        <img src="ruta/a/tu/logo.png" style="max-width:80%;max-height:80%;object-fit:contain;">
-      </div>
-    `;
+    if (logoUrl) {
+      // Mostrar el logo personalizado
+      ventanaProyeccion.document.body.innerHTML = `
+        <div style="width:100vw;height:100vh;background:#000;display:flex;justify-content:center;align-items:center;padding:10vh;box-sizing:border-box">
+          <img src="${logoUrl}" style="max-width:90%;max-height:90%;object-fit:contain;border-radius:12px;box-shadow:0 20px 40px rgba(0,0,0,0.8)">
+        </div>
+      `;
+    } else {
+      // Si no hay logo, mostrar mensaje bonito
+      ventanaProyeccion.document.body.innerHTML = `
+        <div style="width:100vw;height:100vh;background:#000;color:white;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:'Segoe UI',sans-serif;gap:20px">
+          <i class="fa-solid fa-image fa-5x" style="opacity:0.3"></i>
+          <h2 style="opacity:0.7;font-weight:300">Ningún logo configurado</h2>
+          <p style="opacity:0.5;font-size:1.1em">Ve al menú lateral y selecciona una imagen</p>
+        </div>
+      `;
+    }
+
+    // Actualizar espejo y estado EN VIVO
     actualizarEspejoLocal();
     actualizarIndicadorEnVivo();
   }
 });
 
 
+
+  
 
   
 
@@ -3280,6 +3369,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
