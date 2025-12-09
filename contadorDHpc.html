@@ -2476,45 +2476,34 @@ document.getElementById("btnLogo").addEventListener("click", async () => {
       ventanaProyeccion.document.body.innerHTML = `
         <style>
           * { margin:0; padding:0; }
-          body, html { width:100vw; height:100vh; background:#000; overflow:hidden; }
-          
-          .fondo-difuminado {
-            position: fixed;
-            top: -10%; left: -10%; right: -10%; bottom: -10%;
-            background: url("${logoUrl}") center center / cover no-repeat;
-            filter: blur(40px) brightness(0.4);
-            transform: scale(1.1);
-            z-index: 1;
+          body, html { 
+            width: 100vw; 
+            height: 100vh; 
+            overflow: hidden; 
+            background: #000;
           }
-          
-          .logo-principal {
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            max-width: 96vw;
-            max-height: 96vh;
-            object-fit: contain;
-            z-index: 2;
-            animation: aparecer 1.4s ease-out;
+          .logo-estirado {
+            width: 100vw;
+            height: 100vh;
+            object-fit: fill;           /* ESTO ES LO QUE TÚ QUERÍAS */
+            /* object-fit: fill = se estira al 100% aunque se deforme */
           }
-          
-          @keyframes aparecer {
-            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
-            to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+          img {
+            animation: entrar 1.2s ease-out;
+          }
+          @keyframes entrar {
+            from { opacity: 0; transform: scale(1.05); }
+            to   { opacity: 1; transform: scale(1); }
           }
         </style>
 
-        <!-- Fondo difuminado del mismo logo (llena toda la pantalla) -->
-        <div class="fondo-difuminado"></div>
-        
-        <!-- Logo nítido y completo en el centro -->
-        <img src="${logoUrl}" class="logo-principal">
+        <img src="${logoUrl}" class="logo-estirado">
       `;
 
-      setTimeout(actualizarEspejoLocal, 200);
+      // El espejo local también se actualiza perfecto
+      setTimeout(actualizarEspejoLocal, 150);
 
     } else {
-      // Sin logo
       ventanaProyeccion.document.body.innerHTML = `
         <div style="width:100vw;height:100vh;background:#000;color:#555;display:flex;flex-direction:column;
           justify-content:center;align-items:center;gap:32px;font-family:'Segoe UI',sans-serif">
@@ -2522,12 +2511,16 @@ document.getElementById("btnLogo").addEventListener("click", async () => {
           <h2 style="opacity:0.7;font-size:2.4em;margin:0">No hay logo configurado</h2>
         </div>
       `;
-      setTimeout(actualizarEspejoLocal, 200);
+      setTimeout(actualizarEspejoLocal, 150);
     }
 
     actualizarIndicadorEnVivo();
   }
 });
+
+
+
+  
   // === ACTUALIZAR BIBLIA CUANDO SE CAMBIA DE PANTALLA ===
 document.getElementById("pantallaSelect").addEventListener("change", async () => {
   // Si la ventana de Biblia ya está abierta, reabrirla en la nueva pantalla
@@ -3493,6 +3486,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
