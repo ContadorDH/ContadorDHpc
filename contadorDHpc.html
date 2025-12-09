@@ -1990,35 +1990,39 @@ function aplicarFondoPersonalizado(ventana) {
 
 
 
-// ====== BOTÓN EN VIVO (sin cambios, mantiene sincronización) ======
 document.getElementById("btnEnVivo").addEventListener("click", () => {  
   if (!ventanaProyeccion || ventanaProyeccion.closed) {
     console.warn("La pantalla física no está abierta aún.");
     return;
   }
 
-  // Copiar contenido del preview al live
-  const previewHTML = document.querySelector("#preview-texto .biblia-texto-local").innerHTML;
-  const cajaLive = ventanaProyeccion.document.getElementById("textoAutoFit");
-  if (cajaLive) cajaLive.innerHTML = previewHTML;
+  // 1️⃣ FONDO — IGUAL
+  const preview = document.getElementById("preview-biblia");
+  const fondoPreview = getComputedStyle(preview).backgroundImage;
 
-  // Actualizar miniatura de proyección para reflejar exactamente lo mismo
-  const proyMini = document.getElementById("proyeccion-texto");
-  if (proyMini) {
-    proyMini.innerHTML = cajaLive.innerHTML;
-    proyMini.style.backgroundImage = ventanaProyeccion.document.body.style.backgroundImage;
-    proyMini.style.backgroundSize = "cover";
-    proyMini.style.backgroundPosition = "center";
-    proyMini.style.backgroundRepeat = "no-repeat";
+  if (fondoPreview && fondoPreview !== "none") {
+    ventanaProyeccion.document.body.style.backgroundImage = fondoPreview;
+    ventanaProyeccion.document.body.style.backgroundSize = "cover";
+    ventanaProyeccion.document.body.style.backgroundPosition = "center";
+    ventanaProyeccion.document.body.style.backgroundRepeat = "no-repeat";
   }
 
-  // Guardar estado real
+  // 2️⃣ COPIAR EXACTAMENTE EL HTML DEL PREVIEW
+  const previewHTML = document.querySelector("#preview-texto .biblia-texto-local").innerHTML;
+
+  const cajaLive = ventanaProyeccion.document.getElementById("textoAutoFit");
+  if (cajaLive) {
+    cajaLive.innerHTML = previewHTML;   // ← AQUÍ LA MAGIA
+  }
+
+  // 3️⃣ GUARDAR ESTADO REAL
   const previewEl = document.getElementById("preview-texto");
   ventanaProyeccion.referenciaActual = previewEl.dataset.ref || "";
   ventanaProyeccion.textoActual = previewEl.dataset.texto || "";
 
-  console.log("EN VIVO enviado y miniatura sincronizada con pantalla física.");
+  console.log("EN VIVO enviado (formato idéntico al preview).");
 });
+
 
 
 
@@ -2117,7 +2121,6 @@ function actualizarVentanaBiblia(ref, texto) {
 }
 
 
-// ================= SINCRONIZAR MINI-PANTALLA CON PROYECCIÓN REAL =================
 function renderPantallaLocal(contenedor, ref, texto) {
   const el = document.getElementById(contenedor);
   if (!el) return;
@@ -2137,7 +2140,7 @@ function renderPantallaLocal(contenedor, ref, texto) {
         display: flex;
         justify-content: center;
         align-items: center;
-        box-sizing: border-box;
+        box-sizing:border-box;
       }
 
       .biblia-texto-local {
@@ -2167,35 +2170,37 @@ function renderPantallaLocal(contenedor, ref, texto) {
     </style>
   `;
 
-  // ----- AUTO-FIT -----
+  // ----- AUTO-FIT (sin cambios) -----
   const caja = el.querySelector("#textoAutoFitLocal");
-  let min = 20, max = 900, best = min;
+
+  let min = 20;
+  let max = 900;
+  let best = min;
+
   const maxW = el.clientWidth * 0.95;
   const maxH = el.clientHeight * 0.92;
 
   while (min <= max) {
     let mid = Math.floor((min + max) / 2);
     caja.style.fontSize = mid + "px";
-    const fits = caja.scrollWidth <= maxW && caja.scrollHeight <= maxH;
-    if (fits) { best = mid; min = mid + 2; } else { max = mid - 2; }
+
+    const fits =
+      caja.scrollWidth <= maxW &&
+      caja.scrollHeight <= maxH;
+
+    if (fits) {
+      best = mid;
+      min = mid + 2;
+    } else {
+      max = mid - 2;
+    }
   }
+
   caja.style.fontSize = best + "px";
 
   // ----- NUEVO: Guardar referencia y texto -----
   el.dataset.ref = ref;
   el.dataset.texto = texto;
-
-  // ====== SINCRONIZAR AUTOMÁTICAMENTE CON LA PANTALLA FÍSICA ======
-  if (ventanaProyeccion && !ventanaProyeccion.closed) {
-    const liveTexto = ventanaProyeccion.document.getElementById("textoAutoFit");
-    if (liveTexto) caja.innerHTML = liveTexto.innerHTML;
-    // También sincronizar fondo
-    const fondoLive = ventanaProyeccion.document.body.style.backgroundImage;
-    el.style.backgroundImage = fondoLive;
-    el.style.backgroundSize = "cover";
-    el.style.backgroundPosition = "center";
-    el.style.backgroundRepeat = "no-repeat";
-  }
 }
 
 
@@ -2931,8 +2936,6 @@ document.getElementById("btnFondoBiblia").style.display = "inline-flex";
 </script>
 </body>
 </html>
-
-
 
 
 
