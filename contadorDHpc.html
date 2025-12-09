@@ -1411,7 +1411,7 @@ line-height:2;z-index:99;">
 
   <!-- NUEVO: Botón Logo (puedes poner tu logo aquí) -->
   <button id="btnLogo" class="btn-icono" title="Mostrar logo">
-    <i class="fa-solid fa-play"></i> <!-- Cambia este ícono por tu logo o imagen -->
+    <i class="fas fa-image"></i> <!-- Cambia este ícono por tu logo o imagen -->
   </button>
 
   <!-- NUEVO: Botón PARAR (detiene todo) -->
@@ -2464,60 +2464,76 @@ document.getElementById("btnConfigLogo")?.addEventListener("touchstart", (e) => 
 
   
 // BOTÓN LOGO DEL PANEL PRINCIPAL (proyecta el logo guardado) 
+// Variable global para recordar el contenido anterior
+let contenidoAnteriorProyeccion = null;
+
 document.getElementById("btnLogo").addEventListener("click", async () => {
   const logoUrl = localStorage.getItem("logoProyeccion");
+  const btnLogo = document.getElementById("btnLogo"); // referencia al botón
 
+  // Abrir ventana si no existe
   if (!ventanaProyeccion || ventanaProyeccion.closed) {
     await abrirVentanaBiblia("", "");
   }
+  if (!ventanaProyeccion || ventanaProyeccion.closed) return;
 
-  if (ventanaProyeccion && !ventanaProyeccion.closed) {
-    if (logoUrl) {
-      ventanaProyeccion.document.body.innerHTML = `
-        <style>
-          * { margin:0; padding:0; }
-          body, html { 
-            width: 100vw; 
-            height: 100vh; 
-            overflow: hidden; 
-            background: #000;
-          }
-          .logo-estirado {
-            width: 100vw;
-            height: 100vh;
-            object-fit: fill;           /* ESTO ES LO QUE TÚ QUERÍAS */
-            /* object-fit: fill = se estira al 100% aunque se deforme */
-          }
-          img {
-            animation: entrar 1.2s ease-out;
-          }
-          @keyframes entrar {
-            from { opacity: 0; transform: scale(1.05); }
-            to   { opacity: 1; transform: scale(1); }
-          }
-        </style>
-
-        <img src="${logoUrl}" class="logo-estirado">
-      `;
-
-      // El espejo local también se actualiza perfecto
-      setTimeout(actualizarEspejoLocal, 150);
-
-    } else {
-      ventanaProyeccion.document.body.innerHTML = `
-        <div style="width:100vw;height:100vh;background:#000;color:#555;display:flex;flex-direction:column;
-          justify-content:center;align-items:center;gap:32px;font-family:'Segoe UI',sans-serif">
-          <i class="fa-solid fa-image fa-7x" style="opacity:0.15"></i>
-          <h2 style="opacity:0.7;font-size:2.4em;margin:0">No hay logo configurado</h2>
-        </div>
-      `;
-      setTimeout(actualizarEspejoLocal, 150);
-    }
-
+  // Si no hay logo guardado → solo aviso
+  if (!logoUrl) {
+    ventanaProyeccion.document.body.innerHTML = `
+      <div style="width:100vw;height:100vh;background:#000;color:#555;display:flex;flex-direction:column;
+        justify-content:center;align-items:center;gap:32px;font-family:'Segoe UI',sans-serif">
+        <i class="fa-solid fa-image fa-7x" style="opacity:0.15"></i>
+        <h2 style="opacity:0.7;font-size:2.4em;margin:0">No hay logo configurado</h2>
+      </div>
+    `;
+    setTimeout(actualizarEspejoLocal, 150);
     actualizarIndicadorEnVivo();
+    return;
   }
-});
 
+  // Detectar si YA estamos mostrando el logo (por clase o por contenido)
+  const yaEstaMostrandoLogo = ventanaProyeccion.document.body.querySelector(".logo-estirado") !== null ||
+                              ventanaProyeccion.document.body.innerHTML.includes("object-fit: fill");
+
+  if (yaEstaMostrandoLogo && contenidoAnteriorProyeccion) {
+    // VOLVER AL CONTENIDO ANTERIOR
+    ventanaProyeccion.document.body.innerHTML = contenidoAnteriorProyeccion;
+    contenidoAnteriorProyeccion = null;
+
+    // Botón vuelve a color normal
+    btnLogo.style.backgroundColor = "";
+    btnLogo.style.color = "";
+
+  } else {
+    // MOSTRAR EL LOGO (guardamos lo que había antes)
+    contenidoAnteriorProyeccion = ventanaProyeccion.document.body.innerHTML;
+
+    ventanaProyeccion.document.body.innerHTML = `
+      <style>
+        * { margin:0; padding:0; }
+        body, html { width:100vw; height:100vh; overflow:hidden; background:#000; }
+        .logo-estirado {
+          width: 100vw; height: 100vh; object-fit: fill;
+          animation: entrar 1s ease-out;
+        }
+        @keyframes entrar {
+          from { opacity: 0; transform: scale(1.04); }
+          to   { opacity: 1; transform: scale(1); }
+        }
+      </style>
+      <img src="${logoUrl}" class="logo-estirado">
+    `;
+
+    // Botón se pone azul (indicador visual de que el logo está activo)
+    btnLogo.style.backgroundColor = "#1e88e5";
+    btnLogo.style.color = "white";
+    btnLogo.style.boxShadow = "0 0 12px rgba(30, 136, 229, 0.6)";
+  }
+
+  // Actualizar espejo y estado en vivo
+  setTimeout(actualizarEspejoLocal, 150);
+  actualizarIndicadorEnVivo();
+});
 
 
   
@@ -3486,6 +3502,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
