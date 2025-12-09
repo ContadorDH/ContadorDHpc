@@ -2466,9 +2466,11 @@ document.getElementById("btnConfigLogo")?.addEventListener("touchstart", (e) => 
 // Variable global para recordar el contenido anterior
 let contenidoAnteriorProyeccion = null;
 
+let logoEstaActivo = false;  // ← Esta es la clave
+
 document.getElementById("btnLogo").addEventListener("click", async () => {
   const logoUrl = localStorage.getItem("logoProyeccion");
-  const btnLogo = document.getElementById("btnLogo"); // referencia al botón
+  const btnLogo = document.getElementById("btnLogo");
 
   // Abrir ventana si no existe
   if (!ventanaProyeccion || ventanaProyeccion.closed) {
@@ -2476,7 +2478,7 @@ document.getElementById("btnLogo").addEventListener("click", async () => {
   }
   if (!ventanaProyeccion || ventanaProyeccion.closed) return;
 
-  // Si no hay logo guardado → solo aviso
+  // Si no hay logo → solo aviso
   if (!logoUrl) {
     ventanaProyeccion.document.body.innerHTML = `
       <div style="width:100vw;height:100vh;background:#000;color:#555;display:flex;flex-direction:column;
@@ -2490,22 +2492,21 @@ document.getElementById("btnLogo").addEventListener("click", async () => {
     return;
   }
 
-  // Detectar si YA estamos mostrando el logo
-  const yaEstaMostrandoLogo = ventanaProyeccion.document.body.querySelector(".logo-estirado") !== null ||
-                              ventanaProyeccion.document.body.innerHTML.includes("object-fit: fill");
-
-  if (yaEstaMostrandoLogo && contenidoAnteriorProyeccion) {
-    // VOLVER AL CONTENIDO ANTERIOR
-    ventanaProyeccion.document.body.innerHTML = contenidoAnteriorProyeccion;
+  if (logoEstaActivo) {
+    // === OCULTAR LOGO → volver al contenido anterior ===
+    if (contenidoAnteriorProyeccion) {
+      ventanaProyeccion.document.body.innerHTML = contenidoAnteriorProyeccion;
+    }
+    logoEstaActivo = false;
     contenidoAnteriorProyeccion = null;
 
-    // Botón vuelve a color normal (¡forzado!)
-    btnLogo.style.backgroundColor = "transparent !important";
-    btnLogo.style.color = "inherit !important";
-    btnLogo.style.boxShadow = "none !important";
+    // Botón vuelve a su color normal
+    btnLogo.style.backgroundColor = "";
+    btnLogo.style.color = "";
+    btnLogo.style.boxShadow = "";
 
   } else {
-    // MOSTRAR EL LOGO (guardamos lo que había antes)
+    // === MOSTRAR LOGO ===
     contenidoAnteriorProyeccion = ventanaProyeccion.document.body.innerHTML;
 
     ventanaProyeccion.document.body.innerHTML = `
@@ -2518,21 +2519,23 @@ document.getElementById("btnLogo").addEventListener("click", async () => {
         }
         @keyframes entrar {
           from { opacity: 0; transform: scale(1.04); }
-          to { opacity: 1; transform: scale(1); }
+          to   { opacity: 1; transform: scale(1); }
         }
       </style>
       <img src="${logoUrl}" class="logo-estirado">
     `;
 
-    // Botón se pone azul (¡forzado y visible al 100%!)
-    btnLogo.style.backgroundColor = "#1e88e5 !important";
-    btnLogo.style.color = "white !important";
-    btnLogo.style.boxShadow = "0 0 12px rgba(30, 136, 229, 0.6) !important";
-    btnLogo.style.borderRadius = "8px !important"; // bonito redondeado
-    btnLogo.style.transition = "all 0.3s ease"; // cambio suave
+    logoEstaActivo = true;
+
+    // Botón se pone azul brillante (indicador claro de que está activo)
+    btnLogo.style.backgroundColor = "#1e88e5";
+    btnLogo.style.color = "white";
+    btnLogo.style.boxShadow = "0 0 15px rgba(30, 136, 229, 0.8)";
+    btnLogo.style.transform = "scale(1.05)";
+    btnLogo.style.transition = "all 0.3s ease";
   }
 
-  // Actualizar espejo y estado en vivo
+  // Actualizar espejo y estado
   setTimeout(actualizarEspejoLocal, 150);
   actualizarIndicadorEnVivo();
 });
@@ -3503,6 +3506,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
