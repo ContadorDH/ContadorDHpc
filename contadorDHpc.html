@@ -2473,37 +2473,48 @@ document.getElementById("btnLogo").addEventListener("click", async () => {
 
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
     if (logoUrl) {
-      // VERSIÓN DEFINITIVA: logo completo, sin recortar, llena al máximo
       ventanaProyeccion.document.body.innerHTML = `
         <style>
-          body, html {
-            margin:0; padding:0; height:100%; width:100%; 
-            background: #000;
-            overflow:hidden;
+          * { margin:0; padding:0; }
+          body, html { width:100vw; height:100vh; background:#000; overflow:hidden; }
+          
+          .fondo-difuminado {
+            position: fixed;
+            top: -10%; left: -10%; right: -10%; bottom: -10%;
+            background: url("${logoUrl}") center center / cover no-repeat;
+            filter: blur(40px) brightness(0.4);
+            transform: scale(1.1);
+            z-index: 1;
           }
-          .logo-full {
-            width: 100vw;
-            height: 100vh;
-            background: url("${logoUrl}") center center / contain no-repeat;
-            background-color: #000;
+          
+          .logo-principal {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 96vw;
+            max-height: 96vh;
+            object-fit: contain;
+            z-index: 2;
+            animation: aparecer 1.4s ease-out;
           }
-          /* Efecto de entrada suave (opcional pero queda precioso) */
-          .logo-full {
-            animation: fadeIn 1s ease-out;
-          }
-          @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to   { opacity: 1; transform: scale(1); }
+          
+          @keyframes aparecer {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
           }
         </style>
-        <div class="logo-full"></div>
+
+        <!-- Fondo difuminado del mismo logo (llena toda la pantalla) -->
+        <div class="fondo-difuminado"></div>
+        
+        <!-- Logo nítido y completo en el centro -->
+        <img src="${logoUrl}" class="logo-principal">
       `;
 
-      // Forzar espejo local (siempre funciona)
-      setTimeout(actualizarEspejoLocal, 150);
+      setTimeout(actualizarEspejoLocal, 200);
 
     } else {
-      // Sin logo → mensaje bonito
+      // Sin logo
       ventanaProyeccion.document.body.innerHTML = `
         <div style="width:100vw;height:100vh;background:#000;color:#555;display:flex;flex-direction:column;
           justify-content:center;align-items:center;gap:32px;font-family:'Segoe UI',sans-serif">
@@ -2511,13 +2522,12 @@ document.getElementById("btnLogo").addEventListener("click", async () => {
           <h2 style="opacity:0.7;font-size:2.4em;margin:0">No hay logo configurado</h2>
         </div>
       `;
-      setTimeout(actualizarEspejoLocal, 150);
+      setTimeout(actualizarEspejoLocal, 200);
     }
 
     actualizarIndicadorEnVivo();
   }
 });
-
   // === ACTUALIZAR BIBLIA CUANDO SE CAMBIA DE PANTALLA ===
 document.getElementById("pantallaSelect").addEventListener("change", async () => {
   // Si la ventana de Biblia ya está abierta, reabrirla en la nueva pantalla
@@ -3483,6 +3493,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
