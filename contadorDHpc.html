@@ -2463,7 +2463,6 @@ document.getElementById("btnConfigLogo")?.addEventListener("touchstart", (e) => 
 
 
   
-// BOTÓN LOGO DEL PANEL PRINCIPAL (proyecta el logo guardado) 
 // Variable global para recordar el contenido anterior
 let contenidoAnteriorProyeccion = null;
 
@@ -2491,7 +2490,7 @@ document.getElementById("btnLogo").addEventListener("click", async () => {
     return;
   }
 
-  // Detectar si YA estamos mostrando el logo (por clase o por contenido)
+  // Detectar si YA estamos mostrando el logo
   const yaEstaMostrandoLogo = ventanaProyeccion.document.body.querySelector(".logo-estirado") !== null ||
                               ventanaProyeccion.document.body.innerHTML.includes("object-fit: fill");
 
@@ -2500,9 +2499,10 @@ document.getElementById("btnLogo").addEventListener("click", async () => {
     ventanaProyeccion.document.body.innerHTML = contenidoAnteriorProyeccion;
     contenidoAnteriorProyeccion = null;
 
-    // Botón vuelve a color normal
-    btnLogo.style.backgroundColor = "";
-    btnLogo.style.color = "";
+    // Botón vuelve a color normal (¡forzado!)
+    btnLogo.style.backgroundColor = "transparent !important";
+    btnLogo.style.color = "inherit !important";
+    btnLogo.style.boxShadow = "none !important";
 
   } else {
     // MOSTRAR EL LOGO (guardamos lo que había antes)
@@ -2518,23 +2518,24 @@ document.getElementById("btnLogo").addEventListener("click", async () => {
         }
         @keyframes entrar {
           from { opacity: 0; transform: scale(1.04); }
-          to   { opacity: 1; transform: scale(1); }
+          to { opacity: 1; transform: scale(1); }
         }
       </style>
       <img src="${logoUrl}" class="logo-estirado">
     `;
 
-    // Botón se pone azul (indicador visual de que el logo está activo)
-    btnLogo.style.backgroundColor = "#1e88e5";
-    btnLogo.style.color = "white";
-    btnLogo.style.boxShadow = "0 0 12px rgba(30, 136, 229, 0.6)";
+    // Botón se pone azul (¡forzado y visible al 100%!)
+    btnLogo.style.backgroundColor = "#1e88e5 !important";
+    btnLogo.style.color = "white !important";
+    btnLogo.style.boxShadow = "0 0 12px rgba(30, 136, 229, 0.6) !important";
+    btnLogo.style.borderRadius = "8px !important"; // bonito redondeado
+    btnLogo.style.transition = "all 0.3s ease"; // cambio suave
   }
 
   // Actualizar espejo y estado en vivo
   setTimeout(actualizarEspejoLocal, 150);
   actualizarIndicadorEnVivo();
 });
-
 
   
   // === ACTUALIZAR BIBLIA CUANDO SE CAMBIA DE PANTALLA ===
@@ -3502,6 +3503,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
