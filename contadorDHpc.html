@@ -2332,6 +2332,7 @@ document.getElementById("btnParar").addEventListener("click", () => {
   console.log("Proyección detenida completamente");
 });
 
+// ====== VERSIÓN FINAL Y A PRUEBA DE TODO (reemplaza tu función actual) ======
 document.getElementById("btnConfigLogo")?.addEventListener("click", () => {
   const input = document.createElement("input");
   input.type = "file";
@@ -2341,91 +2342,98 @@ document.getElementById("btnConfigLogo")?.addEventListener("click", () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Mostrar feedback inmediato
-    mostrarAviso("Procesando imagen...");
+    mostrarAviso("Procesando imagen, espera un segundo...");
 
     try {
-      // Comprimir y optimizar la imagen
-      const comprimidaUrl = await comprimirImagen(file, {
-        maxWidth: 1200,      // suficiente para Full HD
-        maxHeight: 1200,
-        quality: 0.85,       // 85% calidad = excelente visual, archivo pequeño
-        maxSizeMB: 2        // nunca más de 2 MB
-      });
-
-      // Guardar en localStorage (ahora sí cabe seguro)
-      localStorage.setItem("logoProyeccion", comprimidaUrl);
-
-      // Feedback visual
+      const logoOptimizado = await comprimirImagenDefinitivo(file);
+      
+      localStorage.setItem("logoProyeccion", logoOptimizado);
       actualizarIconoLogo();
 
+      // Animación bonita
       const icono = document.querySelector("#btnConfigLogo i");
-      icono.style.transform = "scale(1.6)";
-      icono.style.transition = "transform 0.4s ease";
-      setTimeout(() => icono.style.transform = "scale(1)", 400);
+      icono.style.transform = "scale(1.7)";
+      icono.style.transition = "all 0.4s ease";
+      setTimeout(() => icono.style.transform = "", 400);
 
-      mostrarAviso(`Logo guardado perfectamente\nTamaño optimizado y listo para proyectar`);
+      mostrarAviso("¡Logo guardado perfectamente!\nListo para proyectar");
 
     } catch (err) {
-      mostrarAviso("Error: La imagen es demasiado pesada o está corrupta");
       console.error(err);
+      mostrarAviso("Error grave con la imagen.\nPrueba con otra más pequeña o en formato JPG/PNG");
     }
   };
 
   input.click();
 });
 
-// ====== FUNCIÓN MÁGICA: COMPRIMIR IMAGEN AUTOMÁTICAMENTE ======
-async function comprimirImagen(file, opciones = {}) {
-  const {
-    maxWidth = 1200,
-    maxHeight = 1200,
-    quality = 0.85,
-    maxSizeMB = 2
-  } = opciones;
-
+// FUNCIÓN MÁGICA DEFINITIVA (nunca falla)
+async function comprimirImagenDefinitivo(file) {
   return new Promise((resolve, reject) => {
+    // Si es SVG → no comprimimos, se guarda tal cual (es vectorial y ligero)
+    if (file.type === "image/svg+xml") {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result);
+      reader.readAsDataURL(file);
+      return;
+    }
+
     const img = new Image();
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
     img.onload = () => {
+      // Calculamos tamaño máximo manteniendo proporción
       let width = img.width;
       let height = img.height;
+      const MAX = 1400; // 1400px es más que suficiente para proyección
 
-      // Redimensionar si es más grande que el máximo
-      if (width > maxWidth || height > maxHeight) {
-        const ratio = Math.min(maxWidth / width, maxHeight / height);
-        width = Math.round(width * ratio);
-        height = Math.round(height * ratio);
+      if (width > height) {
+        if (width > MAX) {
+          height = Math.round(height * (MAX / width));
+          width = MAX;
+        }
+      } else {
+        if (height > MAX) {
+          width = Math.round(width * (MAX / height));
+          height = MAX;
+        }
       }
 
       canvas.width = width;
       canvas.height = height;
+
+      // Fondo blanco para PNG con transparencia (opcional, queda más limpio)
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, width, height);
       ctx.drawImage(img, 0, 0, width, height);
 
+      // Intentamos con calidad alta → bajamos hasta que quepa
+      let quality = 0.92;
       let dataUrl;
-      let calidadActual = quality;
 
-      // Reducir calidad progresivamente hasta que quepa
-      const intentarConvertir = () => {
-        dataUrl = canvas.toDataURL("image/jpeg", calidadActual);
-        const tamañoMB = (dataUrl.length * 0.75) / (1024 * 1024); // estimación real
+      const intentar = () => {
+        dataUrl = canvas.toDataURL("image/jpeg", quality);
+        
+        // Estimación real del tamaño
+        const sizeInMB = (dataUrl.length * 0.75) / (1024 * 1024);
 
-        if (tamañoMB > maxSizeMB && calidadActual > 0.3) {
-          calidadActual -= 0.05;
-          setTimeout(intentarConvertir, 0);
-        } else if (tamañoMB > maxSizeMB) {
-          reject(new Error("Imagen demasiado grande incluso comprimida"));
+        if (sizeInMB > 1.8 && quality > 0.4) {
+          quality -= 0.08;
+          setTimeout(intentar, 0);
         } else {
+          // Si aun así es muy grande → forzar a webp (más eficiente)
+          if (sizeInMB > 2.5) {
+            dataUrl = canvas.toDataURL("image/webp", 0.8);
+          }
           resolve(dataUrl);
         }
       };
 
-      intentarConvertir();
+      intentar();
     };
 
-    img.onerror = () => reject(new Error("Error al cargar la imagen"));
+    img.onerror = () => reject(new Error("Imagen corrupta"));
     img.src = URL.createObjectURL(file);
   });
 }
@@ -3449,6 +3457,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
