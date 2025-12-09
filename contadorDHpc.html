@@ -1594,72 +1594,66 @@ const meses = [
   "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
 ];
 
-let filaSeleccionada = null;
-let ventanaProyeccion = null;
-  let yaEstaHoyCargado = false;        // ← indica si ya mostramos la asistencia de hoy
-let intervaloPolling = null;         // ← para poder detenerlo cuando ya esté
+// ====== CARGAR CANCIONES DESDE ARCHIVO JSON ======
+let cancionesDB = [];
 
-const URL_PROYECCION = "https://script.google.com/macros/s/AKfycbxf8jUb2catO-d_Fs0l7jfilwNiPXh8pqxMJ6sBUeCGvsOX0_1PE98w8U7-sm4UzUxA/exec";
+async function cargarCanciones() {
+  try {
+    const respuesta = await fetch("canciones.json?" + Date.now()); // evita caché
+    if (!respuesta.ok) throw new Error("No se pudo cargar canciones.json");
+    cancionesDB = await respuesta.json();
+    console.log(`Se cargaron ${cancionesDB.length} canciones`);
+    cargarListaCanciones(); // refrescar lista si ya está abierta la sección
+  } catch (err) {
+    console.error("Error cargando canciones:", err);
+    document.getElementById("listaCanciones").innerHTML = `
+      <div style="color:#f88; grid-column:1/-1; text-align:center; padding:30px;">
+        <p>No se pudo cargar canciones.json</p>
+        <small>Asegúrate de que el archivo esté en la misma carpeta</small>
+      </div>`;
+  }
+}
 
-
-// ====== BASE DE DATOS DE CANCIONES (puedes agregar todas las que quieras) ======
-const cancionesDB = [
-  { titulo: "Cuán Grande Es Él", autor: "Traditional", letra: `Señor mi Dios, al contemplar los cielos
-El firmamento y las estrellas mil
-Al oír tu voz en los potentes truenos
-Y ver el sol en su cenit
-
-¡Cuán grande es Él!
-¡Cuán grande es Él!
-Mi corazón entona la canción
-¡Cuán grande es Él!
-¡Cuán grande es Él!` },
-
-  { titulo: "Santo, Santo, Santo", autor: "Reginald Heber", letra: `Santo, santo, santo
-Señor omnipotente
-Siempre el labio mío loores te dará
-
-Santo, santo, santo
-Te adoro reverente
-Dios en tres personas, bendita Trinidad` },
-
-  { titulo: "Porque Él Vive", autor: "Gloria Gaither", letra: `Dios envió a su Hijo, Cristo su nombre es
-Murió por nuestros pecados, resucitó por mí
-Porque Él vive, triunfaré mañana
-Porque Él vive, ya no hay temor` }
-  // Agrega más canciones aquí...
-];
-
-// ====== CARGAR CANCIONES AL HACER CLIC EN EL BOTÓN ======
+// ====== AL ABRIR LA SECCIÓN CÁNTICOS ======
 document.getElementById("btnCanticos").addEventListener("click", () => {
-  // Cambiar vista
   document.getElementById("subtitulo").style.display = "none";
   document.querySelector(".panel").style.display = "flex";
   document.getElementById("biblia-container").style.display = "none";
   document.getElementById("canticos-container").style.display = "block";
-  document.getElementById("tabla") ? document.getElementById("tabla").style.display = "none" : null;
+  document.getElementById("tabla")?.style.display = "none";
 
-  // Cargar lista de canciones
-  cargarListaCanciones();
+  // Cargar canciones solo si no están cargadas
+  if (cancionesDB.length === 0) {
+    cargarCanciones();
+  } else {
+    cargarListaCanciones();
+  }
 });
 
-// ====== FUNCIÓN: Cargar lista de canciones ======
+// ====== FUNCIÓN: Mostrar lista de canciones ======
 function cargarListaCanciones(filtro = "") {
   const contenedor = document.getElementById("listaCanciones");
-  const cancionesFiltradas = cancionesDB.filter(c => 
+  if (cancionesDB.length === 0) {
+    contenedor.innerHTML = "<p style='color:#aaa; grid-column:1/-1; text-align:center;'>Cargando canciones...</p>";
+    return;
+  }
+
+  const filtradas = cancionesDB.filter(c =>
     c.titulo.toLowerCase().includes(filtro.toLowerCase()) ||
-    c.autor.toLowerCase().includes(filtro.toLowerCase())
+    (c.autor && c.autor.toLowerCase().includes(filtro.toLowerCase()))
   );
 
-  contenedor.innerHTML = cancionesFiltradas.map((c, i) => `
-    <div onclick="proyectarCancion(${i})" 
-         style="background:#222; padding:16px; border-radius:10px; cursor:pointer; transition:all .2s; border:2px solid transparent;"
-         onmouseover="this.style.borderColor='#1e88e5'; this.style.background='#2a2a2a'"
-         onmouseout="this.style.borderColor='transparent'; this.style.background='#222'">
-      <strong style="font-size:18px; display:block;">${c.titulo}</strong>
-      <small style="color:#aaa;">${c.autor}</small>
-    </div>
-  `).join("");
+  contenedor.innerHTML = filtradas.length > 0
+    ? filtradas.map((c, i) => `
+      <div onclick="proyectarCancion(${i})"
+           style="background:#222;padding:16px;border-radius:10px;cursor:pointer;transition:all .2s;border:2px solid transparent;"
+           onmouseover="this.style.borderColor='#1e88e5';this.style.background='#2a2a2a'"
+           onmouseout="this.style.borderColor='transparent';this.style.background='#222'">
+        <strong style="font-size:18px;display:block;">${c.titulo}</strong>
+        <small style="color:#aaa;">${c.autor || "Anónimo"}</small>
+      </div>
+    `).join("")
+    : "<p style='color:#aaa; grid-column:1/-1; text-align:center;'>No se encontraron canciones</p>";
 }
 
 // ====== BÚSQUEDA EN VIVO ======
@@ -1667,7 +1661,7 @@ document.getElementById("buscarCancion").addEventListener("input", (e) => {
   cargarListaCanciones(e.target.value);
 });
 
-// ====== PROYECTAR CANCIÓN (como EasyWorship) ======
+// ====== PROYECTAR CANCIÓN (igual que EasyWorship) ======
 window.proyectarCancion = async function(index) {
   const cancion = cancionesDB[index];
   if (!ventanaProyeccion || ventanaProyeccion.closed) {
@@ -1678,33 +1672,29 @@ window.proyectarCancion = async function(index) {
 
   ventanaProyeccion.document.body.innerHTML = `
     <div style="width:100vw;height:100vh;background:#000;color:white;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:'Segoe UI',sans-serif;padding:10vh;box-sizing:border-box;">
-      <h1 style="font-size:4.5vw;margin-bottom:2vh;text-align:center;">${cancion.titulo}</h1>
+      <h1 style="font-size:4.5vw;margin-bottom:2vh;text-align:center;opacity:0.9;">${cancion.titulo}</h1>
       <div id="estrofaActual" style="font-size:3.5vw;line-height:1.6;text-align:center;max-width:90vw;">
         ${estrofas[0].replace(/\n/g, "<br>")}
       </div>
-      <div style="margin-top:4vh;font-size:1.8vw;color:#666;">${cancion.autor}</div>
+      <small style="margin-top:4vh;font-size:1.6vw;color:#666;">${cancion.autor || ""}</small>
     </div>
   `;
 
-  let estrofaActual = 0;
-  // Teclas para cambiar estrofa (flechas)
+  let actual = 0;
   ventanaProyeccion.document.onkeydown = (e) => {
-    if (e.key === "ArrowRight" || e.key === " ") {
-      estrofaActual = (estrofaActual + 1) % estrofas.length;
-    } else if (e.key === "ArrowLeft") {
-      estrofaActual = estrofaActual <= 0 ? estrofas.length - 1 : estrofaActual - 1;
-    } else if (e.key === "Escape") {
+    if (e.key === "ArrowRight" || e.key === " ") actual = (actual + 1) % estrofas.length;
+    if (e.key === "ArrowLeft") actual = actual <= 0 ? estrofas.length - 1 : actual - 1;
+    if (e.key === "Escape") {
       ventanaProyeccion.document.body.innerHTML = "<div style='width:100vw;height:100vh;background:#000;'></div>";
       return;
     }
     ventanaProyeccion.document.getElementById("estrofaActual").innerHTML = 
-      estrofas[estrofaActual].replace(/\n/g, "<br>");
+      estrofas[actual].replace(/\n/g, "<br>");
   };
 
   setTimeout(actualizarEspejoLocal, 200);
   actualizarIndicadorEnVivo();
 };
-
   
 let biblia = {};
 let books = [];
@@ -3654,6 +3644,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
