@@ -2107,16 +2107,17 @@ document.getElementById("btnFondoBiblia").addEventListener("click", () => {
 
 
 document.getElementById("btnLimpiarTexto").addEventListener("click", () => {
-  // 1. Limpiar SOLO texto en ventana de proyección externa
+
+  // 1. Limpiar texto real en ventana externa
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
     const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
-    if (caja) caja.textContent = "";
+    if (caja) caja.innerHTML = "";  // ✔ limpiar COMPLETO
   }
 
   // 2. Limpiar preview local
   const previewTexto = document.getElementById("preview-texto");
   if (previewTexto) {
-    previewTexto.textContent = "";
+    previewTexto.innerHTML = "";
     previewTexto.dataset.ref = "";
     previewTexto.dataset.texto = "";
   }
@@ -2127,8 +2128,12 @@ document.getElementById("btnLimpiarTexto").addEventListener("click", () => {
     if (cont) cont.innerHTML = "";
   }
 
-  console.log("Texto limpiado sin afectar el fondo.");
+  // 4. ⚡ REFRESCAR SIEMPRE EL ESPEJO
+  actualizarEspejoLocal();   // ← ESTO ES LO QUE FALTABA
+
+  console.log("Texto limpiado completamente.");
 });
+
 
 
 
@@ -3144,5 +3149,6 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
