@@ -2459,7 +2459,7 @@ document.getElementById("btnConfigLogo")?.addEventListener("touchstart", (e) => 
   e.preventDefault();
   // (Opcional) soporte táctil para móviles
 });
-// ====== BOTÓN LOGO DEL PANEL PRINCIPAL (proyecta el logo guardado) ======
+// BOTÓN LOGO DEL PANEL PRINCIPAL (proyecta el logo guardado) 
 document.getElementById("btnLogo").addEventListener("click", async () => {
   const logoUrl = localStorage.getItem("logoProyeccion");
 
@@ -2471,18 +2471,45 @@ document.getElementById("btnLogo").addEventListener("click", async () => {
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
     if (logoUrl) {
       ventanaProyeccion.document.body.innerHTML = `
-        <div style="width:100vw;height:100vh;background:#000;display:flex;justify-content:center;align-items:center;padding:8vh;box-sizing:border-box">
-          <img src="${logoUrl}" style="max-width:88%;max-height:88%;object-fit:contain;border-radius:16px;
-            box-shadow:0 30px 60px rgba(0,0,0,0.8);transition:all 0.5s ease">
+        <div style="
+          width:100vw;
+          height:100vh;
+          background: #000;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          overflow: hidden;
+          margin: 0;
+          padding: 0;
+        ">
+          <img src="${logoUrl}" style="
+            width: 100vw;
+            height: 100vh;
+            object-fit: contain;        /* Mantiene proporción */
+            object-position: center;
+            image-rendering: -webkit-optimize-contrast; /* más nítido en pantallas grandes */
+            transition: all 0.6s ease;
+          ">
         </div>
       `;
+
+      // OPCIONAL: efecto suave al aparecer
+      const img = ventanaProyeccion.document.querySelector("img");
+      img.style.transform = "scale(0.95)";
+      img.style.opacity = "0";
+      setTimeout(() => {
+        img.style.transform = "scale(1)";
+        img.style.opacity = "1";
+      }, 100);
+
     } else {
+      // Sin logo → mensaje bonito
       ventanaProyeccion.document.body.innerHTML = `
-        <div style="width:100vw;height:100vh;background:#000;color:#444;display:flex;flex-direction:column;
-          justify-content:center;align-items:center;gap:24px;font-family:'Segoe UI',sans-serif">
-          <i class="fa-solid fa-image fa-5x" style="opacity:0.2"></i>
-          <p style="font-size:1.5em;opacity:0.6">No hay logo configurado</p>
-          <p style="opacity:0.4;font-size:1.1em">Toca el ícono (imagen) en el menú lateral</p>
+        <div style="width:100vw;height:100vh;background:#000;color:#555;display:flex;flex-direction:column;
+          justify-content:center;align-items:center;gap:28px;font-family:'Segoe UI',sans-serif">
+          <i class="fa-solid fa-image fa-6x" style="opacity:0.15"></i>
+          <p style="font-size:2em;opacity:0.7">No hay logo configurado</p>
+          <p style="opacity:0.5;font-size:1.2em">Toca el ícono de imagen en el menú lateral</p>
         </div>
       `;
     }
@@ -3458,6 +3485,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
