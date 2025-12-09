@@ -2107,31 +2107,30 @@ document.getElementById("btnFondoBiblia").addEventListener("click", () => {
 
 
 document.getElementById("btnLimpiarTexto").addEventListener("click", () => {
-
-  // 1. Limpiar texto real en ventana externa
+  // 1. Limpiar texto en ventana de proyección externa (si existe)
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
     const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
-    if (caja) caja.innerHTML = "";  // ✔ limpiar COMPLETO
+    if (caja) caja.textContent = "";
   }
 
   // 2. Limpiar preview local
   const previewTexto = document.getElementById("preview-texto");
   if (previewTexto) {
-    previewTexto.innerHTML = "";
+    previewTexto.textContent = "";
     previewTexto.dataset.ref = "";
     previewTexto.dataset.texto = "";
   }
 
-  // 3. Limpiar espejo solo si NO hay pantalla física
-  if (!ventanaProyeccion || ventanaProyeccion.closed) {
-    const cont = document.getElementById("proyeccion-texto");
-    if (cont) cont.innerHTML = "";
+  // 3. LIMPIAR EL ESPEJO SIEMPRE (tenía o no ventana abierta)
+  const contenedorEspejo = document.getElementById("proyeccion-texto");
+  if (contenedorEspejo) {
+    contenedorEspejo.innerHTML = "";  // ← Esto borra el iframe del espejo
   }
 
-  // 4. ⚡ REFRESCAR SIEMPRE EL ESPEJO
-  actualizarEspejoLocal();   // ← ESTO ES LO QUE FALTABA
-
-  console.log("Texto limpiado completamente.");
+// Forzar que el espejo se vea vacío
+  actualizarEspejoLocal();
+  
+  console.log("Texto limpiado completamente (incluido espejo local).");
 });
 
 
