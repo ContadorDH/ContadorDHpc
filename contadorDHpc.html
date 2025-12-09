@@ -1856,81 +1856,99 @@ function actualizarEspejoLocal() {
   const contenedor = document.getElementById("proyeccion-texto");
   if (!contenedor) return;
 
-  // Asegurar que el contenedor recorte y esté posicionado para el espejo
+  // Asegurar recorte y reset de padding del contenedor
   contenedor.style.position = "relative";
   contenedor.style.overflow = "hidden";
-  contenedor.style.padding = "0"; // ← EVITA que el padding mueva el espejo
+  contenedor.style.padding = "0";
 
   // Si no existe la ventana real → usar preview (manteniendo recorte)
   if (!ventanaProyeccion || ventanaProyeccion.closed) {
-    // Insertar el contenido del preview dentro del contenedor (ya viene con estilos locales)
-    contenedor.innerHTML = document.getElementById("preview-biblia").innerHTML;
+    // eliminar iframe antiguo si existe
+    const oldFrame = contenedor.querySelector("#espejo-iframe");
+    if (oldFrame) oldFrame.remove();
 
-    // limpiar posibles transforms antiguos
-    const old = contenedor.querySelector("#espejo-wrapper");
-    if (old) old.style.transform = "";
+    // mostrar preview
+    contenedor.innerHTML = document.getElementById("preview-biblia").innerHTML;
     return;
   }
 
-  // Tomar el body real y su HTML
-  const bodyReal = ventanaProyeccion.document && ventanaProyeccion.document.body;
-  if (!bodyReal) return;
-
-  // Copiar TODO el HTML del body dentro de un wrapper que vamos a escalar
-  contenedor.innerHTML = `<div id="espejo-wrapper">${bodyReal.innerHTML}</div>`;
-
-  const wrapper = contenedor.querySelector("#espejo-wrapper");
-  if (!wrapper) return;
-
-  // Hacer que el wrapper se posicione y no influya en otros elementos
-  wrapper.style.position = "absolute";
-  wrapper.style.top = "0";
-  wrapper.style.left = "0";
-  wrapper.style.transformOrigin = "top left";
-  wrapper.style.willChange = "transform";
-  wrapper.style.boxSizing = "border-box";
-  wrapper.style.padding = "0"; // ← SIN padding para que no desplace el contenido
-  wrapper.style.pointerEvents = "none";
-
-  // MEDIDAS: usar las dimensiones reales de la ventana de proyección
+  // dimensiones reales del proyector
   const realW = (ventanaProyeccion.innerWidth || ventanaProyeccion.document.documentElement.clientWidth) || 1280;
   const realH = (ventanaProyeccion.innerHeight || ventanaProyeccion.document.documentElement.clientHeight) || 720;
 
-  // Dimensiones del mini contenedor (ya sin padding)
+  // dimensiones del contenedor mini
   const miniW = contenedor.clientWidth;
   const miniH = contenedor.clientHeight;
-
-  // Si mini es 0 (a veces en hidden) evitamos dividir por 0
   if (miniW === 0 || miniH === 0) return;
 
-  // escala proporcional
+  // calcular escala proporcional
   const escala = Math.min(miniW / realW, miniH / realH);
 
-  // Asignar tamaño "real" al wrapper antes de escalar (para que el layout dentro conserve proporciones)
-  wrapper.style.width = realW + "px";
-  wrapper.style.height = realH + "px";
-
-  // Aplicar la escala
-  wrapper.style.transform = `scale(${escala})`;
-
-  // --- COPIAR ESTILOS COMPUTADOS DEL BODY real (para background exacto) ---
-  try {
-    const comp = ventanaProyeccion.getComputedStyle(ventanaProyeccion.document.body);
-    const bgImage = comp.getPropertyValue("background-image");
-    const bgSize = comp.getPropertyValue("background-size");
-    const bgPos = comp.getPropertyValue("background-position");
-    const bgRepeat = comp.getPropertyValue("background-repeat");
-    const bgColor = comp.getPropertyValue("background-color");
-
-    contenedor.style.backgroundImage = bgImage !== "none" ? bgImage : "";
-    contenedor.style.backgroundSize = bgSize || "cover";
-    contenedor.style.backgroundPosition = bgPos || "center";
-    contenedor.style.backgroundRepeat = bgRepeat || "no-repeat";
-    contenedor.style.backgroundColor = bgColor || "transparent";
-  } catch (e) {
-    console.warn("No se pudo copiar estilos computados del proyector:", e);
+  // eliminar iframe viejo si existe
+  let iframe = contenedor.querySelector("#espejo-iframe");
+  if (iframe) {
+    // si existe, reemplazamos su srcdoc para actualizar inmediatamente
+    try {
+      iframe.srcdoc = ventanaProyeccion.document.documentElement.outerHTML;
+    } catch (e) {
+      // fallback: reconstruir iframe
+      iframe.remove();
+      iframe = null;
+    }
   }
+
+  if (!iframe) {
+    // crear iframe aislado
+    iframe = document.createElement("iframe");
+    iframe.id = "espejo-iframe";
+    iframe.setAttribute("sandbox", ""); // mayor aislamiento (puedes quitar si necesitas scripts)
+    iframe.style.border = "0";
+    iframe.style.position = "absolute";
+    iframe.style.top = "0";
+    iframe.style.left = "0";
+    iframe.style.width = realW + "px";
+    iframe.style.height = realH + "px";
+    iframe.style.transformOrigin = "top left";
+    iframe.style.willChange = "transform";
+    iframe.style.pointerEvents = "none"; // no interrumpir clicks
+    // insertar antes de setear srcdoc por velocidad
+    contenedor.innerHTML = "";
+    contenedor.appendChild(iframe);
+  } else {
+    // asegurar tamaño correcto si existe
+    iframe.style.width = realW + "px";
+    iframe.style.height = realH + "px";
+  }
+
+  // volcar el HTML completo de la ventana de proyección dentro del iframe
+  try {
+    // usar outerHTML del documentElement para incluir <style> y todo
+    iframe.srcdoc = ventanaProyeccion.document.documentElement.outerHTML;
+  } catch (e) {
+    // fallback: copiar body.innerHTML dentro de un simple HTML
+    iframe.srcdoc = `<!doctype html><html>${ventanaProyeccion.document.documentElement.innerHTML}</html>`;
+  }
+
+  // Centrar visualmente el iframe dentro del contenedor:
+  // El iframe se escala con transform: scale(escala). Para que visualmente esté centrado,
+  // la posición que hay que asignar antes de escalar es: top = (miniH/escala - realH)/2, left = (miniW/escala - realW)/2
+  const topBeforeScale = (miniH / escala - realH) / 2;
+  const leftBeforeScale = (miniW / escala - realW) / 2;
+
+  // Evitar NaN o valores demasiado grandes
+  const safeTop = Number.isFinite(topBeforeScale) ? topBeforeScale : 0;
+  const safeLeft = Number.isFinite(leftBeforeScale) ? leftBeforeScale : 0;
+
+  iframe.style.top = safeTop + "px";
+  iframe.style.left = safeLeft + "px";
+
+  // Aplicar escala
+  iframe.style.transform = `scale(${escala})`;
+
+  // (Opcional) asegurar que el contenedor no tenga fondo que tape el iframe
+  contenedor.style.backgroundImage = "none";
 }
+
 
 
 
@@ -3048,6 +3066,7 @@ document.getElementById("btnFondoBiblia").style.display = "inline-flex";
 </script>
 </body>
 </html>
+
 
 
 
