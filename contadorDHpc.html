@@ -1325,7 +1325,9 @@ line-height:2;z-index:99;">
     <i class="fa-solid fa-image"></i> Fondo
   </button>
 
-  <button id="btnEnVivo" class="btn-accion">EN VIVO</button>
+ <button id="btnEnVivo" class="btn-accion">
+    <i class="fas fa-broadcast-tower"></i> EN VIVO
+</button>
 
 
   <button id="btnTema" class="btn-icono" title="Cambiar tema"><i class="fa-solid fa-palette"></i></button>
@@ -1863,16 +1865,21 @@ function actualizarEspejoLocal() {
   contenedor.style.overflow = "hidden";
   contenedor.style.padding = "0";
 
-  // ⛔ NUEVO → si NO hay proyección, NO mostrar preview
+  // ⭐ 1) SI NO HAY PANTALLA FÍSICA → Mostrar PREVIEW LOCAL
   if (!ventanaProyeccion || ventanaProyeccion.closed) {
-    const oldFrame = contenedor.querySelector("#espejo-iframe");
-    if (oldFrame) oldFrame.remove();
+    const iframe = contenedor.querySelector("#espejo-iframe");
+    if (iframe) iframe.remove(); // quitar espejo
 
-    // ✔ Antes mostrabas el preview aquí — pero ya no debe mostrarse
-    contenedor.innerHTML = ""; // ← limpiar pantallita cuando no se proyecta
+    // usar preview-biblia como miniatura
+    const preview = document.getElementById("preview-biblia");
+    if (preview) {
+      contenedor.innerHTML = preview.innerHTML;
+    }
+
     return;
   }
 
+  // ⭐ 2) SI HAY PANTALLA FÍSICA → mostrar espejo exacto con iframe
   const realW = ventanaProyeccion.innerWidth || 1280;
   const realH = ventanaProyeccion.innerHeight || 720;
 
@@ -1880,18 +1887,10 @@ function actualizarEspejoLocal() {
   const miniH = contenedor.clientHeight;
   if (miniW === 0 || miniH === 0) return;
 
-  // 🔥 AJUSTE “CONTAIN” — NO RECORTA NADA, AJUSTA TODO
   const escala = Math.min(miniW / realW, miniH / realH);
 
+  // buscar iframe
   let iframe = contenedor.querySelector("#espejo-iframe");
-  if (iframe) {
-    try {
-      iframe.srcdoc = ventanaProyeccion.document.documentElement.outerHTML;
-    } catch (e) {
-      iframe.remove();
-      iframe = null;
-    }
-  }
 
   if (!iframe) {
     iframe = document.createElement("iframe");
@@ -1899,24 +1898,21 @@ function actualizarEspejoLocal() {
     iframe.setAttribute("sandbox", "");
     iframe.style.border = "0";
     iframe.style.position = "absolute";
-    iframe.style.top = "0";
-    iframe.style.left = "0";
-    iframe.style.width = realW + "px";
-    iframe.style.height = realH + "px";
-    iframe.style.transformOrigin = "top left";
     iframe.style.pointerEvents = "none";
-    iframe.style.imageRendering = "crisp-edges"; // 🆕 nitidez
+    iframe.style.imageRendering = "crisp-edges";
     contenedor.innerHTML = "";
     contenedor.appendChild(iframe);
-  } else {
-    iframe.style.width = realW + "px";
-    iframe.style.height = realH + "px";
   }
 
+  // tamaño real
+  iframe.style.width = realW + "px";
+  iframe.style.height = realH + "px";
+
+  // recargar contenido espejo
   try {
     iframe.srcdoc = ventanaProyeccion.document.documentElement.outerHTML;
-  } catch (e) {
-    iframe.srcdoc = `<!doctype html><html>${ventanaProyeccion.document.documentElement.innerHTML}</html>`;
+  } catch {
+    iframe.srcdoc = "<html>" + ventanaProyeccion.document.documentElement.innerHTML + "</html>";
   }
 
   iframe.onload = () => {
@@ -1925,27 +1921,24 @@ function actualizarEspejoLocal() {
       body.style.backgroundSize = "cover";
       body.style.backgroundPosition = "center";
       body.style.backgroundRepeat = "no-repeat";
-
-      // 🆕 Evitar borrosidad al escalar texto
       body.style.transform = "translateZ(0)";
       body.style.backfaceVisibility = "hidden";
     } catch {}
   };
 
-  // 🔥 CENTRADO SIN RECORTE (contain)
+  // centrar y escalar
   const offsetX = (miniW - realW * escala) / 2;
   const offsetY = (miniH - realH * escala) / 2;
 
   iframe.style.left = offsetX + "px";
   iframe.style.top = offsetY + "px";
-
-  // 🆕 Escalado nítido y suave
   iframe.style.transform = `scale(${escala})`;
   iframe.style.transformOrigin = "top left";
   iframe.style.willChange = "transform";
 
   contenedor.style.backgroundImage = "none";
 }
+
 
 
 
@@ -3141,6 +3134,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
