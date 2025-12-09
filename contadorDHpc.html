@@ -1946,18 +1946,22 @@ const escala = Math.max(miniW / realW, miniH / realH);
 
 
   // Centrar visualmente el iframe dentro del contenedor:
-  const topBeforeScale = (miniH / escala - realH) / 2;
-  const leftBeforeScale = (miniW / escala - realW) / 2;
+  // --- NUEVO: evitar recortes al escalar ---
+  // después de escalar siempre se corta un lado, así que corregimos el offset real
+  const scaledW = realW * escala;
+  const scaledH = realH * escala;
 
-  // Evitar NaN o valores demasiado grandes
-  const safeTop = Number.isFinite(topBeforeScale) ? topBeforeScale : 0;
-  const safeLeft = Number.isFinite(leftBeforeScale) ? leftBeforeScale : 0;
+  // centrado correcto estilo "object-fit: cover"
+  const offsetX = (miniW - scaledW) / 2;
+  const offsetY = (miniH - scaledH) / 2;
 
-  iframe.style.top = safeTop + "px";
-  iframe.style.left = safeLeft + "px";
+  iframe.style.top = offsetY + "px";
+  iframe.style.left = offsetX + "px";
 
-  // Aplicar escala
+  // aplicar escala manteniendo top-left como referencia
+  iframe.style.transformOrigin = "top left";
   iframe.style.transform = `scale(${escala})`;
+
 
   // evitar fondo que tape el iframe
   contenedor.style.backgroundImage = "none";
@@ -3101,6 +3105,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
