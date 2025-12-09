@@ -2336,32 +2336,99 @@ document.getElementById("btnConfigLogo")?.addEventListener("click", () => {
   const input = document.createElement("input");
   input.type = "file";
   input.accept = "image/png,image/jpeg,image/gif,image/webp,image/svg+xml";
-  
-  input.onchange = (e) => {
+
+  input.onchange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const urlLogo = ev.target.result;
-      localStorage.setItem("logoProyeccion", urlLogo);
-      
-      // Feedback visual bonito
-      const icono = document.querySelector("#btnConfigLogo i");
-      actualizarIconoLogo(); // ← ¡SIEMPRE usamos la función central!
-      
-      icono.style.transform = "scale(1.5)";
-      icono.style.transition = "transform 0.3s ease";
-      setTimeout(() => {
-        icono.style.transform = "scale(1)";
-      }, 300);
+    // Mostrar feedback inmediato
+    mostrarAviso("Procesando imagen...");
 
-      mostrarAviso("Logo guardado correctamente\nAhora puedes proyectarlo con el botón Logo");
-    };
-    reader.readAsDataURL(file);
+    try {
+      // Comprimir y optimizar la imagen
+      const comprimidaUrl = await comprimirImagen(file, {
+        maxWidth: 1200,      // suficiente para Full HD
+        maxHeight: 1200,
+        quality: 0.85,       // 85% calidad = excelente visual, archivo pequeño
+        maxSizeMB: 2        // nunca más de 2 MB
+      });
+
+      // Guardar en localStorage (ahora sí cabe seguro)
+      localStorage.setItem("logoProyeccion", comprimidaUrl);
+
+      // Feedback visual
+      actualizarIconoLogo();
+
+      const icono = document.querySelector("#btnConfigLogo i");
+      icono.style.transform = "scale(1.6)";
+      icono.style.transition = "transform 0.4s ease";
+      setTimeout(() => icono.style.transform = "scale(1)", 400);
+
+      mostrarAviso(`Logo guardado perfectamente\nTamaño optimizado y listo para proyectar`);
+
+    } catch (err) {
+      mostrarAviso("Error: La imagen es demasiado pesada o está corrupta");
+      console.error(err);
+    }
   };
+
   input.click();
 });
+
+// ====== FUNCIÓN MÁGICA: COMPRIMIR IMAGEN AUTOMÁTICAMENTE ======
+async function comprimirImagen(file, opciones = {}) {
+  const {
+    maxWidth = 1200,
+    maxHeight = 1200,
+    quality = 0.85,
+    maxSizeMB = 2
+  } = opciones;
+
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    img.onload = () => {
+      let width = img.width;
+      let height = img.height;
+
+      // Redimensionar si es más grande que el máximo
+      if (width > maxWidth || height > maxHeight) {
+        const ratio = Math.min(maxWidth / width, maxHeight / height);
+        width = Math.round(width * ratio);
+        height = Math.round(height * ratio);
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(img, 0, 0, width, height);
+
+      let dataUrl;
+      let calidadActual = quality;
+
+      // Reducir calidad progresivamente hasta que quepa
+      const intentarConvertir = () => {
+        dataUrl = canvas.toDataURL("image/jpeg", calidadActual);
+        const tamañoMB = (dataUrl.length * 0.75) / (1024 * 1024); // estimación real
+
+        if (tamañoMB > maxSizeMB && calidadActual > 0.3) {
+          calidadActual -= 0.05;
+          setTimeout(intentarConvertir, 0);
+        } else if (tamañoMB > maxSizeMB) {
+          reject(new Error("Imagen demasiado grande incluso comprimida"));
+        } else {
+          resolve(dataUrl);
+        }
+      };
+
+      intentarConvertir();
+    };
+
+    img.onerror = () => reject(new Error("Error al cargar la imagen"));
+    img.src = URL.createObjectURL(file);
+  });
+}
 
 // ====== ELIMINAR LOGO: mantener pulsado 1.5 segundos ======
 let pressTimer;
@@ -3382,6 +3449,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
