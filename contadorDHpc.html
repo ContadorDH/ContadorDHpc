@@ -950,6 +950,22 @@ body.tema-oscuro #q,
   min-width: 0;             /* necesario para que flex funcione bien */
 }
 
+  /* Ambas pantallas deben escalar SIEMPRE con la misma base */
+.pantalla {
+  flex: 0 0 auto;              /* NO crecer por flex, evitar deformaciones */
+  width: 48vw;                 /* ambas se escalan EXACTAMENTE igual */
+  max-width: 700px;            /* tope para no desbordar */
+  aspect-ratio: 16 / 9;
+}
+
+/* En móviles: también igual siempre */
+@media (max-width: 1100px) {
+  .pantalla {
+    width: 95vw;
+    max-width: none;
+  }
+}
+
 /* LAS PANTALLAS – esta es la clave mágica que nunca falla */
 .pantalla {
   flex: 1;                          /* cada pantalla ocupa el mismo espacio */
@@ -2973,6 +2989,7 @@ document.getElementById("btnFondoBiblia").style.display = "inline-flex";
 </script>
 </body>
 </html>
+
 
 
 
