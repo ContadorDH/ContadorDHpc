@@ -1836,44 +1836,51 @@ function actualizarEspejoLocal() {
   const contenedor = document.getElementById("proyeccion-texto");
   if (!contenedor) return;
 
-  // Si no existe la ventana real → espejo del preview
+  // Si no existe la ventana real → usar preview
   if (!ventanaProyeccion || ventanaProyeccion.closed) {
-    contenedor.innerHTML = document.getElementById("preview-texto").innerHTML;
+    contenedor.innerHTML = document.getElementById("preview-biblia").innerHTML;
     return;
   }
 
-  const nodoReal = ventanaProyeccion.document.getElementById("textoAutoFit");
-  if (!nodoReal) return;
+  const bodyReal = ventanaProyeccion.document.body;
 
-  // Copiar el HTML EXACTO de la pantalla real
+  if (!bodyReal) return;
+
+  // Copiar el HTML completo del body de la proyección real
   contenedor.innerHTML = `
-    <div class="espejo-escala">
-      ${nodoReal.outerHTML}
+    <div id="espejo-wrapper">
+      ${bodyReal.innerHTML}
     </div>
   `;
 
-  // ---- AJUSTE DE ESCALA AUTOMÁTICO ----
-  const wrapperReal = contenedor.querySelector('.espejo-escala');
-  const textoReal = wrapperReal.firstElementChild;
+  const wrapper = document.getElementById("espejo-wrapper");
 
   // Medidas reales del proyector
   const realW = ventanaProyeccion.innerWidth;
   const realH = ventanaProyeccion.innerHeight;
 
-  // Medidas del contenedor mini
+  // Medidas del preview pequeño
   const miniW = contenedor.clientWidth;
   const miniH = contenedor.clientHeight;
 
-  // determinar escala proporcional
+  // Escala proporcional
   const escala = Math.min(miniW / realW, miniH / realH);
 
-  wrapperReal.style.transformOrigin = "top left";
-  wrapperReal.style.transform = `scale(${escala})`;
+  // Aplicar escala
+  wrapper.style.transformOrigin = "top left";
+  wrapper.style.transform = `scale(${escala})`;
 
-  // wrapper debe ocupar el tamaño real sin afectar el contenedor
-  wrapperReal.style.width = realW + "px";
-  wrapperReal.style.height = realH + "px";
+  // Wrapper debe tener tamaño real sin deformarse
+  wrapper.style.width = realW + "px";
+  wrapper.style.height = realH + "px";
+
+  // Copiar también los estilos del body real
+  contenedor.style.background = ventanaProyeccion.document.body.style.background;
+  contenedor.style.backgroundSize = ventanaProyeccion.document.body.style.backgroundSize;
+  contenedor.style.backgroundPosition = ventanaProyeccion.document.body.style.backgroundPosition;
+  contenedor.style.backgroundRepeat = ventanaProyeccion.document.body.style.backgroundRepeat;
 }
+
 
 
 
