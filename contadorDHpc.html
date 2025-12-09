@@ -1863,10 +1863,13 @@ function actualizarEspejoLocal() {
   contenedor.style.overflow = "hidden";
   contenedor.style.padding = "0";
 
+  // ⛔ NUEVO → si NO hay proyección, NO mostrar preview
   if (!ventanaProyeccion || ventanaProyeccion.closed) {
     const oldFrame = contenedor.querySelector("#espejo-iframe");
     if (oldFrame) oldFrame.remove();
-    contenedor.innerHTML = document.getElementById("preview-biblia").innerHTML;
+
+    // ✔ Antes mostrabas el preview aquí — pero ya no debe mostrarse
+    contenedor.innerHTML = ""; // ← limpiar pantallita cuando no se proyecta
     return;
   }
 
@@ -1926,7 +1929,6 @@ function actualizarEspejoLocal() {
       // 🆕 Evitar borrosidad al escalar texto
       body.style.transform = "translateZ(0)";
       body.style.backfaceVisibility = "hidden";
-
     } catch {}
   };
 
@@ -1944,7 +1946,6 @@ function actualizarEspejoLocal() {
 
   contenedor.style.backgroundImage = "none";
 }
-
 
 
 
@@ -3131,6 +3132,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
