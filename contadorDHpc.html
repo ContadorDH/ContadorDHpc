@@ -3258,23 +3258,44 @@ await verHoy();                  // mostramos automáticamente "Hoy"
   }
 }
 
+
+// Función reutilizable para actualizar el ícono según si hay o no logo
+function actualizarIconoLogo() {
+  const btn = document.getElementById("btnConfigLogo");
+  const icono = btn.querySelector("i");
+  const tieneLogo = !!localStorage.getItem("logoProyeccion");
+
+  // Forzamos las clases correctas
+  icono.classList.remove("fa-certificate", "fa-circle-check");
+  if (tieneLogo) {
+    icono.classList.add("fa-circle-check");
+    icono.style.color = "#58a6ff";
+    btn.title = "Logo configurado - Click para cambiar";
+  } else {
+    icono.classList.add("fa-certificate");
+    icono.style.color = ""; // color por defecto
+    btn.title = "Configurar logo para proyección";
+  }
+}
+
+
+
+
+
   
 document.addEventListener("DOMContentLoaded", () => {
   detectarPantallas();
-
   const tablaArriba = document.getElementById("tabla");
 
   // ==========================================
-  // 🔥 CARGAR FONDO GUARDADO (sin afectar nada)
+  // CARGA FONDO GUARDADO (sin afectar nada)
   // ==========================================
   const fondoGuardado = localStorage.getItem("fondoProyeccion");
-
   if (fondoGuardado) {
     document.body.style.setProperty(
       "--fondo-proyeccion-personalizado",
       `url("${fondoGuardado}")`
     );
-
     const preview = document.getElementById("preview-biblia");
     if (preview) {
       preview.style.backgroundImage = `url("${fondoGuardado}")`;
@@ -3287,13 +3308,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // FIN de la carga del fondo
   // ==========================================
 
-
-
   // Ocultar ambas secciones al iniciar
   document.getElementById("subtitulo").style.display = "none";
-  document.querySelector(".panel").style.display = "none";  
+  document.querySelector(".panel").style.display = "none";
   document.getElementById("biblia-container").style.display = "flex";
-  tablaArriba.style.display = "none"; 
+  tablaArriba.style.display = "none";
 
   // BOTÓN: CARGAR ASISTENCIA
   document.getElementById("btnCargarAsistencia").addEventListener("click", () => {
@@ -3302,7 +3321,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("biblia-container").style.display = "none";
     tablaArriba.style.display = "table";
     cargarAlIniciar();
-
     // Mostrar todos los botones al entrar a asistencia
     document.querySelector('button[onclick="verMesActual()"]').style.display = "inline-flex";
     document.querySelector('button[onclick="verHoy()"]').style.display = "inline-flex";
@@ -3310,51 +3328,75 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector('button[onclick="proyectar()"]').style.display = "inline-flex";
     document.getElementById("pantallaSelect").style.display = "inline-flex";
     document.getElementById("btnTema").style.display = "inline-flex";
-
     document.getElementById("btnLimpiarTexto").style.display = "none";
     document.getElementById("btnFondoBiblia").style.display = "none";
   });
 
-
-
   // BOTÓN: BIBLIA
   document.getElementById("btnBiblia").addEventListener("click", () => {
     document.getElementById("subtitulo").style.display = "none";
-    document.querySelector(".panel").style.display = "flex";  
+    document.querySelector(".panel").style.display = "flex";
     document.getElementById("biblia-container").style.display = "flex";
     tablaArriba.style.display = "none";
-
     // Ocultar botones que no van en Biblia
     document.querySelector('button[onclick="verMesActual()"]').style.display = "none";
     document.querySelector('button[onclick="verHoy()"]').style.display = "none";
     document.getElementById("selectMes").style.display = "none";
     document.querySelector('button[onclick="proyectar()"]').style.display = "none";
-
     // Mostrar solo estos dos
     document.getElementById("pantallaSelect").style.display = "inline-flex";
     document.getElementById("btnTema").style.display = "inline-flex";
-
     document.getElementById("btnLimpiarTexto").style.display = "inline-flex";
     document.getElementById("btnFondoBiblia").style.display = "inline-flex";
   });
 
-
-
-  // 🔥 Mostrar Biblia automáticamente al abrir
+  // Mostrar Biblia automáticamente al abrir
   document.getElementById("btnBiblia").click();
 
-// Al cargar la página (si hay logo)
-if (localStorage.getItem("logoProyeccion")) {
-  const icono = document.querySelector("#btnConfigLogo i");
-  icono.classList.replace("fa-certificate", "fa-circle-check");
-  icono.style.color = "#58a6ff";
-}
+  // ==================================================================
+  // ÍCONO DE LOGO CONFIGURADO (siempre correcto)
+  // ==================================================================
+  function actualizarIconoLogo() {
+    const btn = document.getElementById("btnConfigLogo");
+    if (!btn) return; // seguridad por si no existe aún
 
-// Al guardar un logo nuevo
-icono.classList.replace("fa-certificate", "fa-circle-check");
-icono.style.color = "#58a6ff";
+    const icono = btn.querySelector("i");
+    const tieneLogo = !!localStorage.getItem("logoProyeccion");
+
+    // Quitamos ambas clases posibles y ponemos la correcta
+    icono.classList.remove("fa-certificate", "fa-circle-check");
+
+    if (tieneLogo) {
+      icono.classList.add("fa-circle-check");
+      icono.style.color = "#58a6ff";
+      btn.title = "Logo configurado - Click para cambiar";
+    } else {
+      icono.classList.add("fa-certificate");
+      icono.style.color = "";
+      btn.title = "Configurar logo para proyección";
+    }
+  }
+
+  // Ejecutar al cargar la página
+  actualizarIconoLogo();
+
+  // ==================================================================
+  // IMPORTANTE: Llama a esta función cada vez que guardes o elimines el logo
+  // ==================================================================
+  // Ejemplo (ajústalo al nombre real de tu función):
+  // window.guardarLogoProyeccion = function(datos) {
+  //   localStorage.setItem("logoProyeccion", datos);
+  //   actualizarIconoLogo();
+  // };
+  // window.eliminarLogoProyeccion = function() {
+  //   localStorage.removeItem("logoProyeccion");
+  //   actualizarIconoLogo();
+  // };
+
+  // Si ya tienes funciones que guardan/borran el logo, solo agrégales:
+  // actualizarIconoLogo();
+  // al final de cada una.
 });
-
 
 
 
@@ -3363,6 +3405,7 @@ icono.style.color = "#58a6ff";
 </script>
 </body>
 </html>
+
 
 
 
