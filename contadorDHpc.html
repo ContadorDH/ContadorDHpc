@@ -3448,7 +3448,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const tablaArriba = document.getElementById("tabla");
 
   // ==========================================
-  // CARGA FONDO GUARDADO
+  // CARGA FONDO GUARDADO (sin afectar nada)
   // ==========================================
   const fondoGuardado = localStorage.getItem("fondoProyeccion");
   if (fondoGuardado) {
@@ -3464,81 +3464,67 @@ document.addEventListener("DOMContentLoaded", () => {
       preview.style.backgroundRepeat = "no-repeat";
     }
   }
-
   // ==========================================
-  // FUNCIÓN PARA CONTROLAR VISIBILIDAD DE BOTONES
+  // FIN de la carga del fondo
   // ==========================================
-  const mostrarModoAsistencia = () => {
-    // Ocultar todo lo de Biblia
-    document.getElementById("btnLimpiarTexto").style.display = "none";
-    document.getElementById("btnFondoBiblia").style.display = "none";
-    document.getElementById("btnEnVivo").style.display = "none";
-    document.getElementById("btnLogo").style.display = "none";
-    document.getElementById("btnParar").style.display = "none";
-    document.getElementById("btnConfigLogo").style.display = "none";
 
-    // Mostrar lo de Asistencia
-    document.querySelector('button[onclick="verMesActual()"]').style.display = "inline-flex";
-    document.querySelector('button[onclick="verHoy()"]').style.display = "inline-flex";
-    document.getElementById("selectMes").style.display = "inline-flex";
-    document.querySelector('button[onclick="proyectar()"]').style.display = "inline-flex";
-    document.getElementById("pantallaSelect").style.display = "inline-flex";
-    document.getElementById("btnTema").style.display = "inline-flex";
-  };
+  // Ocultar ambas secciones al iniciar
+  document.getElementById("subtitulo").style.display = "none";
+  document.querySelector(".panel").style.display = "none";
+  document.getElementById("biblia-container").style.display = "flex";
+  tablaArriba.style.display = "none";
 
-  const mostrarModoBiblia = () => {
-    // Ocultar todo lo de Asistencia
-    document.querySelector('button[onclick="verMesActual()"]').style.display = "none";
-    document.querySelector('button[onclick="verHoy()"]').style.display = "none";
-    document.getElementById("selectMes").style.display = "none";
-    document.querySelector('button[onclick="proyectar()"]').style.display = "none";
-
-    // Mostrar lo de Biblia
-    document.getElementById("pantallaSelect").style.display = "inline-flex";
-    document.getElementById("btnTema").style.display = "inline-flex";
-    document.getElementById("btnLimpiarTexto").style.display = "inline-flex";
-    document.getElementById("btnFondoBiblia").style.display = "inline-flex";
-    document.getElementById("btnEnVivo").style.display = "inline-flex";
-    document.getElementById("btnLogo").style.display = "inline-flex";
-    document.getElementById("btnParar").style.display = "inline-flex";
-    document.getElementById("btnConfigLogo").style.display = "inline-flex";
-  };
-
-  // ==========================================
   // BOTÓN: CARGAR ASISTENCIA
-  // ==========================================
   document.getElementById("btnCargarAsistencia").addEventListener("click", () => {
     document.getElementById("subtitulo").style.display = "flex";
     document.querySelector(".panel").style.display = "flex";
     document.getElementById("biblia-container").style.display = "none";
     tablaArriba.style.display = "table";
     cargarAlIniciar();
-
-    mostrarModoAsistencia(); // ← Aquí garantizamos que se oculten
+    // Mostrar todos los botones al entrar a asistencia
+    document.querySelector('button[onclick="verMesActual()"]').style.display = "inline-flex";
+    document.querySelector('button[onclick="verHoy()"]').style.display = "inline-flex";
+    document.getElementById("selectMes").style.display = "inline-flex";
+    document.querySelector('button[onclick="proyectar()"]').style.display = "inline-flex";
+    document.getElementById("pantallaSelect").style.display = "inline-flex";
+    document.getElementById("btnTema").style.display = "inline-flex";
+    document.getElementById("btnLimpiarTexto").style.display = "none";
+    document.getElementById("btnFondoBiblia").style.display = "none";
+    document.getElementById("btnEnVivo").style.display = "none";
+    document.getElementById("btnParar").style.display = "none";
+    document.getElementById("btnLogo").style.display = "none";
   });
 
-  // ==========================================
   // BOTÓN: BIBLIA
-  // ==========================================
   document.getElementById("btnBiblia").addEventListener("click", () => {
     document.getElementById("subtitulo").style.display = "none";
     document.querySelector(".panel").style.display = "flex";
     document.getElementById("biblia-container").style.display = "flex";
     tablaArriba.style.display = "none";
-
-    mostrarModoBiblia(); // ← Aquí se muestran solo los de Biblia
+    // Ocultar botones que no van en Biblia
+    document.querySelector('button[onclick="verMesActual()"]').style.display = "none";
+    document.querySelector('button[onclick="verHoy()"]').style.display = "none";
+    document.getElementById("selectMes").style.display = "none";
+    document.querySelector('button[onclick="proyectar()"]').style.display = "none";
+    // Mostrar solo estos dos
+    document.getElementById("pantallaSelect").style.display = "inline-flex";
+    document.getElementById("btnTema").style.display = "inline-flex";
+    document.getElementById("btnLimpiarTexto").style.display = "inline-flex";
+    document.getElementById("btnFondoBiblia").style.display = "inline-flex";
+     document.getElementById("btnEnVivo").style.display = "inline-flex";
+     document.getElementById("btnParar").style.display = "inline-flex";
+     document.getElementById("btnLogo").style.display = "inline-flex";
   });
 
-  // Ocultar secciones al inicio
-  document.getElementById("subtitulo").style.display = "none";
-  document.querySelector(".panel").style.display = "none";
-  document.getElementById("biblia-container").style.display = "flex";
-  tablaArriba.style.display = "none";
-
-  // Mostrar Biblia por defecto
+  // Mostrar Biblia automáticamente al abrir
   document.getElementById("btnBiblia").click();
 
+
+
+  // Ejecutar al cargar la página
   actualizarIconoLogo();
+
+
 });
 
 
@@ -3548,6 +3534,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
