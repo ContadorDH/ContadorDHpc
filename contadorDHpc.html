@@ -2470,32 +2470,19 @@ let contenidoAnteriorProyeccion = null;
 // REEMPLAZA SOLO ESTE BLOQUE (el estilo del botón)
 const estiloIndicadorLogo = `
 <style id="estilo-boton-logo-activo">
-  #btnLogo {
-    transition: all 0.4s ease !important;
-  }
-
-  /* Solo cuando está activo → rojo + parpadeo suave */
   #btnLogo.logo-activo {
     background: #ff0000 !important;
     color: white !important;
-    animation: parpadeoSuave 1.8s ease-in-out infinite !important;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.8) !important;
+    animation: parpadeoRojo 1.6s ease-in-out infinite !important;
+    transition: all 0.3s ease !important;
   }
 
-  /* El parpadeo que querías: fade + leve brillo */
-  @keyframes parpadeoSuave {
-    0%   { opacity: 0.6;  box-shadow: 0 0 12px rgba(255,0,0,0.5); }
-    50%  { opacity: 1;    box-shadow: 0 0 28px rgba(255,0,0,1);   transform: scale(1.06); }
-    100% { opacity: 0.6;  box-shadow: 0 0 12px rgba(255,0,0,0.5); }
-  }
-
-  /* Cuando NO está activo → no tocamos nada, vuelve al estilo original del tema */
-  #btnLogo:not(.logo-activo) {
-    background: initial !important;
-    color: initial !important;
-    box-shadow: initial !important;
-    opacity: 1 !important;
-    transform: initial !important;
-    animation: none !important;
+  /* Parpadeo rojo muy visible pero profesional (brillo que sube y baja) */
+  @keyframes parpadeoRojo {
+    0%   { box-shadow: 0 0 12px rgba(255,0,0,0.5); opacity: 0.9;  transform: scale(1);   }
+    50%  { box-shadow: 0 0 32px rgba(255,0,0,1);   opacity: 1;    transform: scale(1.07); }
+    100% { box-shadow: 0 0 12px rgba(255,0,0,0.5); opacity: 0.9;  transform: scale(1);   }
   }
 </style>`;
 document.head.insertAdjacentHTML("beforeend", estiloIndicadorLogo);
@@ -3531,6 +3518,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
