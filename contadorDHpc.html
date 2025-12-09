@@ -2467,21 +2467,22 @@ document.getElementById("btnConfigLogo")?.addEventListener("touchstart", (e) => 
 let logoEstaActivo = false;
 let contenidoAnteriorProyeccion = null;
 
-// ========= PRIMERO: añade estas clases a tu CSS (una sola vez) =========
+// ========= SOLO REEMPLAZA ESTE BLOQUE (el que inyecta el estilo) =========
 const estiloIndicadorLogo = `
 <style id="estilo-boton-logo-activo">
   #btnLogo.logo-activo {
-    background: #1e88e5 !important;
+    background: #e91e63 !important;     /* Rojo vibrante */
     color: white !important;
-    box-shadow: 0 0 16px rgba(30, 136, 229, 0.9) !important;
-    transform: scale(1.07) !important;
-    transition: all 0.3s ease !important;
+    box-shadow: 0 0 18px rgba(233, 30, 99, 0.8) !important;
+    transform: scale(1.08) !important;
+    transition: all 0.35s ease !important;
   }
   #btnLogo.logo-inactivo {
     background: "" !important;
     color: "" !important;
     box-shadow: none !important;
     transform: scale(1) !important;
+    transition: all 0.35s ease !important;
   }
 </style>`;
 document.head.insertAdjacentHTML("beforeend", estiloIndicadorLogo);
@@ -3518,6 +3519,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
