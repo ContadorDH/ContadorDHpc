@@ -2329,9 +2329,21 @@ document.getElementById("btnParar").addEventListener("click", () => {
   // 4. Volver botón EN VIVO al estado inicial (antena visible, sin círculo)
   actualizarIndicadorEnVivo();
 
+  // AÑADE ESTO: volver el botón Logo a su estado normal
+  const btnLogo = document.getElementById("btnLogo");
+  if (btnLogo) {
+    btnLogo.style.backgroundColor = "";
+    btnLogo.style.color = "";
+    btnLogo.style.boxShadow = "";
+    btnLogo.classList.remove("logo-activo");
+  }
+
+  // Opcional: también limpiar la variable global por si acaso
+  logoEstaActivo = false;
+  contenidoAnteriorProyeccion = null;
+
   console.log("Proyección detenida completamente");
 });
-
 // ====== VERSIÓN FINAL Y A PRUEBA DE TODO (reemplaza tu función actual) ======
 // ====== VERSIÓN QUE FUNCIONA EN EL 100% DE LOS CASOS (2025) ======
 document.getElementById("btnConfigLogo")?.addEventListener("click", () => {
@@ -3518,6 +3530,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
