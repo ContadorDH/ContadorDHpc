@@ -2467,36 +2467,35 @@ document.getElementById("btnConfigLogo")?.addEventListener("touchstart", (e) => 
 let logoEstaActivo = false;
 let contenidoAnteriorProyeccion = null;
 
-// REEMPLAZA SOLO ESTE BLOQUE (el estilo)
+// REEMPLAZA SOLO ESTE BLOQUE (el estilo del botón)
 const estiloIndicadorLogo = `
 <style id="estilo-boton-logo-activo">
   #btnLogo {
-    transition: all 0.35s ease !important;
+    transition: all 0.4s ease !important;
   }
 
-  /* Estado ACTIVO → rojo con parpadeo desvanecido constante */
+  /* Solo cuando está activo → rojo + parpadeo suave */
   #btnLogo.logo-activo {
     background: #ff0000 !important;
     color: white !important;
-    box-shadow: 0 0 20px rgba(255, 0, 0, 0.8) !important;
-    animation: parpadeoLogo 1.8s ease-in-out infinite !important;
+    animation: parpadeoSuave 1.8s ease-in-out infinite !important;
   }
 
-  /* Estado INACTIVO → vuelve exactamente como estaba antes (color original del tema) */
-  #btnLogo.logo-inactivo,
+  /* El parpadeo que querías: fade + leve brillo */
+  @keyframes parpadeoSuave {
+    0%   { opacity: 0.6;  box-shadow: 0 0 12px rgba(255,0,0,0.5); }
+    50%  { opacity: 1;    box-shadow: 0 0 28px rgba(255,0,0,1);   transform: scale(1.06); }
+    100% { opacity: 0.6;  box-shadow: 0 0 12px rgba(255,0,0,0.5); }
+  }
+
+  /* Cuando NO está activo → no tocamos nada, vuelve al estilo original del tema */
   #btnLogo:not(.logo-activo) {
-    background: "" !important;
-    color: inherit !important;
-    box-shadow: none !important;
-    transform: none !important;
+    background: initial !important;
+    color: initial !important;
+    box-shadow: initial !important;
+    opacity: 1 !important;
+    transform: initial !important;
     animation: none !important;
-  }
-
-  /* PARPADEO SUAVE (de brillo bajo → máximo → bajo) */
-  @keyframes parpadeoLogo {
-    0%   { box-shadow: 0 0 12px rgba(255,0,0,0.5); opacity: 0.85; }
-    50%  { box-shadow: 0 0 30px rgba(255,0,0,1);   opacity: 1;    }
-    100% { box-shadow: 0 0 12px rgba(255,0,0,0.5); opacity: 0.85; }
   }
 </style>`;
 document.head.insertAdjacentHTML("beforeend", estiloIndicadorLogo);
@@ -3532,6 +3531,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
