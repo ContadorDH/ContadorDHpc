@@ -1866,12 +1866,7 @@ function actualizarEspejoLocal() {
   if (!ventanaProyeccion || ventanaProyeccion.closed) {
     const oldFrame = contenedor.querySelector("#espejo-iframe");
     if (oldFrame) oldFrame.remove();
-   // 🔥 Si no hay proyección → NO mostrar último versículo (evita la confusión)
-const preview = document.getElementById("preview-biblia");
-contenedor.innerHTML = preview && preview.dataset.activo === "1"
-  ? preview.innerHTML 
-  : `<div class="sin-proyeccion">Sin proyección</div>`;
-
+    contenedor.innerHTML = document.getElementById("preview-biblia").innerHTML;
     return;
   }
 
@@ -1959,7 +1954,6 @@ contenedor.innerHTML = preview && preview.dataset.activo === "1"
 
 // ====== FUNCIÓN PRINCIPAL: AL TOCAR UN VERSÍCULO EN BIBLIA ======
 function ver(ref) {
-  document.getElementById("preview-biblia").dataset.activo = "1";
   const contenedorTexto = document.getElementById("t");
   const key = ref.toLowerCase();
 
@@ -2149,7 +2143,7 @@ document.getElementById("btnEnVivo").addEventListener("click", () => {
     return;
   }
 
-  // 1️⃣ FONDO — IGUAL QUE EL PREVIEW
+  // 1️⃣ FONDO — IGUAL
   const preview = document.getElementById("preview-biblia");
   const fondoPreview = getComputedStyle(preview).backgroundImage;
 
@@ -2161,11 +2155,11 @@ document.getElementById("btnEnVivo").addEventListener("click", () => {
   }
 
   // 2️⃣ COPIAR EXACTAMENTE EL HTML DEL PREVIEW
-  const previewHTML = document.getElementById("preview-texto").innerHTML;
+  const previewHTML = document.querySelector("#preview-texto .biblia-texto-local").innerHTML;
 
   const cajaLive = ventanaProyeccion.document.getElementById("textoAutoFit");
   if (cajaLive) {
-    cajaLive.innerHTML = previewHTML; 
+    cajaLive.innerHTML = previewHTML;   // ← AQUÍ LA MAGIA
   }
 
   // 3️⃣ GUARDAR ESTADO REAL
@@ -2176,7 +2170,9 @@ document.getElementById("btnEnVivo").addEventListener("click", () => {
   console.log("EN VIVO enviado (formato idéntico al preview).");
 
   actualizarEspejoLocal();
+
 });
+
 
 
 
@@ -3115,8 +3111,6 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
-
-
 
 
 
