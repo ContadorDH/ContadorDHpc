@@ -1128,7 +1128,30 @@ body.tema-oscuro .resultados-biblia .resaltado,
   background-repeat: no-repeat;
   transition: background 0.5s ease;
 }
-  
+
+
+  /* AÑADE ESTO A TU CSS */
+#indicadorVivo {
+  font-size: 0.65em;
+  color: #ff0000;
+  margin-left: 8px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  position: relative;
+  top: -1px;
+}
+
+/* Animación de pulso suave cuando está en vivo */
+#indicadorVivo.activo {
+  opacity: 1;
+  animation: pulsoVivo 2.5s infinite ease-in-out;
+}
+
+@keyframes pulsoVivo {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.15); }
+}
   
 </style>
 </head>
@@ -1325,10 +1348,12 @@ line-height:2;z-index:99;">
     <i class="fa-solid fa-image"></i> Fondo
   </button>
 
- <button id="btnEnVivo" class="btn-accion">
-    <i class="fas fa-broadcast-tower"></i> EN VIVO
+<!-- TU BOTÓN ACTUALIZADO (reemplaza el actual) -->
+<button id="btnEnVivo" class="btn-accion">
+  <i class="fas fa-broadcast-tower"></i>
+  <span id="textoEnVivo">EN VIVO</span>
+  <i id="indicadorVivo" class="fas fa-circle indicador-vivo"></i>
 </button>
-
 
   <button id="btnTema" class="btn-icono" title="Cambiar tema"><i class="fa-solid fa-palette"></i></button>
 </div>
@@ -2035,11 +2060,13 @@ async function abrirVentanaBiblia(ref, texto) {
   // Aplicar contenido
   actualizarVentanaBiblia(ref, texto);
 
-  // Detectar cierre automático
+ // Detectar cierre automático
   const timer = setInterval(() => {
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       clearInterval(timer);
       ventanaProyeccion = null;
+      actualizarEspejoLocal();
+      actualizarIndicadorEnVivo(); // ← AÑADIDO: apaga el círculo si se cierra
     }
   }, 500);
 }
@@ -2116,12 +2143,9 @@ document.getElementById("btnLimpiarTexto").addEventListener("click", () => {
     previewTexto.dataset.texto = "";
   }
 
-  // 3. ¡¡NUNCA borres manualmente el contenedor del espejo!!
-  // Deja que actualizarEspejoLocal() decida qué hacer
-  // → Si hay ventana abierta → mostrará el fondo (incluso vacío)
-  // → Si no hay → lo limpia
 
   actualizarEspejoLocal(); // ← Esto es suficiente. No toques innerHTML antes.
+  actualizarIndicadorEnVivo(); // ← AÑADIDO: mantiene el círculo si solo se limpió texto
 
   console.log("Texto limpiado – espejo actualizado correctamente");
 });
@@ -2145,40 +2169,44 @@ function aplicarFondoPersonalizado(ventana) {
 }
 
 
+// ====== FUNCIÓN PARA ACTUALIZAR EL INDICADOR EN VIVO (nueva) ======
+function actualizarIndicadorEnVivo() {
+  const indicador = document.getElementById("indicadorVivo");
+  const textoBtn = document.getElementById("textoEnVivo");
 
+  if (ventanaProyeccion && !ventanaProyeccion.closed) {
+    indicador?.classList.add("activo");
+    textoBtn?.classList.add("activo");
+  } else {
+    indicador?.classList.remove("activo");
+    textoBtn?.classList.remove("activo");
+  }
+}
+  
+
+// ====== BOTÓN EN VIVO (modificado solo al final) ======
 document.getElementById("btnEnVivo").addEventListener("click", async () => {
   const previewEl = document.getElementById("preview-texto");
   const ref = previewEl?.dataset.ref || "";
   const texto = previewEl?.dataset.texto || "";
 
-  // CASO 1: Hay texto → comportamiento normal (como siempre)
   if (ref && texto) {
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       await abrirVentanaBiblia(ref, texto);
     } else {
       actualizarVentanaBiblia(ref, texto);
     }
-  } 
-  // CASO 2: NO hay texto → pero igual proyectamos solo el fondo actual
-  else {
+  } else {
     console.log("Sin texto → proyectando solo el fondo personalizado");
-
-    // Si no hay ventana abierta → la abrimos (vacía)
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
-      // Usamos una referencia dummy para abrir la ventana
       await abrirVentanaBiblia("", "");
     }
-
-    // Limpiamos el texto (por si quedó algo viejo)
     if (ventanaProyeccion && !ventanaProyeccion.closed) {
       const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
       if (caja) caja.textContent = "";
     }
-
-    // Forzamos aplicar el fondo del preview (el que el usuario acaba de elegir)
     const preview = document.getElementById("preview-biblia");
     const fondoPreview = preview ? getComputedStyle(preview).backgroundImage : "";
-
     if (fondoPreview && fondoPreview !== "none" && ventanaProyeccion && !ventanaProyeccion.closed) {
       try {
         const body = ventanaProyeccion.document.body;
@@ -2192,16 +2220,16 @@ document.getElementById("btnEnVivo").addEventListener("click", async () => {
     }
   }
 
-  // Siempre: actualizar espejo local y guardar estado
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
     ventanaProyeccion.referenciaActual = ref;
     ventanaProyeccion.textoActual = texto;
   }
 
   actualizarEspejoLocal();
+  actualizarIndicadorEnVivo(); // ← AÑADIDO AQUÍ
+
   console.log("EN VIVO activado → fondo proyectado (con o sin texto)");
 });
-
 
 
 
@@ -2302,6 +2330,7 @@ function actualizarVentanaBiblia(ref, texto) {
 
   
   actualizarEspejoLocal();
+  actualizarIndicadorEnVivo(); // ← AÑADIDO AQUÍ
 
 }
 
@@ -3143,6 +3172,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
