@@ -2073,25 +2073,30 @@ let ultimoClick = 0;
 
 function verDobleClick(ref) {
   const ahora = Date.now();
-
   if (ahora - ultimoClick < 300) {
     // 🔥 Doble clic → preview + proyección
     ver(ref); // preview normal
-
     const clave = ref.toLowerCase();
     if (biblia[clave]) {
-      proyectarBiblia(ref, biblia[clave]);
+      proyectarBiblia(ref, biblia[clave]).then(() => {
+        // ⚡ Entrar fullscreen directamente después de abrir la ventana
+        if (ventanaProyeccion && !ventanaProyeccion.closed) {
+          const body = ventanaProyeccion.document.body;
+          if (body.requestFullscreen) body.requestFullscreen().catch(()=>{});
+          else if (body.webkitRequestFullscreen) body.webkitRequestFullscreen();
+          else if (body.msRequestFullscreen) body.msRequestFullscreen();
+        }
+      });
     } else {
       console.warn("Versículo no encontrado en biblia:", ref);
     }
-
   } else {
     // 👆 Un solo clic → solo preview
     ver(ref);
   }
-
   ultimoClick = ahora;
 }
+
 
 
 
@@ -2303,7 +2308,7 @@ document.getElementById("btnEnVivo").addEventListener("click", async () => {
   const previewEl = document.getElementById("preview-texto");
   const ref = previewEl?.dataset.ref || "";
   const texto = previewEl?.dataset.texto || "";
-
+  
   if (ref && texto) {
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       await abrirVentanaBiblia(ref, texto);
@@ -2311,39 +2316,23 @@ document.getElementById("btnEnVivo").addEventListener("click", async () => {
       actualizarVentanaBiblia(ref, texto);
     }
   } else {
-    console.log("Sin texto → proyectando solo el fondo personalizado");
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       await abrirVentanaBiblia("", "");
     }
-    if (ventanaProyeccion && !ventanaProyeccion.closed) {
-      const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
-      if (caja) caja.textContent = "";
-    }
-    const preview = document.getElementById("preview-biblia");
-    const fondoPreview = preview ? getComputedStyle(preview).backgroundImage : "";
-    if (fondoPreview && fondoPreview !== "none" && ventanaProyeccion && !ventanaProyeccion.closed) {
-      try {
-        const body = ventanaProyeccion.document.body;
-        body.style.backgroundImage = fondoPreview;
-        body.style.backgroundSize = "cover";
-        body.style.backgroundPosition = "center";
-        body.style.backgroundRepeat = "no-repeat";
-      } catch (e) {
-        console.warn("No se pudo aplicar fondo (posible timing)", e);
-      }
-    }
   }
 
+  // ⚡ Entrar fullscreen directamente al hacer click EN VIVO
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
-    ventanaProyeccion.referenciaActual = ref;
-    ventanaProyeccion.textoActual = texto;
+    const body = ventanaProyeccion.document.body;
+    if (body.requestFullscreen) body.requestFullscreen().catch(()=>{});
+    else if (body.webkitRequestFullscreen) body.webkitRequestFullscreen();
+    else if (body.msRequestFullscreen) body.msRequestFullscreen();
   }
 
   actualizarEspejoLocal();
-  actualizarIndicadorEnVivo(); // ← AÑADIDO AQUÍ
-
-  console.log("EN VIVO activado → fondo proyectado (con o sin texto)");
+  actualizarIndicadorEnVivo();
 });
+
 
 
 
@@ -3578,6 +3567,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
