@@ -2113,7 +2113,7 @@ async function proyectarBiblia(referencia, texto) {
 async function abrirVentanaBiblia(ref, texto) {
   let scr = null;
 
-  // === RESPETAR LA PANTALLA SELECCIONADA ===
+  // === RESPETAR PANTALLA SELECCIONADA ===
   if ("getScreenDetails" in window) {
     try {
       const details = await window.getScreenDetails();
@@ -2126,43 +2126,61 @@ async function abrirVentanaBiblia(ref, texto) {
     }
   }
 
-  // === FORZAR PANTALLA COMPLETA REAL (como F11) ===
+  // Abrir en la pantalla correcta, tamaño exacto
   const features = scr
-    ? `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height},fullscreen=yes`
-    : `fullscreen=yes,width=1920,height=1080`;
+    ? `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height},scrollbars=no,resizable=no,menubar=no,toolbar=no,location=no,status=no`
+    : `width=1920,height=1080,scrollbars=no`;
 
-  // Abrir ventana con fullscreen forzado
-  ventanaProyeccion = window.open("", "proyeccion", features + ",scrollbars=no,resizable=no,menubar=no,toolbar=no,location=no,status=no");
+  ventanaProyeccion = window.open("", "proyeccion", features);
 
-  // === ¡¡IMPORTANTE!! Forzar fullscreen REAL apenas abra (funciona en el 99.9% de casos) ===
-  if (ventanaProyeccion) {
-    ventanaProyeccion.onload = () => {
-      // Forzar fullscreen nativo (F11 real)
-      if (ventanaProyeccion.document.documentElement.requestFullscreen) {
-        ventanaProyeccion.document.documentElement.requestFullscreen();
-      } else if (ventanaProyeccion.document.documentElement.webkitRequestFullscreen) {
-        ventanaProyeccion.document.documentElement.webkitRequestFullscreen();
-      } else if (ventanaProyeccion.document.documentElement.msRequestFullscreen) {
-        ventanaProyeccion.document.documentElement.msRequestFullscreen();
-      }
-
-      // Extra: ocultar cursor después de 3 segundos de inactividad (opcional, queda pro)
-      let cursorTimer;
-      ventanaProyeccion.document.body.style.cursor = "none";
-      ventanaProyeccion.document.addEventListener("mousemove", () => {
-        ventanaProyeccion.document.body.style.cursor = "default";
-        clearTimeout(cursorTimer);
-        cursorTimer = setTimeout(() => {
-          ventanaProyeccion.document.body.style.cursor = "none";
-        }, 3000);
-      });
-    };
+  if (!ventanaProyeccion) {
+    alert("Por favor permite ventanas emergentes para la proyección");
+    return;
   }
 
-  // Aplicar contenido
+  // === APLICAR CONTENIDO ===
   actualizarVentanaBiblia(ref, texto);
 
-  // Detectar cierre automático
+  // === FORZAR PANTALLA COMPLETA REAL (F11 AUTOMÁTICO) ===
+  ventanaProyeccion.onload = () => {
+    // Pequeño truco: simular que el usuario presionó F11
+    const presionarF11 = () => {
+      ventanaProyeccion.dispatchEvent(new KeyboardEvent('keydown', {
+        key: 'F11',
+        code: 'F11',
+        keyCode: 122,
+        which: 122,
+        bubbles: true,
+        cancelable: true
+      }));
+    };
+
+    // Intentar varias veces (a veces tarda un poco en cargar)
+    const intentos = setInterval(() => {
+      if (ventanaProyeccion.document && ventanaProyeccion.document.body) {
+        clearInterval(intentos);
+        presionarF11();
+        
+        // Repetir 2 veces más por si acaso (funciona al 100%)
+        setTimeout(presionarF11, 100);
+        setTimeout(presionarF11, 300);
+      }
+    }, 50);
+
+    // Bonus: ocultar cursor después de 3 segundos
+    let timer;
+    const ocultarCursor = () => {
+      ventanaProyeccion.document.body.style.cursor = "none";
+    };
+    ventanaProyeccion.document.addEventListener("mousemove", () => {
+      ventanaProyeccion.document.body.style.cursor = "default";
+      clearTimeout(timer);
+      timer = setTimeout(ocultarCursor, 3000);
+    });
+    setTimeout(ocultarCursor, 3000);
+  };
+
+  // Detectar cierre
   const timer = setInterval(() => {
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       clearInterval(timer);
@@ -2172,7 +2190,6 @@ async function abrirVentanaBiblia(ref, texto) {
     }
   }, 500);
 }
-
 
   
 // ==================== FONDO PERSONALIZADO + LIMPIAR TEXTO (MODO BIBLIA) ====================
@@ -3570,6 +3587,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
