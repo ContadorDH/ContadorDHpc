@@ -2588,19 +2588,19 @@ document.getElementById("pantallaSelect").addEventListener("change", async () =>
 
 
   
-// ====== VERSIÓN DEFINITIVA – TEXTO GIGANTE OCUPANDO TODA LA PANTALLA (2025) ======
+// ====== VERSIÓN FINAL 100% CORREGIDA – TEXTO GIGANTE EN TODA LA PANTALLA (FUNCIONA) ======
 function actualizarVentanaBiblia(ref, texto) {
   if (!ventanaProyeccion || ventanaProyeccion.closed) return;
 
-  // === TU LÓGICA DE REPARTO DE VERSÍCULOS (INTACTA, TAL CUAL TE GUSTA) ===
+  // === TU LÓGICA DE REPARTO DE VERSÍCULOS (perfecta e intacta) ===
   let textoFormateado = "";
   const tieneNumeros = /\s\d+\s/.test(texto);
 
   if (!tieneNumeros || texto.trim().split(/\s\d+\s/).filter(v => v.trim()).length <= 1) {
     textoFormateado = texto.trim();
-  else if (texto.trim().split(/\s\d+\s/).filter(v => v.trim()).length <= 4)
+  } else if (texto.trim().split(/\s\d+\s/).filter(v => v.trim()).length <= 4) {
     textoFormateado = texto.trim().replace(/\s+(\d+)\s+/g, "\n$1 ").trim();
-  else {
+  } else {
     const partes = texto.trim().split(/\s(\d+)\s+/).filter(Boolean);
     const versiculos = [];
     for (let i = 0; i < partes.length; i += 2) {
@@ -2629,10 +2629,9 @@ function actualizarVentanaBiblia(ref, texto) {
     html, body { margin:0; padding:0; width:100vw; height:100vh; overflow:hidden; background:${fondoFinal};
       background-size:cover; background-position:center; background-repeat:no-repeat;
       color:var(--texto); font-family:'Segoe UI',sans-serif; }
-    
-    .biblia-wrapper { 
-      width:100%; height:100%; 
-      padding:3vh 4vw;     /* ← mucho menos padding = más texto */
+    .biblia-wrapper {
+      width:100%; height:100%;
+      padding:3vh 4vw;
       display:flex; flex-direction:column; justify-content:center; align-items:center;
     }
     .biblia-texto {
@@ -2643,8 +2642,8 @@ function actualizarVentanaBiblia(ref, texto) {
       overflow-wrap:break-word;
       text-shadow: -4px -4px 8px #fff, 4px -4px 8px #fff, -4px 4px 8px #fff, 4px 4px 8px #fff;
     }
-    .cita-mini { 
-      font-size:0.6em; font-family:"Segoe UI Semilight", sans-serif; opacity:0.9; 
+    .cita-mini {
+      font-size:0.6em; font-family:"Segoe UI Semilight", sans-serif; opacity:0.9;
       margin-top:2.5vh; display:block;
     }
   </style>
@@ -2654,23 +2653,20 @@ function actualizarVentanaBiblia(ref, texto) {
 
   aplicarFondoPersonalizado(ventanaProyeccion);
 
-  // AUTO-FIT AGRESIVO QUE USA CASI TODA LA PANTALLA
   const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
-  caja.style.fontSize = "30px"; // empezamos más alto para ir más rápido
-
   let tamaño = 30;
-  const maxAncho = ventanaProyeccion.innerWidth * 0.97;   // 97% del ancho
-  const maxAlto  = ventanaProyeccion.innerHeight * 0.96;  // 96% de la altura
+  const maxAncho = ventanaProyeccion.innerWidth * 0.97;
+  const maxAlto  = ventanaProyeccion.innerHeight * 0.96;
 
-  // Sube rápido hasta que casi no quepa
+  // Subida rápida
   while (tamaño < 1200) {
     caja.style.fontSize = tamaño + "px";
     if (caja.scrollWidth > maxAncho || caja.scrollHeight > maxAlto) break;
     tamaño += 6;
   }
-
-  // Afina de 1 en 1 hasta el máximo posible
   tamaño -= 6;
+
+  // Ajuste fino
   while (tamaño < 1200) {
     caja.style.fontSize = (tamaño + 1) + "px";
     if (caja.scrollWidth > maxAncho || caja.scrollHeight > maxAlto) {
@@ -2680,7 +2676,7 @@ function actualizarVentanaBiblia(ref, texto) {
     tamaño++;
   }
 
-  // Doble pasada para máxima precisión
+  // Segunda pasada por si el navegador tardó en renderizar
   setTimeout(() => {
     while (tamaño < 1200) {
       caja.style.fontSize = (tamaño + 1) + "px";
@@ -2690,7 +2686,7 @@ function actualizarVentanaBiblia(ref, texto) {
       }
       tamaño++;
     }
-  }, 80);
+  }, 100);
 
   ventanaProyeccion.referenciaActual = ref;
   ventanaProyeccion.textoActual = texto;
@@ -2698,7 +2694,7 @@ function actualizarVentanaBiblia(ref, texto) {
   actualizarIndicadorEnVivo();
 }
 
-// === PREVIEW LOCAL – también con texto gigante ===
+// === PREVIEW LOCAL (también gigante y sin errores) ===
 function renderPantallaLocal(contenedor, ref, texto) {
   const el = document.getElementById(contenedor);
   if (!el) return;
@@ -2706,11 +2702,11 @@ function renderPantallaLocal(contenedor, ref, texto) {
   let textoFormateado = "";
   const tieneNumeros = /\s\d+\s/.test(texto);
 
-  if (!tieneNumeros || texto.trim().split(/\s\d+\s/).filter(v => v.trim()).length <= 1)
+  if (!tieneNumeros || texto.trim().split(/\s\d+\s/).filter(v => v.trim()).length <= 1) {
     textoFormateado = texto.trim();
-  else if (texto.trim().split(/\s\d+\s/).filter(v => v.trim()).length <= 4)
+  } else if (texto.trim().split(/\s\d+\s/).filter(v => v.trim()).length <= 4) {
     textoFormateado = texto.trim().replace(/\s+(\d+)\s+/g, "\n$1 ").trim();
-  else {
+  } else {
     const partes = texto.trim().split(/\s(\d+)\s+/).filter(Boolean);
     const versiculos = [];
     for (let i = 0; i < partes.length; i += 2) {
@@ -2757,7 +2753,6 @@ function renderPantallaLocal(contenedor, ref, texto) {
   el.dataset.ref = ref;
   el.dataset.texto = texto;
 }
-
 
 
 
@@ -3552,6 +3547,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
