@@ -1959,102 +1959,67 @@ function cerrarCapitulos() {
 
 // FUNCIÓN actualizarEspejoLocal() → MEJORADA Y FIABLE
 function actualizarEspejoLocal() {
-  const contenedor = document.getElementById("proyeccion-texto");
-  if (!contenedor) return;
+  const espejo = document.getElementById("espejo-local");
+  if (!espejo) return;
 
-  contenedor.style.position = "relative";
-  contenedor.style.overflow = "hidden";
-  contenedor.style.padding = "0";
-
-  // CASO 1: No hay proyección activa → limpiar y salir
+  // Si no existe o está cerrada la ventana principal, limpiar
   if (!ventanaProyeccion || ventanaProyeccion.closed) {
-    contenedor.innerHTML = ""; // limpia todo
+    espejo.src = "";
     return;
   }
 
-  // CASO 2: Sí hay proyección activa → debe mostrar algo (fondo + contenido)
-  const realW = ventanaProyeccion.innerWidth || 1280;
-  const realH = ventanaProyeccion.innerHeight || 720;
-  const miniW = contenedor.clientWidth || 100;
-  const miniH = contenedor.clientHeight || 100;
-
-  if (miniW <= 10 || miniH <= 10) return; // evita errores si está oculto
-
-  const escala = Math.min(miniW / realW, miniH / realH);
-
-  // Buscar iframe existente
-  let iframe = contenedor.querySelector("#espejo-iframe");
-
-  // Si no existe o fue borrado → crearlo de nuevo
-  if (!iframe) {
-    iframe = document.createElement("iframe");
-    iframe.id = "espejo-iframe";
-    iframe.setAttribute("sandbox", "allow-same-origin");
-    iframe.style.border = "0";
-    iframe.style.background = "transparent";
-    iframe.style.position = "absolute";
-    iframe.style.top = "0";
-    iframe.style.left = "0";
-    iframe.style.width = realW + "px";
-    iframe.style.height = realH + "px";
-    iframe.style.transformOrigin = "top left";
-    iframe.style.pointerEvents = "none";
-    iframe.style.imageRendering = "crisp-edges";
-
-    // Limpiar contenedor y añadir el nuevo iframe
-    contenedor.innerHTML = "";
-    contenedor.appendChild(iframe);
-  }
-
-  // Actualizar dimensiones
-  iframe.style.width = realW + "px";
-  iframe.style.height = realH + "px";
-
-  // Forzar actualización del contenido (lo más importante)
   try {
-    const htmlCompleto = ventanaProyeccion.document.documentElement.outerHTML;
-    if (iframe.srcdoc !== htmlCompleto) {
-      iframe.srcdoc = htmlCompleto;
+    // Leer el body de la ventana externa y clonarlo
+    const contenido = ventanaProyeccion.document.documentElement.outerHTML;
+
+    // Crear el iframe si no existe
+    if (!espejo._iframe) {
+      espejo._iframe = document.createElement("iframe");
+      espejo._iframe.style.width = "100%";
+      espejo._iframe.style.height = "100%";
+      espejo._iframe.style.border = "none";
+      espejo.appendChild(espejo._iframe);
+
+      espejo._iframe.onload = () => {
+        try {
+          const doc = espejo._iframe.contentDocument;
+          const body = doc.body;
+
+          // Asegurar estilos base del espejo
+          body.style.margin = "0";
+          body.style.backgroundSize = "cover";
+          body.style.backgroundPosition = "center";
+          body.style.backgroundRepeat = "no-repeat";
+          body.style.transform = "translateZ(0)";
+          body.style.backfaceVisibility = "hidden";
+
+          // 🔥 EVITAR QUE EL ESPEJO REESCALÉ O REDUZCA EL TEXTO
+          const textoEspejo = doc.getElementById("textoAutoFit");
+          const textoReal = ventanaProyeccion.document.getElementById("textoAutoFit");
+
+          if (textoEspejo && textoReal) {
+            // Se fuerza a usar el tamaño ya calculado en la ventana real
+            textoEspejo.style.fontSize = textoReal.style.fontSize;
+            textoEspejo.style.lineHeight = textoReal.style.lineHeight;
+            textoEspejo.style.wordSpacing = textoReal.style.wordSpacing;
+          }
+
+        } catch (e) {
+          console.warn("Error espejo local (onload):", e);
+        }
+      };
     }
+
+    // Escribir el contenido dentro del iframe
+    const doc = espejo._iframe.contentDocument;
+    doc.open();
+    doc.write(contenido);
+    doc.close();
+
   } catch (e) {
-    console.warn("Error actualizando srcdoc del espejo:", e);
+    console.warn("Error al actualizar espejo local:", e);
   }
-
-  // Mejorar renderizado cuando cargue
-iframe.onload = () => {
-  try {
-    const doc = iframe.contentDocument || iframe.contentWindow.document;
-    const body = doc.body;
-
-    body.style.margin = "0";
-    body.style.backgroundSize = "cover";
-    body.style.backgroundPosition = "center";
-    body.style.backgroundRepeat = "no-repeat";
-    body.style.transform = "translateZ(0)";
-    body.style.backfaceVisibility = "hidden";
-
-    // 🔥 IMPORTANTE: Congelar tamaño del texto dentro del espejo
-    const texto = doc.getElementById("textoAutoFit");
-    if (texto) {
-      const tamReal = ventanaProyeccion.document.getElementById("textoAutoFit")?.style.fontSize;
-      if (tamReal) texto.style.fontSize = tamReal;
-    }
-  } catch (e) {}
-};
-
-
-  // Aplicar escala y centrado (contain)
-  const offsetX = (miniW - realW * escala) / 2;
-  const offsetY = (miniH - realH * escala) / 2;
-
-  iframe.style.left = offsetX + "px";
-  iframe.style.top = offsetY + "px";
-  iframe.style.transform = `scale(${escala})`;
-  iframe.style.willChange = "transform";
-
-  contenedor.style.backgroundImage = "none";
 }
-
 
 
 
