@@ -1410,7 +1410,7 @@ line-height:2;z-index:99;">
   </button>
 
   <!-- NUEVO: Botón  (puedes poner tu  aquí) -->
-  <button id="btnLogo" class="btn-logo" title="Mostrar logo">
+  <button id="btnLogo" class="btn-accion" title="Mostrar logo">
     <i class="fas fa-image"></i> <!-- Cambia este ícono por tu logo o imagen -->
   </button>
 
@@ -3417,7 +3417,8 @@ function actualizarIconoLogo() {
 
   if (tieneLogo) {
     icono.classList.add("fa-circle-check");
-    icono.style.color = "#58a6ff";
+    icono.style.color = "rgba(88, 166, 255, 0.5)";
+
     btn.title = "Logo configurado - Click para cambiar o mantener pulsado para eliminar";
   } else {
     icono.classList.add("fa-image");
@@ -3536,6 +3537,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
