@@ -2073,30 +2073,25 @@ let ultimoClick = 0;
 
 function verDobleClick(ref) {
   const ahora = Date.now();
+
   if (ahora - ultimoClick < 300) {
     // 🔥 Doble clic → preview + proyección
     ver(ref); // preview normal
+
     const clave = ref.toLowerCase();
     if (biblia[clave]) {
-      proyectarBiblia(ref, biblia[clave]).then(() => {
-        // ⚡ Entrar fullscreen directamente después de abrir la ventana
-        if (ventanaProyeccion && !ventanaProyeccion.closed) {
-          const body = ventanaProyeccion.document.body;
-          if (body.requestFullscreen) body.requestFullscreen().catch(()=>{});
-          else if (body.webkitRequestFullscreen) body.webkitRequestFullscreen();
-          else if (body.msRequestFullscreen) body.msRequestFullscreen();
-        }
-      });
+      proyectarBiblia(ref, biblia[clave]);
     } else {
       console.warn("Versículo no encontrado en biblia:", ref);
     }
+
   } else {
     // 👆 Un solo clic → solo preview
     ver(ref);
   }
+
   ultimoClick = ahora;
 }
-
 
 
 
@@ -2118,10 +2113,10 @@ async function proyectarBiblia(referencia, texto) {
 async function abrirVentanaBiblia(ref, texto) {
   let scr = null;
 
-  // === RESPETAR LA PANTALLA SELECCIONADA ===
+  // === RESPETAR LA PANTALLA SELECCIONADA (igual que asistencia) ===
   if ("getScreenDetails" in window) {
     try {
-      const details = await window.getScreenDetails();
+      const details = await window.getScreenDetails();  // ← AQUÍ ESTABA EL ERROR ANTES
       const indexPantalla = parseInt(document.getElementById("pantallaSelect").value);
       if (!isNaN(indexPantalla) && details.screens[indexPantalla]) {
         scr = details.screens[indexPantalla];
@@ -2131,61 +2126,25 @@ async function abrirVentanaBiblia(ref, texto) {
     }
   }
 
-  // Abrir ventana con tamaño de pantalla
   const features = scr
-    ? `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height},scrollbars=no,resizable=no,menubar=no,toolbar=no,location=no,status=no`
-    : `width=1920,height=1080,scrollbars=no`;
+    ? `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height},fullscreen=yes`
+    : `width=1200,height=700`;
 
-  ventanaProyeccion = window.open("", "proyeccion", features);
+  ventanaProyeccion = window.open("", "proyeccion", features + ",scrollbars=no");
 
-  if (!ventanaProyeccion) {
-    alert("Por favor permite ventanas emergentes para la proyección");
-    return;
-  }
-
-  // Aplicar contenido inicial
+  // Aplicar contenido
   actualizarVentanaBiblia(ref, texto);
 
-  // ⚡ Intentar fullscreen inmediato
-  const entrarFullscreen = () => {
-    if (!ventanaProyeccion || ventanaProyeccion.closed) return;
-    const body = ventanaProyeccion.document.body;
-    if (body.requestFullscreen) body.requestFullscreen().catch(() => {});
-    else if (body.webkitRequestFullscreen) body.webkitRequestFullscreen(); // Safari
-    else if (body.msRequestFullscreen) body.msRequestFullscreen(); // IE/Edge
-  };
-
-  // Ejecutar fullscreen después de unos ms para asegurar que el DOM esté listo
-  ventanaProyeccion.onload = () => {
-    entrarFullscreen();
-
-    // Ocultar cursor tras 3 segundos
-    let timer;
-    const ocultarCursor = () => {
-      if (ventanaProyeccion && !ventanaProyeccion.closed) {
-        ventanaProyeccion.document.body.style.cursor = "none";
-      }
-    };
-    ventanaProyeccion.document.addEventListener("mousemove", () => {
-      if (!ventanaProyeccion || ventanaProyeccion.closed) return;
-      ventanaProyeccion.document.body.style.cursor = "default";
-      clearTimeout(timer);
-      timer = setTimeout(ocultarCursor, 3000);
-    });
-    setTimeout(ocultarCursor, 3000);
-  };
-
-  // Detectar cierre automático
+ // Detectar cierre automático
   const timer = setInterval(() => {
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       clearInterval(timer);
       ventanaProyeccion = null;
       actualizarEspejoLocal();
-      actualizarIndicadorEnVivo();
+      actualizarIndicadorEnVivo(); // ← AÑADIDO: apaga el círculo si se cierra
     }
   }, 500);
 }
-
 
 
   
@@ -2309,7 +2268,7 @@ document.getElementById("btnEnVivo").addEventListener("click", async () => {
   const previewEl = document.getElementById("preview-texto");
   const ref = previewEl?.dataset.ref || "";
   const texto = previewEl?.dataset.texto || "";
-  
+
   if (ref && texto) {
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       await abrirVentanaBiblia(ref, texto);
@@ -2317,23 +2276,39 @@ document.getElementById("btnEnVivo").addEventListener("click", async () => {
       actualizarVentanaBiblia(ref, texto);
     }
   } else {
+    console.log("Sin texto → proyectando solo el fondo personalizado");
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       await abrirVentanaBiblia("", "");
     }
+    if (ventanaProyeccion && !ventanaProyeccion.closed) {
+      const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
+      if (caja) caja.textContent = "";
+    }
+    const preview = document.getElementById("preview-biblia");
+    const fondoPreview = preview ? getComputedStyle(preview).backgroundImage : "";
+    if (fondoPreview && fondoPreview !== "none" && ventanaProyeccion && !ventanaProyeccion.closed) {
+      try {
+        const body = ventanaProyeccion.document.body;
+        body.style.backgroundImage = fondoPreview;
+        body.style.backgroundSize = "cover";
+        body.style.backgroundPosition = "center";
+        body.style.backgroundRepeat = "no-repeat";
+      } catch (e) {
+        console.warn("No se pudo aplicar fondo (posible timing)", e);
+      }
+    }
   }
 
-  // ⚡ Entrar fullscreen directamente al hacer click EN VIVO
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
-    const body = ventanaProyeccion.document.body;
-    if (body.requestFullscreen) body.requestFullscreen().catch(()=>{});
-    else if (body.webkitRequestFullscreen) body.webkitRequestFullscreen();
-    else if (body.msRequestFullscreen) body.msRequestFullscreen();
+    ventanaProyeccion.referenciaActual = ref;
+    ventanaProyeccion.textoActual = texto;
   }
 
   actualizarEspejoLocal();
-  actualizarIndicadorEnVivo();
-});
+  actualizarIndicadorEnVivo(); // ← AÑADIDO AQUÍ
 
+  console.log("EN VIVO activado → fondo proyectado (con o sin texto)");
+});
 
 
 
@@ -3568,13 +3543,3 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
