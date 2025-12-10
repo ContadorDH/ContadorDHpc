@@ -2021,18 +2021,27 @@ function actualizarEspejoLocal() {
   }
 
   // Mejorar renderizado cuando cargue
-  iframe.onload = () => {
-    try {
-      const doc = iframe.contentDocument || iframe.contentWindow.document;
-      const body = doc.body;
-      body.style.margin = "0";
-      body.style.backgroundSize = "cover";
-      body.style.backgroundPosition = "center";
-      body.style.backgroundRepeat = "no-repeat";
-      body.style.transform = "translateZ(0)";
-      body.style.backfaceVisibility = "hidden";
-    } catch (e) {}
-  };
+iframe.onload = () => {
+  try {
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    const body = doc.body;
+
+    body.style.margin = "0";
+    body.style.backgroundSize = "cover";
+    body.style.backgroundPosition = "center";
+    body.style.backgroundRepeat = "no-repeat";
+    body.style.transform = "translateZ(0)";
+    body.style.backfaceVisibility = "hidden";
+
+    // 🔥 IMPORTANTE: Congelar tamaño del texto dentro del espejo
+    const texto = doc.getElementById("textoAutoFit");
+    if (texto) {
+      const tamReal = ventanaProyeccion.document.getElementById("textoAutoFit")?.style.fontSize;
+      if (tamReal) texto.style.fontSize = tamReal;
+    }
+  } catch (e) {}
+};
+
 
   // Aplicar escala y centrado (contain)
   const offsetX = (miniW - realW * escala) / 2;
@@ -2634,7 +2643,7 @@ function actualizarVentanaBiblia(ref, texto) {
     }
 
     .biblia-texto {
-      font-size:800vw;
+      font-size:25vw;
       font-weight:700;
       line-height:1.12;
       text-align:center;
@@ -2726,7 +2735,7 @@ function renderPantallaLocal(contenedor, ref, texto) {
         line-height:1.12;
         white-space:pre-wrap;
         overflow-wrap:break-word;
-        font-size:800vw;
+        font-size:25vw;
 
         text-shadow:
           -3px -3px 6px #fff,
@@ -3563,8 +3572,6 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
-
-
 
 
 
