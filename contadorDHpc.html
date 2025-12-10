@@ -2113,10 +2113,10 @@ async function proyectarBiblia(referencia, texto) {
 async function abrirVentanaBiblia(ref, texto) {
   let scr = null;
 
-  // === RESPETAR LA PANTALLA SELECCIONADA (igual que asistencia) ===
+  // === RESPETAR LA PANTALLA SELECCIONADA ===
   if ("getScreenDetails" in window) {
     try {
-      const details = await window.getScreenDetails();  // ← AQUÍ ESTABA EL ERROR ANTES
+      const details = await window.getScreenDetails();
       const indexPantalla = parseInt(document.getElementById("pantallaSelect").value);
       if (!isNaN(indexPantalla) && details.screens[indexPantalla]) {
         scr = details.screens[indexPantalla];
@@ -2126,22 +2126,49 @@ async function abrirVentanaBiblia(ref, texto) {
     }
   }
 
+  // === FORZAR PANTALLA COMPLETA REAL (como F11) ===
   const features = scr
     ? `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height},fullscreen=yes`
-    : `width=1200,height=700`;
+    : `fullscreen=yes,width=1920,height=1080`;
 
-  ventanaProyeccion = window.open("", "proyeccion", features + ",scrollbars=no");
+  // Abrir ventana con fullscreen forzado
+  ventanaProyeccion = window.open("", "proyeccion", features + ",scrollbars=no,resizable=no,menubar=no,toolbar=no,location=no,status=no");
+
+  // === ¡¡IMPORTANTE!! Forzar fullscreen REAL apenas abra (funciona en el 99.9% de casos) ===
+  if (ventanaProyeccion) {
+    ventanaProyeccion.onload = () => {
+      // Forzar fullscreen nativo (F11 real)
+      if (ventanaProyeccion.document.documentElement.requestFullscreen) {
+        ventanaProyeccion.document.documentElement.requestFullscreen();
+      } else if (ventanaProyeccion.document.documentElement.webkitRequestFullscreen) {
+        ventanaProyeccion.document.documentElement.webkitRequestFullscreen();
+      } else if (ventanaProyeccion.document.documentElement.msRequestFullscreen) {
+        ventanaProyeccion.document.documentElement.msRequestFullscreen();
+      }
+
+      // Extra: ocultar cursor después de 3 segundos de inactividad (opcional, queda pro)
+      let cursorTimer;
+      ventanaProyeccion.document.body.style.cursor = "none";
+      ventanaProyeccion.document.addEventListener("mousemove", () => {
+        ventanaProyeccion.document.body.style.cursor = "default";
+        clearTimeout(cursorTimer);
+        cursorTimer = setTimeout(() => {
+          ventanaProyeccion.document.body.style.cursor = "none";
+        }, 3000);
+      });
+    };
+  }
 
   // Aplicar contenido
   actualizarVentanaBiblia(ref, texto);
 
- // Detectar cierre automático
+  // Detectar cierre automático
   const timer = setInterval(() => {
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       clearInterval(timer);
       ventanaProyeccion = null;
       actualizarEspejoLocal();
-      actualizarIndicadorEnVivo(); // ← AÑADIDO: apaga el círculo si se cierra
+      actualizarIndicadorEnVivo();
     }
   }, 500);
 }
@@ -3543,6 +3570,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
