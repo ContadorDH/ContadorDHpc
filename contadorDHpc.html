@@ -2589,10 +2589,44 @@ document.getElementById("pantallaSelect").addEventListener("change", async () =>
 
   
 // TU FUNCIÓN ORIGINAL MEJORADA (respeta fondo personalizado)
+// ====== FUNCIÓN MEJORADA: DIVISIÓN INTELIGENTE DE VERSÍCULOS (ÚNICA MODIFICACIÓN REAL) ======
+// Reemplaza tu función actualizarVentanaBiblia y renderPantallaLocal por estas dos versiones:
+
 function actualizarVentanaBiblia(ref, texto) {
   if (!ventanaProyeccion || ventanaProyeccion.closed) return;
 
-  const textoFinal = `${texto} <span class="cita-mini">${ref}</span>`;
+  // === DIVISIÓN ESTÉTICA DE VERSÍCULOS (nueva lógica) ===
+  const versiculos = texto.trim().split(/\s*\d+\s+/).filter(v => v.trim());
+  let textoFormateado = "";
+  const numeroVersiculos = versiculos.length;
+
+  if (numeroVersiculos === 1) {
+    // Un solo versículo → todo junto (como antes era muy pequeño)
+    textoFormateado = texto.trim();
+  } else if (numeroVersiculos <= 4) {
+    // Pocos versículos → los mostramos todos juntos con salto de línea suave
+    textoFormateado = texto.trim().replace(/\s+(\d+)\s+/g, "\n$1 ").trim();
+  } else {
+    // Muchos versículos → agrupamos en 2–3 bloques equilibrados visualmente
+    const porBloque = Math.ceil(numeroVersiculos / 2);
+    let bloque1 = "";
+    let bloque2 = "";
+
+    versiculos.forEach((versiculo, i => {
+      const numVers = i + parseInt(texto.match(/\d+/)[0]) + i; // reconstruye número real
+      const linea = `<span class="versiculo">${numVers} ${versiculo.trim()}</span>`;
+      if (i < porBloque) {
+        bloque1 += linea + "  ";
+      } else {
+        bloque2 += linea + "  ";
+      }
+    });
+
+    textoFormateado = bloque1.trim() + "<br><br>" + bloque2.trim();
+  }
+
+  const textoFinal = `${textoFormateado} <span class="cita-mini">${ref}</span>`;
+
   const vars = {
     fondo: getComputedStyle(document.body).getPropertyValue("--fondo").trim(),
     acento: getComputedStyle(document.body).getPropertyValue("--acento").trim(),
@@ -2613,65 +2647,99 @@ function actualizarVentanaBiblia(ref, texto) {
       background-size:cover; background-position:center; background-repeat:no-repeat;
       color:var(--texto); font-family:'Segoe UI',sans-serif;
     }
-    .biblia-wrapper { width:100%; height:100%; padding:5vh 4vw; display:flex; justify-content:center; align-items:center; box-sizing:border-box; }
+    .biblia-wrapper { 
+      width:100%; height:100%; padding:6vh 5vw; 
+      display:flex; justify-content:center; align-items:center; 
+      box-sizing:border-box; 
+    }
     .biblia-texto {
       font-size:25vw;
       font-weight:700;
-      line-height:1.12;
+      line-height:1.18;
+      text-align:center;
       text-align:center;
       white-space:pre-wrap;
       overflow-wrap:break-word;
-
-      /* CONTORNO BLANCO */
       text-shadow:
         -3px -3px 6px #fff,
          3px -3px 6px #fff,
-        -3px  3px 6px #fff,
-         3px  3px 6px #fff;
+        -3px 3px 6px #fff,
+         3px 3px 6px #fff;
     }
-    .cita-mini { font-size:0.65em; font-family:"Segoe UI Semilight"; opacity:0.85; }
+    .versiculo {
+      display: inline;
+    }
+    .versiculo::after {
+      content: "  ";
+      margin-right: 0.4em;
+    }
+    .cita-mini { 
+      font-size:0.65em; 
+      font-family:"Segoe UI Semilight", sans-serif; 
+      opacity:0.85; 
+      display:block; 
+      margin-top:2.5vh; 
+    }
   </style>
   <div class="biblia-wrapper">
     <div id="textoAutoFit" class="biblia-texto">${textoFinal}</div>
   </div>`;
 
-  // Asegurar fondo personalizado
   aplicarFondoPersonalizado(ventanaProyeccion);
 
-  // Auto-fit (sin cambios)
+  // Auto-fit mejorado (más pasos para mayor precisión)
   const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
   function autoFit() {
-    let min = 20, max = 900, best = min;
-    const maxW = ventanaProyeccion.innerWidth * 0.95;
-    const maxH = ventanaProyeccion.innerHeight * 0.92;
+    let min = 20, max = 1000, best = min;
+    const maxW = ventanaProyeccion.innerWidth * 0.94;
+    const maxH = ventanaProyeccion.innerHeight * 0.90;
     while (min <= max) {
       let mid = Math.floor((min + max) / 2);
       caja.style.fontSize = mid + "px";
       if (caja.scrollWidth <= maxW && caja.scrollHeight <= maxH) {
-        best = mid; min = mid + 2;
-      } else max = mid - 2;
+        best = mid; min = mid + 1;
+      } else {
+        max = mid - 1;
+      }
     }
     caja.style.fontSize = best + "px";
   }
   autoFit();
 
-  // ⭐ NUEVO — necesario para reabrir Biblia al mover pantallas
+  // Guardar estado
   ventanaProyeccion.referenciaActual = ref;
   ventanaProyeccion.textoActual = texto;
 
-  
   actualizarEspejoLocal();
-  actualizarIndicadorEnVivo(); // ← AÑADIDO AQUÍ
-
+  actualizarIndicadorEnVivo();
 }
 
-
+// === VERSIÓN LOCAL (preview) con la misma lógica estética ===
 function renderPantallaLocal(contenedor, ref, texto) {
   const el = document.getElementById(contenedor);
   if (!el) return;
 
-  // Formatear igual que la proyección real
-  const textoFinal = `${texto} <span class="cita-mini">${ref}</span>`;
+  const versiculos = texto.trim().split(/\s*\d+\s+/).filter(v => v.trim());
+  let textoFormateado = "";
+
+  if (versiculos.length === 1) {
+    textoFormateado = texto.trim();
+  } else if (versiculos.length <= 4) {
+    textoFormateado = texto.trim().replace(/\s+(\d+)\s+/g, "\n$1 ").trim();
+  } else {
+    const porBloque = Math.ceil(versiculos.length / 2);
+    let bloque1 = "";
+    let bloque2 = "";
+    versiculos.forEach((versiculo, i) => {
+      const numVers = i + parseInt(texto.match(/\d+/)[0]) + i;
+      const linea = `<span class="versiculo">${numVers} ${versiculo.trim()}</span>`;
+      if (i < porBloque) bloque1 += linea + "  ";
+      else bloque2 += linea + "  ";
+    });
+    textoFormateado = bloque1.trim() + "<br><br>" + bloque2.trim();
+  }
+
+  const textoFinal = `${textoFormateado} <span class="cita-mini">${ref}</span>`;
 
   el.innerHTML = `
     <div class="biblia-wrapper-local">
@@ -2679,75 +2747,49 @@ function renderPantallaLocal(contenedor, ref, texto) {
     </div>
     <style>
       .biblia-wrapper-local {
-        width: 100%;
-        height: 100%;
-        padding: 5% 4%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        width: 100%; height: 100%; padding: 6% 5%;
+        display: flex; justify-content: center; align-items: center;
         box-sizing:border-box;
       }
-
       .biblia-texto-local {
-        display: block;
-        width: 100%;
-        max-height: 100%;
-        text-align: center;
-        font-weight: 700;
-        line-height: 1.12;
-        white-space: pre-wrap;
-        overflow-wrap: break-word;
+        display: block; width: 100%; max-height: 100%;
+        text-align: center; font-weight: 700; line-height: 1.18;
+        white-space: pre-wrap; overflow-wrap: break-word;
         font-size: 25vw;
-
-        /* CONTORNO BLANCO */
         text-shadow:
           -3px -3px 6px #fff,
            3px -3px 6px #fff,
-          -3px  3px 6px #fff,
-           3px  3px 6px #fff;
+          -3px 3px 6px #fff,
+           3px 3px 6px #fff;
       }
-
+      .versiculo::after { content: "  "; margin-right: 0.4em; }
       .cita-mini {
         font-size: 0.65em;
         font-family: "Segoe UI Semilight", sans-serif;
         opacity:0.85;
+        display:block;
+        margin-top:2.5vh;
       }
     </style>
   `;
 
-  // ----- AUTO-FIT (sin cambios) -----
+  // Auto-fit local
   const caja = el.querySelector("#textoAutoFitLocal");
-
-  let min = 20;
-  let max = 900;
-  let best = min;
-
-  const maxW = el.clientWidth * 0.95;
-  const maxH = el.clientHeight * 0.92;
-
+  let min = 20, max = 1000, best = min;
+  const maxW = el.clientWidth * 0.94;
+  const maxH = el.clientHeight * 0.90;
   while (min <= max) {
     let mid = Math.floor((min + max) / 2);
     caja.style.fontSize = mid + "px";
-
-    const fits =
-      caja.scrollWidth <= maxW &&
-      caja.scrollHeight <= maxH;
-
-    if (fits) {
-      best = mid;
-      min = mid + 2;
-    } else {
-      max = mid - 2;
-    }
+    if (caja.scrollWidth <= maxW && caja.scrollHeight <= maxH) {
+      best = mid; min = mid + 1;
+    } else max = mid - 1;
   }
-
   caja.style.fontSize = best + "px";
 
-  // ----- NUEVO: Guardar referencia y texto -----
   el.dataset.ref = ref;
   el.dataset.texto = texto;
 }
-
 
   
 
@@ -3543,3 +3585,4 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
