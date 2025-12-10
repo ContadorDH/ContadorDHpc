@@ -1206,6 +1206,11 @@ body.tema-oscuro .resultados-biblia .resaltado,
   transform: translateY(0);
 }
 
+
+
+.hidden-btn {
+  display: none !important;
+}
   
 </style>
 </head>
@@ -3494,7 +3499,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("btnFondoBiblia").style.display = "none";
      document.getElementById("btnEnVivo").style.display = "none";
      document.getElementById("btnParar").style.display = "none";
-     document.getElementById("btnLogo").style.display = "none";
+     document.getElementById("btnLogo")?.classList.add("hidden-btn");
   });
 
   // BOTÓN: BIBLIA
@@ -3515,7 +3520,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("btnFondoBiblia").style.display = "inline-flex";
        document.getElementById("btnEnVivo").style.display = "inline-flex";
        document.getElementById("btnParar").style.display = "inline-flex";
-       document.getElementById("btnLogo").style.display = "inline-flex";
+      document.getElementById("btnLogo")?.classList.remove("hidden-btn");
   });
 
   // Mostrar Biblia automáticamente al abrir
@@ -3536,6 +3541,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
