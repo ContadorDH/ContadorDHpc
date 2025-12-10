@@ -2113,7 +2113,7 @@ async function proyectarBiblia(referencia, texto) {
 async function abrirVentanaBiblia(ref, texto) {
   let scr = null;
 
-  // === RESPETAR PANTALLA SELECCIONADA ===
+  // === RESPETAR LA PANTALLA SELECCIONADA (igual que asistencia) ===
   if ("getScreenDetails" in window) {
     try {
       const details = await window.getScreenDetails();
@@ -2126,7 +2126,7 @@ async function abrirVentanaBiblia(ref, texto) {
     }
   }
 
-  // Abrir en la pantalla correcta, tamaño exacto
+  // Abrir ventana en tamaño de pantalla (no podemos usar F11 real)
   const features = scr
     ? `left=${scr.left},top=${scr.top},width=${scr.width},height=${scr.height},scrollbars=no,resizable=no,menubar=no,toolbar=no,location=no,status=no`
     : `width=1920,height=1080,scrollbars=no`;
@@ -2138,49 +2138,39 @@ async function abrirVentanaBiblia(ref, texto) {
     return;
   }
 
-  // === APLICAR CONTENIDO ===
+  // Aplicar contenido
   actualizarVentanaBiblia(ref, texto);
 
-  // === FORZAR PANTALLA COMPLETA REAL (F11 AUTOMÁTICO) ===
+  // Intentar pantalla completa usando Fullscreen API
   ventanaProyeccion.onload = () => {
-    // Pequeño truco: simular que el usuario presionó F11
-    const presionarF11 = () => {
-      ventanaProyeccion.dispatchEvent(new KeyboardEvent('keydown', {
-        key: 'F11',
-        code: 'F11',
-        keyCode: 122,
-        which: 122,
-        bubbles: true,
-        cancelable: true
-      }));
-    };
+    const doc = ventanaProyeccion.document;
+    const body = doc.body;
 
-    // Intentar varias veces (a veces tarda un poco en cargar)
-    const intentos = setInterval(() => {
-      if (ventanaProyeccion.document && ventanaProyeccion.document.body) {
-        clearInterval(intentos);
-        presionarF11();
-        
-        // Repetir 2 veces más por si acaso (funciona al 100%)
-        setTimeout(presionarF11, 100);
-        setTimeout(presionarF11, 300);
+    const entrarFullscreen = () => {
+      if (body.requestFullscreen) {
+        body.requestFullscreen().catch(err => console.warn("Fullscreen no permitido:", err));
+      } else if (body.webkitRequestFullscreen) {
+        body.webkitRequestFullscreen(); // Safari
+      } else if (body.msRequestFullscreen) {
+        body.msRequestFullscreen(); // IE/Edge
       }
-    }, 50);
-
-    // Bonus: ocultar cursor después de 3 segundos
-    let timer;
-    const ocultarCursor = () => {
-      ventanaProyeccion.document.body.style.cursor = "none";
     };
-    ventanaProyeccion.document.addEventListener("mousemove", () => {
-      ventanaProyeccion.document.body.style.cursor = "default";
+
+    // ⚡ Ejecutar fullscreen inmediatamente si es posible
+    entrarFullscreen();
+
+    // Ocultar cursor tras 3 segundos
+    let timer;
+    const ocultarCursor = () => body.style.cursor = "none";
+    doc.addEventListener("mousemove", () => {
+      body.style.cursor = "default";
       clearTimeout(timer);
       timer = setTimeout(ocultarCursor, 3000);
     });
     setTimeout(ocultarCursor, 3000);
   };
 
-  // Detectar cierre
+  // Detectar cierre automático
   const timer = setInterval(() => {
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       clearInterval(timer);
@@ -2190,6 +2180,7 @@ async function abrirVentanaBiblia(ref, texto) {
     }
   }, 500);
 }
+
 
   
 // ==================== FONDO PERSONALIZADO + LIMPIAR TEXTO (MODO BIBLIA) ====================
@@ -3587,6 +3578,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
