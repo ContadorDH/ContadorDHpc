@@ -1959,67 +1959,93 @@ function cerrarCapitulos() {
 
 // FUNCIÓN actualizarEspejoLocal() → MEJORADA Y FIABLE
 function actualizarEspejoLocal() {
-  const espejo = document.getElementById("espejo-local");
-  if (!espejo) return;
+  const contenedor = document.getElementById("proyeccion-texto");
+  if (!contenedor) return;
 
-  // Si no existe o está cerrada la ventana principal, limpiar
+  contenedor.style.position = "relative";
+  contenedor.style.overflow = "hidden";
+  contenedor.style.padding = "0";
+
+  // CASO 1: No hay proyección activa → limpiar y salir
   if (!ventanaProyeccion || ventanaProyeccion.closed) {
-    espejo.src = "";
+    contenedor.innerHTML = ""; // limpia todo
     return;
   }
 
-  try {
-    // Leer el body de la ventana externa y clonarlo
-    const contenido = ventanaProyeccion.document.documentElement.outerHTML;
+  // CASO 2: Sí hay proyección activa → debe mostrar algo (fondo + contenido)
+  const realW = ventanaProyeccion.innerWidth || 1280;
+  const realH = ventanaProyeccion.innerHeight || 720;
+  const miniW = contenedor.clientWidth || 100;
+  const miniH = contenedor.clientHeight || 100;
 
-    // Crear el iframe si no existe
-    if (!espejo._iframe) {
-      espejo._iframe = document.createElement("iframe");
-      espejo._iframe.style.width = "100%";
-      espejo._iframe.style.height = "100%";
-      espejo._iframe.style.border = "none";
-      espejo.appendChild(espejo._iframe);
+  if (miniW <= 10 || miniH <= 10) return; // evita errores si está oculto
 
-      espejo._iframe.onload = () => {
-        try {
-          const doc = espejo._iframe.contentDocument;
-          const body = doc.body;
+  const escala = Math.min(miniW / realW, miniH / realH);
 
-          // Asegurar estilos base del espejo
-          body.style.margin = "0";
-          body.style.backgroundSize = "cover";
-          body.style.backgroundPosition = "center";
-          body.style.backgroundRepeat = "no-repeat";
-          body.style.transform = "translateZ(0)";
-          body.style.backfaceVisibility = "hidden";
+  // Buscar iframe existente
+  let iframe = contenedor.querySelector("#espejo-iframe");
 
-          // 🔥 EVITAR QUE EL ESPEJO REESCALÉ O REDUZCA EL TEXTO
-          const textoEspejo = doc.getElementById("textoAutoFit");
-          const textoReal = ventanaProyeccion.document.getElementById("textoAutoFit");
+  // Si no existe o fue borrado → crearlo de nuevo
+  if (!iframe) {
+    iframe = document.createElement("iframe");
+    iframe.id = "espejo-iframe";
+    iframe.setAttribute("sandbox", "allow-same-origin");
+    iframe.style.border = "0";
+    iframe.style.background = "transparent";
+    iframe.style.position = "absolute";
+    iframe.style.top = "0";
+    iframe.style.left = "0";
+    iframe.style.width = realW + "px";
+    iframe.style.height = realH + "px";
+    iframe.style.transformOrigin = "top left";
+    iframe.style.pointerEvents = "none";
+    iframe.style.imageRendering = "crisp-edges";
 
-          if (textoEspejo && textoReal) {
-            // Se fuerza a usar el tamaño ya calculado en la ventana real
-            textoEspejo.style.fontSize = textoReal.style.fontSize;
-            textoEspejo.style.lineHeight = textoReal.style.lineHeight;
-            textoEspejo.style.wordSpacing = textoReal.style.wordSpacing;
-          }
-
-        } catch (e) {
-          console.warn("Error espejo local (onload):", e);
-        }
-      };
-    }
-
-    // Escribir el contenido dentro del iframe
-    const doc = espejo._iframe.contentDocument;
-    doc.open();
-    doc.write(contenido);
-    doc.close();
-
-  } catch (e) {
-    console.warn("Error al actualizar espejo local:", e);
+    // Limpiar contenedor y añadir el nuevo iframe
+    contenedor.innerHTML = "";
+    contenedor.appendChild(iframe);
   }
+
+  // Actualizar dimensiones
+  iframe.style.width = realW + "px";
+  iframe.style.height = realH + "px";
+
+  // Forzar actualización del contenido (lo más importante)
+  try {
+    const htmlCompleto = ventanaProyeccion.document.documentElement.outerHTML;
+    if (iframe.srcdoc !== htmlCompleto) {
+      iframe.srcdoc = htmlCompleto;
+    }
+  } catch (e) {
+    console.warn("Error actualizando srcdoc del espejo:", e);
+  }
+
+  // Mejorar renderizado cuando cargue
+  iframe.onload = () => {
+    try {
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+      const body = doc.body;
+      body.style.margin = "0";
+      body.style.backgroundSize = "cover";
+      body.style.backgroundPosition = "center";
+      body.style.backgroundRepeat = "no-repeat";
+      body.style.transform = "translateZ(0)";
+      body.style.backfaceVisibility = "hidden";
+    } catch (e) {}
+  };
+
+  // Aplicar escala y centrado (contain)
+  const offsetX = (miniW - realW * escala) / 2;
+  const offsetY = (miniH - realH * escala) / 2;
+
+  iframe.style.left = offsetX + "px";
+  iframe.style.top = offsetY + "px";
+  iframe.style.transform = `scale(${escala})`;
+  iframe.style.willChange = "transform";
+
+  contenedor.style.backgroundImage = "none";
 }
+
 
 
 
@@ -2562,7 +2588,7 @@ document.getElementById("pantallaSelect").addEventListener("change", async () =>
 
 
   
-// TU FUNCIÓN ORIGINAL MEJORADA (TEXTO ENORME SIN MÁRGENES)
+// TU FUNCIÓN ORIGINAL MEJORADA (respeta fondo personalizado)
 function actualizarVentanaBiblia(ref, texto) {
   if (!ventanaProyeccion || ventanaProyeccion.closed) return;
 
@@ -2573,40 +2599,21 @@ function actualizarVentanaBiblia(ref, texto) {
     texto: getComputedStyle(document.body).getPropertyValue("--texto").trim()
   };
 
-  const fondoPersonalizado = getComputedStyle(document.body)
-    .getPropertyValue("--fondo-proyeccion-personalizado")
-    .trim();
-
-  const fondoFinal =
-    fondoPersonalizado && fondoPersonalizado !== "none" && fondoPersonalizado !== ""
-      ? fondoPersonalizado
-      : vars.fondo;
+  const fondoPersonalizado = getComputedStyle(document.body).getPropertyValue("--fondo-proyeccion-personalizado").trim();
+  const fondoFinal = (fondoPersonalizado && fondoPersonalizado !== "none" && fondoPersonalizado !== "")
+    ? fondoPersonalizado
+    : vars.fondo;
 
   ventanaProyeccion.document.body.innerHTML = `
   <style>
     :root { --fondo:${vars.fondo}; --acento:${vars.acento}; --texto:${vars.texto}; }
-
     html, body {
-      margin:0; padding:0;
-      width:100vw; height:100vh;
-      overflow:hidden;
+      margin:0; padding:0; width:100vw; height:100vh; overflow:hidden;
       background:${fondoFinal};
       background-size:cover; background-position:center; background-repeat:no-repeat;
-      color:var(--texto);
-      font-family:'Segoe UI',sans-serif;
+      color:var(--texto); font-family:'Segoe UI',sans-serif;
     }
-
-    /* 🔥 SIN MÁRGENES Y OCUPA TODO */
-    .biblia-wrapper {
-      width:100%;
-      height:100%;
-      padding:0;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      box-sizing:border-box;
-    }
-
+    .biblia-wrapper { width:100%; height:100%; padding:5vh 4vw; display:flex; justify-content:center; align-items:center; box-sizing:border-box; }
     .biblia-texto {
       font-size:25vw;
       font-weight:700;
@@ -2615,93 +2622,84 @@ function actualizarVentanaBiblia(ref, texto) {
       white-space:pre-wrap;
       overflow-wrap:break-word;
 
-      /* CONTORNO */
+      /* CONTORNO BLANCO */
       text-shadow:
         -3px -3px 6px #fff,
          3px -3px 6px #fff,
         -3px  3px 6px #fff,
          3px  3px 6px #fff;
     }
-
-    .cita-mini {
-      font-size:0.65em;
-      font-family:"Segoe UI Semilight";
-      opacity:0.85;
-    }
+    .cita-mini { font-size:0.65em; font-family:"Segoe UI Semilight"; opacity:0.85; }
   </style>
-
   <div class="biblia-wrapper">
     <div id="textoAutoFit" class="biblia-texto">${textoFinal}</div>
   </div>`;
 
+  // Asegurar fondo personalizado
   aplicarFondoPersonalizado(ventanaProyeccion);
 
-  // Auto-Fit
+  // Auto-fit (sin cambios)
   const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
   function autoFit() {
     let min = 20, max = 900, best = min;
-    const maxW = ventanaProyeccion.innerWidth * 0.99;
-    const maxH = ventanaProyeccion.innerHeight * 0.99;
-
+    const maxW = ventanaProyeccion.innerWidth * 0.95;
+    const maxH = ventanaProyeccion.innerHeight * 0.92;
     while (min <= max) {
       let mid = Math.floor((min + max) / 2);
       caja.style.fontSize = mid + "px";
-
       if (caja.scrollWidth <= maxW && caja.scrollHeight <= maxH) {
         best = mid; min = mid + 2;
-      } else {
-        max = mid - 2;
-      }
+      } else max = mid - 2;
     }
     caja.style.fontSize = best + "px";
   }
   autoFit();
 
+  // ⭐ NUEVO — necesario para reabrir Biblia al mover pantallas
   ventanaProyeccion.referenciaActual = ref;
   ventanaProyeccion.textoActual = texto;
 
+  
   actualizarEspejoLocal();
-  actualizarIndicadorEnVivo();
+  actualizarIndicadorEnVivo(); // ← AÑADIDO AQUÍ
+
 }
 
-
-
-// ------------------------------
-//   VERSIÓN LOCAL SIN MÁRGENES
-// ------------------------------
 
 function renderPantallaLocal(contenedor, ref, texto) {
   const el = document.getElementById(contenedor);
   if (!el) return;
 
+  // Formatear igual que la proyección real
   const textoFinal = `${texto} <span class="cita-mini">${ref}</span>`;
 
   el.innerHTML = `
     <div class="biblia-wrapper-local">
       <div id="textoAutoFitLocal" class="biblia-texto-local">${textoFinal}</div>
     </div>
-
     <style>
       .biblia-wrapper-local {
-        width:100%;
-        height:100%;
-        padding:0;
-        display:flex;
-        justify-content:center;
-        align-items:center;
+        width: 100%;
+        height: 100%;
+        padding: 5% 4%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         box-sizing:border-box;
       }
 
       .biblia-texto-local {
-        width:100%;
-        max-height:100%;
-        text-align:center;
-        font-weight:700;
-        line-height:1.12;
-        white-space:pre-wrap;
-        overflow-wrap:break-word;
-        font-size:25vw;
+        display: block;
+        width: 100%;
+        max-height: 100%;
+        text-align: center;
+        font-weight: 700;
+        line-height: 1.12;
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+        font-size: 25vw;
 
+        /* CONTORNO BLANCO */
         text-shadow:
           -3px -3px 6px #fff,
            3px -3px 6px #fff,
@@ -2710,25 +2708,32 @@ function renderPantallaLocal(contenedor, ref, texto) {
       }
 
       .cita-mini {
-        font-size:0.65em;
-        font-family:"Segoe UI Semilight";
+        font-size: 0.65em;
+        font-family: "Segoe UI Semilight", sans-serif;
         opacity:0.85;
       }
     </style>
   `;
 
-  // AUTO-FIT LOCAL
+  // ----- AUTO-FIT (sin cambios) -----
   const caja = el.querySelector("#textoAutoFitLocal");
 
-  let min = 20, max = 900, best = min;
-  const maxW = el.clientWidth * 0.99;
-  const maxH = el.clientHeight * 0.99;
+  let min = 20;
+  let max = 900;
+  let best = min;
+
+  const maxW = el.clientWidth * 0.95;
+  const maxH = el.clientHeight * 0.92;
 
   while (min <= max) {
     let mid = Math.floor((min + max) / 2);
     caja.style.fontSize = mid + "px";
 
-    if (caja.scrollWidth <= maxW && caja.scrollHeight <= maxH) {
+    const fits =
+      caja.scrollWidth <= maxW &&
+      caja.scrollHeight <= maxH;
+
+    if (fits) {
       best = mid;
       min = mid + 2;
     } else {
@@ -2738,6 +2743,7 @@ function renderPantallaLocal(contenedor, ref, texto) {
 
   caja.style.fontSize = best + "px";
 
+  // ----- NUEVO: Guardar referencia y texto -----
   el.dataset.ref = ref;
   el.dataset.texto = texto;
 }
