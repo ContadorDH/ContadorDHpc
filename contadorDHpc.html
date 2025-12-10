@@ -2714,7 +2714,7 @@ function renderPantallaLocal(contenedor, ref, texto) {
       .biblia-wrapper-local {
         width:100%;
         height:100%;
-        padding:3vh 2vw;
+        padding:1vh 1vw; /* <<< MUCHÍSIMO MÁS CERCA A LOS BORDES */
         display:flex;
         justify-content:center;
         align-items:center;
@@ -2722,13 +2722,16 @@ function renderPantallaLocal(contenedor, ref, texto) {
       }
 
       .biblia-texto-local {
-        width:98%;
+        width:100%;
+        height:auto;
         text-align:center;
         font-weight:700;
-        line-height:1.18;
+        line-height:1.12;
         white-space:pre-wrap;
         overflow-wrap:break-word;
-        font-size:25vw;
+
+        /* <<< TAMAÑO INICIAL ENORME PARA QUE EL AUTO-FIT SEA MÁS GRANDE */
+        font-size:1200px;
 
         text-shadow:
           -4px -4px 7px #fff,
@@ -2740,7 +2743,7 @@ function renderPantallaLocal(contenedor, ref, texto) {
       .cita-mini {
         display:block;
         margin-top:1vh;
-        font-size:0.60em;
+        font-size:0.55em; /* un pelo más pequeño para que no limite el tamaño */
         opacity:0.85;
         font-family:"Segoe UI Semilight";
       }
@@ -2749,9 +2752,13 @@ function renderPantallaLocal(contenedor, ref, texto) {
 
   const caja = el.querySelector("#textoAutoFitLocal");
 
-  let min = 20, max = 1100, best = min;
-  const maxW = el.clientWidth * 0.985;
-  const maxH = el.clientHeight * 0.96;
+  // --- AUTO-FIT AMPLIADO ---
+  let min = 20;
+  let max = 1500; /* <<< mucho mayor */
+  let best = min;
+
+  const maxW = el.clientWidth * 0.995;  /* <<< usa prácticamente todo el ancho */
+  const maxH = el.clientHeight * 0.985; /* <<< usa casi toda la altura */
 
   while (min <= max) {
     const mid = Math.floor((min + max) / 2);
@@ -3565,6 +3572,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
