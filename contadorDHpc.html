@@ -2588,21 +2588,25 @@ document.getElementById("pantallaSelect").addEventListener("change", async () =>
 
 
   
+// TU FUNCIÓN ORIGINAL MEJORADA (TEXTO ENORME SIN MÁRGENES)
 function actualizarVentanaBiblia(ref, texto) {
   if (!ventanaProyeccion || ventanaProyeccion.closed) return;
 
   const textoFinal = `${texto} <span class="cita-mini">${ref}</span>`;
-
   const vars = {
     fondo: getComputedStyle(document.body).getPropertyValue("--fondo").trim(),
     acento: getComputedStyle(document.body).getPropertyValue("--acento").trim(),
     texto: getComputedStyle(document.body).getPropertyValue("--texto").trim()
   };
 
-  const fondoPersonalizado = getComputedStyle(document.body).getPropertyValue("--fondo-proyeccion-personalizado").trim();
-  const fondoFinal = (fondoPersonalizado && fondoPersonalizado !== "none" && fondoPersonalizado !== "")
-    ? fondoPersonalizado
-    : vars.fondo;
+  const fondoPersonalizado = getComputedStyle(document.body)
+    .getPropertyValue("--fondo-proyeccion-personalizado")
+    .trim();
+
+  const fondoFinal =
+    fondoPersonalizado && fondoPersonalizado !== "none" && fondoPersonalizado !== ""
+      ? fondoPersonalizado
+      : vars.fondo;
 
   ventanaProyeccion.document.body.innerHTML = `
   <style>
@@ -2618,7 +2622,7 @@ function actualizarVentanaBiblia(ref, texto) {
       font-family:'Segoe UI',sans-serif;
     }
 
-    /* 📌 Texto 100% pantalla: SIN márgenes, SIN padding */
+    /* 🔥 SIN MÁRGENES Y OCUPA TODO */
     .biblia-wrapper {
       width:100%;
       height:100%;
@@ -2630,27 +2634,25 @@ function actualizarVentanaBiblia(ref, texto) {
     }
 
     .biblia-texto {
-      width:100%;
-      height:auto;
-      display:block;
-      font-size:40vw;      /* enorme, luego el auto-fit ajusta */
+      font-size:25vw;
       font-weight:700;
-      line-height:1.1;
+      line-height:1.12;
       text-align:center;
       white-space:pre-wrap;
       overflow-wrap:break-word;
 
+      /* CONTORNO */
       text-shadow:
-        -4px -4px 10px #fff,
-         4px -4px 10px #fff,
-        -4px  4px 10px #fff,
-         4px  4px 10px #fff;
+        -3px -3px 6px #fff,
+         3px -3px 6px #fff,
+        -3px  3px 6px #fff,
+         3px  3px 6px #fff;
     }
 
     .cita-mini {
-      font-size:0.45em;
-      opacity:0.85;
+      font-size:0.65em;
       font-family:"Segoe UI Semilight";
+      opacity:0.85;
     }
   </style>
 
@@ -2660,34 +2662,39 @@ function actualizarVentanaBiblia(ref, texto) {
 
   aplicarFondoPersonalizado(ventanaProyeccion);
 
-  // AUTO-FIT SIN CAMBIOS
+  // Auto-Fit
   const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
   function autoFit() {
-    let min = 20, max = 1200, best = min;
-    const maxW = ventanaProyeccion.innerWidth * 0.995;
-    const maxH = ventanaProyeccion.innerHeight * 0.96;
+    let min = 20, max = 900, best = min;
+    const maxW = ventanaProyeccion.innerWidth * 0.99;
+    const maxH = ventanaProyeccion.innerHeight * 0.99;
 
     while (min <= max) {
       let mid = Math.floor((min + max) / 2);
       caja.style.fontSize = mid + "px";
 
       if (caja.scrollWidth <= maxW && caja.scrollHeight <= maxH) {
-        best = mid;
-        min = mid + 3;
+        best = mid; min = mid + 2;
       } else {
-        max = mid - 3;
+        max = mid - 2;
       }
     }
     caja.style.fontSize = best + "px";
   }
-
   autoFit();
+
   ventanaProyeccion.referenciaActual = ref;
   ventanaProyeccion.textoActual = texto;
 
   actualizarEspejoLocal();
   actualizarIndicadorEnVivo();
 }
+
+
+
+// ------------------------------
+//   VERSIÓN LOCAL SIN MÁRGENES
+// ------------------------------
 
 function renderPantallaLocal(contenedor, ref, texto) {
   const el = document.getElementById(contenedor);
@@ -2713,35 +2720,35 @@ function renderPantallaLocal(contenedor, ref, texto) {
 
       .biblia-texto-local {
         width:100%;
-        display:block;
-        font-size:40vw;
-        font-weight:800;
+        max-height:100%;
         text-align:center;
-        line-height:1.1;
+        font-weight:700;
+        line-height:1.12;
         white-space:pre-wrap;
         overflow-wrap:break-word;
+        font-size:25vw;
 
         text-shadow:
-          -4px -4px 10px #fff,
-           4px -4px 10px #fff,
-          -4px  4px 10px #fff,
-           4px  4px 10px #fff;
+          -3px -3px 6px #fff,
+           3px -3px 6px #fff,
+          -3px  3px 6px #fff,
+           3px  3px 6px #fff;
       }
 
       .cita-mini {
-        font-size:0.45em;
-        opacity:0.85;
+        font-size:0.65em;
         font-family:"Segoe UI Semilight";
+        opacity:0.85;
       }
     </style>
   `;
 
-  // AUTO-FIT ORIGINAL
+  // AUTO-FIT LOCAL
   const caja = el.querySelector("#textoAutoFitLocal");
-  let min = 20, max = 1200, best = min;
 
-  const maxW = el.clientWidth * 0.995;
-  const maxH = el.clientHeight * 0.96;
+  let min = 20, max = 900, best = min;
+  const maxW = el.clientWidth * 0.99;
+  const maxH = el.clientHeight * 0.99;
 
   while (min <= max) {
     let mid = Math.floor((min + max) / 2);
@@ -2749,9 +2756,9 @@ function renderPantallaLocal(contenedor, ref, texto) {
 
     if (caja.scrollWidth <= maxW && caja.scrollHeight <= maxH) {
       best = mid;
-      min = mid + 3;
+      min = mid + 2;
     } else {
-      max = mid - 3;
+      max = mid - 2;
     }
   }
 
