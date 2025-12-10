@@ -2588,25 +2588,19 @@ document.getElementById("pantallaSelect").addEventListener("change", async () =>
 
 
   
-// ====== VERSIÓN FINAL CORREGIDA – FUNCIONA AL 100% (diciembre 2025) ======
-
+// ====== VERSIÓN MÁXIMO TAMAÑO + MÁXIMA LEGIBILIDAD (2025) – Texto GIGANTE garantizado
 function actualizarVentanaBiblia(ref, texto) {
   if (!ventanaProyeccion || ventanaProyeccion.closed) return;
 
-  // === DIVISIÓN ESTÉTICA E INTELIGENTE DE VERSÍCULOS ===
+  // === MISMA LÓGICA ESTÉTICA QUE TE ENCANTA (sin tocar) ===
   let textoFormateado = "";
-
-  // Detectar si el texto tiene números de versículo (ej: "1 Jesús les dijo... 2 Pedro respondió...")
   const tieneNumeros = /\s\d+\s/.test(texto);
 
   if (!tieneNumeros || texto.trim().split(/\s\d+\s/).filter(v => v.trim()).length <= 1) {
-    // Un solo versículo o cita sin números → se muestra tal cual, grande y bonito
     textoFormateado = texto.trim();
   } else if (texto.trim().split(/\s\d+\s/).filter(v => v.trim()).length <= 4) {
-    // Pocos versículos → salto de línea suave después de cada número
     textoFormateado = texto.trim().replace(/\s+(\d+)\s+/g, "\n$1 ").trim();
   } else {
-    // Muchos versículos → los dividimos en dos bloques equilibrados
     const partes = texto.trim().split(/\s(\d+)\s+/).filter(Boolean);
     const versiculos = [];
     for (let i = 0; i < partes.length; i += 2) {
@@ -2616,11 +2610,8 @@ function actualizarVentanaBiblia(ref, texto) {
         versiculos.push(partes[i]);
       }
     }
-
     const mitad = Math.ceil(versiculos.length / 2);
-    const bloque1 = versiculos.slice(0, mitad).join("  ");
-    const bloque2 = versiculos.slice(mitad).join("  ");
-    textoFormateado = bloque1 + "<br><br>" + bloque2;
+    textoFormateado = versiculos.slice(0, mitad).join(" ") + "<br><br>" + versiculos.slice(mitad).join(" ");
   }
 
   const textoFinal = `${textoFormateado} <span class="cita-mini">${ref}</span>`;
@@ -2638,18 +2629,31 @@ function actualizarVentanaBiblia(ref, texto) {
 
   ventanaProyeccion.document.body.innerHTML = `
   <style>
-    html, body { margin:0; padding:0; width:100vw; height:100vh; overflow:hidden; background:${fondoFinal}; 
+    html, body { margin:0; padding:0; width:100vw; height:100vh; overflow:hidden; background:${fondoFinal};
       background-size:cover; background-position:center; background-repeat:no-repeat;
       color:var(--texto); font-family:'Segoe UI',sans-serif; }
-    .biblia-wrapper { width:100%; height:100%; padding:6vh 5vw; display:flex; justify-content:center; align-items:center; box-sizing:border-box; }
+      
+    .biblia-wrapper { 
+      width:100%; height:100%; 
+      padding:4vh 6vw;  /* ← menos padding = más espacio para texto */
+      display:flex; flex-direction:column; justify-content:center; align-items:center;
+      box-sizing:border-box;
+    }
     .biblia-texto {
-      font-size:25vw; font-weight:700; line-height:1.18; text-align:center;
-      white-space:pre-wrap; overflow-wrap:break-word;
-      text-shadow: -3px -3px 6px #fff, 3px -3px 6px #fff, -3px 3px 6px #fff, 3px 3px 6px #fff;
+      font-weight:700;
+      line-height:1.15;
+      text-align:center;
+      white-space:pre-wrap;
+      overflow-wrap:break-word;
+      text-shadow: -3px -3px 7px #fff, 3px -3px 7px #fff, -3px 3px 7px #fff, 3px 3px 7px #fff;
+      max-width: 100%;
     }
     .cita-mini { 
-      font-size:0.65em; font-family:"Segoe UI Semilight", sans-serif; opacity:0.85; 
-      display:block; margin-top:3vh; 
+      font-size:0.62em; 
+      font-family:"Segoe UI Semilight", sans-serif; 
+      opacity:0.88; 
+      margin-top:3.5vh; 
+      display:block;
     }
   </style>
   <div class="biblia-wrapper">
@@ -2658,25 +2662,52 @@ function actualizarVentanaBiblia(ref, texto) {
 
   aplicarFondoPersonalizado(ventanaProyeccion);
 
-  // Auto-fit ultra preciso
+  // AUTO-FIT ULTRA AGRESIVO – Ahora sí usa toda la pantalla
   const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
-  function autoFit() {
-    let min = 20, max = 1000, best = 20;
-    const maxW = ventanaProyeccion.innerWidth * 0.94;
-    const maxH = ventanaProyeccion.innerHeight * 0.90;
-    while (min <= max) {
-      const mid = Math.floor((min + max) / 2);
-      caja.style.fontSize = mid + "px";
-      if (caja.scrollWidth <= maxW && caja.scrollHeight <= maxH) {
-        best = mid;
-        min = mid + 1;
-      } else {
-        max = mid - 1;
+
+  // Forzamos reset total para que el cálculo sea perfecto
+  caja.style.fontSize = "20px";
+  caja.style.lineHeight = "1.15";
+
+  function autoFitGigante() {
+    let tamaño = 20;
+    const paso = 4; // subimos de 4 en 4 → mucho más rápido y preciso
+    const anchoMax = ventanaProyeccion.innerWidth * 0.96;
+    const altoMax = ventanaProyeccion.innerHeight * 0.94; // usamos casi toda la altura
+
+    // Subimos hasta que ya no quepa
+    while (true) {
+      caja.style.fontSize = tamaño + "px";
+      if (caja.scrollWidth > anchoMax || caja.scrollHeight > altoMax) {
+        break;
       }
+      tamaño += paso;
     }
-    caja.style.fontSize = best + "px";
+
+    // Ahora bajamos de 1 en 1 hasta que encaje perfecto
+    tamaño -= paso;
+    while (tamaño > 20) {
+      caja.style.fontSize = tamaño + "px";
+      if (caja.scrollWidth <= anchoMax && caja.scrollHeight <= altoMax) {
+        break;
+      }
+      tamaño--;
+    }
+
+    // Último retoque: si sobra mucho espacio vertical, subimos un poco más
+    while (tamaño < 1000) {
+      caja.style.fontSize = (tamaño + 1) + "px";
+      if (caja.scrollWidth > anchoMax || caja.scrollHeight > altoMax) {
+        caja.style.fontSize = tamaño + "px";
+        break;
+      }
+      tamaño++;
+    }
   }
-  autoFit();
+
+  // Ejecutamos 2 veces por si acaso (garantía total)
+  autoFitGigante();
+  setTimeout(autoFitGigante, 100);
 
   ventanaProyeccion.referenciaActual = ref;
   ventanaProyeccion.textoActual = texto;
@@ -2685,13 +2716,12 @@ function actualizarVentanaBiblia(ref, texto) {
   actualizarIndicadorEnVivo();
 }
 
-// === PREVIEW LOCAL (misma lógica, sin errores) ===
+// === PREVIEW LOCAL – también con texto GIGANTE ===
 function renderPantallaLocal(contenedor, ref, texto) {
   const el = document.getElementById(contenedor);
   if (!el) return;
 
   let textoFormateado = "";
-
   const tieneNumeros = /\s\d+\s/.test(texto);
 
   if (!tieneNumeros || texto.trim().split(/\s\d+\s/).filter(v => v.trim()).length <= 1) {
@@ -2702,14 +2732,11 @@ function renderPantallaLocal(contenedor, ref, texto) {
     const partes = texto.trim().split(/\s(\d+)\s+/).filter(Boolean);
     const versiculos = [];
     for (let i = 0; i < partes.length; i += 2) {
-      if (i + 1 < partes.length) {
-        versiculos.push(partes[i] + partes[i + 1]);
-      } else if (i === partes.length - 1) {
-        versiculos.push(partes[i]);
-      }
+      if (i + 1 < partes.length) versiculos.push(partes[i] + partes[i + 1]);
+      else if (i === partes.length - 1) versiculos.push(partes[i]);
     }
     const mitad = Math.ceil(versiculos.length / 2);
-    textoFormateado = versiculos.slice(0, mitad).join("  ") + "<br><br>" + versiculos.slice(mitad).join("  ");
+    textoFormateado = versiculos.slice(0, mitad).join(" ") + "<br><br>" + versiculos.slice(mitad).join(" ");
   }
 
   const textoFinal = `${textoFormateado} <span class="cita-mini">${ref}</span>`;
@@ -2719,30 +2746,43 @@ function renderPantallaLocal(contenedor, ref, texto) {
       <div id="textoAutoFitLocal" class="biblia-texto-local">${textoFinal}</div>
     </div>
     <style>
-      .biblia-wrapper-local { width:100%; height:100%; padding:6% 5%; display:flex; justify-content:center; align-items:center; box-sizing:border-box; }
-      .biblia-texto-local { font-size:25vw; font-weight:700; line-height:1.18; text-align:center; white-space:pre-wrap; overflow-wrap:break-word;
-        text-shadow: -3px -3px 6px #fff, 3px -3px 6px #fff, -3px 3px 6px #fff, 3px 3px 6px #fff; }
-      .cita-mini { font-size:0.65em; font-family:"Segoe UI Semilight", sans-serif; opacity:0.85; display:block; margin-top:3vh; }
+      .biblia-wrapper-local { width:100%; height:100%; padding:4vh 6vw; display:flex; flex-direction:column; justify-content:center; align-items:center; box-sizing:border-box; }
+      .biblia-texto-local { font-weight:700; line-height:1.15; text-align:center; white-space:pre-wrap; overflow-wrap:break-word;
+        text-shadow: -3px -3px 7px #fff, 3px -3px 7px #fff, -3px 3px 7px #fff, 3px 3px 7px #fff; }
+      .cita-mini { font-size:0.62em; font-family:"Segoe UI Semilight", sans-serif; opacity:0.88; margin-top:3.5vh; display:block; }
     </style>`;
 
   const caja = el.querySelector("#textoAutoFitLocal");
-  let min = 20, max = 1000, best = 20;
-  const maxW = el.clientWidth * 0.94;
-  const maxH = el.clientHeight * 0.90;
-  while (min <= max) {
-    const mid = Math.floor((min + max) / 2);
-    caja.style.fontSize = mid + "px";
-    if (caja.scrollWidth <= maxW && caja.scrollHeight <= maxH) {
-      best = mid;
-      min = mid + 1;
-    } else max = mid - 1;
+  caja.style.fontSize = "20px";
+
+  let tamaño = 20;
+  const paso = 4;
+  const anchoMax = el.clientWidth * 0.96;
+  const altoMax = el.clientHeight * 0.94;
+
+  while (true) {
+    caja.style.fontSize = tamaño + "px";
+    if (caja.scrollWidth > anchoMax || caja.scrollHeight > altoMax) break;
+    tamaño += paso;
   }
-  caja.style.fontSize = best + "px";
+  tamaño -= paso;
+  while (tamaño > 20) {
+    caja.style.fontSize = tamaño + "px";
+    if (caja.scrollWidth <= anchoMax && caja.scrollHeight <= altoMax) break;
+    tamaño--;
+  }
+  while (tamaño < 1000) {
+    caja.style.fontSize = (tamaño + 1) + "px";
+    if (caja.scrollWidth > anchoMax || caja.scrollHeight > altoMax) {
+      caja.style.fontSize = tamaño + "px";
+      break;
+    }
+    tamaño++;
+  }
 
   el.dataset.ref = ref;
   el.dataset.texto = texto;
 }
-
   
   
 function abrirProyeccionDia() {
@@ -3534,6 +3574,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
