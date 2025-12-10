@@ -2711,27 +2711,31 @@ function renderPantallaLocal(contenedor, ref, texto) {
     </div>
 
     <style>
+      /* SIN NINGÚN PADDING NI MARGEN */
       .biblia-wrapper-local {
         width:100%;
         height:100%;
-        padding:1vh 1vw; /* <<< MUCHÍSIMO MÁS CERCA A LOS BORDES */
+        margin:0;
+        padding:0;
         display:flex;
         justify-content:center;
         align-items:center;
         box-sizing:border-box;
       }
 
+      /* TEXTO DE BORDE A BORDE */
       .biblia-texto-local {
         width:100%;
-        height:auto;
+        height:100%;
+        margin:0;
+        padding:0;
         text-align:center;
         font-weight:700;
-        line-height:1.12;
+        line-height:1.05;  /* más alto y más lleno */
         white-space:pre-wrap;
         overflow-wrap:break-word;
 
-        /* <<< TAMAÑO INICIAL ENORME PARA QUE EL AUTO-FIT SEA MÁS GRANDE */
-        font-size:1200px;
+        font-size:1500px; /* tamaño inicial enorme */
 
         text-shadow:
           -4px -4px 7px #fff,
@@ -2742,8 +2746,8 @@ function renderPantallaLocal(contenedor, ref, texto) {
 
       .cita-mini {
         display:block;
-        margin-top:1vh;
-        font-size:0.55em; /* un pelo más pequeño para que no limite el tamaño */
+        font-size:0.55em;
+        margin-top:0.6vh;
         opacity:0.85;
         font-family:"Segoe UI Semilight";
       }
@@ -2752,13 +2756,13 @@ function renderPantallaLocal(contenedor, ref, texto) {
 
   const caja = el.querySelector("#textoAutoFitLocal");
 
-  // --- AUTO-FIT AMPLIADO ---
+  // AUTO FIT TOTALMENTE A LA PANTALLA (SIN MÁRGENES)
   let min = 20;
-  let max = 1500; /* <<< mucho mayor */
+  let max = 2000;  // PERMITE UN TEXTO ENORME
   let best = min;
 
-  const maxW = el.clientWidth * 0.995;  /* <<< usa prácticamente todo el ancho */
-  const maxH = el.clientHeight * 0.985; /* <<< usa casi toda la altura */
+  const maxW = el.clientWidth * 0.999;  // USAR 99.9% del ancho real
+  const maxH = el.clientHeight * 0.999; // USAR 99.9% de la altura real
 
   while (min <= max) {
     const mid = Math.floor((min + max) / 2);
@@ -2766,9 +2770,9 @@ function renderPantallaLocal(contenedor, ref, texto) {
 
     if (caja.scrollWidth <= maxW && caja.scrollHeight <= maxH) {
       best = mid;
-      min = mid + 3;
+      min = mid + 5;
     } else {
-      max = mid - 3;
+      max = mid - 5;
     }
   }
 
@@ -3572,6 +3576,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
