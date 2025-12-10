@@ -1219,7 +1219,7 @@ body.tema-oscuro .resultados-biblia .resaltado,
   
   <!-- FILA 1: LOGO Y TÍTULO -->
   <div style="display:flex;align-items:center;justify-content:center;gap:22px;padding-top:14px;">
-    <img src=".png" alt=" IPUC Bochica Sur"
+    <img src="logo.png" alt="Logo IPUC Bochica Sur"
          style="height:78px;width:78px;object-fit:cover;border-radius:50%;box-shadow:0 8px 25px rgba(0,0,0,0.5);border:4px solid rgba(255,255,255,0.35);transition:all .3s">
     
     <span style="font-family:'Poppins','Montserrat','Segoe UI',sans-serif;
@@ -1409,8 +1409,8 @@ line-height:2;z-index:99;">
     <i id="indicadorVivo" class="fas fa-circle"></i>
   </button>
 
-  <!-- NUEVO: Botón  (puedes poner tu  aquí) -->
-  <button id="btnLogo" class="btn-accion" title="Mostrar logo">
+  <!-- NUEVO: Botón Logo (puedes poner tu logo aquí) -->
+  <button id="btnLogo" class="btn-icono" title="Mostrar logo">
     <i class="fas fa-image"></i> <!-- Cambia este ícono por tu logo o imagen -->
   </button>
 
@@ -3417,8 +3417,7 @@ function actualizarIconoLogo() {
 
   if (tieneLogo) {
     icono.classList.add("fa-circle-check");
-   icono.style.color = "#58a6ff";
-
+    icono.style.color = "#58a6ff";
     btn.title = "Logo configurado - Click para cambiar o mantener pulsado para eliminar";
   } else {
     icono.classList.add("fa-image");
@@ -3442,6 +3441,8 @@ function eliminarLogo() {
   // 🔥 ESTO ES LO QUE FALTABA: volver el ícono al estado "sin logo"
   actualizarIconoLogo();
 }
+
+  
 
   
 document.addEventListener("DOMContentLoaded", () => {
@@ -3491,10 +3492,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("btnTema").style.display = "inline-flex";
     document.getElementById("btnLimpiarTexto").style.display = "none";
     document.getElementById("btnFondoBiblia").style.display = "none";
-    document.getElementById("btnEnVivo").style.display = "none";
-    document.getElementById("btnParar").style.display = "none";
-    document.getElementById("btnLogo").style.display = "none";
-    document.getElementById("btnConfigLogo").style.display = "none";
   });
 
   // BOTÓN: BIBLIA
@@ -3513,10 +3510,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("btnTema").style.display = "inline-flex";
     document.getElementById("btnLimpiarTexto").style.display = "inline-flex";
     document.getElementById("btnFondoBiblia").style.display = "inline-flex";
-     document.getElementById("btnEnVivo").style.display = "inline-flex";
-     document.getElementById("btnParar").style.display = "inline-flex";
-     document.getElementById("btnLogo").style.display = "inline-flex";
-    document.getElementById("btnConfigLogo").style.display = "inline-flex";
   });
 
   // Mostrar Biblia automáticamente al abrir
@@ -3537,15 +3530,6 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
 
 
 
