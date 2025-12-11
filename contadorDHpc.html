@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#1E6FB8" />
-<title>Asistencia IPUC Bochica Sur</title>
+<title>DECOM IPUC Bochica Sur</title>
 
 <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -2587,155 +2587,18 @@ document.getElementById("pantallaSelect").addEventListener("change", async () =>
 });
 
 
-// VERSIÓN DEFINITIVA – COMPORTAMIENTO IDÉNTICO A EASYWORSHIP / PROPRESENTER
-function formatTextForProjection(text, maxLines = 3) {
-  if (!text) return "";
-  const clean = text.replace(/\s+/g, " ").trim();
-  if (!clean) return "";
-
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-  ctx.font = "700 100px 'Segoe UI', sans-serif";
-  const measure = (t) => ctx.measureText(t).width;
-
-  const words = clean.split(" ");
-  const items = words.map((w, i) => ({
-    word: w,
-    prefix: i === 0 ? "" : " ",
-    width: measure((i === 0 ? "" : " ") + w)
-  }));
-
-  const totalWidth = items.reduce((s, i) => s + i.width, 0);
-
-  // Si cabe todo en 1 línea → devolvemos tal cual
-  if (measure(clean) <= totalWidth / 1.2) {
-    return clean;   // ¡una sola línea, grande y hermosa!
-  }
-
-  // Si cabe perfecto en 2 líneas → forzamos 2 líneas equilibradas
-  const idealTwo = totalWidth / 2;
-  let line1 = [], line2 = [], w1 = 0, w2 = 0;
-
-  for (const item of items) {
-    if (w1 <= w2 && w1 + item.width <= idealTwo * 1.25) {
-      line1.push(item);
-      w1 += item.width;
-    } else {
-      line2.push(item);
-      w2 += item.width;
-    }
-  }
-
-  // Si con 2 líneas queda bien balanceado → usamos 2
-  if (line2.length > 0 && Math.min(w1, w2) > totalWidth * 0.35) {
-    const text1 = line1.map(i => i.prefix + i.word).join("").trimStart();
-    const text2 = line2.map(i => i.prefix + i.word).join("").trimStart();
-    return text1 + "<br>" + text2;
-  }
-
-  // === Solo si realmente es largo → 3 líneas con equilibrio perfecto ===
-  const ideal = totalWidth / 3;
-  const lines = [];
-  let current = [];
-  let curWidth = 0;
-
-  for (const item of items) {
-    if (current.length > 0 && curWidth + item.width > ideal * 1.32 && lines.length < 2) {
-      lines.push(current);
-      current = [item];
-      curWidth = item.width;
-    } else {
-      current.push(item);
-      curWidth += item.width;
-    }
-  }
-  if (current.length) lines.push(current);
-
-  // Anti-viudas fuerte: si última línea < 38% → sube palabras
-  if (lines.length === 3) {
-    const lastText = lines[2].map(i => i.prefix + i.word).join("").trimStart();
-    if (measure(lastText) < ideal * 1.1 && lines[1].length > 2) {
-      const moved = lines[1].splice(-2);  // sube 2 palabras
-      lines[2].unshift(...moved);
-    }
-  }
-
-  const result = lines.map(l => l.map(i => i.prefix + i.word).join("").trimStart());
-  return result.join("<br>");
-}
-
-
-
+  
+// TU FUNCIÓN ORIGINAL MEJORADA (respeta fondo personalizado)
 function actualizarVentanaBiblia(ref, texto) {
   if (!ventanaProyeccion || ventanaProyeccion.closed) return;
 
-  // =============================================
-  // NUEVA FUNCIÓN: dividir el texto de forma inteligente
-  // =============================================
-  function dividirVersiculoInteligentemente(texto) {
-    // Limpiar espacios extra y saltos de línea dobles
-    texto = texto.replace(/\s+/g, " ").trim();
-
-    // Si ya tiene <br> manuales (por si alguien los pone), respetarlos
-    if (texto.includes("<br")) return texto;
-
-    const palabras = texto.split(" ");
-    if (palabras.length <= 4) return texto; // muy corto, no tocar
-
-    // Configuración ideal según cantidad de palabras
-    let lineas = [];
-    let lineaActual = [];
-
-    const totalPalabras = palabras.length;
-    const palabrasPorLineaIdeal = 
-          totalPalabras <= 12 ? 4 :
-          totalPalabras <= 20 ? 5 :
-          totalPalabras <= 30 ? 6 : 7;
-
-    for (let i = 0; i < palabras.length; i++) {
-      lineaActual.push(palabras[i]);
-
-      // Forzar corte en conjunciones y preposiciones al final de línea cuando sea natural
-      const palabraActual = palabras[i].toLowerCase();
-      const esConector = [",", "y", "e", "o", "ni", "pero", "mas", "sino", "porque", "que", "de", "en", "a", "del", "al"].includes(palabraActual.replace(/[.,;]$/, ""));
-
-      if (
-        lineaActual.length >= palabrasPorLineaIdeal ||
-        (lineaActual.length >= 4 && esConector) ||
-        (i === palabras.length - 1)
-      ) {
-        lineas.push(lineaActual.join(" "));
-        lineaActual = [];
-      }
-    }
-
-    // Si quedó algo en lineaActual (por redondeo)
-    if (lineaActual.length > 0 && lineas[lineas.length - 1] !== lineaActual.join(" ")) {
-      lineas.push(lineaActual.join(" "));
-    }
-
-    // Máximo 4 líneas para evitar que se vea demasiado fragmentado
-    if (lineas.length > 4) {
-      // Unir las líneas más cortas al final
-      while (lineas.length > 4) {
-        lineas[lineas.length - 2] += " " + lineas.pop();
-      }
-    }
-
-    return lineas.join("<br>");
-  }
-
-  const textoDividido = dividirVersiculoInteligentemente(texto);
-  const textoFinal = `${textoDividido} <span class="cita-mini">${ref}</span>`;
-
-  // =============================================
-  // RESTO DE TU FUNCIÓN (sin tocar nada más)
-  // =============================================
+  const textoFinal = `${texto} <span class="cita-mini">${ref}</span>`;
   const vars = {
     fondo: getComputedStyle(document.body).getPropertyValue("--fondo").trim(),
     acento: getComputedStyle(document.body).getPropertyValue("--acento").trim(),
     texto: getComputedStyle(document.body).getPropertyValue("--texto").trim()
   };
+
   const fondoPersonalizado = getComputedStyle(document.body).getPropertyValue("--fondo-proyeccion-personalizado").trim();
   const fondoFinal = (fondoPersonalizado && fondoPersonalizado !== "none" && fondoPersonalizado !== "")
     ? fondoPersonalizado
@@ -2754,22 +2617,25 @@ function actualizarVentanaBiblia(ref, texto) {
     .biblia-texto {
       font-size:25vw;
       font-weight:700;
-      line-height:1.15;        /* ligeramente más espacio entre líneas */
+      line-height:1.12;
       text-align:center;
-      white-space:pre-line;    /* ahora respeta los <br> que insertamos */
+      white-space:pre-wrap;
       overflow-wrap:break-word;
+
+      /* CONTORNO BLANCO */
       text-shadow:
         -3px -3px 6px #fff,
          3px -3px 6px #fff,
-        -3px 3px 6px #fff,
-         3px 3px 6px #fff;
+        -3px  3px 6px #fff,
+         3px  3px 6px #fff;
     }
-    .cita-mini { font-size:0.65em; font-family:"Segoe UI Semilight"; opacity:0.85; display:block; margin-top:0.3em; }
+    .cita-mini { font-size:0.65em; font-family:"Segoe UI Semilight"; opacity:0.85; }
   </style>
   <div class="biblia-wrapper">
     <div id="textoAutoFit" class="biblia-texto">${textoFinal}</div>
   </div>`;
 
+  // Asegurar fondo personalizado
   aplicarFondoPersonalizado(ventanaProyeccion);
 
   // Auto-fit (sin cambios)
@@ -2789,23 +2655,23 @@ function actualizarVentanaBiblia(ref, texto) {
   }
   autoFit();
 
+  // ⭐ NUEVO — necesario para reabrir Biblia al mover pantallas
   ventanaProyeccion.referenciaActual = ref;
   ventanaProyeccion.textoActual = texto;
 
+  
   actualizarEspejoLocal();
-  actualizarIndicadorEnVivo();
+  actualizarIndicadorEnVivo(); // ← AÑADIDO AQUÍ
+
 }
 
 
-// renderPantallaLocal (misma firma y nombre)
 function renderPantallaLocal(contenedor, ref, texto) {
   const el = document.getElementById(contenedor);
   if (!el) return;
 
   // Formatear igual que la proyección real
-  let textoFormateado = formatTextForProjection(texto, 3) || '';
-  textoFormateado = textoFormateado.replace(/(<br>\s*)+$/i, '');
-  const textoFinal = `${textoFormateado}\u00A0<span class="cita-mini">${ref}</span>`;
+  const textoFinal = `${texto} <span class="cita-mini">${ref}</span>`;
 
   el.innerHTML = `
     <div class="biblia-wrapper-local">
@@ -2829,9 +2695,8 @@ function renderPantallaLocal(contenedor, ref, texto) {
         text-align: center;
         font-weight: 700;
         line-height: 1.12;
-        white-space:normal; /* permitimos <br> */
+        white-space: pre-wrap;
         overflow-wrap: break-word;
-        word-break:break-word;
         font-size: 25vw;
 
         /* CONTORNO BLANCO */
@@ -2843,20 +2708,15 @@ function renderPantallaLocal(contenedor, ref, texto) {
       }
 
       .cita-mini {
-        display:inline-block;
-        font-size: 0.62em;
+        font-size: 0.65em;
         font-family: "Segoe UI Semilight", sans-serif;
         opacity:0.85;
-        margin-left:0.5ch;
-        vertical-align:baseline;
-        transform: translateY(-0.04em);
       }
     </style>
   `;
 
-  // ----- AUTO-FIT (misma lógica) -----
+  // ----- AUTO-FIT (sin cambios) -----
   const caja = el.querySelector("#textoAutoFitLocal");
-  if (!caja) return;
 
   let min = 20;
   let max = 900;
@@ -2883,12 +2743,13 @@ function renderPantallaLocal(contenedor, ref, texto) {
 
   caja.style.fontSize = best + "px";
 
-  // Guardar referencia y texto
+  // ----- NUEVO: Guardar referencia y texto -----
   el.dataset.ref = ref;
   el.dataset.texto = texto;
 }
 
 
+  
 
 
   
@@ -3682,28 +3543,6 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
