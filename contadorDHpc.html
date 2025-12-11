@@ -2594,7 +2594,7 @@ function actualizarVentanaBiblia(ref, texto) {
 
   const textoFinal = `${texto} <span class="cita-mini">${ref}</span>`;
   const vars = {
-    fondo: getComputedStyle(document.body).getgetPropertyValue("--fondo").trim(),
+    fondo: getComputedStyle(document.body).getPropertyValue("--fondo").trim(),
     acento: getComputedStyle(document.body).getPropertyValue("--acento").trim(),
     texto: getComputedStyle(document.body).getPropertyValue("--texto").trim()
   };
@@ -2622,17 +2622,19 @@ function actualizarVentanaBiblia(ref, texto) {
       white-space:pre-wrap;
       overflow-wrap:break-word;
 
-      /* CONTORNO BLANCO MÁS DELGADO */
+      /* CONTORNO BLANCO */
       text-shadow:
-        -2px -2px 3px #fff,
-         2px -2px 3px #fff,
-        -2px  2px 3px #fff,
-         2px  2px 3px #fff;
+        -3px -3px 4px #fff,
+         3px -3px 4px #fff,
+        -3px  3px 4px #fff,
+         3px  3px 4px #fff;
     }
     .cita-mini { 
       font-size:0.65em; 
       font-family:"Segoe UI Semilight"; 
       opacity:0.85; 
+
+      /* ⭐ NO PERMITIR QUE LA CITA SE PARTA O SE DEFORME */
       white-space:nowrap;
     }
   </style>
@@ -2665,6 +2667,7 @@ function actualizarVentanaBiblia(ref, texto) {
   actualizarEspejoLocal();
   actualizarIndicadorEnVivo();
 }
+
 
 
 
@@ -3545,6 +3548,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
