@@ -2641,9 +2641,9 @@ function actualizarVentanaBiblia(ref, texto) {
   // Auto-fit (sin cambios)
   const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
   function autoFit() {
-    let min = 20, max = 900, best = min;
-    const maxW = ventanaProyeccion.innerWidth * 0.95;
-    const maxH = ventanaProyeccion.innerHeight * 0.92;
+    let min = 20, max = 3000, best = min;
+    const maxW = ventanaProyeccion.innerWidth * 0.99;
+    const maxH = ventanaProyeccion.innerHeight * 0.99;
     while (min <= max) {
       let mid = Math.floor((min + max) / 2);
       caja.style.fontSize = mid + "px";
@@ -3543,6 +3543,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
