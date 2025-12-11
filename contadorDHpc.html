@@ -2587,12 +2587,89 @@ document.getElementById("pantallaSelect").addEventListener("change", async () =>
 });
 
 
-  
+// Helper: divide el texto en cortes "ortográficos" para forzar saltos de línea lógicos
+function formatTextForProjection(text, maxLines = 3) {
+  if (text == null) return '';
+  let t = String(text).replace(/\s+/g, ' ').trim();
+  if (!t) return '';
+
+  // Si es breve, no forzamos cortes
+  if (t.length <= 40) return t;
+
+  function splitKeepingDelim(input, sepRegex) {
+    const parts = [];
+    let lastIndex = 0;
+    const re = new RegExp(sepRegex, 'g');
+    let m;
+    while ((m = re.exec(input)) !== null) {
+      const end = re.lastIndex;
+      parts.push(input.slice(lastIndex, end).trim());
+      lastIndex = end;
+    }
+    if (lastIndex < input.length) parts.push(input.slice(lastIndex).trim());
+    return parts.filter(Boolean);
+  }
+
+  // 1) Intentar separar por oraciones (., ?, !, ;, :)
+  let segments = splitKeepingDelim(t, /[.?!;:]+\s*/);
+
+  // 2) Si no hay oraciones, separar por comas
+  if (segments.length === 1) segments = splitKeepingDelim(t, /,\s*/);
+
+  // 3) Si sigue siendo una sola parte, agrupar palabras en bloques
+  if (segments.length === 1) {
+    const words = t.split(' ');
+    const groups = Math.min(maxLines, 3);
+    const approx = Math.ceil(words.length / groups);
+    segments = [];
+    for (let i = 0; i < words.length; i += approx) {
+      segments.push(words.slice(i, i + approx).join(' '));
+    }
+  }
+
+  // Fusionar hasta target líneas buscando fusiones naturales
+  function balanceToTarget(segs, target) {
+    if (segs.length <= target) return segs.slice();
+    const arr = segs.slice();
+    while (arr.length > target) {
+      let bestIdx = 0;
+      let bestScore = Infinity;
+      for (let i = 0; i < arr.length - 1; i++) {
+        const mergedLen = (arr[i] + ' ' + arr[i + 1]).length;
+        if (mergedLen < bestScore) {
+          bestScore = mergedLen;
+          bestIdx = i;
+        }
+      }
+      arr.splice(bestIdx, 2, (arr[bestIdx] + ' ' + arr[bestIdx + 1]).trim());
+    }
+    return arr;
+  }
+
+  for (let target = 1; target <= maxLines; target++) {
+    const candidate = balanceToTarget(segments, target);
+    const lengths = candidate.map(s => s.length);
+    const maxLen = Math.max(...lengths);
+    const minLen = Math.min(...lengths);
+    if (minLen >= Math.max(10, Math.floor(maxLen * 0.25)) || candidate.length === target) {
+      return candidate.join('<br>');
+    }
+  }
+
+  const finalSegs = balanceToTarget(segments, Math.min(segments.length, maxLines));
+  return finalSegs.join('<br>');
+}
+
+
 // TU FUNCIÓN ORIGINAL MEJORADA (respeta fondo personalizado)
+// mantiene el nombre: actualizarVentanaBiblia
 function actualizarVentanaBiblia(ref, texto) {
   if (!ventanaProyeccion || ventanaProyeccion.closed) return;
 
-  const textoFinal = `${texto} <span class="cita-mini">${ref}</span>`;
+  // Formateo ortográfico: máximo 3 líneas (ajustable)
+  const textoFormateado = formatTextForProjection(texto, 3);
+  const textoFinal = `${textoFormateado} <span class="cita-mini">${ref}</span>`;
+
   const vars = {
     fondo: getComputedStyle(document.body).getPropertyValue("--fondo").trim(),
     acento: getComputedStyle(document.body).getPropertyValue("--acento").trim(),
@@ -2619,9 +2696,9 @@ function actualizarVentanaBiblia(ref, texto) {
       font-weight:700;
       line-height:1;
       text-align:center;
-      white-space:pre-wrap;
+      white-space:normal; /* permitimos los <br> insertados */
       overflow-wrap:break-word;
-
+      word-break:break-word;
       /* CONTORNO BLANCO */
       text-shadow:
         -3px -3px 6px #fff,
@@ -2629,49 +2706,51 @@ function actualizarVentanaBiblia(ref, texto) {
         -3px  3px 6px #fff,
          3px  3px 6px #fff;
     }
-    .cita-mini { font-size:0.65em; font-family:"Segoe UI Semilight"; opacity:0.85; }
+    .cita-mini { display:block; font-size:0.65em; font-family:"Segoe UI Semilight"; opacity:0.85; margin-top:0.35em; }
   </style>
   <div class="biblia-wrapper">
     <div id="textoAutoFit" class="biblia-texto">${textoFinal}</div>
   </div>`;
 
-  // Asegurar fondo personalizado
-  aplicarFondoPersonalizado(ventanaProyeccion);
+  // Asegurar fondo personalizado (si existe la función)
+  if (typeof aplicarFondoPersonalizado === 'function') aplicarFondoPersonalizado(ventanaProyeccion);
 
-  // Auto-fit (sin cambios)
+  // Auto-fit (misma lógica)
   const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
-  function autoFit() {
-    let min = 20, max = 5000, best = min;
-    const maxW = ventanaProyeccion.innerWidth * 0.99;
-    const maxH = ventanaProyeccion.innerHeight * 0.99;
-    while (min <= max) {
-      let mid = Math.floor((min + max) / 2);
-      caja.style.fontSize = mid + "px";
-      if (caja.scrollWidth <= maxW && caja.scrollHeight <= maxH) {
-        best = mid; min = mid + 1;
-      } else max = mid - 1;
+  if (caja) {
+    function autoFit() {
+      let min = 20, max = 5000, best = min;
+      const maxW = ventanaProyeccion.innerWidth * 0.99;
+      const maxH = ventanaProyeccion.innerHeight * 0.99;
+      while (min <= max) {
+        let mid = Math.floor((min + max) / 2);
+        caja.style.fontSize = mid + "px";
+        if (caja.scrollWidth <= maxW && caja.scrollHeight <= maxH) {
+          best = mid; min = mid + 1;
+        } else max = mid - 1;
+      }
+      caja.style.fontSize = best + "px";
     }
-    caja.style.fontSize = best + "px";
+    autoFit();
   }
-  autoFit();
 
-  // ⭐ NUEVO — necesario para reabrir Biblia al mover pantallas
+  // Mantener referencia y texto
   ventanaProyeccion.referenciaActual = ref;
   ventanaProyeccion.textoActual = texto;
 
-  
-  actualizarEspejoLocal();
-  actualizarIndicadorEnVivo(); // ← AÑADIDO AQUÍ
-
+  if (typeof actualizarEspejoLocal === 'function') actualizarEspejoLocal();
+  if (typeof actualizarIndicadorEnVivo === 'function') actualizarIndicadorEnVivo();
 }
 
 
+// renderPantallaLocal (misma firma y nombre)
 function renderPantallaLocal(contenedor, ref, texto) {
   const el = document.getElementById(contenedor);
   if (!el) return;
 
   // Formatear igual que la proyección real
-  const textoFinal = `${texto} <span class="cita-mini">${ref}</span>`;
+  const textoFormateado = formatTextForProjection(texto, 3);
+  const textoFinal = `${textoFormateado} <span class="cita-mini">${ref}</span>`;
 
   el.innerHTML = `
     <div class="biblia-wrapper-local">
@@ -2695,8 +2774,9 @@ function renderPantallaLocal(contenedor, ref, texto) {
         text-align: center;
         font-weight: 700;
         line-height: 1.12;
-        white-space: pre-wrap;
+        white-space:normal; /* permitimos <br> */
         overflow-wrap: break-word;
+        word-break:break-word;
         font-size: 25vw;
 
         /* CONTORNO BLANCO */
@@ -2708,15 +2788,18 @@ function renderPantallaLocal(contenedor, ref, texto) {
       }
 
       .cita-mini {
+        display:block;
         font-size: 0.65em;
         font-family: "Segoe UI Semilight", sans-serif;
         opacity:0.85;
+        margin-top:0.25em;
       }
     </style>
   `;
 
-  // ----- AUTO-FIT (sin cambios) -----
+  // ----- AUTO-FIT (misma lógica) -----
   const caja = el.querySelector("#textoAutoFitLocal");
+  if (!caja) return;
 
   let min = 20;
   let max = 900;
@@ -2743,14 +2826,10 @@ function renderPantallaLocal(contenedor, ref, texto) {
 
   caja.style.fontSize = best + "px";
 
-  // ----- NUEVO: Guardar referencia y texto -----
+  // Guardar referencia y texto
   el.dataset.ref = ref;
   el.dataset.texto = texto;
 }
-
-
-  
-
 
   
   
@@ -3543,6 +3622,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
