@@ -2587,50 +2587,61 @@ document.getElementById("pantallaSelect").addEventListener("change", async () =>
 });
 
 
-// NUEVO: divide el texto uniformemente con equilibrio visual profesional
+// NUEVO: división profesional por ancho visual
 function formatTextForProjection(text, maxLines = 3) {
-  if (text == null) return "";
-  
-  let t = String(text).replace(/\s+/g, " ").trim();
+  if (!text) return "";
+
+  const t = text.replace(/\s+/g, " ").trim();
   if (!t) return "";
 
   const words = t.split(" ");
-  const totalWords = words.length;
 
-  if (totalWords <= maxLines) return t;
+  // Canvas para medir ancho real de palabras
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  ctx.font = "700 100px 'Segoe UI'"; // misma fuente usada
 
-  //---------------------------------------------------------
-  // Algoritmo de líneas equilibradas (balanced line breaking)
-  //---------------------------------------------------------
-  const segments = Array.from({ length: maxLines }, () => []);
-  const targetWords = totalWords / maxLines;  // Promedio ideal
-  let current = 0;
+  function measure(w) {
+    return ctx.measureText(w).width;
+  }
 
-  for (let i = 0; i < maxLines; i++) {
-    let size = 0;
+  // Medir cada palabra
+  const measuredWords = words.map(w => ({
+    text: w,
+    width: measure(w + " ")
+  }));
 
-    while (current < totalWords) {
-      const nextWord = words[current];
-      const futureSize = size + nextWord.length + 1; // + espacio
+  const totalWidth = measuredWords.reduce((a, b) => a + b.width, 0);
+  const targetWidth = totalWidth / maxLines;
 
-      // Si esta línea ya se acerca al tamaño ideal → pasar a la siguiente
-      if (size >= targetWords * 6 && i < maxLines - 1) break;
+  // Construcción de líneas balanceadas
+  const lines = [];
+  let currentLine = [];
+  let currentWidth = 0;
 
-      segments[i].push(nextWord);
-      size = futureSize;
-      current++;
+  for (let i = 0; i < measuredWords.length; i++) {
+    const w = measuredWords[i];
 
-      // Evita que una línea quede demasiado más larga que otra
-      if (i < maxLines - 1 && size > targetWords * 7) break;
+    // si agregar esta palabra pasa demasiado el ancho ideal → crear nueva línea
+    if (currentWidth + w.width > targetWidth * 1.25 && lines.length < maxLines - 1) {
+      lines.push(currentLine.map(x => x.text).join(" "));
+      currentLine = [w];
+      currentWidth = w.width;
+    } else {
+      currentLine.push(w);
+      currentWidth += w.width;
     }
   }
 
-  const finalLines = segments
-    .map(arr => arr.join(" "))
-    .filter(line => line.trim().length > 0);
+  // Última línea
+  if (currentLine.length) {
+    lines.push(currentLine.map(x => x.text).join(" "));
+  }
 
-  return finalLines.join("<br>");
+  // Limitar al número de líneas deseado
+  return lines.slice(0, maxLines).join("<br>");
 }
+
 
 
 // TU FUNCIÓN ORIGINAL MEJORADA (respeta fondo personalizado)
@@ -3613,6 +3624,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
