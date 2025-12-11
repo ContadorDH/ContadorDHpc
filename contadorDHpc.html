@@ -2588,7 +2588,6 @@ document.getElementById("pantallaSelect").addEventListener("change", async () =>
 
 
   
-// TU FUNCIÓN ORIGINAL MEJORADA (respeta fondo personalizado)
 function actualizarVentanaBiblia(ref, texto) {
   if (!ventanaProyeccion || ventanaProyeccion.closed) return;
 
@@ -2598,78 +2597,81 @@ function actualizarVentanaBiblia(ref, texto) {
     acento: getComputedStyle(document.body).getPropertyValue("--acento").trim(),
     texto: getComputedStyle(document.body).getPropertyValue("--texto").trim()
   };
-
   const fondoPersonalizado = getComputedStyle(document.body).getPropertyValue("--fondo-proyeccion-personalizado").trim();
-  const fondoFinal = (fondoPersonalizado && fondoPersonalizado !== "none" && fondoPersonalizado !== "")
-    ? fondoPersonalizado
-    : vars.fondo;
+  const fondoFinal = (fondoPersonalizado && fondoPersonalizado !== "none" && fondoPersonalizado !== "") ? fondoPersonalizado : vars.fondo;
 
   ventanaProyeccion.document.body.innerHTML = `
- <style>
-  :root { --fondo:${vars.fondo}; --acento:${vars.acento}; --texto:${vars.texto}; }
-  html, body {
-    margin:0; padding:0; width:100vw; height:100vh; overflow:hidden;
-    background:${fondoFinal};
-    background-size:cover; background-position:center; background-repeat:no-repeat;
-    color:var(--texto); font-family:'Segoe UI',sans-serif;
-  }
-  .biblia-wrapper {
-    position:absolute;
-    inset:0;                     /* ← esto es lo que hace magia: 0 margen en los 4 lados */
-    display:flex;
-    justify-content:center;
-    align-items:center;
-  }
-  .biblia-texto {
-    font-size:20vw;              /* ← valor inicial alto pero "seguro" para el algoritmo */
-    font-weight:700;
-    line-height:1.1;
-    text-align:center;
-    white-space:pre-wrap;
-    overflow-wrap:break-word;
-    max-width:98vw;
-    max-height:98vh;
-    /* contorno más fuerte para cuando el fondo es claro */
-    text-shadow:
-      -4px -4px 9px #fff,
-       4px -4px 9px #fff,
-      -4px  4px 9px #fff,
-       4px  4px 9px #fff;
-  }
-  .cita-mini { font-size:0.65em; opacity:0.85; }
-</style>
-  <div class="biblia-wrapper">
-    <div id="textoAutoFit" class="biblia-texto">${textoFinal}</div>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      margin:0; padding:0; width:100vw; height:100vh; overflow:hidden;
+      background:${fondoFinal};
+      background-size:cover; background-position:center;
+      color:var(--texto); font-family:'Segoe UI',sans-serif;
+    }
+    .wrapper {
+      position: absolute;
+      inset: 1vh 1vw;                     /* ← margen mínimo, solo 1% en cada lado */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #textoAutoFit {
+      font-size: 40vw;                    /* ← arranca ya MUY grande */
+      font-weight: 800;
+      line-height: 1.05;
+      text-align: center;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      text-shadow:
+        -5px -5px 10px #fff,
+         5px -5px 10px #fff,
+        -5px  5px 10px #fff,
+         5px  5px 10px #fff;
+    }
+    .cita-mini {
+      font-size: 0.6em;
+      opacity: 0.9;
+      font-weight: 500;
+    }
+  </style>
+  <div class="wrapper">
+    <div id="textoAutoFit">${textoFinal}</div>
   </div>`;
 
-  // Asegurar fondo personalizado
   aplicarFondoPersonalizado(ventanaProyeccion);
 
-  // Auto-fit (sin cambios)
   const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
+
+  // AUTO-FIT ULTRA POTENCIADO
   function autoFit() {
-   let min = 20, max = 1600, best = min;   // ← ahora puede subir mucho más
-    const maxW = ventanaProyeccion.innerWidth * 0.95;
-    const maxH = ventanaProyeccion.innerHeight * 0.92;
+    let min = 50;
+    let max = 2000;                // ← ahora puede llegar a 2000px de alto si cabe
+    let best = min;
+
+    const maxW = ventanaProyeccion.innerWidth  * 0.98;  // usamos el 98% del ancho
+    const maxH = ventanaProyeccion.innerHeight * 0.98;  // usamos el 98% del alto
+
     while (min <= max) {
-      let mid = Math.floor((min + max) / 2);
+      const mid = Math.floor((min + max) / 2);
       caja.style.fontSize = mid + "px";
       if (caja.scrollWidth <= maxW && caja.scrollHeight <= maxH) {
-        best = mid; min = mid + 2;
-      } else max = mid - 2;
+        best = mid;
+        min = mid + 5;             // subimos más rápido
+      } else {
+        max = mid - 5;
+      }
     }
     caja.style.fontSize = best + "px";
   }
+
   autoFit();
 
-  // ⭐ NUEVO — necesario para reabrir Biblia al mover pantallas
   ventanaProyeccion.referenciaActual = ref;
   ventanaProyeccion.textoActual = texto;
 
-  
   actualizarEspejoLocal();
-  actualizarIndicadorEnVivo(); // ← AÑADIDO AQUÍ
-
+  actualizarIndicadorEnVivo();
 }
 
 
@@ -2677,73 +2679,58 @@ function renderPantallaLocal(contenedor, ref, texto) {
   const el = document.getElementById(contenedor);
   if (!el) return;
 
-  // Formatear igual que la proyección real
   const textoFinal = `${texto} <span class="cita-mini">${ref}</span>`;
 
   el.innerHTML = `
-    <div class="biblia-wrapper-local">
-      <div id="textoAutoFitLocal" class="biblia-texto-local">${textoFinal}</div>
-    </div>
-    <style>
-  .biblia-wrapper-local {
-    position:absolute;
-    inset:0;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-  }
-  .biblia-texto-local {
-    font-size:20vw;
-    font-weight:700;
-    line-height:1.1;
-    text-align:center;
-    white-space:pre-wrap;
-    overflow-wrap:break-word;
-    max-width:98vw;
-    max-height:98vh;
-    text-shadow:
-      -4px -4px 9px #fff,
-       4px -4px 9px #fff,
-      -4px  4px 9px #fff,
-       4px  4px 9px #fff;
-  }
-  .cita-mini { font-size:0.65em; opacity:0.85; }
-</style>
-  `;
+  <style>
+    .wrapper-local {
+      position: absolute;
+      inset: 1vh 1vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #textoAutoFitLocal {
+      font-size: 40vw;
+      font-weight: 800;
+      line-height: 1.05;
+      text-align: center;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      text-shadow:
+        -5px -5px 10px #fff,
+         5px -5px 10px #fff,
+        -5px  5px 10px #fff,
+         5px  5px 10px #fff;
+    }
+    .cita-mini { font-size: 0.6em; opacity: 0.9; font-weight: 500; }
+  </style>
+  <div class="wrapper-local">
+    <div id="textoAutoFitLocal">${textoFinal}</div>
+  </div>`;
 
-  // ----- AUTO-FIT (sin cambios) -----
   const caja = el.querySelector("#textoAutoFitLocal");
-
-  let min = 20;
-  let max = 900;
+  let min = 50;
+  let max = 2000;
   let best = min;
-
-  const maxW = el.clientWidth * 0.95;
-  const maxH = el.clientHeight * 0.92;
+  const maxW = el.clientWidth  * 0.98;
+  const maxH = el.clientHeight * 0.98;
 
   while (min <= max) {
-    let mid = Math.floor((min + max) / 2);
+    const mid = Math.floor((min + max) / 2);
     caja.style.fontSize = mid + "px";
-
-    const fits =
-      caja.scrollWidth <= maxW &&
-      caja.scrollHeight <= maxH;
-
-    if (fits) {
+    if (caja.scrollWidth <= maxW && caja.scrollHeight <= maxH) {
       best = mid;
-      min = mid + 2;
+      min = mid + 5;
     } else {
-      max = mid - 2;
+      max = mid - 5;
     }
   }
-
   caja.style.fontSize = best + "px";
 
-  // ----- NUEVO: Guardar referencia y texto -----
   el.dataset.ref = ref;
   el.dataset.texto = texto;
 }
-
 
   
 
