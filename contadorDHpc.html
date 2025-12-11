@@ -2587,72 +2587,76 @@ document.getElementById("pantallaSelect").addEventListener("change", async () =>
 });
 
 
-// ===== NUEVA VERSIÓN PROFESIONAL - DIVISIÓN VISUAL TIPO EASYWORSHIP =====
-// VERSIÓN FINAL 100% CORREGIDA – NUNCA MÁS PEGARÁ PALABRAS
+// VERSIÓN FINAL – MÁXIMA OCUPACIÓN Y EQUILIBRIO VISUAL (como EasyWorship)
 function formatTextForProjection(text, maxLines = 3) {
   if (!text) return "";
-  const cleanText = text.replace(/\s+/g, " ").trim();
-  if (!cleanText) return "";
+  const clean = text.replace(/\s+/g, " ").trim();
+  if (!clean) return "";
 
-  // Canvas para medir ancho real
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
   ctx.font = "700 100px 'Segoe UI', sans-serif";
-  const measure = (str) => ctx.measureText(str).width;
+  const measure = (t) => ctx.measureText(t).width;
 
-  // Guardamos las palabras CON su espacio delante (excepto la primera)
-  const words = cleanText.split(" ");
-  const items = [];
-  for (let i = 0; i < words.length; i++) {
-    const word = words[i];
-    const space = i === 0 ? "" : " ";           // solo espacio delante desde la 2ª palabra
-    items.push({ text: space + word, width: measure(space + word) });
-  }
+  const words = clean.split(" ");
+  const items = words.map((word, i) => ({
+    word,
+    prefix: i === 0 ? "" : " ",
+    width: measure((i === 0 ? "" : " ") + word)
+  }));
 
-  const totalWidth = items.reduce((sum, item) => sum + item.width, 0);
-  const idealWidth = totalWidth / maxLines;
+  const totalWidth = items.reduce((s, i) => s + i.width, 0);
+  const idealPerLine = totalWidth / maxLines;
 
+  // Algoritmo tipo Knuth/Plass simplificado – reparte lo más lleno posible
   const lines = [];
-  let currentLine = [];
+  let current = [];
   let currentWidth = 0;
 
-  for (const item of items) {
-    if (
-      currentLine.length > 0 && 
-      currentWidth + item.width > idealWidth * 1.18 && 
-      lines.length < maxLines - 1
-    ) {
-      lines.push(currentLine);
-      currentLine = [item];
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+    const addedWidth = currentWidth + item.width;
+
+    // ¿Cabe bien o forzamos para llenar más la línea actual?
+    const nextLineWouldBeWorse =
+      i < items.length - 1 &&
+      addedWidth <= idealPerLine * 1.40 &&           // tolerancia alta para llenar
+      lines.length < maxLines - 1;
+
+    if (current.length > 0 && !nextLineWouldBeWorse && addedWidth > idealPerLine * 0.92) {
+      // Forzamos nueva línea solo si la siguiente quedaría muy vacía
+      lines.push(current);
+      current = [item];
       currentWidth = item.width;
     } else {
-      currentLine.push(item);
-      currentWidth += item.width;
+      current.push(item);
+      currentWidth = addedWidth;
     }
   }
-  if (currentLine.length > 0) lines.push(currentLine);
+  if (current.length) lines.push(current);
 
-  // === CORRECCIÓN ANTI-VIUDAS (línea final muy corta) ===
-  if (lines.length === maxLines && maxLines > 1) {
-    const lastLineText = lines[maxLines - 1].map(i => i.text).join("");
-    const lastLineWidth = measure(lastLineText);
+  // === RE-EQUILIBRADO FINAL (lo que hace que quede perfecto) ===
+  while (lines.length > maxLines) {
+    // Si por algún motivo se pasó de líneas, une la última con la penúltima
+    const last = lines.pop();
+    lines[lines.length - 1].push(...last);
+  }
 
-    if (lastLineWidth < idealWidth * 0.5) {
-      // Tomamos la última palabra de la penúltima línea y la bajamos
-      const prevLine = lines[maxLines - 2];
-      if (prevLine.length > 1) {
-        const movedItem = prevLine.pop();                    // quitamos última palabra con su espacio
-        lines[maxLines - 1].unshift(movedItem);              // la ponemos al principio de la última línea
-      }
+  // Anti-viudas definitivo: si la última línea tiene menos del 40 % → sube palabras
+  if (lines.length === maxLines && maxLines >= 2) {
+    const lastText = lines[maxLines - 1].map(i => i.prefix + i.word).join("");
+    if (measure(lastText) < idealPerLine * 0.45 && lines[maxLines - 2].length > 2) {
+      const moved = lines[maxLines - 2].splice(-2); // mueve las últimas 2 palabras
+      lines[maxLines - 1].unshift(...moved);
     }
   }
 
-  // Construimos el texto final manteniendo espacios perfectos
-  const resultLines = lines.slice(0, maxLines).map(line =>
-    line.map(item => item.text).join("").trimStart()   // trimStart solo quita espacio inicial sobrante
+  // Construcción final del texto
+  const result = lines.slice(0, maxLines).map(line =>
+    line.map(i => i.prefix + i.word).join("").trimStart()
   );
 
-  return resultLines.join("<br>");
+  return result.join("<br>");
 }
 
 
@@ -3638,6 +3642,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
