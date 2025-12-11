@@ -2587,52 +2587,81 @@ document.getElementById("pantallaSelect").addEventListener("change", async () =>
 });
 
 
-// FORMATO PROFESIONAL TIPO EASYWORSHIP
-function formatTextForProjection(text, maxWidth = 1500, maxLines = 4) {
-    if (!text) return "";
+// ===== NUEVA VERSIÓN PROFESIONAL - DIVISIÓN VISUAL TIPO EASYWORSHIP =====
+function formatTextForProjection(text, maxLines = 3) {
+  if (!text) return "";
+  const cleanText = text.replace(/\s+/g, " ").trim();
+  if (!cleanText) return "";
 
-    text = text.trim().replace(/\s+/g, " ");
+  const words = cleanText.split(" ");
+  if (words.length === 0) return "";
 
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
+  // Canvas para medir ancho REAL (misma fuente que la proyección)
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  ctx.font = "700 100px 'Segoe UI', sans-serif";
 
-    // Tamaño máximo de letra
-    let fontSize = 110; 
-    let lines = [];
+  const measure = (str) => ctx.measureText(str).width;
 
-    function measureLines(fs) {
-        ctx.font = `700 ${fs}px 'Segoe UI'`;
+  // Medimos cada palabra + espacio siguiente (excepto la última)
+  const wordWidths = words.map((word, i) => ({
+    word,
+    width: measure(word + (i < words.length - 1 ? " " : ""))
+  }));
 
-        const words = text.split(" ");
-        const tempLines = [];
-        let current = "";
+  const totalWidth = wordWidths.reduce((sum, w) => sum + w.width, 0);
+  const idealLineWidth = totalWidth / maxLines;
 
-        for (let w of words) {
-            const test = current ? current + " " + w : w;
-            if (ctx.measureText(test).width > maxWidth) {
-                tempLines.push(current);
-                current = w;
-            } else {
-                current = test;
-            }
-        }
-        if (current) tempLines.push(current);
+  const lines = [];
+  let currentLine = [];
+  let currentWidth = 0;
 
-        return tempLines;
+  for (let i = 0; i < wordWidths.length; i++) {
+    const item = wordWidths[i];
+    const wouldExceed = currentWidth + item.width;
+
+    // Si añadir esta palabra supera demasiado el ancho ideal Y aún caben más líneas
+    if (wouldExceed > idealLineWidth * 1.15 && lines.length < maxLines - 1 && currentLine.length > 0) {
+      lines.push(currentLine);
+      currentLine = [item];
+      currentWidth = item.width;
+    } else {
+      currentLine.push(item);
+      currentWidth += item.width;
     }
+  }
 
-    // Reducir tamaño hasta que cumpla líneas
-    while (fontSize > 30) {
-        const testLines = measureLines(fontSize);
-        if (testLines.length <= maxLines) {
-            lines = testLines;
-            break;
-        }
-        fontSize -= 5;
+  // Añadir última línea
+  if (currentLine.length > 0) {
+    lines.push(currentLine);
+  }
+
+  // Convertir a texto y limitar a maxLines
+  const resultLines = lines.slice(0, maxLines).map(line =>
+    line.map(w => w.word).join("")
+  );
+
+  // Evitar líneas huérfanas muy cortas al final (típico de EasyWorship)
+  if (resultLines.length === maxLines && maxLines > 1) {
+    const lastLine = resultLines[maxLines - 1];
+    const secondLast = resultLines[maxLines - 2];
+    const lastLen = measure(lastLine);
+    const threshold = idealLineWidth * 0.45; // si la última es <45% del ancho ideal → redistribuir
+
+    if (lastLen < threshold && words.length > 4) {
+      // Intentar mover la última palabra de la penúltima a la última
+      const wordsSecondLast = secondLast.trim().split(" ");
+      if (wordsSecondLast.length > 1) {
+        const movedWord = wordsSecondLast.pop();
+        resultLines[maxLines - 2] = wordsSecondLast.join(" ").trim();
+        resultLines[maxLines - 1] = (movedWord + " " + lastLine).trim();
+      }
     }
+  }
 
-    return lines.join("<br>");
+  return resultLines.join("<br>");
 }
+
 
 
 
@@ -3616,6 +3645,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
