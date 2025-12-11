@@ -2667,8 +2667,12 @@ function actualizarVentanaBiblia(ref, texto) {
   if (!ventanaProyeccion || ventanaProyeccion.closed) return;
 
   // Formateo ortográfico: máximo 3 líneas (ajustable)
-  const textoFormateado = formatTextForProjection(texto, 3);
-  const textoFinal = `${textoFormateado} <span class="cita-mini">${ref}</span>`;
+  let textoFormateado = formatTextForProjection(texto, 3) || '';
+  // Asegurarnos de que no haya <br> final para que la cita quede en la misma línea
+  textoFormateado = textoFormateado.replace(/(<br>\s*)+$/i, '');
+
+  // Insertamos una NBSP antes de la cita para forzar que quede pegada a la última palabra
+  const textoFinal = `${textoFormateado}\u00A0<span class="cita-mini">${ref}</span>`;
 
   const vars = {
     fondo: getComputedStyle(document.body).getPropertyValue("--fondo").trim(),
@@ -2706,7 +2710,16 @@ function actualizarVentanaBiblia(ref, texto) {
         -3px  3px 6px #fff,
          3px  3px 6px #fff;
     }
-    .cita-mini { display:block; font-size:0.65em; font-family:"Segoe UI Semilight"; opacity:0.85; margin-top:0.35em; }
+    /* La cita ahora es inline para no forzar una línea nueva */
+    .cita-mini {
+      display:inline-block;
+      font-size:0.62em;
+      font-family:"Segoe UI Semilight", sans-serif;
+      opacity:0.85;
+      margin-left:0.5ch;
+      vertical-align:baseline;
+      transform: translateY(-0.05em); /* pequeño ajuste vertical opcional */
+    }
   </style>
   <div class="biblia-wrapper">
     <div id="textoAutoFit" class="biblia-texto">${textoFinal}</div>
@@ -2749,8 +2762,9 @@ function renderPantallaLocal(contenedor, ref, texto) {
   if (!el) return;
 
   // Formatear igual que la proyección real
-  const textoFormateado = formatTextForProjection(texto, 3);
-  const textoFinal = `${textoFormateado} <span class="cita-mini">${ref}</span>`;
+  let textoFormateado = formatTextForProjection(texto, 3) || '';
+  textoFormateado = textoFormateado.replace(/(<br>\s*)+$/i, '');
+  const textoFinal = `${textoFormateado}\u00A0<span class="cita-mini">${ref}</span>`;
 
   el.innerHTML = `
     <div class="biblia-wrapper-local">
@@ -2788,11 +2802,13 @@ function renderPantallaLocal(contenedor, ref, texto) {
       }
 
       .cita-mini {
-        display:block;
-        font-size: 0.65em;
+        display:inline-block;
+        font-size: 0.62em;
         font-family: "Segoe UI Semilight", sans-serif;
         opacity:0.85;
-        margin-top:0.25em;
+        margin-left:0.5ch;
+        vertical-align:baseline;
+        transform: translateY(-0.04em);
       }
     </style>
   `;
@@ -2831,6 +2847,8 @@ function renderPantallaLocal(contenedor, ref, texto) {
   el.dataset.texto = texto;
 }
 
+
+  
   
   
 function abrirProyeccionDia() {
@@ -3622,6 +3640,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
