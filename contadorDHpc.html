@@ -2613,7 +2613,8 @@ function actualizarVentanaBiblia(ref, texto) {
       background-size:cover; background-position:center; background-repeat:no-repeat;
       color:var(--texto); font-family:'Segoe UI',sans-serif;
     }
-    .biblia-wrapper { width:100%; height:100%; padding:5vh 4vw; display:flex; justify-content:center; align-items:center; box-sizing:border-box; }
+    /* AJUSTE CLAVE 1: Eliminamos el padding para usar todo el espacio */
+    .biblia-wrapper { width:100%; height:100%; padding:0; display:flex; justify-content:center; align-items:center; box-sizing:border-box; }
     .biblia-texto {
       font-size:25vw;
       font-weight:700;
@@ -2625,9 +2626,9 @@ function actualizarVentanaBiblia(ref, texto) {
       /* CONTORNO BLANCO */
       text-shadow:
         -3px -3px 6px #fff,
-         3px -3px 6px #fff,
+          3px -3px 6px #fff,
         -3px  3px 6px #fff,
-         3px  3px 6px #fff;
+          3px  3px 6px #fff;
     }
     .cita-mini { font-size:0.65em; font-family:"Segoe UI Semilight"; opacity:0.85; }
   </style>
@@ -2638,12 +2639,14 @@ function actualizarVentanaBiblia(ref, texto) {
   // Asegurar fondo personalizado
   aplicarFondoPersonalizado(ventanaProyeccion);
 
-  // Auto-fit (sin cambios)
+  // Auto-fit (MEJORADO)
   const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
   function autoFit() {
     let min = 20, max = 900, best = min;
-    const maxW = ventanaProyeccion.innerWidth * 0.95;
-    const maxH = ventanaProyeccion.innerHeight * 0.92;
+    /* AJUSTE CLAVE 2: Aumentamos los multiplicadores (0.95 -> 0.99, 0.92 -> 0.99)
+       para permitir que el texto se acerque más a los bordes de la ventana */
+    const maxW = ventanaProyeccion.innerWidth * 0.99;
+    const maxH = ventanaProyeccion.innerHeight * 0.99;
     while (min <= max) {
       let mid = Math.floor((min + max) / 2);
       caja.style.fontSize = mid + "px";
@@ -2681,7 +2684,8 @@ function renderPantallaLocal(contenedor, ref, texto) {
       .biblia-wrapper-local {
         width: 100%;
         height: 100%;
-        padding: 5% 4%;
+        /* AJUSTE CLAVE 1: Eliminamos el padding en la versión local también para que se parezca a la proyección */
+        padding: 0;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -2702,9 +2706,9 @@ function renderPantallaLocal(contenedor, ref, texto) {
         /* CONTORNO BLANCO */
         text-shadow:
           -3px -3px 6px #fff,
-           3px -3px 6px #fff,
+            3px -3px 6px #fff,
           -3px  3px 6px #fff,
-           3px  3px 6px #fff;
+            3px  3px 6px #fff;
       }
 
       .cita-mini {
@@ -2715,15 +2719,17 @@ function renderPantallaLocal(contenedor, ref, texto) {
     </style>
   `;
 
-  // ----- AUTO-FIT (sin cambios) -----
+  // ----- AUTO-FIT (MEJORADO) -----
   const caja = el.querySelector("#textoAutoFitLocal");
 
   let min = 20;
   let max = 900;
   let best = min;
 
-  const maxW = el.clientWidth * 0.95;
-  const maxH = el.clientHeight * 0.92;
+  /* AJUSTE CLAVE 2: Aumentamos los multiplicadores (0.95 -> 0.99, 0.92 -> 0.99)
+     en la versión local también para que el auto-fit sea más agresivo. */
+  const maxW = el.clientWidth * 0.99;
+  const maxH = el.clientHeight * 0.99;
 
   while (min <= max) {
     let mid = Math.floor((min + max) / 2);
@@ -2747,8 +2753,6 @@ function renderPantallaLocal(contenedor, ref, texto) {
   el.dataset.ref = ref;
   el.dataset.texto = texto;
 }
-
-
   
 
 
@@ -3543,6 +3547,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
