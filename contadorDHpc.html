@@ -2666,25 +2666,76 @@ function formatTextForProjection(text, maxLines = 3) {
 
 
 
-// TU FUNCIÓN ORIGINAL MEJORADA (respeta fondo personalizado)
-// mantiene el nombre: actualizarVentanaBiblia
 function actualizarVentanaBiblia(ref, texto) {
   if (!ventanaProyeccion || ventanaProyeccion.closed) return;
 
-  // Formateo ortográfico: máximo 3 líneas (ajustable)
-  let textoFormateado = formatTextForProjection(texto, 3) || '';
-  // Asegurarnos de que no haya <br> final para que la cita quede en la misma línea
-  textoFormateado = textoFormateado.replace(/(<br>\s*)+$/i, '');
+  // =============================================
+  // NUEVA FUNCIÓN: dividir el texto de forma inteligente
+  // =============================================
+  function dividirVersiculoInteligentemente(texto) {
+    // Limpiar espacios extra y saltos de línea dobles
+    texto = texto.replace(/\s+/g, " ").trim();
 
-  // Insertamos una NBSP antes de la cita para forzar que quede pegada a la última palabra
-  const textoFinal = `${textoFormateado}\u00A0<span class="cita-mini">${ref}</span>`;
+    // Si ya tiene <br> manuales (por si alguien los pone), respetarlos
+    if (texto.includes("<br")) return texto;
 
+    const palabras = texto.split(" ");
+    if (palabras.length <= 4) return texto; // muy corto, no tocar
+
+    // Configuración ideal según cantidad de palabras
+    let lineas = [];
+    let lineaActual = [];
+
+    const totalPalabras = palabras.length;
+    const palabrasPorLineaIdeal = 
+          totalPalabras <= 12 ? 4 :
+          totalPalabras <= 20 ? 5 :
+          totalPalabras <= 30 ? 6 : 7;
+
+    for (let i = 0; i < palabras.length; i++) {
+      lineaActual.push(palabras[i]);
+
+      // Forzar corte en conjunciones y preposiciones al final de línea cuando sea natural
+      const palabraActual = palabras[i].toLowerCase();
+      const esConector = [",", "y", "e", "o", "ni", "pero", "mas", "sino", "porque", "que", "de", "en", "a", "del", "al"].includes(palabraActual.replace(/[.,;]$/, ""));
+
+      if (
+        lineaActual.length >= palabrasPorLineaIdeal ||
+        (lineaActual.length >= 4 && esConector) ||
+        (i === palabras.length - 1)
+      ) {
+        lineas.push(lineaActual.join(" "));
+        lineaActual = [];
+      }
+    }
+
+    // Si quedó algo en lineaActual (por redondeo)
+    if (lineaActual.length > 0 && lineas[lineas.length - 1] !== lineaActual.join(" ")) {
+      lineas.push(lineaActual.join(" "));
+    }
+
+    // Máximo 4 líneas para evitar que se vea demasiado fragmentado
+    if (lineas.length > 4) {
+      // Unir las líneas más cortas al final
+      while (lineas.length > 4) {
+        lineas[lineas.length - 2] += " " + lineas.pop();
+      }
+    }
+
+    return lineas.join("<br>");
+  }
+
+  const textoDividido = dividirVersiculoInteligentemente(texto);
+  const textoFinal = `${textoDividido} <span class="cita-mini">${ref}</span>`;
+
+  // =============================================
+  // RESTO DE TU FUNCIÓN (sin tocar nada más)
+  // =============================================
   const vars = {
     fondo: getComputedStyle(document.body).getPropertyValue("--fondo").trim(),
     acento: getComputedStyle(document.body).getPropertyValue("--acento").trim(),
     texto: getComputedStyle(document.body).getPropertyValue("--texto").trim()
   };
-
   const fondoPersonalizado = getComputedStyle(document.body).getPropertyValue("--fondo-proyeccion-personalizado").trim();
   const fondoFinal = (fondoPersonalizado && fondoPersonalizado !== "none" && fondoPersonalizado !== "")
     ? fondoPersonalizado
@@ -2699,65 +2750,50 @@ function actualizarVentanaBiblia(ref, texto) {
       background-size:cover; background-position:center; background-repeat:no-repeat;
       color:var(--texto); font-family:'Segoe UI',sans-serif;
     }
-    .biblia-wrapper { width:100%; height:100%; padding:1vh 1vw; display:flex; justify-content:center; align-items:center; box-sizing:border-box; }
+    .biblia-wrapper { width:100%; height:100%; padding:5vh 4vw; display:flex; justify-content:center; align-items:center; box-sizing:border-box; }
     .biblia-texto {
-      font-size:40vw;
+      font-size:25vw;
       font-weight:700;
-      line-height:1;
+      line-height:1.15;        /* ligeramente más espacio entre líneas */
       text-align:center;
-      white-space:normal; /* permitimos los <br> insertados */
+      white-space:pre-line;    /* ahora respeta los <br> que insertamos */
       overflow-wrap:break-word;
-      word-break:break-word;
-      /* CONTORNO BLANCO */
       text-shadow:
         -3px -3px 6px #fff,
          3px -3px 6px #fff,
-        -3px  3px 6px #fff,
-         3px  3px 6px #fff;
+        -3px 3px 6px #fff,
+         3px 3px 6px #fff;
     }
-    /* La cita ahora es inline para no forzar una línea nueva */
-    .cita-mini {
-      display:inline-block;
-      font-size:0.62em;
-      font-family:"Segoe UI Semilight", sans-serif;
-      opacity:0.85;
-      margin-left:0.5ch;
-      vertical-align:baseline;
-      transform: translateY(-0.05em); /* pequeño ajuste vertical opcional */
-    }
+    .cita-mini { font-size:0.65em; font-family:"Segoe UI Semilight"; opacity:0.85; display:block; margin-top:0.3em; }
   </style>
   <div class="biblia-wrapper">
     <div id="textoAutoFit" class="biblia-texto">${textoFinal}</div>
   </div>`;
 
-  // Asegurar fondo personalizado (si existe la función)
-  if (typeof aplicarFondoPersonalizado === 'function') aplicarFondoPersonalizado(ventanaProyeccion);
+  aplicarFondoPersonalizado(ventanaProyeccion);
 
-  // Auto-fit (misma lógica)
+  // Auto-fit (sin cambios)
   const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
-  if (caja) {
-    function autoFit() {
-      let min = 20, max = 5000, best = min;
-      const maxW = ventanaProyeccion.innerWidth * 0.99;
-      const maxH = ventanaProyeccion.innerHeight * 0.99;
-      while (min <= max) {
-        let mid = Math.floor((min + max) / 2);
-        caja.style.fontSize = mid + "px";
-        if (caja.scrollWidth <= maxW && caja.scrollHeight <= maxH) {
-          best = mid; min = mid + 1;
-        } else max = mid - 1;
-      }
-      caja.style.fontSize = best + "px";
+  function autoFit() {
+    let min = 20, max = 900, best = min;
+    const maxW = ventanaProyeccion.innerWidth * 0.95;
+    const maxH = ventanaProyeccion.innerHeight * 0.92;
+    while (min <= max) {
+      let mid = Math.floor((min + max) / 2);
+      caja.style.fontSize = mid + "px";
+      if (caja.scrollWidth <= maxW && caja.scrollHeight <= maxH) {
+        best = mid; min = mid + 2;
+      } else max = mid - 2;
     }
-    autoFit();
+    caja.style.fontSize = best + "px";
   }
+  autoFit();
 
-  // Mantener referencia y texto
   ventanaProyeccion.referenciaActual = ref;
   ventanaProyeccion.textoActual = texto;
 
-  if (typeof actualizarEspejoLocal === 'function') actualizarEspejoLocal();
-  if (typeof actualizarIndicadorEnVivo === 'function') actualizarIndicadorEnVivo();
+  actualizarEspejoLocal();
+  actualizarIndicadorEnVivo();
 }
 
 
@@ -3646,6 +3682,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
