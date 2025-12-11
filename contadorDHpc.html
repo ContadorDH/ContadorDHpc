@@ -2588,40 +2588,40 @@ document.getElementById("pantallaSelect").addEventListener("change", async () =>
 
 
 // ===== NUEVA VERSIÓN PROFESIONAL - DIVISIÓN VISUAL TIPO EASYWORSHIP =====
+// VERSIÓN FINAL 100% CORREGIDA – NUNCA MÁS PEGARÁ PALABRAS
 function formatTextForProjection(text, maxLines = 3) {
   if (!text) return "";
   const cleanText = text.replace(/\s+/g, " ").trim();
   if (!cleanText) return "";
 
-  const words = cleanText.split(" ");
-  if (words.length === 0) return "";
-
-  // Canvas para medir ancho REAL (misma fuente que la proyección)
+  // Canvas para medir ancho real
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
   ctx.font = "700 100px 'Segoe UI', sans-serif";
-
   const measure = (str) => ctx.measureText(str).width;
 
-  // Medimos cada palabra + espacio siguiente (excepto la última)
-  const wordWidths = words.map((word, i) => ({
-    word,
-    width: measure(word + (i < words.length - 1 ? " " : ""))
-  }));
+  // Guardamos las palabras CON su espacio delante (excepto la primera)
+  const words = cleanText.split(" ");
+  const items = [];
+  for (let i = 0; i < words.length; i++) {
+    const word = words[i];
+    const space = i === 0 ? "" : " ";           // solo espacio delante desde la 2ª palabra
+    items.push({ text: space + word, width: measure(space + word) });
+  }
 
-  const totalWidth = wordWidths.reduce((sum, w) => sum + w.width, 0);
-  const idealLineWidth = totalWidth / maxLines;
+  const totalWidth = items.reduce((sum, item) => sum + item.width, 0);
+  const idealWidth = totalWidth / maxLines;
 
   const lines = [];
   let currentLine = [];
   let currentWidth = 0;
 
-  for (let i = 0; i < wordWidths.length; i++) {
-    const item = wordWidths[i];
-    const wouldExceed = currentWidth + item.width;
-
-    // Si añadir esta palabra supera demasiado el ancho ideal Y aún caben más líneas
-    if (wouldExceed > idealLineWidth * 1.15 && lines.length < maxLines - 1 && currentLine.length > 0) {
+  for (const item of items) {
+    if (
+      currentLine.length > 0 && 
+      currentWidth + item.width > idealWidth * 1.18 && 
+      lines.length < maxLines - 1
+    ) {
       lines.push(currentLine);
       currentLine = [item];
       currentWidth = item.width;
@@ -2630,34 +2630,27 @@ function formatTextForProjection(text, maxLines = 3) {
       currentWidth += item.width;
     }
   }
+  if (currentLine.length > 0) lines.push(currentLine);
 
-  // Añadir última línea
-  if (currentLine.length > 0) {
-    lines.push(currentLine);
-  }
+  // === CORRECCIÓN ANTI-VIUDAS (línea final muy corta) ===
+  if (lines.length === maxLines && maxLines > 1) {
+    const lastLineText = lines[maxLines - 1].map(i => i.text).join("");
+    const lastLineWidth = measure(lastLineText);
 
-  // Convertir a texto y limitar a maxLines
-  const resultLines = lines.slice(0, maxLines).map(line =>
-    line.map(w => w.word).join("")
-  );
-
-  // Evitar líneas huérfanas muy cortas al final (típico de EasyWorship)
-  if (resultLines.length === maxLines && maxLines > 1) {
-    const lastLine = resultLines[maxLines - 1];
-    const secondLast = resultLines[maxLines - 2];
-    const lastLen = measure(lastLine);
-    const threshold = idealLineWidth * 0.45; // si la última es <45% del ancho ideal → redistribuir
-
-    if (lastLen < threshold && words.length > 4) {
-      // Intentar mover la última palabra de la penúltima a la última
-      const wordsSecondLast = secondLast.trim().split(" ");
-      if (wordsSecondLast.length > 1) {
-        const movedWord = wordsSecondLast.pop();
-        resultLines[maxLines - 2] = wordsSecondLast.join(" ").trim();
-        resultLines[maxLines - 1] = (movedWord + " " + lastLine).trim();
+    if (lastLineWidth < idealWidth * 0.5) {
+      // Tomamos la última palabra de la penúltima línea y la bajamos
+      const prevLine = lines[maxLines - 2];
+      if (prevLine.length > 1) {
+        const movedItem = prevLine.pop();                    // quitamos última palabra con su espacio
+        lines[maxLines - 1].unshift(movedItem);              // la ponemos al principio de la última línea
       }
     }
   }
+
+  // Construimos el texto final manteniendo espacios perfectos
+  const resultLines = lines.slice(0, maxLines).map(line =>
+    line.map(item => item.text).join("").trimStart()   // trimStart solo quita espacio inicial sobrante
+  );
 
   return resultLines.join("<br>");
 }
@@ -3645,6 +3638,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
