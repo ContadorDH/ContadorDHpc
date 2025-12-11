@@ -2590,168 +2590,175 @@ document.getElementById("pantallaSelect").addEventListener("change", async () =>
   
 // TU FUNCIÓN ORIGINAL MEJORADA (respeta fondo personalizado)
 function actualizarVentanaBiblia(ref, texto) {
-  if (!ventanaProyeccion || ventanaProyeccion.closed) return;
+  if (!ventanaProyeccion || ventanaProyeccion.closed) return;
 
-  const textoFinal = `${texto} <span class="cita-mini">${ref}</span>`;
-  const vars = {
-    fondo: getComputedStyle(document.body).getPropertyValue("--fondo").trim(),
-    acento: getComputedStyle(document.body).getPropertyValue("--acento").trim(),
-    texto: getComputedStyle(document.body).getPropertyValue("--texto").trim()
-  };
+  const textoFinal = `${texto} <span class="cita-mini">${ref}</span>`;
+  const vars = {
+    fondo: getComputedStyle(document.body).getPropertyValue("--fondo").trim(),
+    acento: getComputedStyle(document.body).getPropertyValue("--acento").trim(),
+    texto: getComputedStyle(document.body).getPropertyValue("--texto").trim()
+  };
 
-  const fondoPersonalizado = getComputedStyle(document.body).getPropertyValue("--fondo-proyeccion-personalizado").trim();
-  const fondoFinal = (fondoPersonalizado && fondoPersonalizado !== "none" && fondoPersonalizado !== "")
-    ? fondoPersonalizado
-    : vars.fondo;
+  const fondoPersonalizado = getComputedStyle(document.body).getPropertyValue("--fondo-proyeccion-personalizado").trim();
+  const fondoFinal = (fondoPersonalizado && fondoPersonalizado !== "none" && fondoPersonalizado !== "")
+    ? fondoPersonalizado
+    : vars.fondo;
 
-  ventanaProyeccion.document.body.innerHTML = `
-  <style>
-    :root { --fondo:${vars.fondo}; --acento:${vars.acento}; --texto:${vars.texto}; }
-    html, body {
-      margin:0; padding:0; width:100vw; height:100vh; overflow:hidden;
-      background:${fondoFinal};
-      background-size:cover; background-position:center; background-repeat:no-repeat;
-      color:var(--texto); font-family:'Segoe UI',sans-serif;
-    }
-    /* AJUSTE CLAVE 1: Eliminamos el padding para usar todo el espacio */
-    .biblia-wrapper { width:100%; height:100%; padding:0; display:flex; justify-content:center; align-items:center; box-sizing:border-box; }
-    .biblia-texto {
-      font-size:25vw;
-      font-weight:700;
-      line-height:1.12;
-      text-align:center;
-      white-space:pre-wrap;
-      overflow-wrap:break-word;
+  ventanaProyeccion.document.body.innerHTML = `
+  <style>
+    :root { --fondo:${vars.fondo}; --acento:${vars.acento}; --texto:${vars.texto}; }
+    html, body {
+      margin:0; padding:0; width:100vw; height:100vh; overflow:hidden;
+      background:${fondoFinal};
+      background-size:cover; background-position:center; background-repeat:no-repeat;
+      color:var(--texto); font-family:'Segoe UI',sans-serif;
+    }
+    /* (AJUSTE CLAVE 1 - OK) Eliminamos el padding para usar todo el espacio */
+    .biblia-wrapper { width:100%; height:100%; padding:0; display:flex; justify-content:center; align-items:center; box-sizing:border-box; }
+    .biblia-texto {
+      /* (AJUSTE CLAVE 3) Forzamos el ancho máximo para que el 'wrap' funcione siempre */
+      max-width: 100%; 
+      
+      font-size:25vw;
+      font-weight:700;
+      line-height:1.12;
+      text-align:center;
+      white-space:pre-wrap;
+      overflow-wrap:break-word;
 
-      /* CONTORNO BLANCO */
-      text-shadow:
-        -3px -3px 6px #fff,
-          3px -3px 6px #fff,
-        -3px  3px 6px #fff,
-          3px  3px 6px #fff;
-    }
-    .cita-mini { font-size:0.65em; font-family:"Segoe UI Semilight"; opacity:0.85; }
-  </style>
-  <div class="biblia-wrapper">
-    <div id="textoAutoFit" class="biblia-texto">${textoFinal}</div>
-  </div>`;
+      /* CONTORNO BLANCO */
+      text-shadow:
+        -3px -3px 6px #fff,
+          3px -3px 6px #fff,
+        -3px  3px 6px #fff,
+          3px  3px 6px #fff;
+    }
+    .cita-mini { font-size:0.65em; font-family:"Segoe UI Semilight"; opacity:0.85; }
+  </style>
+  <div class="biblia-wrapper">
+    <div id="textoAutoFit" class="biblia-texto">${textoFinal}</div>
+  </div>`;
 
-  // Asegurar fondo personalizado
-  aplicarFondoPersonalizado(ventanaProyeccion);
+  // Asegurar fondo personalizado
+  aplicarFondoPersonalizado(ventanaProyeccion);
 
-  // Auto-fit (MEJORADO)
-  const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
-  function autoFit() {
-    let min = 20, max = 900, best = min;
-    /* AJUSTE CLAVE 2: Aumentamos los multiplicadores (0.95 -> 0.99, 0.92 -> 0.99)
-       para permitir que el texto se acerque más a los bordes de la ventana */
-    const maxW = ventanaProyeccion.innerWidth * 0.99;
-    const maxH = ventanaProyeccion.innerHeight * 0.99;
-    while (min <= max) {
-      let mid = Math.floor((min + max) / 2);
-      caja.style.fontSize = mid + "px";
-      if (caja.scrollWidth <= maxW && caja.scrollHeight <= maxH) {
-        best = mid; min = mid + 2;
-      } else max = mid - 2;
-    }
-    caja.style.fontSize = best + "px";
-  }
-  autoFit();
+  // Auto-fit (CORREGIDO)
+  const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
+  function autoFit() {
+    let min = 20, max = 900, best = min;
+    /* (AJUSTE CLAVE 4) Volvemos a un 0.95 en ancho para darle un pequeño margen
+       y mantenemos 0.99 en alto para maximizar el tamaño vertical. */
+    const maxW = ventanaProyeccion.innerWidth * 0.95; 
+    const maxH = ventanaProyeccion.innerHeight * 0.99;
+    while (min <= max) {
+      let mid = Math.floor((min + max) / 2);
+      caja.style.fontSize = mid + "px";
+      // Utilizamos clientWidth y clientHeight para medir el texto con el wrap ya aplicado
+      if (caja.clientWidth <= maxW && caja.clientHeight <= maxH) { 
+        best = mid; min = mid + 2;
+      } else max = mid - 2;
+    }
+    caja.style.fontSize = best + "px";
+  }
+  autoFit();
 
-  // ⭐ NUEVO — necesario para reabrir Biblia al mover pantallas
-  ventanaProyeccion.referenciaActual = ref;
-  ventanaProyeccion.textoActual = texto;
+  // ⭐ NUEVO — necesario para reabrir Biblia al mover pantallas
+  ventanaProyeccion.referenciaActual = ref;
+  ventanaProyeccion.textoActual = texto;
 
-  
-  actualizarEspejoLocal();
-  actualizarIndicadorEnVivo(); // ← AÑADIDO AQUÍ
+  
+  actualizarEspejoLocal();
+  actualizarIndicadorEnVivo();
 
 }
 
 
 function renderPantallaLocal(contenedor, ref, texto) {
-  const el = document.getElementById(contenedor);
-  if (!el) return;
+  const el = document.getElementById(contenedor);
+  if (!el) return;
 
-  // Formatear igual que la proyección real
-  const textoFinal = `${texto} <span class="cita-mini">${ref}</span>`;
+  // Formatear igual que la proyección real
+  const textoFinal = `${texto} <span class="cita-mini">${ref}</span>`;
 
-  el.innerHTML = `
-    <div class="biblia-wrapper-local">
-      <div id="textoAutoFitLocal" class="biblia-texto-local">${textoFinal}</div>
-    </div>
-    <style>
-      .biblia-wrapper-local {
-        width: 100%;
-        height: 100%;
-        /* AJUSTE CLAVE 1: Eliminamos el padding en la versión local también para que se parezca a la proyección */
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        box-sizing:border-box;
-      }
+  el.innerHTML = `
+    <div class="biblia-wrapper-local">
+      <div id="textoAutoFitLocal" class="biblia-texto-local">${textoFinal}</div>
+    </div>
+    <style>
+      .biblia-wrapper-local {
+        width: 100%;
+        height: 100%;
+        /* (AJUSTE CLAVE 1 - OK) Eliminamos el padding */
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing:border-box;
+      }
 
-      .biblia-texto-local {
-        display: block;
-        width: 100%;
-        max-height: 100%;
-        text-align: center;
-        font-weight: 700;
-        line-height: 1.12;
-        white-space: pre-wrap;
-        overflow-wrap: break-word;
-        font-size: 25vw;
+      .biblia-texto-local {
+        /* (AJUSTE CLAVE 3) Forzamos el ancho máximo para que el 'wrap' funcione siempre */
+        max-width: 100%; 
+        
+        display: block;
+        width: 100%;
+        max-height: 100%;
+        text-align: center;
+        font-weight: 700;
+        line-height: 1.12;
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+        font-size: 25vw;
 
-        /* CONTORNO BLANCO */
-        text-shadow:
-          -3px -3px 6px #fff,
-            3px -3px 6px #fff,
-          -3px  3px 6px #fff,
-            3px  3px 6px #fff;
-      }
+        /* CONTORNO BLANCO */
+        text-shadow:
+          -3px -3px 6px #fff,
+            3px -3px 6px #fff,
+          -3px  3px 6px #fff,
+            3px  3px 6px #fff;
+      }
 
-      .cita-mini {
-        font-size: 0.65em;
-        font-family: "Segoe UI Semilight", sans-serif;
-        opacity:0.85;
-      }
-    </style>
-  `;
+      .cita-mini {
+        font-size: 0.65em;
+        font-family: "Segoe UI Semilight", sans-serif;
+        opacity:0.85;
+      }
+    </style>
+  `;
 
-  // ----- AUTO-FIT (MEJORADO) -----
-  const caja = el.querySelector("#textoAutoFitLocal");
+  // ----- AUTO-FIT (CORREGIDO) -----
+  const caja = el.querySelector("#textoAutoFitLocal");
 
-  let min = 20;
-  let max = 900;
-  let best = min;
+  let min = 20;
+  let max = 900;
+  let best = min;
 
-  /* AJUSTE CLAVE 2: Aumentamos los multiplicadores (0.95 -> 0.99, 0.92 -> 0.99)
-     en la versión local también para que el auto-fit sea más agresivo. */
-  const maxW = el.clientWidth * 0.99;
-  const maxH = el.clientHeight * 0.99;
+  /* (AJUSTE CLAVE 4) Volvemos a un 0.95 en ancho y mantenemos 0.99 en alto. */
+  const maxW = el.clientWidth * 0.95;
+  const maxH = el.clientHeight * 0.99;
 
-  while (min <= max) {
-    let mid = Math.floor((min + max) / 2);
-    caja.style.fontSize = mid + "px";
+  while (min <= max) {
+    let mid = Math.floor((min + max) / 2);
+    caja.style.fontSize = mid + "px";
 
-    const fits =
-      caja.scrollWidth <= maxW &&
-      caja.scrollHeight <= maxH;
+    // Utilizamos clientWidth y clientHeight para medir el texto con el wrap ya aplicado
+    const fits =
+      caja.clientWidth <= maxW &&
+      caja.clientHeight <= maxH;
 
-    if (fits) {
-      best = mid;
-      min = mid + 2;
-    } else {
-      max = mid - 2;
-    }
-  }
+    if (fits) {
+      best = mid;
+      min = mid + 2;
+    } else {
+      max = mid - 2;
+    }
+  }
 
-  caja.style.fontSize = best + "px";
+  caja.style.fontSize = best + "px";
 
-  // ----- NUEVO: Guardar referencia y texto -----
-  el.dataset.ref = ref;
-  el.dataset.texto = texto;
+  // ----- NUEVO: Guardar referencia y texto -----
+  el.dataset.ref = ref;
+  el.dataset.texto = texto;
 }
   
 
@@ -3547,6 +3554,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
