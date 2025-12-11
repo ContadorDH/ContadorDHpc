@@ -2641,15 +2641,15 @@ function actualizarVentanaBiblia(ref, texto) {
   // Auto-fit (sin cambios)
   const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
   function autoFit() {
-    let min = 50, max = 1600, best = min;
+    let min = 50, max = 2000, best = min;
     const maxW = ventanaProyeccion.innerWidth * 0.99;
     const maxH = ventanaProyeccion.innerHeight * 0.99;
     while (min <= max) {
       let mid = Math.floor((min + max) / 2);
       caja.style.fontSize = mid + "px";
       if (caja.scrollWidth <= maxW && caja.scrollHeight <= maxH) {
-        best = mid; min = mid + 5;
-      } else max = mid - 2;
+        best = mid; min = mid + 1;
+      } else max = mid - 1;
     }
     caja.style.fontSize = best + "px";
   }
@@ -3543,6 +3543,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
