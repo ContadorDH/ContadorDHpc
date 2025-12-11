@@ -2587,31 +2587,47 @@ document.getElementById("pantallaSelect").addEventListener("change", async () =>
 });
 
 
-// NUEVO: divide el texto en bloques iguales SIN cortes ortográficos
+// NUEVO: divide el texto uniformemente con equilibrio visual profesional
 function formatTextForProjection(text, maxLines = 3) {
   if (text == null) return "";
   
-  // Normalizar texto
-  let t = String(text).replace(/\s+/g, ' ').trim();
+  let t = String(text).replace(/\s+/g, " ").trim();
   if (!t) return "";
 
-  // Palabras separadas
   const words = t.split(" ");
-  const total = words.length;
+  const totalWords = words.length;
 
-  // Si pocas palabras, no dividir
-  if (total <= maxLines) return t;
+  if (totalWords <= maxLines) return t;
 
-  // Cantidad de palabras por línea (balanceado)
-  const wordsPerLine = Math.ceil(total / maxLines);
+  //---------------------------------------------------------
+  // Algoritmo de líneas equilibradas (balanced line breaking)
+  //---------------------------------------------------------
+  const segments = Array.from({ length: maxLines }, () => []);
+  const targetWords = totalWords / maxLines;  // Promedio ideal
+  let current = 0;
 
-  const lines = [];
-  for (let i = 0; i < total; i += wordsPerLine) {
-    lines.push(words.slice(i, i + wordsPerLine).join(" "));
+  for (let i = 0; i < maxLines; i++) {
+    let size = 0;
+
+    while (current < totalWords) {
+      const nextWord = words[current];
+      const futureSize = size + nextWord.length + 1; // + espacio
+
+      // Si esta línea ya se acerca al tamaño ideal → pasar a la siguiente
+      if (size >= targetWords * 6 && i < maxLines - 1) break;
+
+      segments[i].push(nextWord);
+      size = futureSize;
+      current++;
+
+      // Evita que una línea quede demasiado más larga que otra
+      if (i < maxLines - 1 && size > targetWords * 7) break;
+    }
   }
 
-  // Limitar al máximo de líneas permitido
-  const finalLines = lines.slice(0, maxLines);
+  const finalLines = segments
+    .map(arr => arr.join(" "))
+    .filter(line => line.trim().length > 0);
 
   return finalLines.join("<br>");
 }
@@ -3597,6 +3613,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
