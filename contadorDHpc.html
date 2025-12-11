@@ -2587,59 +2587,51 @@ document.getElementById("pantallaSelect").addEventListener("change", async () =>
 });
 
 
-// NUEVO: división profesional por ancho visual
-function formatTextForProjection(text, maxLines = 3) {
-  if (!text) return "";
+// FORMATO PROFESIONAL TIPO EASYWORSHIP
+function formatTextForProjection(text, maxWidth = 1500, maxLines = 4) {
+    if (!text) return "";
 
-  const t = text.replace(/\s+/g, " ").trim();
-  if (!t) return "";
+    text = text.trim().replace(/\s+/g, " ");
 
-  const words = t.split(" ");
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
 
-  // Canvas para medir ancho real de palabras
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-  ctx.font = "700 100px 'Segoe UI'"; // misma fuente usada
+    // Tamaño máximo de letra
+    let fontSize = 110; 
+    let lines = [];
 
-  function measure(w) {
-    return ctx.measureText(w).width;
-  }
+    function measureLines(fs) {
+        ctx.font = `700 ${fs}px 'Segoe UI'`;
 
-  // Medir cada palabra
-  const measuredWords = words.map(w => ({
-    text: w,
-    width: measure(w + " ")
-  }));
+        const words = text.split(" ");
+        const tempLines = [];
+        let current = "";
 
-  const totalWidth = measuredWords.reduce((a, b) => a + b.width, 0);
-  const targetWidth = totalWidth / maxLines;
+        for (let w of words) {
+            const test = current ? current + " " + w : w;
+            if (ctx.measureText(test).width > maxWidth) {
+                tempLines.push(current);
+                current = w;
+            } else {
+                current = test;
+            }
+        }
+        if (current) tempLines.push(current);
 
-  // Construcción de líneas balanceadas
-  const lines = [];
-  let currentLine = [];
-  let currentWidth = 0;
-
-  for (let i = 0; i < measuredWords.length; i++) {
-    const w = measuredWords[i];
-
-    // si agregar esta palabra pasa demasiado el ancho ideal → crear nueva línea
-    if (currentWidth + w.width > targetWidth * 1.25 && lines.length < maxLines - 1) {
-      lines.push(currentLine.map(x => x.text).join(" "));
-      currentLine = [w];
-      currentWidth = w.width;
-    } else {
-      currentLine.push(w);
-      currentWidth += w.width;
+        return tempLines;
     }
-  }
 
-  // Última línea
-  if (currentLine.length) {
-    lines.push(currentLine.map(x => x.text).join(" "));
-  }
+    // Reducir tamaño hasta que cumpla líneas
+    while (fontSize > 30) {
+        const testLines = measureLines(fontSize);
+        if (testLines.length <= maxLines) {
+            lines = testLines;
+            break;
+        }
+        fontSize -= 5;
+    }
 
-  // Limitar al número de líneas deseado
-  return lines.slice(0, maxLines).join("<br>");
+    return lines.join("<br>");
 }
 
 
@@ -3624,6 +3616,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
