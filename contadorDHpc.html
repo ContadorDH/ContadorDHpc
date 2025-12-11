@@ -2587,91 +2587,125 @@ document.getElementById("pantallaSelect").addEventListener("change", async () =>
 });
 
 
-// Helper: divide el texto en cortes "ortográficos" para forzar saltos de línea lógicos
-function formatTextForProjection(text, maxLines = 3) {
+// Helper: dividir en "filas iguales" (balanceadas por longitud de caracteres)
+// para maximizar el tamaño resultante con el auto-fit (estilo EasyWorship).
+function splitIntoBalancedLines(text, targetLines = 3) {
   if (text == null) return '';
-  let t = String(text).replace(/\s+/g, ' ').trim();
+  const t = String(text).replace(/\s+/g, ' ').trim();
   if (!t) return '';
 
-  // Si es breve, no forzamos cortes
+  // Si es corto, no dividimos
   if (t.length <= 40) return t;
 
-  function splitKeepingDelim(input, sepRegex) {
-    const parts = [];
-    let lastIndex = 0;
-    const re = new RegExp(sepRegex, 'g');
-    let m;
-    while ((m = re.exec(input)) !== null) {
-      const end = re.lastIndex;
-      parts.push(input.slice(lastIndex, end).trim());
-      lastIndex = end;
-    }
-    if (lastIndex < input.length) parts.push(input.slice(lastIndex).trim());
-    return parts.filter(Boolean);
+  const words = t.split(' ');
+  const n = words.length;
+  if (n <= targetLines) return words.join(' '); // cada palabra en su línea no ayuda: mejor dejarlo
+
+  // pref lengths: pref[i] = total chars of words[0..i-1]
+  const pref = new Array(n + 1).fill(0);
+  for (let i = 1; i <= n; i++) pref[i] = pref[i - 1] + words[i - 1].length;
+
+  // length of segment words[i..j-1] (i inclusive, j exclusive) counting spaces
+  function segLen(i, j) {
+    if (i >= j) return 0;
+    return pref[j] - pref[i] + (j - i - 1); // words + spaces between
   }
 
-  // 1) Intentar separar por oraciones (., ?, !, ;, :)
-  let segments = splitKeepingDelim(t, /[.?!;:]+\s*/);
+  // DP[k][i] = minimal possible maximum segment length when partitioning first i words into k lines
+  const K = Math.min(targetLines, n);
+  const DP = Array.from({ length: K + 1 }, () => new Array(n + 1).fill(Infinity));
+  const P = Array.from({ length: K + 1 }, () => new Array(n + 1).fill(-1)); // backpointer
 
-  // 2) Si no hay oraciones, separar por comas
-  if (segments.length === 1) segments = splitKeepingDelim(t, /,\s*/);
-
-  // 3) Si sigue siendo una sola parte, agrupar palabras en bloques
-  if (segments.length === 1) {
-    const words = t.split(' ');
-    const groups = Math.min(maxLines, 3);
-    const approx = Math.ceil(words.length / groups);
-    segments = [];
-    for (let i = 0; i < words.length; i += approx) {
-      segments.push(words.slice(i, i + approx).join(' '));
-    }
+  // base: one line (k=1) for first i words
+  for (let i = 1; i <= n; i++) {
+    DP[1][i] = segLen(0, i);
+    P[1][i] = 0;
   }
 
-  // Fusionar hasta target líneas buscando fusiones naturales
-  function balanceToTarget(segs, target) {
-    if (segs.length <= target) return segs.slice();
-    const arr = segs.slice();
-    while (arr.length > target) {
-      let bestIdx = 0;
-      let bestScore = Infinity;
-      for (let i = 0; i < arr.length - 1; i++) {
-        const mergedLen = (arr[i] + ' ' + arr[i + 1]).length;
-        if (mergedLen < bestScore) {
-          bestScore = mergedLen;
-          bestIdx = i;
+  for (let k = 2; k <= K; k++) {
+    for (let i = 1; i <= n; i++) {
+      // partition first i words into k lines: try split at p (p < i)
+      for (let p = 0; p < i; p++) {
+        const last = segLen(p, i);
+        const candidate = Math.max(DP[k - 1][p], last);
+        if (candidate < DP[k][i]) {
+          DP[k][i] = candidate;
+          P[k][i] = p;
         }
       }
-      arr.splice(bestIdx, 2, (arr[bestIdx] + ' ' + arr[bestIdx + 1]).trim());
-    }
-    return arr;
-  }
-
-  for (let target = 1; target <= maxLines; target++) {
-    const candidate = balanceToTarget(segments, target);
-    const lengths = candidate.map(s => s.length);
-    const maxLen = Math.max(...lengths);
-    const minLen = Math.min(...lengths);
-    if (minLen >= Math.max(10, Math.floor(maxLen * 0.25)) || candidate.length === target) {
-      return candidate.join('<br>');
     }
   }
 
-  const finalSegs = balanceToTarget(segments, Math.min(segments.length, maxLines));
-  return finalSegs.join('<br>');
+  // Find best k (1..K) that provides smallest DP[k][n]
+  let bestK = 1;
+  let bestVal = DP[1][n];
+  for (let k = 2; k <= K; k++) {
+    if (DP[k][n] < bestVal) {
+      bestVal = DP[k][n];
+      bestK = k;
+    }
+  }
+
+  // Reconstruct partitions from P[bestK][n]
+  const parts = [];
+  let k = bestK;
+  let idx = n;
+  while (k > 0) {
+    const p = P[k][idx];
+    const segment = words.slice(p, idx).join(' ');
+    parts.push(segment);
+    idx = p;
+    k--;
+  }
+  parts.reverse();
+
+  // If we produced fewer segments than targetLines, try to further split long segments (simple heuristic)
+  while (parts.length < targetLines) {
+    // find longest segment by char length and split it roughly in half by words
+    let maxIdx = 0;
+    let maxLen = parts[0].length;
+    for (let i = 1; i < parts.length; i++) {
+      if (parts[i].length > maxLen) { maxLen = parts[i].length; maxIdx = i; }
+    }
+    const segWords = parts[maxIdx].split(' ');
+    if (segWords.length <= 1) break;
+    const mid = Math.ceil(segWords.length / 2);
+    const left = segWords.slice(0, mid).join(' ');
+    const right = segWords.slice(mid).join(' ');
+    parts.splice(maxIdx, 1, left, right);
+  }
+
+  // Final safety: avoid very short last line (1-2 chars); if so, move a word down from previous line
+  if (parts.length > 1) {
+    const last = parts[parts.length - 1].trim();
+    if (last.length <= 3 && parts[parts.length - 2]) {
+      const prevWords = parts[parts.length - 2].split(' ');
+      if (prevWords.length > 1) {
+        const moved = prevWords.pop();
+        parts[parts.length - 2] = prevWords.join(' ');
+        parts[parts.length - 1] = (moved + ' ' + parts[parts.length - 1]).trim();
+      }
+    }
+  }
+
+  // Limit to targetLines if somehow exceeded
+  const finalParts = parts.slice(0, targetLines);
+
+  // Join with <br> and return
+  return finalParts.join('<br>');
 }
 
 
-// TU FUNCIÓN ORIGINAL MEJORADA (respeta fondo personalizado)
-// mantiene el nombre: actualizarVentanaBiblia
+// ---------- FUNCIÓN: actualizarVentanaBiblia (manteniendo el nombre) ----------
 function actualizarVentanaBiblia(ref, texto) {
   if (!ventanaProyeccion || ventanaProyeccion.closed) return;
 
-  // Formateo ortográfico: máximo 3 líneas (ajustable)
-  let textoFormateado = formatTextForProjection(texto, 3) || '';
-  // Asegurarnos de que no haya <br> final para que la cita quede en la misma línea
+  // Dividir en filas balanceadas (estilo EasyWorship). Cambia 3 por otra cantidad si deseas.
+  let textoFormateado = splitIntoBalancedLines(texto, 3) || '';
+  // Eliminar <br> finales por si acaso, para que la cita quede en la misma línea final
   textoFormateado = textoFormateado.replace(/(<br>\s*)+$/i, '');
 
-  // Insertamos una NBSP antes de la cita para forzar que quede pegada a la última palabra
+  // Pegar la cita al final del último renglón con NBSP para evitar salto
   const textoFinal = `${textoFormateado}\u00A0<span class="cita-mini">${ref}</span>`;
 
   const vars = {
@@ -2718,17 +2752,17 @@ function actualizarVentanaBiblia(ref, texto) {
       opacity:0.85;
       margin-left:0.5ch;
       vertical-align:baseline;
-      transform: translateY(-0.05em); /* pequeño ajuste vertical opcional */
+      transform: translateY(-0.05em);
     }
   </style>
   <div class="biblia-wrapper">
     <div id="textoAutoFit" class="biblia-texto">${textoFinal}</div>
   </div>`;
 
-  // Asegurar fondo personalizado (si existe la función)
+  // Asegurar fondo personalizado
   if (typeof aplicarFondoPersonalizado === 'function') aplicarFondoPersonalizado(ventanaProyeccion);
 
-  // Auto-fit (misma lógica)
+  // Auto-fit (misma lógica que antes)
   const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
   if (caja) {
     function autoFit() {
@@ -2756,13 +2790,12 @@ function actualizarVentanaBiblia(ref, texto) {
 }
 
 
-// renderPantallaLocal (misma firma y nombre)
+// ---------- FUNCIÓN: renderPantallaLocal (manteniendo el nombre) ----------
 function renderPantallaLocal(contenedor, ref, texto) {
   const el = document.getElementById(contenedor);
   if (!el) return;
 
-  // Formatear igual que la proyección real
-  let textoFormateado = formatTextForProjection(texto, 3) || '';
+  let textoFormateado = splitIntoBalancedLines(texto, 3) || '';
   textoFormateado = textoFormateado.replace(/(<br>\s*)+$/i, '');
   const textoFinal = `${textoFormateado}\u00A0<span class="cita-mini">${ref}</span>`;
 
@@ -2846,8 +2879,6 @@ function renderPantallaLocal(contenedor, ref, texto) {
   el.dataset.ref = ref;
   el.dataset.texto = texto;
 }
-
-
   
   
   
@@ -3640,6 +3671,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
