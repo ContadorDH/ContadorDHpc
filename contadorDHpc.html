@@ -2629,13 +2629,19 @@ function actualizarVentanaBiblia(ref, texto) {
         -3px  3px 6px #fff,
          3px  3px 6px #fff;
     }
-    .cita-mini { font-size:0.65em; font-family:"Segoe UI Semilight"; opacity:0.85; }
+    .cita-mini { 
+      font-size:0.65em; 
+      font-family:"Segoe UI Semilight"; 
+      opacity:0.85; 
+
+      /* ⭐ NO PERMITIR QUE LA CITA SE PARTA O SE DEFORME */
+      white-space:nowrap;
+    }
   </style>
   <div class="biblia-wrapper">
     <div id="textoAutoFit" class="biblia-texto">${textoFinal}</div>
   </div>`;
 
-  // Asegurar fondo personalizado
   aplicarFondoPersonalizado(ventanaProyeccion);
 
   // Auto-fit (sin cambios)
@@ -2655,15 +2661,13 @@ function actualizarVentanaBiblia(ref, texto) {
   }
   autoFit();
 
-  // ⭐ NUEVO — necesario para reabrir Biblia al mover pantallas
   ventanaProyeccion.referenciaActual = ref;
   ventanaProyeccion.textoActual = texto;
 
-  
   actualizarEspejoLocal();
-  actualizarIndicadorEnVivo(); // ← AÑADIDO AQUÍ
-
+  actualizarIndicadorEnVivo();
 }
+
 
 
 function renderPantallaLocal(contenedor, ref, texto) {
@@ -3543,6 +3547,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
