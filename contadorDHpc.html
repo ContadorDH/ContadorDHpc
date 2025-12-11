@@ -2587,110 +2587,47 @@ document.getElementById("pantallaSelect").addEventListener("change", async () =>
 });
 
 
-// Helper: dividir en filas "iguales" por cantidad de caracteres (preservando palabras)
-// para maximizar el tamaño con auto-fit (estilo EasyWorship).
-function splitIntoEqualLines(text, targetLines = 3) {
-  if (text == null) return '';
-  const t = String(text).replace(/\s+/g, ' ').trim();
-  if (!t) return '';
+// NUEVO: divide el texto en bloques iguales SIN cortes ortográficos
+function formatTextForProjection(text, maxLines = 3) {
+  if (text == null) return "";
+  
+  // Normalizar texto
+  let t = String(text).replace(/\s+/g, ' ').trim();
+  if (!t) return "";
 
-  // Si el texto es muy corto, no forzamos cortes
-  if (t.length <= 40) return t;
+  // Palabras separadas
+  const words = t.split(" ");
+  const total = words.length;
 
-  const words = t.split(' ');
-  // No intentamos crear más filas que palabras
-  const linesCount = Math.min(targetLines, words.length);
+  // Si pocas palabras, no dividir
+  if (total <= maxLines) return t;
 
-  // chars totales (incluye espacios entre palabras)
-  const totalChars = t.length;
-  const charsPerLine = Math.ceil(totalChars / linesCount);
+  // Cantidad de palabras por línea (balanceado)
+  const wordsPerLine = Math.ceil(total / maxLines);
 
   const lines = [];
-  let current = '';
-  let remainingWords = words.length;
-  let remainingLines = linesCount;
-
-  for (let i = 0; i < words.length; i++) {
-    const w = words[i];
-    remainingWords = words.length - i;
-
-    if (!current) {
-      current = w;
-      // if this is the last word, push later
-      continue;
-    }
-
-    // Si añadir la palabra no supera el objetivo de caracteres para la línea,
-    // o si debemos asegurarnos de dejar al menos una palabra por cada línea restante,
-    // la añadimos; si no, cerramos la línea actual.
-    const wouldLen = current.length + 1 + w.length;
-    const mustLeave = remainingWords <= remainingLines; // force to distribute
-    if (wouldLen <= charsPerLine || mustLeave) {
-      current += ' ' + w;
-    } else {
-      lines.push(current);
-      current = w;
-      remainingLines = Math.max(1, remainingLines - 1);
-    }
+  for (let i = 0; i < total; i += wordsPerLine) {
+    lines.push(words.slice(i, i + wordsPerLine).join(" "));
   }
 
-  if (current) lines.push(current);
+  // Limitar al máximo de líneas permitido
+  const finalLines = lines.slice(0, maxLines);
 
-  // Si hemos producido menos líneas de las solicitadas, dividimos las líneas más largas
-  while (lines.length < linesCount) {
-    // encontrar la línea más larga que tenga >=2 palabras
-    let idx = -1;
-    let maxLen = -1;
-    for (let i = 0; i < lines.length; i++) {
-      const parts = lines[i].split(' ');
-      if (parts.length >= 2 && lines[i].length > maxLen) {
-        idx = i;
-        maxLen = lines[i].length;
-      }
-    }
-    if (idx === -1) break; // no hay línea que podamos dividir
-    const parts = lines[idx].split(' ');
-    const mid = Math.ceil(parts.length / 2);
-    const left = parts.slice(0, mid).join(' ');
-    const right = parts.slice(mid).join(' ');
-    lines.splice(idx, 1, left, right);
-  }
-
-  // Si hemos producido más líneas de las solicitadas, fusionamos sobrantes al final
-  while (lines.length > linesCount) {
-    const a = lines.splice(lines.length - 2, 1)[0];
-    lines[lines.length - 1] = `${a} ${lines[lines.length - 1]}`;
-  }
-
-  // Evitar que la última línea quede con 1-3 caracteres (muy corta)
-  if (lines.length > 1) {
-    const last = lines[lines.length - 1].trim();
-    if (last.length <= 3) {
-      const prevWords = lines[lines.length - 2].split(' ');
-      if (prevWords.length > 1) {
-        const moved = prevWords.pop();
-        lines[lines.length - 2] = prevWords.join(' ');
-        lines[lines.length - 1] = (moved + ' ' + last).trim();
-      }
-    }
-  }
-
-  // Aseguramos exacto número de líneas (si hay menos, devolvemos lo que haya)
-  const finalParts = lines.slice(0, linesCount);
-  return finalParts.join('<br>');
+  return finalLines.join("<br>");
 }
 
 
-// ---------- FUNCIÓN: actualizarVentanaBiblia (misma firma y nombre) ----------
+// TU FUNCIÓN ORIGINAL MEJORADA (respeta fondo personalizado)
+// mantiene el nombre: actualizarVentanaBiblia
 function actualizarVentanaBiblia(ref, texto) {
   if (!ventanaProyeccion || ventanaProyeccion.closed) return;
 
-  // Dividir en filas iguales. Cambia 3 por el número deseado de renglones.
-  let textoFormateado = splitIntoEqualLines(texto, 3) || '';
-  // Quitar <br> finales por si acaso para que la cita quede en la misma línea final
+  // Formateo ortográfico: máximo 3 líneas (ajustable)
+  let textoFormateado = formatTextForProjection(texto, 3) || '';
+  // Asegurarnos de que no haya <br> final para que la cita quede en la misma línea
   textoFormateado = textoFormateado.replace(/(<br>\s*)+$/i, '');
 
-  // Pegar la cita al final del último renglón con NBSP para evitar salto de línea
+  // Insertamos una NBSP antes de la cita para forzar que quede pegada a la última palabra
   const textoFinal = `${textoFormateado}\u00A0<span class="cita-mini">${ref}</span>`;
 
   const vars = {
@@ -2719,15 +2656,17 @@ function actualizarVentanaBiblia(ref, texto) {
       font-weight:700;
       line-height:1;
       text-align:center;
-      white-space:normal; /* permitimos <br> insertados */
+      white-space:normal; /* permitimos los <br> insertados */
       overflow-wrap:break-word;
       word-break:break-word;
+      /* CONTORNO BLANCO */
       text-shadow:
         -3px -3px 6px #fff,
          3px -3px 6px #fff,
         -3px  3px 6px #fff,
          3px  3px 6px #fff;
     }
+    /* La cita ahora es inline para no forzar una línea nueva */
     .cita-mini {
       display:inline-block;
       font-size:0.62em;
@@ -2735,7 +2674,7 @@ function actualizarVentanaBiblia(ref, texto) {
       opacity:0.85;
       margin-left:0.5ch;
       vertical-align:baseline;
-      transform: translateY(-0.05em);
+      transform: translateY(-0.05em); /* pequeño ajuste vertical opcional */
     }
   </style>
   <div class="biblia-wrapper">
@@ -2745,7 +2684,7 @@ function actualizarVentanaBiblia(ref, texto) {
   // Asegurar fondo personalizado (si existe la función)
   if (typeof aplicarFondoPersonalizado === 'function') aplicarFondoPersonalizado(ventanaProyeccion);
 
-  // Auto-fit (misma lógica que antes)
+  // Auto-fit (misma lógica)
   const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
   if (caja) {
     function autoFit() {
@@ -2773,12 +2712,13 @@ function actualizarVentanaBiblia(ref, texto) {
 }
 
 
-// ---------- FUNCIÓN: renderPantallaLocal (misma firma y nombre) ----------
+// renderPantallaLocal (misma firma y nombre)
 function renderPantallaLocal(contenedor, ref, texto) {
   const el = document.getElementById(contenedor);
   if (!el) return;
 
-  let textoFormateado = splitIntoEqualLines(texto, 3) || '';
+  // Formatear igual que la proyección real
+  let textoFormateado = formatTextForProjection(texto, 3) || '';
   textoFormateado = textoFormateado.replace(/(<br>\s*)+$/i, '');
   const textoFinal = `${textoFormateado}\u00A0<span class="cita-mini">${ref}</span>`;
 
@@ -2796,6 +2736,7 @@ function renderPantallaLocal(contenedor, ref, texto) {
         align-items: center;
         box-sizing:border-box;
       }
+
       .biblia-texto-local {
         display: block;
         width: 100%;
@@ -2807,12 +2748,15 @@ function renderPantallaLocal(contenedor, ref, texto) {
         overflow-wrap: break-word;
         word-break:break-word;
         font-size: 25vw;
+
+        /* CONTORNO BLANCO */
         text-shadow:
           -3px -3px 6px #fff,
            3px -3px 6px #fff,
           -3px  3px 6px #fff,
            3px  3px 6px #fff;
       }
+
       .cita-mini {
         display:inline-block;
         font-size: 0.62em;
@@ -2858,6 +2802,11 @@ function renderPantallaLocal(contenedor, ref, texto) {
   el.dataset.ref = ref;
   el.dataset.texto = texto;
 }
+
+
+
+
+  
   
 function abrirProyeccionDia() {
   cerrarMenu();
@@ -3648,6 +3597,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
