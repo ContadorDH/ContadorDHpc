@@ -3599,11 +3599,11 @@ document.addEventListener("DOMContentLoaded", () => {
 // ===============================
 // BOTÓN: CANCIONES
 // ===============================
-document.getElementById("btnCanciones").addEventListener("click", () => {
-  // → Esperar a que canciones.json esté cargado
+document.getElementById("btnCanciones").addEventListener("click", async () => {
   if (canciones.length === 0) {
     await cargarCanciones();
   }
+
 
   // 1. Cambiamos el modo
   window.modoProyeccion = "canciones"; // ← muy importante
@@ -3681,6 +3681,7 @@ document.getElementById("btnCanciones").addEventListener("click", () => {
 </script>
 </body>
 </html>
+
 
 
 
