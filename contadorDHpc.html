@@ -1917,12 +1917,40 @@ function buscar() {
   // ================================================
   // Seleccionar modo
   // ================================================
-  function mejorCoincidencia(texto) {
-    if (window.modoProyeccion === "canciones") {
-      return mejorCoincidenciaCanciones(texto);
+// Buscar la mejor coincidencia exacta empezando por lo escrito
+function mejorCoincidencia(texto) {
+  const q = texto.toLowerCase().trim();
+  if (!q) return null;
+
+  // MODO CANCIONES -> buscar por título primero, luego fragmento de letra
+  if (window.modoProyeccion === "canciones") {
+    // buscar título que empiece por q
+    let best = null;
+    for (let i = 0; i < (canciones?.length || 0); i++) {
+      const titulo = (canciones[i].titulo || "").toLowerCase();
+      if (titulo.startsWith(q)) { best = { tipo: "titulo", valor: canciones[i].titulo, index: i }; break; }
+      if (!best && titulo.includes(q)) best = { tipo: "titulo", valor: canciones[i].titulo, index: i };
     }
-    return mejorCoincidenciaBiblia(texto);
+    // si no hay título, buscar en letra
+    if (!best) {
+      for (let i = 0; i < (canciones?.length || 0); i++) {
+        const letra = (canciones[i].letra || "").toLowerCase();
+        if (letra.includes(q)) { best = { tipo: "letra", valor: canciones[i].letra, index: i }; break; }
+      }
+    }
+    return best; // objeto o null
   }
+
+  // MODO BIBLIA -> buscar entre las referencias (mantengo tu lógica original)
+  let best = null;
+  for (let ref in biblia) {
+    const lower = ref.toLowerCase();
+    if (lower.startsWith(q)) { best = ref; break; }
+    if (!best && lower.includes(q)) best = ref;
+  }
+  return best;
+}
+
 
   // ================================================
   // Actualiza ghost + predictivo
@@ -1933,40 +1961,69 @@ function buscar() {
       input.selectionStart === input.selectionEnd &&
       input.selectionStart === val.length;
 
-    const match = mejorCoincidencia(val);
+   const match = mejorCoincidencia(val);
+if (!match || !val || !caretAtEnd) {
+  ghostTyped.textContent = "";
+  ghostRest.textContent = "";
+  predictivo.style.display = "none";
+  return;
+}
 
-    if (!match || !val || !caretAtEnd) {
-      ghostTyped.textContent = "";
-      ghostRest.textContent = "";
-      predictivo.style.display = "none";
-      return;
-    }
-
-    if (match.toLowerCase() === val.toLowerCase()) {
-      ghostTyped.textContent = "";
-      ghostRest.textContent = "";
-      return;
-    }
-
-    const matchLower = match.toLowerCase();
+// Si estamos en canciones, `match` viene como objeto {tipo, valor, index}
+if (window.modoProyeccion === "canciones") {
+  // mostrar título como sugerencia (si lo hay)
+  if (match.tipo === "titulo") {
+    const sugerencia = match.valor;
     const typedLen = val.length;
-
-    if (matchLower.startsWith(val.toLowerCase())) {
+    if (sugerencia.toLowerCase().startsWith(val.toLowerCase())) {
       ghostTyped.textContent = val;
-      ghostRest.textContent = match.slice(typedLen);
+      ghostRest.textContent = sugerencia.slice(typedLen);
     } else {
       ghostTyped.textContent = "";
       ghostRest.textContent = "";
     }
 
-    // Dropdown predictivo
-    predictivo.innerHTML = `
-      <div onclick="document.getElementById('q').value='${match}';buscar();">
-        ${match}
-      </div>
-    `;
+    predictivo.innerHTML = `<div onclick="document.getElementById('q').value='${sugerencia}'; mostrarCancion(${match.index});">
+      ${sugerencia}
+    </div>`;
     predictivo.style.display = "block";
+    return;
   }
+
+  // si match.tipo === "letra" mostramos una línea corta de la letra
+  if (match.tipo === "letra") {
+    const resumen = match.valor.split("\n").slice(0,2).join(" — ");
+    predictivo.innerHTML = `<div onclick="document.getElementById('q').value='${resumen}'; mostrarCancion(${match.index});">
+      ${resumen}
+    </div>`;
+    predictivo.style.display = "block";
+    return;
+  }
+}
+
+// en caso de biblia, `match` es string (reutiliza tu código original)
+if (typeof match === "string") {
+  if (match.toLowerCase() === val.toLowerCase()) {
+    ghostTyped.textContent = "";
+    ghostRest.textContent = "";
+    return;
+  }
+  const typedLen = val.length;
+  if (match.toLowerCase().startsWith(val.toLowerCase())) {
+    ghostTyped.textContent = val;
+    ghostRest.textContent = match.slice(typedLen);
+  } else {
+    ghostTyped.textContent = "";
+    ghostRest.textContent = "";
+  }
+
+  predictivo.innerHTML = `<div onclick="document.getElementById('q').value='${match}';buscar();">
+    ${match}
+  </div>`;
+  predictivo.style.display = "block";
+  return;
+}
+
 
   // ================================================
   // Aceptar sugerencia
@@ -3553,10 +3610,46 @@ cargarCanciones();
 
 
 function activarModoBiblia() {
-  document.getElementById("q").value = "";
-  document.getElementById("r").innerHTML = "";
-  document.getElementById("combo-libros").style.display = "block";
+  // modo lógico
+  window.modoProyeccion = "biblia";
+
+  // limpiar input/resultados
+  const q = document.getElementById("q");
+  if (q) { q.value = ""; q.placeholder = "Juan 3:16 | Salmos 23 | amor"; }
+
+  const r = document.getElementById("r");
+  if (r) r.innerHTML = "";
+
+  // icono de la izquierda (volver a libro)
+  const icon = document.querySelector("#izq i");
+  if (icon) {
+    icon.classList.remove("fa-music");
+    icon.classList.add("fa-book-open");
+  }
+
+  // Restaurar combo a libros (si ya cargaste books)
+  const combo = document.getElementById("combo-libros");
+  if (combo) {
+    combo.innerHTML = `<option value="">Selecciona un libro...</option>`;
+    if (Array.isArray(books) && books.length) {
+      books.forEach((libro, i) => {
+        const op = document.createElement("option");
+        op.value = i;
+        op.textContent = libro.name;
+        combo.appendChild(op);
+      });
+    }
+    // restaurar evento a mostrar capítulos (tu función existente)
+    combo.onchange = () => {
+      if (combo.value !== "") mostrarCapitulos(parseInt(combo.value));
+    };
+    combo.style.display = "block";
+  }
+
+  // Asegurarnos de que el predictivo (ghost) sepa que estamos en Biblia
+  // (la función mejorCoincidencia que te doy abajo usa window.modoProyeccion)
 }
+
 
 
   
@@ -3777,6 +3870,7 @@ document.getElementById("btnBiblia").addEventListener("click", () => {
 </script>
 </body>
 </html>
+
 
 
 
