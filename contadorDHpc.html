@@ -1957,7 +1957,6 @@ function cerrarCapitulos() {
   lista.innerHTML = "";
 }
 
-// FUNCIÓN actualizarEspejoLocal() → MEJORADA Y FIABLE
 function actualizarEspejoLocal() {
   const contenedor = document.getElementById("proyeccion-texto");
   if (!contenedor) return;
@@ -1966,26 +1965,21 @@ function actualizarEspejoLocal() {
   contenedor.style.overflow = "hidden";
   contenedor.style.padding = "0";
 
-  // CASO 1: No hay proyección activa → limpiar y salir
   if (!ventanaProyeccion || ventanaProyeccion.closed) {
-    contenedor.innerHTML = ""; // limpia todo
+    contenedor.innerHTML = "";
     return;
   }
 
-  // CASO 2: Sí hay proyección activa → debe mostrar algo (fondo + contenido)
   const realW = ventanaProyeccion.innerWidth || 1280;
   const realH = ventanaProyeccion.innerHeight || 720;
   const miniW = contenedor.clientWidth || 100;
   const miniH = contenedor.clientHeight || 100;
 
-  if (miniW <= 10 || miniH <= 10) return; // evita errores si está oculto
+  if (miniW <= 10 || miniH <= 10) return;
 
   const escala = Math.min(miniW / realW, miniH / realH);
 
-  // Buscar iframe existente
   let iframe = contenedor.querySelector("#espejo-iframe");
-
-  // Si no existe o fue borrado → crearlo de nuevo
   if (!iframe) {
     iframe = document.createElement("iframe");
     iframe.id = "espejo-iframe";
@@ -1995,55 +1989,30 @@ function actualizarEspejoLocal() {
     iframe.style.position = "absolute";
     iframe.style.top = "0";
     iframe.style.left = "0";
-    iframe.style.width = realW + "px";
-    iframe.style.height = realH + "px";
     iframe.style.transformOrigin = "top left";
     iframe.style.pointerEvents = "none";
-    iframe.style.imageRendering = "crisp-edges";
 
-    // Limpiar contenedor y añadir el nuevo iframe
     contenedor.innerHTML = "";
     contenedor.appendChild(iframe);
   }
 
-  // Actualizar dimensiones
+  // SIN límites, sin max-height (cortaba la derecha y abajo)
   iframe.style.width = realW + "px";
   iframe.style.height = realH + "px";
+  iframe.style.maxWidth = "unset";
+  iframe.style.maxHeight = "unset";
+  iframe.style.overflow = "visible";
 
-  // *** 🔥 SOLUCIÓN AL CORTE INFERIOR 🔥 ***
-  iframe.style.maxHeight = miniH + "px";
-
-  // Forzar actualización del contenido (lo más importante)
   try {
     const htmlCompleto = ventanaProyeccion.document.documentElement.outerHTML;
-    if (iframe.srcdoc !== htmlCompleto) {
-      iframe.srcdoc = htmlCompleto;
-    }
-  } catch (e) {
-    console.warn("Error actualizando srcdoc del espejo:", e);
-  }
+    if (iframe.srcdoc !== htmlCompleto) iframe.srcdoc = htmlCompleto;
+  } catch(e) {}
 
-  // Mejorar renderizado cuando cargue
-  iframe.onload = () => {
-    try {
-      const doc = iframe.contentDocument || iframe.contentWindow.document;
-      const body = doc.body;
-      body.style.margin = "0";
-      body.style.backgroundSize = "cover";
-      body.style.backgroundPosition = "center";
-      body.style.backgroundRepeat = "no-repeat";
-      body.style.transform = "translateZ(0)";
-      body.style.backfaceVisibility = "hidden";
-    } catch (e) {}
-  };
-
-  // Aplicar escala y centrado (contain)
   const offsetX = (miniW - realW * escala) / 2;
   const offsetY = (miniH - realH * escala) / 2;
 
   iframe.style.left = offsetX + "px";
-  iframe.style.top = (offsetY + 1) + "px";
-
+  iframe.style.top = offsetY + "px";
   iframe.style.transform = `scale(${escala})`;
   iframe.style.willChange = "transform";
 
@@ -3553,6 +3522,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
