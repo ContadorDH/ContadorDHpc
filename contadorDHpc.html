@@ -3496,6 +3496,40 @@ document.addEventListener("DOMContentLoaded", () => {
      document.getElementById("btnConfigLogo")?.classList.add("hidden-btn");
   });
 
+
+// BOTÓN: CANCIONES
+document.getElementById("btnCanciones").addEventListener("click", () => {
+  document.getElementById("subtitulo").style.display = "none";
+  document.querySelector(".panel").style.display = "flex";
+
+  // Mostrar contenedor de canciones
+  document.getElementById("canciones-container").style.display = "flex";
+
+  // Ocultar Biblia para evitar conflictos
+  document.getElementById("biblia-container").style.display = "none";
+
+  // Ocultar controles que no pertenecen aquí
+  tablaArriba.style.display = "none";
+  document.querySelector('button[onclick="verMesActual()"]').style.display = "none";
+  document.querySelector('button[onclick="verHoy()"]').style.display = "none";
+  document.getElementById("selectMes").style.display = "none";
+  document.querySelector('button[onclick="proyectar()"]').style.display = "none";
+
+  // Mostrar solo los botones necesarios para proyectar canciones
+  document.getElementById("pantallaSelect").style.display = "inline-flex";
+  document.getElementById("btnTema").style.display = "inline-flex";
+  document.getElementById("btnLimpiarTexto").style.display = "inline-flex";
+  document.getElementById("btnFondoBiblia").style.display = "inline-flex";
+  document.getElementById("btnEnVivo").style.display = "inline-flex";
+  document.getElementById("btnParar").style.display = "inline-flex";
+
+  // Logo opcional
+  document.getElementById("btnLogo")?.classList.remove("hidden-btn");
+  document.getElementById("btnConfigLogo")?.classList.remove("hidden-btn");
+});
+
+  
+
   // BOTÓN: BIBLIA
   document.getElementById("btnBiblia").addEventListener("click", () => {
     document.getElementById("subtitulo").style.display = "none";
@@ -3536,6 +3570,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
