@@ -2001,6 +2001,10 @@ function actualizarEspejoLocal() {
     iframe.style.pointerEvents = "none";
     iframe.style.imageRendering = "crisp-edges";
 
+    /* ⭐ FIX PARA QUE NO SE CORTE ARRIBA/ABAJO */
+    iframe.style.marginTop = "-1px";
+    iframe.style.marginBottom = "-1px";
+
     // Limpiar contenedor y añadir el nuevo iframe
     contenedor.innerHTML = "";
     contenedor.appendChild(iframe);
@@ -2025,7 +2029,7 @@ function actualizarEspejoLocal() {
     try {
       const doc = iframe.contentDocument || iframe.contentWindow.document;
       const body = doc.body;
-      body.style.margin = "1";
+      body.style.margin = "0";
       body.style.backgroundSize = "cover";
       body.style.backgroundPosition = "center";
       body.style.backgroundRepeat = "no-repeat";
@@ -2039,7 +2043,8 @@ function actualizarEspejoLocal() {
   const offsetY = (miniH - realH * escala) / 2;
 
   iframe.style.left = offsetX + "px";
-  iframe.style.top = offsetY + "px";
+  iframe.style.top = (offsetY + 1) + "px";  // ← tu ajuste conservado
+
   iframe.style.transform = `scale(${escala})`;
   iframe.style.willChange = "transform";
 
@@ -3548,6 +3553,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
