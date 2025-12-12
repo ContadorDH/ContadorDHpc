@@ -1,602 +1,670 @@
 [
   {
-    "titulo": "DIOS ESTA AQUÍ",
-    "letra": "// Dios Esta Aquí,\nTan Cierto Como El Aire Que Respiro\nTan Cierto Como En La Mañana\nSe Levanta El Sol\nTan Cierto Como Que Le Alabo\nY Me Puede Oir //\nLe Puedes Tocar\nCon Tus Manos En Este Instante\nLe Puedes Llevar\nMuy Dentro Tu Corazón\nLe Puedes Confiar\nEse Problema Que Tienes\nJesus Esta Aquí,\nSi Tu Quieres Le Puedes Seguir."
+    "titulo": "Dios Esta Aquí // Dios Esta Aquí,",
+    "letra": "Tan Cierto Como El Aire Que Respiro\nTan Cierto Como En La Mañana\nSe Levanta El Sol\nTan Cierto Como Que Le Alabo\nY Me Puede Oir //\nLe Puedes Tocar\nCon Tus Manos En Este Instante\nLe Puedes Llevar\nMuy Dentro De Tu Corazón\nLe Puedes Confiar\nEse Problema Que Tienes\nJesus Esta Aquí,\nSi Tu Quieres Le Puedes Seguir."
   },
   {
-    "titulo": "EN ESTA REUNIÓN",
-    "letra": "En Esta Reunión Cristo Esta\nEl Ha Prometido Estar\nDonde Dos O Tres\nEn Mi Nombre Estén\n/// Allí Estaré ///\nYo Lo Siento En Mi\nYo Lo Siento En Mi\nSu Espíritu Me Hace Hablar\nYo Lo Siento En Mi\nYo Lo Siento En Mi\nSu Espíritu Me Hace Cantar"
+    "titulo": "En Esta Reunión En Esta Reunión Cristo Esta",
+    "letra": "El Ha Prometido Estar\nDonde Dos O Tres\nEn Mi Nombre Estén\n/// Allí Estaré ///\nYo Lo Siento En Mi\nYo Lo Siento En Mi\nSu Espíritu Me Hace Hablar\nYo Lo Siento En Mi\nYo Lo Siento En Mi\nSu Espíritu Me Hace Cantar"
   },
   {
-    "titulo": "TU MISERICORDIA",
+    "titulo": "Tu Misericordia",
     "letra": "Tu Misericordia Es Mejor Que La Vida\nTu Misericordia Es Mejor Que La Vida\nMis Labios Te Alabaran\nY Así Mi Vida Te Bendecirá\nY En Tu Nombre Mis Manos Alzare\n// Alzare Mis Manos\nEn Tu Nombre Señor //\nMis Labios Te Alabaran\nY Así Mi Vida Te Bendecirá\nY En Tu Nombre Mis Manos Alzare"
   },
   {
-    "titulo": "ALABARE",
-    "letra": "// Alabare, Alabare,\nAlabare, Alabare\nAlabare Mi Señor //\nJuan Vio El Numero Los Redimidos\nY Todos Alababan Al Señor\nUnos Oraban, Otros Cantaban\nPero Todos Alababan Al Señor\n// Alabare, Alabare,\nAlabare, Alabare\nAlabare Mi Señor //"
+    "titulo": "Alabare // Alabare, Alabare,",
+    "letra": "Alabare, Alabare\nAlabare A Mi Señor //\nJuan Vio El Numero De Los Redimidos\nY Todos Alababan Al Señor\nUnos Oraban, Otros Cantaban\nPero Todos Alababan Al Señor\n// Alabare, Alabare,\nAlabare, Alabare\nAlabare A Mi Señor //"
   },
   {
-    "titulo": "NO HAY DIOS TAN GRANDE COMO TU",
-    "letra": "// No Hay Dios Tan Grande Como Tu\nNo Lo Hay, No Lo Hay //\n// No Hay Dios\nQue Pueda Hacer Las Obras\nComo Las Que Haces Tu //\n// No Es Con Espada, Ni Con Ejercito\nMas Con Tu Santo Espíritu //\n/// Y Esta Iglesia, Se Moverá ///\nMas Con Tu Santo Espíritu"
+    "titulo": "No Hay Dios Tan Grande Como Tu // No Hay Dios Tan Grande Como Tu",
+    "letra": "No Lo Hay, No Lo Hay //\n// No Hay Dios\nQue Pueda Hacer Las Obras\nComo Las Que Haces Tu //\n// No Es Con Espada, Ni Con Ejercito\nMas Con Tu Santo Espíritu //\n/// Y Esta Iglesia, Se Moverá ///\nMas Con Tu Santo Espíritu"
   },
   {
-    "titulo": "SALMO 117",
-    "letra": "Alabad Jehová, Naciones Todas\nPueblos Todos Alabadle\nPorque Ha Engrandecido\nSobre Nosotros Su Misericordia\n// Y La Verdad Jehová\nEs Para Siempre. Aleluya, Amen //"
+    "titulo": "Salmo 117 Alabad A Jehová, Naciones Todas",
+    "letra": "Pueblos Todos Alabadle\nPorque Ha Engrandecido\nSobre Nosotros Su Misericordia\n// Y La Verdad De Jehová\nEs Para Siempre.  Aleluya, Amen //"
   },
   {
-    "titulo": "QUITA LA PIEDRA",
-    "letra": "// Quita La Piedra,\nDeja El Agua Correr\nMira Que Las Almas Se Van Perder\nHablales Cristo, Ese Es Tu Deber\nSi El Agua Se Estanca\nNo Podrá Correr //"
+    "titulo": "Quita La Piedra // Quita La Piedra,",
+    "letra": "Deja El Agua Correr\nMira Que Las Almas Se Van A Perder\nHablales De Cristo, Ese Es Tu Deber\nSi El Agua Se Estanca\nNo Podrá Correr //"
   },
   {
-    "titulo": "EL ES MI REY",
-    "letra": "// El Es Mi Rey, Por Eso Yo Le Canto\nEl Es Mi Rey, No Hay Otro Como El\nCada í Alabanzas Yo Le Canto\nOh Aleluya, El Es Mi Rey //"
+    "titulo": "El Es Mi Rey // El Es Mi Rey, Por Eso Yo Le Canto",
+    "letra": "El Es Mi Rey, No Hay Otro Como El\nCada Día Alabanzas Yo Le Canto\nOh Aleluya, El Es Mi Rey //"
   },
   {
-    "titulo": "SIN SANTIDAD",
-    "letra": "// Sin Santidad\nNadie Vera Al Señor //\n// Pero Yo Se, Pero Yo Se\nQue Le Veré, Que Le Veré\nY Con Su Espíritu Me Santificare //"
+    "titulo": "Sin Santidad // Sin Santidad",
+    "letra": "Nadie Vera Al Señor //\n// Pero Yo Se, Pero Yo Se\nQue Le Veré, Que Le Veré\nY Con Su Espíritu Me Santificare //"
   },
   {
-    "titulo": "SOLO DIOS",
-    "letra": "Solo Dios Hace Al Hombre Feliz\nSolo Dios Hace Al Hombre Feliz\nLa Vida Es Nada, Todo Se Acaba\nSolo Dios Hace Al Hombre Feliz"
+    "titulo": "Solo Dios Solo Dios Hace Al Hombre Feliz",
+    "letra": "Solo Dios Hace Al Hombre Feliz\nLa Vida Es Nada, Todo Se Acaba\nSolo Dios Hace Al Hombre Feliz"
   },
   {
-    "titulo": "UNA MIRADA DE FE",
-    "letra": "// Una Mirada ,\nUna Mirada , Es La Que Puede\nSalvar Al Pecador //\n// Y Si Tu Vienes Cristo Jesus\nEl Te Perdonara\nPorque Una Mirada\nEs La Que Te Puede Salvar //"
+    "titulo": "Una Mirada De Fe // Una Mirada De Fe,",
+    "letra": "Una Mirada De Fe, Es La Que Puede\nSalvar Al Pecador //\n// Y Si Tu Vienes A Cristo Jesus\nEl Te Perdonara\nPorque Una Mirada De Fe\nEs La Que Te Puede Salvar //"
   },
   {
-    "titulo": "VAMOS ORANDO",
-    "letra": "// Vamos Orando Hasta Que Baje\nEl Poder Dios //\nOh Gloria Dios, Oh Gloria Dios\nVamos Orando Hasta Que Baje\nEl Poder Dios"
+    "titulo": "Vamos Orando // Vamos Orando Hasta Que Baje",
+    "letra": "El Poder De Dios //\nOh Gloria A Dios, Oh Gloria A Dios\nVamos Orando Hasta Que Baje\nEl Poder De Dios"
   },
   {
-    "titulo": "SI EN VERDAD ERES SALVO",
-    "letra": "Si En Verdad Eres Salvo Di Amen, -\nAmen-\nSi En Verdad Eres Salvo Di Amen, -\nAmen-\nSi En Verdad Eres Salvo\nTestifica Con Tu Vida\nSi En Verdad Eres Salvo Di Amen,\n-Amen-"
+    "titulo": "Envía Tu Poder // Envía Tu Poder //",
+    "letra": "Envía Tu Poder Señor\n// Queremos Mas Poder //\nQueremos Mas Poder Señor"
   },
   {
-    "titulo": "AMEN, AMEN, AMEN",
-    "letra": "Amen, Amen, Amen\nResuena Nuestra Voz\nAmen Dirán Los Fieles\nY Bendigan El Nombre Dios\nAmen, Amen, Amen\nHa Llegado La Gran Bendición\nAlabemos Con Gozo Al Eterno\nY Un Grito Del Alma\nQue Exhale Un Amen\nAlabemos Con Gozo Al Eterno\nY Un Grito Del Alma\nQue Exhale Un Amen, -Amen-"
+    "titulo": "Preparate Para Que Sientas /// Preparate Para Que Sientas ///",
+    "letra": "El Espíritu De Dios\n/// Y Dejalo Que Se Mueva ///\nDentro De Tu Corazón"
   },
   {
-    "titulo": "QUEDATE SEÑOR",
-    "letra": "Quedate Señor, Quedate Señor\nQuedate Señor En Cada Corazón\nQuedate Señor, Quedate Señor\nQuedate Señor En Mi\n\nOh Cristo Mio\nHas Mi Alma Un Altar\nPara Adorarte Con Devoción\nPara Beber El Agua La Vida\nY Así Saciar Mi Pobre Corazón"
+    "titulo": "Ya Hemos Orado // Ya Hemos Orado Y Ha Bajado",
+    "letra": "El Poder De Dios //\n// Oh Gloria A Dios //\nYa Hemos Orado Y Ha Bajado\nEl Poder De Dios"
   },
   {
-    "titulo": "DEMOS GRACIAS AL SEÑOR",
-    "letra": "//Demos Gracias Al Señor\nDemos Gracias\nDemos Gracias Por Su Amor //\nPor Las Mañanas Las Aves Cantan\nLas Alabanzas Cristo El Salvador\nY Tu Mi Hermano Porque No Cantas\nLas Alabanzas Cristo El Salvador"
+    "titulo": "Yo Quiero Mas Y Mas De Cristo Yo Quiero Mas Y Mas De Cristo",
+    "letra": "Yo Quiero Mas De Su Poder\nYo Quiero Mas De Su Presencia\nYo Quiero Mas Y Mas De El"
   },
   {
-    "titulo": "PUEBLOS TODOS",
-    "letra": "Pueblos Todos, Batid Las Manos\nAlabad Dios Con Voz Jubilo\nPueblos Todos, Batid Las Manos\nAlabad Al Dios Israel\nCantad Dios Cantad\nCantad Nuestro Rey\nPorque El Es El Rey Toda La Tierra\nCantad Dios Cantad\nCantad Nuestro Rey\nBatiendo Nuestras Manos\nY Alzando Nuestra Voz\nPueblos Todos, Batid Las Manos\nAlabad Al Dios Israel."
+    "titulo": "Cristo Esta Junto A Mi Cristo Esta Junto A Mi",
+    "letra": "/// Y Me Guarda Con Poder ///\nSi El Esta Junto A Mi\nY Me Guarda Con Poder\nCristo Me Guarda Con Poder"
   },
   {
-    "titulo": "EL ABOGADO",
-    "letra": "Yo Tengo Un Abogado Que Me Defiende\nEl Nunca Esta Ocupado\nSiempre Me Atiende\nEl Nunca Pierde Un Caso\nTodos Los Gana\n// Si Alguno Le Interesa\nSaber Su Nombre Jesus Se Llama//"
+    "titulo": "Señor Aumentame La Fe // Señor Aumentame La Fe",
+    "letra": "Si Aumentame La Fe\nOh Mi Cristo Tu Lo Puedes Hacer //"
   },
   {
-    "titulo": "YO TENGO UNA CORONA",
-    "letra": "Yo Tengo Una Corona Allá En El Cielo\nQue Cristo Ha Preparado Para Mi\nOí Una Voz Del Cielo Que Decí\nHijo Mio No Te Tardes En Venir\nMas Yo No Endurecí Mi Corazón\nY La Voz Cristo Me Humille\n// Y Me Dijo Levantate Hijo Mio\nQue Tus Pecados\nCon Mi Sangre Yo Lave//"
+    "titulo": "Mio, Mio, Mio, Jesus Es Mio Mio, Mio, Mio, Jesus Es Mio",
+    "letra": "Mio En La Tristeza, Mio En La Alegría\nMio Para Siempre Amen"
   },
   {
-    "titulo": "ESTAMOS DE FIESTA",
-    "letra": "Estamos Fiesta Con Jesus\nAl Cielo Queremos Ir\nEstamos Sentados La Mesa\nEs Cristo El Que Va Servir\n//// Poderoso Es Nuestro Dios ////\nEl Sana, El Salva\nPoderoso Es Nuestro Dios\nBautiza Y Viene\nPoderoso Es Nuestro Dios\n//// Poderoso Es Nuestro Dios ////"
+    "titulo": "Si En Verdad Eres Salvo Si En Verdad Eres Salvo Di Amen, -",
+    "letra": "Amen-\nSi En Verdad Eres Salvo Di Amen, -\nAmen-\nSi En Verdad Eres Salvo\nTestifica Con Tu Vida\nSi En Verdad Eres Salvo Di Amen,\n-Amen-"
   },
   {
-    "titulo": "EL TALENTO",
-    "letra": "Cuando Venga El Señor\nY Te Pregunte Ti Por Tu Talento\nQue Dirás Al Señor\nDel Talento Que Cristo Te Dio\n\nDesentierralo, Desentierralo\nDesentierra, Hermano Tu Talento\nDesentierralo, Desentierralo\nEl Talento Que Cristo Te Dio\nMultiplicalo, Multiplicalo\nMultiplica, Hermano Tu Talento\nMultiplicalo, Multiplicalo\nEl Talento Que Cristo Te Dio\nSantificalo, Santificalo\nSantifica, Hermano Tu Talento\nSantificalo, Santificalo\nEl Talento Que Cristo Te Dio"
+    "titulo": "Amen, Amen, Amen Amen, Amen, Amen",
+    "letra": "Resuena Nuestra Voz\nAmen Dirán Los Fieles\nY Bendigan El Nombre De Dios\nAmen, Amen, Amen\nHa Llegado La Gran Bendición\nAlabemos Con Gozo Al Eterno\nY Un Grito Del Alma\nQue Exhale Un Amen\nAlabemos Con Gozo Al Eterno\nY Un Grito Del Alma\nQue Exhale Un Amen, -Amen-"
   },
   {
-    "titulo": "MIRA QUE LINDO",
-    "letra": "//// Mira Que Lindo,\nQue Lindo Es El Señor ////\n// Nada Iguala Su Belleza\nNada Iguala Su Amor\nPues Todo Lo Que Hace\nLo Hace Con Amor //"
+    "titulo": "Quedate Señor Quedate Señor, Quedate Señor",
+    "letra": "Quedate Señor En Cada Corazón\nQuedate Señor, Quedate Señor\nQuedate Señor En Mi\nOh Cristo Mio\nHas De Mi Alma Un Altar\nPara Adorarte Con Devoción\nPara Beber El Agua De La Vida\nY Así Saciar Mi Pobre Corazón"
   },
   {
-    "titulo": "DONDE ESTA TU DIOS",
-    "letra": "//// Donde, Donde Esta Tu Dios ////\n// Mi Dios Esta En Los Cielos\nTambién En Mi Corazón\nEl Tuyo Esta Muerto\nEl Mio Resucitó //"
+    "titulo": "Demos Gracias Al Señor //Demos Gracias Al Señor",
+    "letra": "Demos Gracias\nDemos Gracias Por Su Amor //\nPor Las Mañanas Las Aves Cantan\nLas Alabanzas A Cristo El Salvador\nY Tu Mi Hermano Porque No Cantas\nLas Alabanzas A Cristo El Salvador"
   },
   {
-    "titulo": "LA VID VERDADERA",
-    "letra": "Yo Soy La Vid Verdadera\nMi Padre Es El Labrador\n// Y Todo Pámpano\nQue En Mi No Tenga Fruto\nSera Cortado Y Echado Al Fuego //\n//// Mira Que Lindo . . . ."
+    "titulo": "Pueblos Todos Pueblos Todos, Batid Las Manos",
+    "letra": "Alabad A Dios Con Voz De Jubilo\nPueblos Todos, Batid Las Manos\nAlabad Al Dios De Israel\nCantad A Dios Cantad\nCantad A Nuestro Rey\nPorque El Es El Rey De Toda La Tierra\nCantad A Dios Cantad\nCantad A Nuestro Rey\nBatiendo Nuestras Manos\nY Alzando Nuestra Voz\nPueblos Todos, Batid Las Manos\nAlabad Al Dios De Israel."
   },
   {
-    "titulo": "NUESTRO REY PRONTO VENDRÁ",
-    "letra": "// Nuestro Rey Pronto Vendrá\nEl Así Lo Prometió //\nNos Llevara, Nos Llevara\nDonde No Habrá Mal Ni Aflicción\nNos Llevara, Nos Llevara\nPara Vivir En Su Mansión."
+    "titulo": "El Abogado Yo Tengo Un Abogado Que Me Defiende",
+    "letra": "El Nunca Esta Ocupado\nSiempre Me Atiende\nEl Nunca Pierde Un Caso\nTodos Los Gana\n// Si Alguno Le Interesa\nSaber Su Nombre Jesus Se Llama//"
   },
   {
-    "titulo": "SANTO, SANTO, SANTO",
-    "letra": "Santo, Santo, Santo\nDicen Los Serafines\nSanto, Santo, Santo\nEs El Señor Jehová\nSanto, Santo, Santo\nAl Dios Que Nos Redime\n// Por Ser Tres Veces Santo\nLa Tierra Llena Su Gloria Esta //\n//El Cielo Y La Tierra Pasaran\nMas Su Palabra No Pasara //\nNo, No, No Pasara\nNo, No, No Pasara"
+    "titulo": "Yo Tengo Una Corona Yo Tengo Una Corona Allá En El Cielo",
+    "letra": "Que Cristo Ha Preparado Para Mi\nOí Una Voz Del Cielo Que Decía\nHijo Mio No Te Tardes En Venir\nMas Yo No Endurecí Mi Corazón\nY A La Voz De Cristo Me Humille\n// Y Me Dijo Levantate Hijo Mio\nQue Tus Pecados\nCon Mi Sangre Yo Lave//"
   },
   {
-    "titulo": "SALMO 45",
-    "letra": "Dios Es Nuestro Amparo\nY Nuestra Fortaleza\nNuestro Pronto Auxilio\nEn La Tribulación\nAunque Se Traspasen\nLos Montes La Mar\n// Aunque La Tierra Tiemble\nDebemos Cantar //\n// El Cielo Y La Tierra Pasaran. . . ."
+    "titulo": "Estamos De Fiesta Estamos De Fiesta Con Jesus",
+    "letra": "Al Cielo Queremos Ir\nEstamos Sentados A La Mesa\nEs Cristo El Que Va A Servir\n//// Poderoso Es Nuestro Dios ////\nEl Sana, El Salva\nPoderoso Es Nuestro Dios\nBautiza Y Viene\nPoderoso Es Nuestro Dios\n//// Poderoso Es Nuestro Dios ////"
   },
   {
-    "titulo": "SI TUVIERAS FE",
-    "letra": "// Si Tuvieras\nComo Un Grano Mostaza,\nEso Lo Dice El Señor //\n// Tu Le Dirías, Esa Montañ\nMuevete, Muevete //\n// Y Esa Montañ Se Moverá\nSe Moverá, Se Moverá //\n// Jesus Te Ayudara,\nY La Montañ Se Moverá //"
+    "titulo": "El Talento Cuando Venga El Señor",
+    "letra": "Y Te Pregunte A Ti Por Tu Talento\nQue Dirás Al Señor\nDel Talento Que Cristo Te Dio\nDesentierralo, Desentierralo\nDesentierra, Hermano Tu Talento\nDesentierralo, Desentierralo\nEl Talento Que Cristo Te Dio\nMultiplicalo, Multiplicalo\nMultiplica, Hermano Tu Talento\nMultiplicalo, Multiplicalo\nEl Talento Que Cristo Te Dio\nSantificalo, Santificalo\nSantifica, Hermano Tu Talento\nSantificalo, Santificalo\nEl Talento Que Cristo Te Dio"
   },
   {
-    "titulo": "PORQUE PARA SIEMPRE DIOS",
-    "letra": "// Porque Para Siempre Dios\nTu Misericordia Es //\nMejor Que La Vida Es\nMi Alma Lo Sabe Bien\nPorque Para Siempre Dios\nTu Misericordia Es\nMas Basta Que El Ancho Mar\nMas Alta Que El Cielo Esta\nPorque Para Siempre Dios\nTu Misericordia Es"
+    "titulo": "Mira Que Lindo //// Mira Que Lindo,",
+    "letra": "Que Lindo Es El Señor ////\n// Nada Iguala Su Belleza\nNada Iguala Su Amor\nPues Todo Lo Que Hace\nLo Hace Con Amor //"
   },
   {
-    "titulo": "DE GLORIA EN GLORIA",
-    "letra": "Gloria En Gloria Te Veo\nCuanto Mas Te Conozco\nQuiero Saber Mas Ti\nMi Dios, Cual Buen Alfarero\nQuebrantame, Transformame\nMoldeame Tu Imagen Señor\n// Quiero Ser Mas Como Tu\nVer La Vida, Como Tu\nSaturarme Tu Espíritu\nY Reflejar Al Mundo Tu Amor //"
+    "titulo": "En El Principio //En El Principio El Espíritu De Dios",
+    "letra": "Se Movía Sobre Las Aguas //\n// Pero Ahora Se Esta Moviendo\nDentro De Mi Corazón //"
   },
   {
-    "titulo": "TU AMOR POR MI",
-    "letra": "// Tu Amor Por Mi\nEs Mas Dulce Que La Miel\nY Tu Misericordia Es\nNueva Cada í //\n// Es Por Eso Que Te Alabo\nEs Por Eso Que Te Sirvo\nEs Por Eso Que Te Doy\nTodo Mi Amor //"
+    "titulo": "Jerusalén // Jerusalén, Que Bonita Eres",
+    "letra": "Calles De Oro, Mar De Cristal //\n// Por Esas Calles Yo Voy A Caminar\nCalles De Oro, Mar De Cristal //"
   },
   {
-    "titulo": "MAJESTUOSO, PODEROSO",
-    "letra": "Majestuoso, Poderoso\nDigno Loor\nProclamemos Su Grandeza, Hoy\n// Jesucristo Es Rey\nJesucristo Es Rey\nPostrados Hoy Ante Sus Pies\nJesucristo Es Rey //"
+    "titulo": "Donde Esta Tu Dios //// Donde, Donde Esta Tu Dios ////",
+    "letra": "// Mi Dios Esta En Los Cielos\nTambién En Mi Corazón\nEl Tuyo Esta Muerto\nEl Mio Resucitó //"
   },
   {
-    "titulo": "QUIERO LLENAR",
-    "letra": "//Quiero Llenar\nTu Trono Alabanza\nQuiero Llenar\nTu Trono Adoración\nQuiero Adorar\nPostrado En Tu Presencia\nY Proclamarte Señor //"
+    "titulo": "La Vid Verdadera Yo Soy La Vid Verdadera",
+    "letra": "Mi Padre Es El Labrador\n// Y Todo Pámpano\nQue En Mi No Tenga Fruto\nSera Cortado Y Echado Al Fuego //\n//// Mira Que Lindo . . . ."
   },
   {
-    "titulo": "A CRISTO, SOLO A CRISTO",
-    "letra": "Cristo, Solo Cristo, Yo Exaltare\nCristo, Solo Cristo, Yo Adorare\nPorque El Me Ha Dado Vida Eterna\nPorque El Me Ha Dado El Poder\nPorque El Me Ha Dado La Victoria\nEl Es Mi Rey\n// Cristo He Proclamado Rey //"
+    "titulo": "Jehová Esta En Medio De Ti Jehová Esta En Medio De Ti, Poderoso",
+    "letra": "El Salvara, Se Gozara Sobre Ti\nCon Alegría.\nCallara De Amor\nSe Gozara Sobre Ti Con Cánticos.\nJehová Esta En Medio De Ti, Poderoso\nPoderosisimo........Poderosisimo........\nPoderosisimo."
   },
   {
-    "titulo": "RENUEVAME",
-    "letra": "Renuevame, Señor Jesus\nYa No Quiero Ser Igual\nRenuevame, Señor Jesus\nPon En Mi Tu Corazón\n// Porque Todo Lo Que Hay\nDentro Mi\nNecesita Ser Cambiado Señor\nPorque Todo Lo Que Hay\nDentro Mi Corazón\nNecesita Mas Ti //"
+    "titulo": "Ayer Prometí Ser De Cristo // Ayer Prometí Ser De Cristo",
+    "letra": "Y Hoy Lo Prometo También\nY Mañana Yo Soy De Cristo\nDe Cristo Soy Y Mio Es El //"
   },
   {
-    "titulo": "CUAN BELLO ES EL SEÑOR",
-    "letra": "// Cuan Bello Es El Señor\nCuan Hermoso Es El Señor\nCuan Bello Es El Señor\nHoy Le Quiero Adorar //\n// La Belleza Mi Señor\nNunca Se Agotara\nLa Hermosura Mi Señor\nSiempre Resplandecerá //"
+    "titulo": "Nuestro Rey Pronto Vendrá // Nuestro Rey Pronto Vendrá",
+    "letra": "El Así Lo Prometió //\nNos Llevara, Nos Llevara\nDonde No Habrá Mal Ni Aflicción\nNos Llevara, Nos Llevara\nPara Vivir En Su Mansión."
   },
   {
-    "titulo": "HAY UNA FUENTE EN MI",
-    "letra": "// Hay Una Fuente En Mi\nQue Esta Brotando\nQue Esta Fluyendo\nDentro Mi //\n// Es Un Río Alabanza\nY Adoración\nDirigido Hacia Ti\nSeñor Jesus, Recibelo //"
+    "titulo": "Santo, Santo, Santo Santo, Santo, Santo",
+    "letra": "Dicen Los Serafines\nSanto, Santo, Santo\nEs El Señor Jehová\nSanto, Santo, Santo\nAl Dios Que Nos Redime\n// Por Ser Tres Veces Santo\nLa Tierra Llena De Su Gloria Esta //\n//El Cielo Y La Tierra Pasaran\nMas Su Palabra No Pasara //\nNo, No, No Pasara\nNo, No, No Pasara"
   },
   {
-    "titulo": "QUIERO LEVANTAR MIS MANOS",
-    "letra": "Quiero Levantar Mis Manos\nQuiero Levantar Mi Voz\nOfreciendo Ti Mi Vida\nEn Santidad Y Amor\nPadre Solo Ti Te Ofrezco\nMi Vida Y Mi Corazón\nY Me Postro En Tu Presencia\nEn Adoración\n// Hijo Dios, Recibe Hoy\nToda La Gloria, La Honra Y Honor //"
+    "titulo": "Salmo 45 Dios Es Nuestro Amparo",
+    "letra": "Y Nuestra Fortaleza\nNuestro Pronto Auxilio\nEn La Tribulación\nAunque Se Traspasen\nLos Montes A La Mar\n// Aunque La Tierra Tiemble\nDebemos De Cantar //\n// El Cielo Y La Tierra Pasaran. . . ."
   },
   {
-    "titulo": "TE NECESITO A TI",
-    "letra": "Te Necesito Ti\nComo Agua En El Desierto\nMi Unico Deseo Es Conocerte Mas\nRecibe Mi Alabanza\nTe Amo Mi Jesus\nPorque Tan Solo Tu\nHas Muerto Por Mi\nSolo Tu Llevaste Mi Enfermedad\nEl Castigo Mis Paz Fue Sobre Ti\nY Por Tus Heridas\nSoy Sanado Aleluya\n// Señor, Te Amo Ti //"
+    "titulo": "Si Tuvieras Fe // Si Tuvieras Fe",
+    "letra": "Como Un Grano De Mostaza,\nEso Lo Dice El Señor //\n// Tu Le Dirías, A Esa Montaña\nMuevete, Muevete //\n// Y Esa Montaña Se Moverá\nSe Moverá, Se Moverá //\n// Jesus Te Ayudara,\nY La Montaña Se Moverá //"
   },
   {
-    "titulo": "SEÑOR, SEÑOR JESUS",
-    "letra": "// Señor, Señor Jesus\nYo Se Que Tu Eres Grande\nYo Se Que Tu Eres Fuerte\nSeñor, Señor Jesus //\n// Gloria Ti Yo Daré, Gloria\nLo Haré Eternamente\nTe Daré Por Siempre Gloria\nSeñor, Señor Jesus //"
+    "titulo": "Porque Para Siempre Dios // Porque Para Siempre Dios",
+    "letra": "Tu Misericordia Es //\nMejor Que La Vida Es\nMi Alma Lo Sabe Bien\nPorque Para Siempre Dios\nTu Misericordia Es\nMas Basta Que El Ancho Mar\nMas Alta Que El Cielo Esta\nPorque Para Siempre Dios\nTu Misericordia Es"
   },
   {
-    "titulo": "LLENAME SEÑOR",
-    "letra": "Como El Ciervo Busca Por Las Aguas\nAsí Clama Mi Alma Por Ti Señor\ní Y Noche Yo Tengo Sed Ti\nY Solo Ti Buscare\n// Llename, Llename Señor\nDame Mas, Mas Tu Amor\nYo Tengo Sed Solo Ti\nLlename Señor //"
+    "titulo": "De Gloria En Gloria De Gloria En Gloria Te Veo",
+    "letra": "Cuanto Mas Te Conozco\nQuiero Saber Mas De Ti\nMi Dios, Cual Buen Alfarero\nQuebrantame, Transformame\nMoldeame A Tu Imagen Señor\n// Quiero Ser Mas Como Tu\nVer La Vida, Como Tu\nSaturarme De Tu Espíritu\nY Reflejar Al Mundo Tu Amor //"
   },
   {
-    "titulo": "SEÑOR LLEVAME A TUS ATRIOS",
-    "letra": "Señor Llevame Tus Atrios\nAl Lugar Santo\nAl Altar Bronce\nSeñor Tu Rostro Quiero Ver\nPasame La Muchedumbre\nPor Donde El Sacerdote Canta\nTengo Hambre Y Sed Justicia\nY Solo Encuentro Un Lugar\nLlevame Al Lugar Santísimo\nPor La Sangre Del Cordero Redentor\nLlevame Al Lugar Santísimo\nTocame, Limpiame, Heme Aquí"
+    "titulo": "Tu Amor Por Mi // Tu Amor Por Mi",
+    "letra": "Es Mas Dulce Que La Miel\nY Tu Misericordia Es\nNueva Cada Día //\n// Es Por Eso Que Te Alabo\nEs Por Eso Que Te Sirvo\nEs Por Eso Que Te Doy\nTodo Mi Amor //"
   },
   {
-    "titulo": "VENGO HOY A POSTRARME",
-    "letra": "Vengo Hoy Postrarme\nTus Pies Mi Cristo\nSolo En Ti, Hay Plenitud Amor\nNo Hay Nada, No Hay Nadie\nComparable Ti\nMe Deleito Adorandote, Señor"
+    "titulo": "Majestuoso, Poderoso Majestuoso, Poderoso",
+    "letra": "Digno De Loor\nProclamemos Su Grandeza, Hoy\n// Jesucristo Es Rey\nJesucristo Es Rey\nPostrados Hoy Ante Sus Pies\nJesucristo Es Rey //"
   },
   {
-    "titulo": "TU NOMBRE OH DIOS",
-    "letra": "Tu Nombre Oh Dios\nEs Puro Y Santo\nTu Nombre Oh Dios\nEs Mas Precioso Que El Oro\n/// Bendito Sea Tu Nombre ///\nMi Señor Y Mi Dios"
+    "titulo": "Tu Fidelidad // Tu Fidelidad Es Grande",
+    "letra": "Tu Fidelidad, Incomparable Es\nNadie Como Tu, Bendito Dios\nGrande Es Tu Fidelidad //"
   },
   {
-    "titulo": "EN LA PRESENCIA DEL SEÑOR",
-    "letra": "Entra En La Presencia\nDel Señor Con Gratitud\nY Adorale Corazón\nEntra En La Presencia\nDel Señor Con Gratitud\nY Alza Tu Voz Con Jubilo\n// Gloria Y Honra\nY Alabanzas Al Señor\nOh Cristo, Nombre Sin Igual //"
+    "titulo": "Quiero Llenar //Quiero Llenar",
+    "letra": "Tu Trono De Alabanza\nQuiero Llenar\nTu Trono De Adoración\nQuiero Adorar\nPostrado En Tu Presencia\nY Proclamarte Señor //"
   },
   {
-    "titulo": "SALMO 42",
-    "letra": "Como El Ciervo Brama Por Las Aguas\nAsí Clamo Por Ti Señor\nMi Alma Tiene Sed Del Dios Vivo\nDel Dios Mi Salvación\nSolo Tu Eres Mi Roca\nMi Escudo Y Mi Salvación\nSolo Tu Eres Mi Deseo\nY Quiero Adorarte Mi Señor"
+    "titulo": "A Cristo, Solo A Cristo A Cristo, Solo A Cristo, Yo Exaltare",
+    "letra": "A Cristo, Solo A Cristo, Yo Adorare\nPorque El Me Ha Dado Vida Eterna\nPorque El Me Ha Dado El Poder\nPorque El Me Ha Dado La Victoria\nEl Es Mi Rey\n// A Cristo He Proclamado Rey //"
   },
   {
-    "titulo": "YO QUIERO SER MAS COMO TU",
-    "letra": "// Yo Quiero Ser Mas Como Tu, Señor\nYo Quiero Ser Mas Como Tu, Señor\nYo Quiero Ser Alguien\nQuien Tu Puedas Usar\nYo Quiero Ser Mas Como Tu //"
+    "titulo": "Renuevame Renuevame, Señor Jesus",
+    "letra": "Ya No Quiero Ser Igual\nRenuevame, Señor Jesus\nPon En Mi Tu Corazón\n// Porque Todo Lo Que Hay\nDentro De Mi\nNecesita Ser Cambiado Señor\nPorque Todo Lo Que Hay\nDentro De Mi Corazón\nNecesita Mas De Ti //"
   },
   {
-    "titulo": "AMEMONOS DE CORAZÓN",
-    "letra": "// Amemonos Corazón\nNo Labios Solamente //\n// Para Cuando Cristo Venga\nPara Cuando Cristo Venga\nNos Encuentre Bien Unidos\n// Como Puedes Tu Orar\nEnojado Con Tu Hermano //\n// Dios No Escucha La Oración\nDios No Escucha La Oración\nSi No Estas Reconciliado //\n// Cuantas Veces Debo Yo\nPerdonar Mi Hermano //\n// Setenta Veces Siete\nSetenta Veces Siete\nPerdonaras Tu Hermano //"
+    "titulo": "Cuan Bello Es El Señor // Cuan Bello Es El Señor",
+    "letra": "Cuan Hermoso Es El Señor\nCuan Bello Es El Señor\nHoy Le Quiero Adorar //\n// La Belleza De Mi Señor\nNunca Se Agotara\nLa Hermosura De Mi Señor\nSiempre Resplandecerá //"
   },
   {
-    "titulo": "TE VENGO A DECIR",
-    "letra": "Te Vengo Decir , Te Vengo Decir\nOh, Mi Salvador\nQue Yo Te Amo Ti, Que Yo Te Amo Ti\nCon El Corazón\nTe Vengo Decir, Te Vengo Decir\nToda La Verdad\n// Que Te Amo Señor, Te Quiero Señor\nCon El Corazón //\nYo Quiero Cantar, Yo Quiero Cantar\nGozo Y Paz\nYo Quiero Reír, Yo Quiero Reír\nFelicidad\nTe Vengo Decir, Te Vengo Decir\nToda La Verdad\n// Que Te Amo Señor, Te Quiero Señor\nCon El Corazón //"
+    "titulo": "Hay Una Fuente En Mi // Hay Una Fuente En Mi",
+    "letra": "Que Esta Brotando\nQue Esta Fluyendo\nDentro De Mi //\n// Es Un Río De Alabanza\nY De Adoración\nDirigido Hacia Ti\nSeñor Jesus, Recibelo //"
   },
   {
-    "titulo": "TOMA POR FAVOR",
-    "letra": "Toma Por Favor Mi Mano Señor\nContigo Quiero Ir\nCon Sangre Aquí Pagaste Por Mi\nTe Quiero Hoy Seguir\nAnhelo Poder Lo Malo Vencer\nY En Santidad Vivir\nToma Por Favor Mi Mano Señor\nContigo Quiero Ir"
+    "titulo": "Quiero Levantar Mis Manos Quiero Levantar Mis Manos",
+    "letra": "Quiero Levantar Mi Voz\nOfreciendo A Ti Mi Vida\nEn Santidad Y Amor\nPadre Solo A Ti Te Ofrezco\nMi Vida Y Mi Corazón\nY Me Postro En Tu Presencia\nEn Adoración\n// Hijo De Dios, Recibe Hoy\nToda La Gloria, La Honra Y Honor //"
   },
   {
-    "titulo": "BELLAS PALABRAS DE VIDA",
-    "letra": "Bellas Palabras Vida\nSon Las Cristo Jesus\nEllas Alientan Mi Alma\nDan Fortaleza Y Luz\nBellas Palabras Vida\nDan Salvación Y Poder\n// Bellas Palabras\nQue Cambian La Vida\nLlenan Gozo Mi Ser //"
+    "titulo": "Te Necesito A Ti Te Necesito A Ti",
+    "letra": "Como Agua En El Desierto\nMi Unico Deseo Es Conocerte Mas\nRecibe Mi Alabanza\nTe Amo Mi Jesus\nPorque Tan Solo Tu\nHas Muerto Por Mi\nSolo Tu Llevaste Mi Enfermedad\nEl Castigo De Mis Paz Fue Sobre Ti\nY Por Tus Heridas\nSoy Sanado Aleluya\n// Señor, Te Amo A Ti //"
   },
   {
-    "titulo": "SOMOS DEL SEÑOR",
-    "letra": "Pues Si Vivimos, Para El Vivimos\nO Si Morimos, Para El Morimos\n// Sea Que Vivamos O Que Muramos\nSomos Del Señor, Somos Del Señor //"
+    "titulo": "Señor, Señor Jesus // Señor, Señor Jesus",
+    "letra": "Yo Se Que Tu Eres Grande\nYo Se Que Tu Eres Fuerte\nSeñor, Señor Jesus //\n// Gloria A Ti Yo Daré, Gloria\nLo Haré Eternamente\nTe Daré Por Siempre Gloria\nSeñor, Señor Jesus //"
   },
   {
-    "titulo": "YO SE QUE CRISTO VIENE",
-    "letra": "// Yo Se Que Cristo Viene\nY Espero Su Venida //\n// Si Tu Estas Preparado\nCon El Te Iras Arriba //\nVamos Arriba, Arriba\nArriba Y No Abajo\nVamos Subiendo, Subiendo\nSubiendo Y No Bajando\nVamos Cantando, Cantando\nCantando Y No Llorando"
+    "titulo": "Llename Señor Como El Ciervo Busca Por Las Aguas",
+    "letra": "Así Clama Mi Alma Por Ti Señor\nDía Y Noche Yo Tengo Sed De Ti\nY Solo A Ti Buscare\n// Llename, Llename Señor\nDame Mas, Mas De Tu Amor\nYo Tengo Sed Solo De Ti\nLlename Señor //"
   },
   {
-    "titulo": "CELEBRAD A CRISTO",
-    "letra": "//// Celebrad Cristo Celebrad ////\nCristo Vive, Cristo Vive\nY El Reina Por La Eternidad\nCristo Vive, Cristo Vive\n/// Vamos Celebrar ///\nJesucristo Resucito"
+    "titulo": "Heme Aquí // Heme Aquí, Yo Iré Señor //",
+    "letra": "Enviame A Mi, Que Dispuesto Estoy\nLlevare Tu Gloria A Las Naciones"
   },
   {
-    "titulo": "SOMOS PUEBLO",
-    "letra": "// Somos Pueblo, Pueblo Adquirido Por Dios\nNación Santa, Real Sacerdocio\nLinaje Escogido Por Dios //\nPara Anunciar Las Virtudes Aquel\nQue Nos Llamo Tinieblas Luz\nPara Anunciar Las Virtudes Aquel\nQue Nos Llamo Tinieblas Luz\nAdmirable! - Somos Los Hijos Luz\n70a. Hoy Es Tiempo\nTiempo Vivir, Tiempo Morir,\nTiempo Llorar, Tiempo Reír\nTiempo Animar, Y Redargüír,\nHoy Es Tiempo. . .\nTiempo Aprender, Tiempo Enseñar\nTiempo Hablar, Tiempo Callar\nTiempo Sembrar y Cosechar,\nHoy Es Tiempo. . .\nHoy Es Tiempo, Que Seamos\nEse Pueblo Glorioso\nFiel Y Victorioso Dios"
+    "titulo": "Señor Llevame A Tus Atrios Señor Llevame A Tus Atrios",
+    "letra": "Al Lugar Santo\nAl Altar De Bronce\nSeñor Tu Rostro Quiero Ver\nPasame La Muchedumbre\nPor Donde El Sacerdote Canta\nTengo Hambre Y Sed De Justicia\nY Solo Encuentro Un Lugar\nLlevame Al Lugar Santísimo\nPor La Sangre Del Cordero Redentor\nLlevame Al Lugar Santísimo\nTocame, Limpiame, Heme Aquí"
   },
   {
-    "titulo": "EL SEÑOR MARCHANDO VA",
-    "letra": "El Señor Marchando Va\nY Su Pueblo Junto El Esta\nSu Gloria En Nuestras Vidas Brillara\nSu Victoria Nos Ha Dado Ya\nY Su Brazo Nos Fortalecerá\nLuchare Hasta La Tierra Conquistar\n// En Mi Vida El Capitán Es Cristo\nAndaremos Ante Su Presencia\nNo Hay Arma Que Nos Pueda Derrotar //"
+    "titulo": "Vengo Hoy A Postrarme Vengo Hoy A Postrarme",
+    "letra": "A Tus Pies Mi Cristo\nSolo En Ti, Hay Plenitud De Amor\nNo Hay Nada, No Hay Nadie\nComparable A Ti\nMe Deleito Adorandote, Señor"
   },
   {
-    "titulo": "GRANDE ES EL SEÑOR",
-    "letra": "// Grande Es El Señor Creador Del Universo\nCanta Y Danza Al Rey Que Viene Pronto\nFelicidad El Corazón Nos Llena\nGrande Es El Señor //\n/// Oh, Oh, Oh, Hosanna Al Altísimo ///\nGrande Es El Señor"
+    "titulo": "Tu Nombre Oh Dios Tu Nombre Oh Dios",
+    "letra": "Es Puro Y Santo\nTu Nombre Oh Dios\nEs Mas Precioso Que El Oro\n/// Bendito Sea Tu Nombre ///\nMi Señor Y Mi Dios"
   },
   {
-    "titulo": "YO LE ALABO DE CORAZÓN",
-    "letra": "// Yo Le Alabo Corazón\nYo Le Alabo Con Mi Voz //\nY Si Me Falta La Voz\nYo Le Alabo Con Mis Manos\nY Si Me Faltan Las Manos\nYo Le Alabo Con Mis Pies\nY Si Me Faltan Los Pies\nYo Le Alabo Con El Alma\nY Si Me Falta El Alma\nEs Que Ya Me Fui Con El"
+    "titulo": "En La Presencia Del Señor Entra En La Presencia",
+    "letra": "Del Señor Con Gratitud\nY Adorale De Corazón\nEntra En La Presencia\nDel Señor Con Gratitud\nY Alza Tu Voz Con Jubilo\n// Da Gloria Y Honra\nY Alabanzas Al Señor\nOh Cristo, Nombre Sin Igual //"
   },
   {
-    "titulo": "ALLÁ EN EL MONTE HOREB",
-    "letra": "// Allá En El Monte Horeb\nLa Zarza Ardí //\nMoíses Querí Saber\nPorque La Zarza Ardí\nY No Se Consumí Querí Saber\n// Oyó Una Voz\nDel Cielo Que Le Decí//\n// Quita, Quita, Quita\nLas Sandalias Tus Pies\nPorque El Lugar Que Pisas\nSanto Es //"
+    "titulo": "Salmo 42 Como El Ciervo Brama Por Las Aguas",
+    "letra": "Así Clamo Por Ti Señor\nMi Alma Tiene Sed Del Dios Vivo\nDel Dios De Mi Salvación\nSolo Tu Eres Mi Roca\nMi Escudo Y Mi Salvación\nSolo Tu Eres Mi Deseo\nY Quiero Adorarte Mi Señor"
   },
   {
-    "titulo": "YO TENGO GOZO EN MI ALMA",
-    "letra": "Yo Tengo Gozo En Mi Alma\nGozo En Mi Alma\nGozo En Mi Alma Y En Mi Ser\nSon Como Ríos Agua Viva\nRíos Agua Viva\nRíos Agua Viva En Mi Ser"
+    "titulo": "Yo Quiero Ser Mas Como Tu // Yo Quiero Ser Mas Como Tu, Señor",
+    "letra": "Yo Quiero Ser Mas Como Tu, Señor\nYo Quiero Ser Alguien\nQuien Tu Puedas Usar\nYo Quiero Ser Mas Como Tu //"
   },
   {
-    "titulo": "EL HOMBRE DE GALILEA",
-    "letra": "El Hombre Que Anduvo En Galilea\nSe Llamaba Jesus Nazaret\nAhora Esta Conmigo\nEn Pruebas Y En Luchas\nY Aumenta Cada í Mas Y Mas Mi"
+    "titulo": "Amemonos De Corazón // Amemonos De Corazón",
+    "letra": "No De Labios Solamente //\n// Para Cuando Cristo Venga\nPara Cuando Cristo Venga\nNos Encuentre Bien Unidos\n// Como Puedes Tu Orar\nEnojado Con Tu Hermano //\n// Dios No Escucha La Oración\nDios No Escucha La Oración\nSi No Estas Reconciliado //\n// Cuantas Veces Debo Yo\nPerdonar A Mi Hermano //\n//  Setenta Veces Siete\nSetenta Veces Siete\nPerdonaras A Tu Hermano //"
   },
   {
-    "titulo": "ESTE ES EL CRISTO",
-    "letra": "Este Es El Cristo Que Yo Predico\nY No Me Canso Predicar\nEl Sana Los Enfermos\nReprende Los Demonios\nY Calma La Tempestad\n// Y Yo Le Alabare, Y Yo Le Alabare\nY Yo Le Alabare,\nCantando Gloria Dios //"
+    "titulo": "Te Vengo A Decir Te Vengo A Decir , Te Vengo A Decir",
+    "letra": "Oh, Mi Salvador\nQue Yo Te Amo A Ti, Que Yo Te Amo A Ti\nCon El Corazón\nTe Vengo A Decir, Te Vengo A Decir\nToda La Verdad\n// Que Te Amo Señor, Te Quiero Señor\nCon El Corazón //\nYo Quiero Cantar, Yo Quiero Cantar\nDe Gozo Y De Paz\nYo Quiero Reír, Yo Quiero Reír\nDe Felicidad\nTe Vengo A Decir, Te Vengo A Decir\nToda La Verdad\n// Que Te Amo Señor, Te Quiero Señor\nCon El Corazón //"
   },
   {
-    "titulo": "ALLÁ EN EL CIELO",
-    "letra": "/// Allá En El Cielo ///\nNo Habrá Mas Llanto\nNi Mas Tristeza, Ni Mas Dolor\nY Cuando Estemos Los Redimidos\nAllá En El Cielo\nAlabaremos Al Señor"
+    "titulo": "Toma Por Favor Toma Por Favor Mi Mano Señor",
+    "letra": "Contigo Quiero Ir\nCon Sangre Aquí Pagaste Por Mi\nTe Quiero Hoy Seguir\nAnhelo Poder Lo Malo Vencer\nY En Santidad Vivir\nToma Por Favor Mi Mano Señor\nContigo Quiero Ir"
   },
   {
-    "titulo": "MAS ALLÁ LE VEREMOS",
-    "letra": "/// Mas Allá Veremos Al Señor ///\nEn Aquella Santa Sion\nMas Allá Le Veremos\nMas Allá Cantaremos\nY Con Cristo Reinaremos Mas Allá\nY Andaremos Por Siempre\nAlabando Cristo\nAlabando Cristo El Señor"
+    "titulo": "Bellas Palabras De Vida Bellas Palabras De Vida",
+    "letra": "Son Las De Cristo Jesus\nEllas Alientan Mi Alma\nDan Fortaleza Y Luz\nBellas Palabras De Vida\nDan Salvación Y Poder\n// Bellas Palabras\nQue Cambian La Vida\nLlenan De Gozo Mi Ser //"
   },
   {
-    "titulo": "ESTA AQUÍ",
-    "letra": "// Esta Aquí, Esta Aquí\nAleluya Mi Señor Esta Aquí //\nAhora Vivo Una Vida Diferente\nDiferente Al Mundo En Que Nací\nYa No Hay Lloro, Tristeza\nNi Quebranto\nAleluya Mi Señor Esta Aquí"
+    "titulo": "Somos Del Señor Pues Si Vivimos, Para El Vivimos",
+    "letra": "O Si Morimos, Para El Morimos\n// Sea Que Vivamos O Que Muramos\nSomos Del Señor, Somos Del Señor //"
   },
   {
-    "titulo": "BENDECIDO",
-    "letra": "// Si Alguien Te Pregunta Por Ahí\n¿ Como Estas, Como Estas ? //\n// Bendecido, Muy Bendecido\nBendecido Porque\nCristo Me Salvo //"
+    "titulo": "Jehová Tu Eres Mi Dios /// Jehová Tu Eres Mi Dios",
+    "letra": "Ensalzare Y Alabare Tu Nombre ///\nPorque Has Hecho Maravillas\nEnsalzare Y Alabare Tu Nombre"
   },
   {
-    "titulo": "SERA LLENA LA TIERRA",
-    "letra": "Alza Tus Ojos Y Mira\nLa Cosecha Esta Lista\nEl Tiempo Ha Llegado\nLa Mies Esta Madura\nEsfuerzate, Se Valiente\nLevantate Y Predica\nTodas Las Naciones\nQue Cristo Es La Vida\n// Y Sera\nLlena La Tierra Su Gloria\nSe Cubrirá,\nComo Las Aguas Cubren La Mar //\nNo, No Hay Otro Nombre\nDado Los Hombres\nJesucristo Es El Señor\n// Y Sera Llena . . ."
+    "titulo": "Yo Se Que Cristo Viene // Yo Se Que Cristo Viene",
+    "letra": "Y Espero Su Venida //\n// Si Tu Estas Preparado\nCon El Te Iras Arriba //\nVamos Arriba, Arriba\nArriba Y No Abajo\nVamos Subiendo, Subiendo\nSubiendo Y No Bajando\nVamos Cantando, Cantando\nCantando Y No Llorando"
   },
   {
-    "titulo": "SI EMPEZAMOS A CANTAR",
-    "letra": "Si Empezamos Cantar\nLa Tierra Tiembla\nSi Empezamos Orar\nQue El Fuego Descienda\nElias Oro, Fuego Descendió\nOro Josué, Oro Josué\nY El Sol Se Paro"
+    "titulo": "Jehová Esta En Su Templo // Jehová Esta En Su Templo",
+    "letra": "Alabare Al Que Vive //\n// Alabare, Alabare\nAlabare Al Que Vive //\n-Quien Es El Que Vive-\nCristo Es El Que Vive\n-Quien Es El Que Salva-\nCristo Es El Que Salva\n-Quien Es El Que Viene\nCristo Es El Que Viene\n-Quien Es El Que Sana-\nCristo Es El Que Sana\n-Quien Es El Que Vive-\nCristo Es El Que Vive\n// El Vive, Vive Y A Su Nombre Gloria //\n// Jehová Esta En Su Templo . . . . . ."
   },
   {
-    "titulo": "VENCERÉ",
-    "letra": "Venceré, Porque El Esta Conmigo\nVenceré, Porque El Conmigo Esta\nVenceré, Venceré\nVencerás, Vencerás\nVenceremos\nEn El Nombre Del Señor"
+    "titulo": "Celebrad A Cristo //// Celebrad A Cristo Celebrad ////",
+    "letra": "Cristo Vive, Cristo Vive\nY El Reina Por La Eternidad\nCristo Vive, Cristo Vive\n/// Vamos A Celebrar ///\nJesucristo Resucito"
   },
   {
-    "titulo": "SANTO ESPÍRITU LLENA MI VIDA",
-    "letra": "Santo Espíritu Llena Mi Vida\nPues Por Cristo Yo Quiero Brillar\nSanto Espíritu Llena Mi Vida\nUsame Las Almas Salvar\nAlabanzas, Alabanzas\nAlabanzas Doy Cristo El Rey\nAlabanzas, Alabanzas\nAlabanzas Doy Al Rey"
+    "titulo": "Somos Pueblo // Somos Pueblo, Pueblo Adquirido Por Dios",
+    "letra": "Nación Santa, Real Sacerdocio\nLinaje Escogido Por Dios //\nPara Anunciar Las Virtudes De Aquel\nQue Nos Llamo De Tinieblas A Luz\nPara Anunciar Las Virtudes De Aquel\nQue Nos Llamo De Tinieblas A Luz\nAdmirable!  - Somos Los Hijos De Luz\n70a. Hoy Es Tiempo\nTiempo De Vivir, Tiempo De Morir,\nTiempo De Llorar, Tiempo De Reír\nTiempo De Animar, Y Redargüír,\nHoy Es Tiempo. . .\nTiempo De Aprender, Tiempo De Enseñar\nTiempo De Hablar, Tiempo De Callar\nTiempo de Sembrar y De Cosechar,\nHoy Es Tiempo. . .\nHoy Es Tiempo, Que Seamos\nEse Pueblo Glorioso\nFiel Y Victorioso De Dios"
   },
   {
-    "titulo": "SOLAMENTE EN CRISTO",
-    "letra": "Solamente En Cristo\nSolamente En El\nLa Salvación, Se Encuentra En El\nNo Hay Otro Nombre\nDado Los Hombres\nSolamente En Cristo\nSolamente En El"
+    "titulo": "El Señor Marchando Va El Señor Marchando Va",
+    "letra": "Y Su Pueblo Junto A El Esta\nSu Gloria En Nuestras Vidas Brillara\nSu Victoria Nos Ha Dado Ya\nY Su Brazo Nos Fortalecerá\nLuchare Hasta La Tierra Conquistar\n// En Mi Vida El Capitán Es Cristo\nAndaremos Ante Su Presencia\nNo Hay Arma Que Nos Pueda Derrotar //"
   },
   {
-    "titulo": "HAY UN PUEBLO",
-    "letra": "// Hay Un Pueblo Que Vive Muy Feliz\nY Ese Pueblo\nEs El Pueblo Dios //\n// Y Ese Pueblo Vive Así\nPorque Un í Conoció\nJesus El Salvador //"
+    "titulo": "Grande Es El Señor // Grande Es El Señor Creador Del Universo",
+    "letra": "Canta Y Danza  Al Rey Que Viene Pronto\nDe Felicidad El Corazón Nos Llena\nGrande Es El Señor //\n/// Oh, Oh, Oh, Hosanna Al Altísimo ///\nGrande Es El Señor"
   },
   {
-    "titulo": "ESTOY LISTO SI EL ME LLAMA",
-    "letra": "/// Estoy Listo Si El Me Llama ///\nSu Viñ Trabajar\nY Ahí Estaré En La Viñ, Trabajando\nEn La Viñ Del Señor\nY Ahí Estaré En La Viñ, Trabajando\nEn La Viñ Del Señor"
+    "titulo": "Los Que Esperan En Jehová Los Que Esperan En Jehová",
+    "letra": "Nuevas Fuerzas Tendrán\nVolaran Con Poder Como El Aguila\nCorrerán, Si Desmayarse\nVolaran, Sin Fatigarse\nOh Señor, Enseñame En Ti Esperar"
   },
   {
-    "titulo": "COMO JEREMÍAS ORABA Y ORABA",
-    "letra": "// Como Jeremías Oraba Y Oraba\nAsí Quiero Yo, Orar Y Orar //\n// Y Dios Le Contestaba\nLa Petición Que Hacia\nAsí Quiero Yo\nQue Contestes La Mia //"
+    "titulo": "Yo Le Alabo De Corazón // Yo Le Alabo De Corazón",
+    "letra": "Yo Le Alabo Con Mi Voz //\nY Si Me Falta La Voz\nYo Le Alabo Con Mis Manos\nY Si Me Faltan Las Manos\nYo Le Alabo Con Mis Pies\nY Si Me Faltan Los Pies\nYo Le Alabo Con El Alma\nY Si Me Falta El Alma\nEs  Que Ya Me Fui Con El"
   },
   {
-    "titulo": "NO SABÉIS QUE SOMOS TEMPLO",
-    "letra": "/// No Sabéis, No Sabéis\nQue Somos Templo ///\nSomos El Templo Del Espíritu Dios\n/// Lleno Poder, Lleno Gloria\nY Alabanza ///\nSomos El Pueblo Del Espíritu Dios"
+    "titulo": "Allá En El Monte Horeb // Allá En El Monte Horeb",
+    "letra": "La Zarza Ardía //\nMoíses Quería Saber\nPorque La Zarza Ardía\nY No Se Consumía Quería Saber\n// Oyó Una Voz\nDel Cielo Que Le Decía//\n// Quita, Quita, Quita\nLas Sandalias De Tus Pies\nPorque El Lugar Que Pisas\nSanto Es //"
   },
   {
-    "titulo": "JESUS VIENE EN LAS NUBES",
-    "letra": "// Jesus Viene En Las Nubes\nSu Iglesia Levantar\nSi Tu No Te Preparas\nAquí Te Quedaras //\n// Mi Alma Volara, Mi Alma Volara\nAl Son La Trompeta\nMi Alma Volara //"
+    "titulo": "Yo Tengo Gozo En Mi Alma Yo Tengo Gozo En Mi Alma",
+    "letra": "Gozo En Mi Alma\nGozo En Mi Alma Y En Mi Ser\nSon Como Ríos De Agua Viva\nRíos De Agua Viva\nRíos De Agua Viva En Mi Ser"
   },
   {
-    "titulo": "CRISTO ROMPE LAS CADENAS",
-    "letra": "Como Es Posible\nYo Vivir Sin Ti Señor\nSi El Fundamento\nMi Vida Eres Tu\nTu Me Libraste Del Pecado\nY La Muerte\nComo Es Posible\nYo Vivir Sin Ti Señor\n/// Cristo Rompe Las Cadenas ///\nY Me Seguridad"
+    "titulo": "El Hombre De Galilea El Hombre Que Anduvo En Galilea",
+    "letra": "Se Llamaba Jesus De Nazaret\nAhora Esta Conmigo\nEn Pruebas Y En Luchas\nY Aumenta Cada Día Mas Y Mas Mi Fe"
   },
   {
-    "titulo": "HABLEMOS DE CRISTO",
-    "letra": "Hablemos Cristo\nEl Rey Reyes Es\nSeñor Señores\nPor La Eternidad\nEl Es El Camino\nLa Vida Y La Verdad\nHablemos Cristo Mas Y Mas"
+    "titulo": "Fe Mas Fe Fe Mas Fe, Amor Mas Amor",
+    "letra": "Y Si No Lo Tienes, Pidelo Al Señor\nPorque Amor Sin Fe, Fe Sin Amor\nEs Imposible Alabar A Dios"
   },
   {
-    "titulo": "QUE HERMOSAS SON LAS HORAS",
-    "letra": "// Que Hermosas Son Las Horas\nQue Pasa El Cristiano\nPostrado En La Tierra\nEn Ferviente Oración //\n// Pidiendo Ser Llenos\nDel Espíritu Santo\nY Ser Mensajeros\nTodo Poder //\n// La Gente Nos Dice\nQue Somos Aleluyas\nPero El Aleluya\nEs Dar Gloria Dios\n¡ Gloria Dios ! //\n// Mi Gozo Es Cumplido\nY Por Siempre Sera\nY Los Aleluyas\nNos Vamos Gozar //\n// Nos Vamos Gozar\nNos Vamos Gozar\nLas Bodas Del Cordero\nNos Vamos Gozar //\n// Y Luego Nos Iremos\nLa Patria Celestial\nMorar Con Jesucristo\nPor Toda La Eternidad //\n--Amen, --Amen"
+    "titulo": "Este Es El Cristo Este Es El Cristo Que Yo Predico",
+    "letra": "Y No Me Canso De Predicar\nEl Sana A Los Enfermos\nReprende A Los Demonios\nY Calma La Tempestad\n// Y Yo Le Alabare, Y Yo Le Alabare\nY Yo Le Alabare,\nCantando Gloria A Dios //"
   },
   {
-    "titulo": "DONDE ESTA EL ESPÍRITU",
-    "letra": "// Donde Esta El Espíritu Dios\nHay Libertad, Hay Libertad //\n//// Libertad ////\nDonde Esta El Espíritu Dios\nAhí Siempre Hay Libertad"
+    "titulo": "Allá En El Cielo /// Allá En El Cielo ///",
+    "letra": "No Habrá Mas Llanto\nNi Mas Tristeza, Ni Mas Dolor\nY Cuando Estemos Los Redimidos\nAllá En El Cielo\nAlabaremos Al Señor"
   },
   {
-    "titulo": "BANDERAS DE AMOR",
-    "letra": "Sobre Mi Corazón\nHay Banderas Amor\n// Banderas Amor //\nSobre Mi Corazón\nHay Banderas Amor\nPorque Cristo Ya Vive En Mi\nAlzalas Mas Arriba Que Todos Vean\nQue Todos Vean, Que Todos Vean\nAlzalas Mas Arriba Que Todos Vean\nQue Cristo Ya Vive En Mi"
+    "titulo": "Mas Allá Le Veremos /// Mas Allá Veremos Al Señor ///",
+    "letra": "En Aquella Santa Sion\nMas Allá Le Veremos\nMas Allá Cantaremos\nY Con Cristo Reinaremos Mas Allá\nY Andaremos Por Siempre\nAlabando A Cristo\nAlabando A Cristo El Señor"
   },
   {
-    "titulo": "QUE NO SE APAGUE EL FUEGO",
-    "letra": "// Que No Se Apague El Fuego\nQue Hay En Mi Corazón\nQue No Se Apague El Fuego\nQue Siga Ardiendo Mas Y Mas //\n// Siento Gozo Señor\nTengo Paz Y Amor\nPorque Voy Morar\nMas Allá Del Sol //"
+    "titulo": "Hay Vida En Jesus // Hay Vida, Hay Vida En Jesus //",
+    "letra": "Yo Voy A Morar, A La Patria Celestial\nPorque Hay Vida, Hay Vida En Jesus"
   },
   {
-    "titulo": "DAME LA MANO",
-    "letra": "No Me Importa La Iglesia Que Vayas\nSi Detrás Del Calvario Tu Estas\nSi Tu Corazón Es Como El Mio\nDame La Mano Y Mi Hermano Seras\n// Dame La Mano, Dame La Mano\nDame La Mano Y Mi Hermano Seras /"
+    "titulo": "Esta Aquí // Esta Aquí, Esta Aquí",
+    "letra": "Aleluya Mi Señor Esta Aquí //\nAhora Vivo Una Vida Diferente\nDiferente Al Mundo En Que Nací\nYa No Hay Lloro, Tristeza\nNi Quebranto\nAleluya Mi Señor Esta Aquí"
   },
   {
-    "titulo": "LA MAÑANA GLORIOSA",
-    "letra": "Cuan Gloriosa Sera La Mañana\nCuando Venga Jesus El Salvador\nLas Naciones Unidas Como Hermanas\nBienvenida Daremos Al Señor\nPero No Habrá Necesidad\nLa Luna El Resplandor\nNi El Sol Dará Su Luz\nNi Tampoco Su Calor\nAhí Llanto No Habrá\nNi Tristeza Ni Dolor\nPorque Entonces Jesus\nEl Rey Gloria\nPara Siempre Sera El Consolador\nEsperamos La Mañana Gloriosa\nPara Dar La Bienvenida\nAl Dios Amor\nDonde Todo Sera Color Rosa\nEn La Santa Fragancia Del Señor\nEl Cristiano Fiel Y Verdadero\nY También El Obrero Valor\nY La Iglesia, Esposa Del Cordero\nEstarán En Los Brazos Del Señor"
+    "titulo": "Bendecido // Si Alguien Te Pregunta Por Ahí",
+    "letra": "¿ Como Estas, Como Estas ? //\n// Bendecido, Muy Bendecido\nBendecido Porque\nCristo Me Salvo //"
   },
   {
-    "titulo": "CON LAS MANOS ALZADAS",
-    "letra": "Con Las Manos Alzadas\nY Mi Boca Cantando\nY Mi Corazón Lleno\nTe Alabo Señor\nTe Alabo Jesus, Mi Señor\nTe Alabo Jesus, Mi Salvador\nCon Mis Manos Alzadas\nTe Alabo Señor"
+    "titulo": "Sera Llena La Tierra Alza Tus Ojos Y Mira",
+    "letra": "La Cosecha Esta Lista\nEl Tiempo Ha Llegado\nLa Mies Esta Madura\nEsfuerzate, Se Valiente\nLevantate Y Predica\nA Todas Las Naciones\nQue Cristo Es La Vida\n// Y Sera\nLlena La Tierra De Su Gloria\nSe Cubrirá,\nComo Las Aguas Cubren La Mar //\nNo, No Hay Otro Nombre\nDado A Los Hombres\nJesucristo Es El Señor\n// Y Sera Llena . . ."
   },
   {
-    "titulo": "JUNTOS OTRA VEZ",
-    "letra": "Juntos Otra Vez\nAlabando Dios\nJuntos Otra Vez En Unidad\nAlgo Hermoso Va Pasar\nAlgo Digno Verdad\nJuntos Otra Vez, Alabando Dios"
+    "titulo": "Si Empezamos A Cantar Si Empezamos A Cantar",
+    "letra": "La Tierra Tiembla\nSi Empezamos A Orar\nQue El Fuego Descienda\nElias Oro, Fuego Descendió\nOro Josué, Oro Josué\nY El Sol Se Paro"
   },
   {
-    "titulo": "A QUE TU NO SABES",
-    "letra": "// Que Tu No Sabes\nLo Que En Damasco Paso\nLo Que Paso, Lo Que Paso //\n// Fue El Espíritu Santo\nFue El Espíritu Santo\nFue El Espíritu Santo\nQue Sobre Pablo Se Derramo //\n// Que Tu No Sabes\nLo Que En La Iglesia Paso, Etc. . .\n// Que Tu No Sabes\nLo Que En Mi Vida Paso, Etc . . ."
+    "titulo": "Venceré Venceré, Porque El Esta Conmigo",
+    "letra": "Venceré, Porque El Conmigo Esta\nVenceré, Venceré\nVencerás, Vencerás\nVenceremos\nEn El Nombre Del Señor"
   },
   {
-    "titulo": "EL SEÑOR ME LLENO DE GOZO",
-    "letra": "// El Señor Me Lleno Gozo\nPuso Paz En Mi Corazón //\n//Puso Paz En Mi Corazón //\nEl Señor Me Lleno Gozo\nPuso Paz En Mi Corazón\n(Coro)\n// Pero Que Felicidad\nPero Que Felicidad\nCantando Todos En Coro\nNuestro Padre Celestial //\n// Este Gozo Que Yo Siento En Mi Alma\nSolo Cristo Me Lo Pudo Dar //\n// Solo Cristo Me Lo Pudo Dar //\nEste Gozo Que Yo Siento En Mi Alma\nSolo Cristo Me Lo Pudo Dar (Coro)\n// Fiel Yo Quiero Ser Jesucristo\nEn Las Pruebas Y En La Tentación//\n// En Las Pruebas Y En La Tentación//\nFiel Yo Quiero Ser Jesucristo\nEn Las Pruebas Y En La Tentación(Coro"
+    "titulo": "Jesus Yo Te Amo // Jesus Yo Te Amo //",
+    "letra": "Jesus Yo Te Amo A Ti\nPorque Tu Me Has Salvado\nPorque Me Has Santificado\nJesus Yo Te Amo A Ti"
   },
   {
-    "titulo": "UNIDOS",
-    "letra": "// Unidos, Unidos\nEn Tu Nombre Unidos //\n// Pues En Este Mundo\nPaz Y Amor Tendremos //\nUnidos Siempre Unidos\nTomados La Mano\nIremos Por El Mundo\nCantando Al Amor\n// La Gloria Jesus\nAl Fin Resplandecerá\nY El Mundo Aceptara\nQue Tu Eres Dios //"
+    "titulo": "Yo Tengo Un Dios Muy Grande Yo Tengo Un Dios",
+    "letra": "Muy, Muy, Muy  Grande\nMaravilloso Es El\nSiempre Amoroso\nSiempre Victorioso\nMaravilloso Es El"
   },
   {
-    "titulo": "UNA LINDA CANCIÓN",
-    "letra": "Quiero Cantar Una Linda Canción\nUn Hombre Que Me Transformo\nQuiero Cantar Una Linda Canción\nAquel Que Mi Vida Cambio\nEs Mi Amigo Jesus\nEs Mi Amigo Mas Fiel\nEl Es Dios, El Es Rey\nEs Amor Y Verdad\nSolo En El, Encontré\nEsa Paz, Que Busce\nSolo En El, Encontré\nLa Felicidad\nEn Esta Vida Todo Es Vanidad\nEs El Fin Lo Que Pasara\nMas Si Tu Aceptas Cristo, Jesus\nVida Eterna Tu Alma Tendrá (Coro)\nEl Es Mi Salvador\nEs Mi Amigo Mas Fiel\nEl Es Dios, El Es Rey\nEs Amor Y Verdad\nSolo En El, Encontré\nEsa Paz, Que Busce\nSolo En El, Encontré\nLa Felicidad"
+    "titulo": "Santo Espíritu Llena Mi Vida Santo Espíritu Llena Mi Vida",
+    "letra": "Pues Por Cristo Yo Quiero Brillar\nSanto Espíritu Llena Mi Vida\nUsame Las Almas A Salvar\nAlabanzas, Alabanzas\nAlabanzas Doy A Cristo El Rey\nAlabanzas, Alabanzas\nAlabanzas Doy Al Rey"
   },
   {
-    "titulo": "CRISTO, OH CRISTO",
-    "letra": "Oh, Deja Que El Señor Te Abrace\nEn Su Espíritu Amor\nOh, Deja Que El Te Satisfaga\nCon Poder\nEntregale Lo Que Te Ata\nY El Espíritu Dios\nDescenderá Y Te Librara\nTu Prisión\n(Coro)\nCristo, Oh, Cristo\nVen Y Llenanos\nCristo, Oh, Cristo\nLlenanos Ti\nAlzamos Nuestra Voz Con Gozo\nNuestra Alabanza Ti\nCon Dulzura Te Entregamos\nNuestro Ser\nEntrega Todas Tus Tristezas\nEn El Nombre Jesus\nY Abundante Vida Hoy\nTendrás En El (Coro)"
+    "titulo": "Solamente En Cristo Solamente En Cristo",
+    "letra": "Solamente En El\nLa Salvación, Se Encuentra En El\nNo Hay Otro Nombre\nDado A Los Hombres\nSolamente En Cristo\nSolamente En El"
   },
   {
-    "titulo": "EN LA PRESENCIA DE DIOS",
-    "letra": "En La Presencia Dios\nSe Quita Todo Dolor\nSe Quita Todo Temor\nEn La Presencia Dios\n// Un í Estaré\nPara Siempre Aleluya\nEn La Presencia Dios //\nEn La Presencia Dios\nSu Rostro Puedo Mirar\nSu Mano Puedo Estrechar\nEn La Presencia Dios\n// Un í Estaré\nPara Siempre Aleluya\nEn La Presencia Dios //"
+    "titulo": "Hay Un Pueblo // Hay Un Pueblo Que Vive Muy Feliz",
+    "letra": "Y Ese Pueblo\nEs El Pueblo De Dios //\n// Y Ese Pueblo Vive Así\nPorque Un Día Conoció\nA Jesus El Salvador //"
   },
   {
-    "titulo": "CRISTO A MI VIDA LLEGO",
-    "letra": "Cristo Mi Vida Llego\nY La Transformo Toda\nCristo Mi Vida Le Dio\nUna Nueva Esperanza\nCristo El Quiere Venir\nY Morar En Tu Alma\n// Amigo, Brindale Todo Tu Ser\nY Feliz Tu Seras //\nCristo Te Quiere Salvar\nComo Lo Hizo Conmigo\nSu Paz El Te Quiere Dar\nY Llenarte Gozo\nY Así Podrás Alabarle\nCon Toda Tu Alma\n// Amigo, Brindale Todo Tu Ser\nY Feliz Tu Seras //"
+    "titulo": "Estoy Listo Si El Me Llama /// Estoy Listo Si El Me Llama ///",
+    "letra": "A Su Viña A Trabajar\nY Ahí Estaré En La Viña, Trabajando\nEn La Viña Del Señor\nY Ahí Estaré En La Viña, Trabajando\nEn La Viña Del Señor"
   },
   {
-    "titulo": "CON MIS LABIOS Y MI VIDA",
-    "letra": "Con Mis Labios Y Mi Vida\nTe Alabo Señor, Te Alabo Señor\nCon Mis Labios Y Mi Vida\nTe Alabo, Bendito Señor\nPorque Tu Has Sido\n/// Precioso Para Mi ///\nPorque Tu Has Sido\nPreciosos Para Mi\nTe Alabo, Bendito Señor"
+    "titulo": "Como Jeremías Oraba Y Oraba // Como Jeremías Oraba Y Oraba",
+    "letra": "Así Quiero Yo, Orar Y Orar //\n// Y Dios Le Contestaba\nLa Petición Que Hacia\nAsí Quiero Yo\nQue Contestes La Mia //"
   },
   {
-    "titulo": "HAZ TU CUAL LA MUJER",
-    "letra": "Haz Tu Cual La Mujer\nQue Fue Y Toco\nEl Borde Del Vestido Jesus\nVirtud Salió El Y Ella Sano\nY Si Le Tocas Tu Sanaras También"
+    "titulo": "No Sabéis Que Somos Templo /// No Sabéis, No Sabéis",
+    "letra": "Que Somos Templo ///\nSomos El Templo Del Espíritu De Dios\n/// Lleno De Poder, Lleno De Gloria\nY De Alabanza ///\nSomos El Pueblo Del Espíritu De Dios"
   },
   {
-    "titulo": "TOMADO DE LA MANO",
-    "letra": "/// Tomado La Mano\nYo Voy Con El///\nDonde El Va\n// Si Jesus Me Dice \" Amigo\nDeja Todo Y Ven Conmigo \"\nYo Iré Donde El Vaya Le Seguiré//"
+    "titulo": "Jesus Viene En Las Nubes // Jesus Viene En Las Nubes",
+    "letra": "Su Iglesia A Levantar\nSi Tu No Te Preparas\nAquí Te Quedaras //\n// Mi Alma Volara, Mi Alma Volara\nAl Son De La Trompeta\nMi Alma Volara //"
   },
   {
-    "titulo": "ROSA DE SARON",
-    "letra": "// Le Amo, Le Amo, Le Amo\nEs La Rosa Saron Para Mi\nLe Amo, Le Amo, Le Amo\nY Algún í Su Rostro Veré //\nPerfecta Paz\nTienen Los Que Aman Cristo\nPerfecta Paz\nTienen Los Que Aman Dios"
+    "titulo": "Libre Libre, Tu Me Hiciste Libre",
+    "letra": "Tu Me Hiciste Libre\nLibre Señor\nRotas, Fueron Las Cadenas\nQue Tenían Atado A Mi Corazón"
   },
   {
-    "titulo": "ESTOY CONFIANDO",
-    "letra": "Estoy Confiando, Señor En Ti\nTu Eres, Oh Señor, Tan Fiel Mi\nNunca Me Has Dejado\nAunque ébil Soy\nEstoy Confiando, Señor En Ti"
+    "titulo": "Cristo Rompe Las Cadenas Como Es Posible",
+    "letra": "Yo Vivir Sin Ti Señor\nSi El Fundamento\nDe Mi Vida Eres Tu\nTu Me Libraste Del Pecado\nY De La Muerte\nComo Es Posible\nYo Vivir Sin Ti Señor\n/// Cristo Rompe Las Cadenas ///\nY Me Da Seguridad"
   },
   {
-    "titulo": "HAY MOMENTOS",
-    "letra": "// Hay Momentos\nQue Las Palabras No Alcanzan\nPara Decirte Lo Que Siento\nQuerido Salvador //\n// Te Agradezco\nPor Todo Lo Que Has Hecho\nPor Todo Lo Que Haces\nY Todo Lo Que Harás //"
+    "titulo": "Hablemos De Cristo Hablemos De Cristo",
+    "letra": "El Rey De Reyes Es\nSeñor De Señores\nPor La Eternidad\nEl Es El Camino\nLa Vida Y La Verdad\nHablemos De Cristo Mas Y Mas"
   },
   {
-    "titulo": "SEGUIRTE SOLO A TI SEÑOR",
-    "letra": "/// Seguirte Solo Ti Señor ///\nY No Mirar Atrás\n// Seguir Tu Caminar, Señor\nSeguir Sin Desmayar, Señor\nPostrado Ante Tu Altar, Señor\nY No Mirar Atrás //\n/// Amarte Solo Ti Señor ///\nY No Mirar Atrás\n// Seguir Tu Caminar Señor\nSeguir Sin Desmayar, Señor\nPostrado Ante Tu Altar, Señor\nY No Mirar Atrás //"
+    "titulo": "Bendito Sea Jehová La Roca Bendito Sea Jehová La Roca",
+    "letra": "Por Toda La Eternidad\nMi Escondedero Y Mi Refugio\nEres Tu Bendito Jehová\nEn Tu Palabra Esperare\nY Mi Confianza En Ti Pondré\n¡ Oh Gloria, Aleluya !\nAmen, Amen, Amen, Amen"
   },
   {
-    "titulo": "LA GENTE DE NUESTROS TIEMPOS",
-    "letra": "No Sabe Lo Que Es El Amor\nSe Vive, Perdiendo El Tiempo\nBuscando Y Sin Encontrar\n(Coro)\nAmar, Es Entregarse\nEn Alma Y Cuerpo\nLa Humanidad\nVivir, Siempre Sirviendo\nSin Que Tu Esperes\nAlgo Para Ti\nEn Cristo Yo He Encontrado\nUn Mensaje Amor Y Paz\nLa Muerte Del Crucificado\nEs Un Ejemplo La Humanidad(Coro)"
+    "titulo": "Que Hermosas Son Las Horas // Que Hermosas Son Las Horas",
+    "letra": "Que Pasa El Cristiano\nPostrado En La Tierra\nEn Ferviente Oración //\n// Pidiendo Ser Llenos\nDel Espíritu Santo\nY Ser Mensajeros\nDe Todo Poder //\n// La Gente Nos Dice\nQue Somos Aleluyas\nPero El Aleluya\nEs Dar Gloria A Dios\n¡ Gloria A Dios ! //\n// Mi Gozo Es Cumplido\nY Por Siempre Sera\nY Los Aleluyas\nNos Vamos A Gozar //\n// Nos Vamos A Gozar\nNos Vamos A Gozar\nA Las Bodas Del Cordero\nNos Vamos A Gozar //\n// Y Luego Nos Iremos\nA La Patria Celestial\nA Morar Con Jesucristo\nPor Toda La Eternidad //\nA-A-Amen, A-A-Amen"
   },
   {
-    "titulo": "EL FUEGO CAE",
-    "letra": "/// Esta Obra No Va Parar\nNo Va Parar ///\nPorque Esta Adentro Mi Corazón\n(Coro)\n// El Fuego Cae, Cae\nLos Males Salen, Salen\nY Los Creyentes\nAlaban Al Señor //\n/// Esta Alegrí No Va Salir\nNo Va Salir ///\nPorque Esta Adentro Mi Corazón\n(Coro)"
+    "titulo": "Donde Esta El Espíritu // Donde Esta El Espíritu De Dios",
+    "letra": "Hay Libertad, Hay Libertad //\n//// Libertad ////\nDonde Esta El Espíritu De Dios\nAhí Siempre Hay Libertad"
   },
   {
-    "titulo": "ME HA TOCADO",
-    "letra": "En Pecado Yo Viví\nEn Tinieblas Y En Error\nMas La Mano Jesucristo\nMe Toco Y Salvo Yo Soy\n(Coro)\nMe Ha Tocado, Si Me Ha Tocado\nY Ahora Se Que El Salvador\nSana, Salva, Viene Por Mi\nMe Ha Tocado, Cristo El Señor\nDesde Que Encontré Al Maestro\nDesde Que Lavo Mi Ser\nNunca Dejare Alabarle\nHasta Que Regrese Otra Vez\n(Coro)"
+    "titulo": "Por La Fe También Nosotros Por La Fe",
+    "letra": "Nos Acercamos Cristo A Ti\nY Aunque Tu Rostro No Se Ve\nSabemos Que Tu Estas Aquí"
   },
   {
-    "titulo": "SI TU HABLAS CON DIOS",
-    "letra": "Si Tu Hablas Con Dios\nLas Cosas Cambiaran, Orando\nCualquier Necesidad\nDios La Responderá, Orando\nDescansad En El Señor\nTus Penas Quitara, Orando\nBendita Oración\nYo Puedo Hablar Con Dios, Orando"
+    "titulo": "Banderas De Amor Sobre Mi Corazón",
+    "letra": "Hay Banderas De Amor\n// Banderas De Amor //\nSobre Mi Corazón\nHay Banderas De Amor\nPorque Cristo Ya Vive En Mi\nAlzalas Mas Arriba Que Todos Vean\nQue Todos Vean, Que Todos Vean\nAlzalas Mas Arriba Que Todos Vean\nQue Cristo Ya Vive En Mi"
   },
   {
-    "titulo": "ERA LA UNA DE LA MADRUGADA",
-    "letra": "// Era La Una La Madrugada\nY Yo Buscaba El Rostro Del Señor//\n// Señor, Señor Ten Compasión Mi\nResuelve Mis Problemas\nQue Yo Confio En Ti //"
+    "titulo": "Que No Se Apague El Fuego // Que No Se Apague El Fuego",
+    "letra": "Que Hay En Mi Corazón\nQue No Se Apague El Fuego\nQue Siga Ardiendo Mas Y Mas //\n// Siento Gozo Señor\nTengo Paz Y Amor\nPorque Voy A Morar\nMas Allá Del Sol //"
   },
   {
-    "titulo": "EVENEZER",
-    "letra": "Evenezer\nHasta Aquí Nos Ayudo Jehová\nCon Su Poder\nY Su Gracia Nos Guiara\nNuestra Canción\nPor Los Siglos Durara\nEvenezer\nHasta Aquí Nos Ayudo Jehová"
+    "titulo": "Dame La Mano No Me Importa La Iglesia Que Vayas",
+    "letra": "Si Detrás Del Calvario Tu Estas\nSi Tu Corazón Es Como El Mio\nDame La Mano Y Mi Hermano Seras\n//  Dame La Mano, Dame La Mano\nDame La Mano Y Mi Hermano Seras /"
   },
   {
-    "titulo": "UN CRISTO VIVO",
-    "letra": "// Un Cristo Vivo\nPuede Mas Que El Diablo\nPuede Mas Que Todo\nSi Te Sientes Triste\nSi Te Sientes Solo\nVen Jesucristo\nY El Te Hará Feliz //"
+    "titulo": "La Mañana Gloriosa Cuan Gloriosa Sera La Mañana",
+    "letra": "Cuando Venga Jesus El Salvador\nLas Naciones Unidas Como Hermanas\nBienvenida Daremos Al Señor\nPero No Habrá Necesidad\nDe La Luna El Resplandor\nNi El Sol Dará Su Luz\nNi Tampoco Su Calor\nAhí Llanto No Habrá\nNi Tristeza Ni Dolor\nPorque Entonces Jesus\nEl Rey De Gloria\nPara Siempre Sera El Consolador\nEsperamos La Mañana Gloriosa\nPara Dar La Bienvenida\nAl Dios De Amor\nDonde Todo Sera Color De Rosa\nEn La Santa Fragancia Del Señor\nEl Cristiano Fiel Y Verdadero\nY También El Obrero De Valor\nY La Iglesia, Esposa Del Cordero\nEstarán En Los Brazos Del Señor"
   },
   {
-    "titulo": "YO ME GOZO",
-    "letra": "Yo Me Gozo El Lunes\nYo Me Gozo El Martes\nYo Me Gozo El Miércoles\nYo Me Gozo El Jueves\nYo Me Gozo El Viernes\nSábado También\nY Al Llegar Domingo\nSigo Con Mi Gozo\nY ¿Sabes Porque?\n// Porque Tengo Cristo\nQue Me La Dicha\nGozarme En El //"
+    "titulo": "Con Las Manos Alzadas Con Las Manos Alzadas",
+    "letra": "Y Mi Boca Cantando\nY Mi Corazón Lleno\nTe Alabo Señor\nTe Alabo Jesus, Mi Señor\nTe Alabo Jesus, Mi Salvador\nCon Mis Manos Alzadas\nTe Alabo Señor"
   },
   {
-    "titulo": "QUE BONITO ES",
-    "letra": "// Que Bonito Es, Que Bonito Es\nCantarle Al Señor //\n// Oh Hermano, Vamos Cantarle\nQue Bonito Es, Que Bonito Es\nCantarle Al Señor //"
+    "titulo": "Juntos Otra Vez Juntos Otra Vez",
+    "letra": "Alabando A Dios\nJuntos Otra Vez En Unidad\nAlgo Hermoso Va A Pasar\nAlgo Digno De Verdad\nJuntos Otra Vez, Alabando A Dios"
   },
   {
-    "titulo": "VOLVERÁN LOS REDIMIDOS",
-    "letra": "// Ciertamente Volverán Los\nRedimidos Jehová\nVolverán Sion Cantando\nY Gozo Perpetuo Habrá\nSobre Sus Cabezas //\nTendrán Gozo Y Alegrí\nY El Dolor Y El Gemido Huirán\nCiertamente Volverán Los Redimidos Jehová\n. . . . ."
+    "titulo": "A Que Tu No Sabes // A Que Tu No Sabes",
+    "letra": "Lo Que En Damasco Paso\nLo Que Paso, Lo Que Paso //\n// Fue El Espíritu Santo\nFue El Espíritu Santo\nFue El Espíritu Santo\nQue Sobre Pablo Se Derramo //\n// A Que Tu No Sabes\nLo Que En La Iglesia Paso, Etc. . .\n// A Que Tu No Sabes\nLo Que En Mi Vida Paso, Etc . . ."
   },
   {
-    "titulo": "UN HOMBRE DE PODER",
-    "letra": "Conozco Un Hombre Poder\nUn Hombre Poder\nUn Hombre Poder\nY El Me Ayudara Triunfar\nMe Ayudara Vencer\nSu Nombre Es Jesus\n// Es Fuerte Mas Que El Viento\nSu Nombre Es Sin Igual\nY Nunca Me Deja Su Amor\nEn El Puedo Yo Confiar //"
+    "titulo": "Yo Vine A Alabar A Dios // Yo No Se A Lo Que Tu Has Venido",
+    "letra": "Pero Yo Vine A Alabar A Dios //\n// Yo Vine, Yo Vine, Yo Vine\nA Alabar A Dios //"
   },
   {
-    "titulo": "TU MISERICORDIA",
-    "letra": "Tu Misericordia\nEs Mas Grande Que La Tierra\nTu Misericordia\nEs Mas Grande Que La Mar\nTu Misericordia\nEs Mas Grande Que El Sol\nLa Luna Y Las Estrellas\nTu Misericordia Señor\nTu Misericordia Me Ha Tocado Mi\nTu Misericordia Me Enseño Vivir\nTu Misericordia\nMe Mostró El Camino\nQue Cristo Trazo Para Mi"
+    "titulo": "El Señor Me Lleno De Gozo // El Señor Me Lleno De Gozo",
+    "letra": "Puso Paz En Mi Corazón //\n//Puso Paz En Mi Corazón //\nEl Señor Me Lleno De Gozo\nPuso Paz En Mi Corazón\n(Coro)\n// Pero Que Felicidad\nPero Que Felicidad\nCantando Todos En Coro\nA Nuestro Padre Celestial //\n// Este Gozo Que Yo Siento En Mi Alma\nSolo Cristo Me Lo Pudo Dar //\n// Solo Cristo Me Lo Pudo Dar //\nEste Gozo Que Yo Siento En Mi Alma\nSolo Cristo Me Lo Pudo Dar   (Coro)\n// Fiel Yo Quiero Ser A Jesucristo\nEn Las Pruebas Y En La Tentación//\n// En Las Pruebas Y En La Tentación//\nFiel Yo Quiero Ser A Jesucristo\nEn Las Pruebas Y En La Tentación(Coro"
   },
   {
-    "titulo": "MIRA CUAL AMOR",
-    "letra": "// Mira Cual Amor Nos Ha Dado\nEl Padre Que Seamos Llamados\nLos Hijos Dios //\n// Por Eso El Mundo\nYa No Nos Conoce\nPorque El Tampoco Le Conoció //"
+    "titulo": "Unidos // Unidos, Unidos",
+    "letra": "En Tu Nombre Unidos //\n// Pues En Este Mundo\nPaz Y Amor Tendremos //\nUnidos Siempre Unidos\nTomados De La Mano\nIremos Por El Mundo\nCantando Al Amor\n// La Gloria De Jesus\nAl Fin Resplandecerá\nY El Mundo Aceptara\nQue Tu Eres Dios //"
   },
   {
-    "titulo": "VENIMOS ANTE TI SEÑOR",
-    "letra": "// Venimos Ante Ti Señor\nCon Corazones Sinceros\nLlenos Alabanza\nY Adoración //\n// Porque Tu Eres Rey Reyes\nY Señor Señores\nTu Eres Digno\nQue Todos Te Adoren //"
+    "titulo": "Una Linda Canción Quiero Cantar Una Linda Canción",
+    "letra": "De Un Hombre Que Me Transformo\nQuiero Cantar Una Linda Canción\nDe Aquel Que Mi Vida Cambio\nEs Mi Amigo Jesus\nEs Mi Amigo Mas Fiel\nEl Es Dios, El Es Rey\nEs Amor Y Verdad\nSolo En El, Encontré\nEsa Paz, Que Busce\nSolo En El, Encontré\nLa Felicidad\nEn Esta Vida Todo Es Vanidad\nEs El Fin De Lo Que Pasara\nMas Si Tu Aceptas A Cristo, Jesus\nVida Eterna Tu Alma Tendrá (Coro)\nEl Es Mi Salvador\nEs Mi Amigo Mas Fiel\nEl Es Dios, El Es Rey\nEs Amor Y Verdad\nSolo En El, Encontré\nEsa Paz, Que Busce\nSolo En El, Encontré\nLa Felicidad"
   },
   {
-    "titulo": "SALMO 121",
-    "letra": "Alzare Mi Ojos Los Montes\nDonde Vendrá Mi Socorro\nMi Socorro Viene Jehová\nQuien Hizo Los Cielos Y La Tierra\nPor Un Momento Sera Su Ira\nSu Favor Dura Toda La Vida\nPor La Noche Sera El Lloro\nPor La Mañana Vendrá La Alegrí"
+    "titulo": "Cristo, Oh Cristo Oh, Deja Que El Señor Te Abrace",
+    "letra": "En Su Espíritu De Amor\nOh, Deja Que El Te Satisfaga\nCon Poder\nEntregale Lo Que Te Ata\nY El Espíritu De Dios\nDescenderá Y Te Librara\nDe Tu Prisión\n(Coro)\nCristo, Oh, Cristo\nVen Y Llenanos\nCristo, Oh, Cristo\nLlenanos De Ti\nAlzamos Nuestra Voz Con Gozo\nNuestra Alabanza A Ti\nCon Dulzura Te Entregamos\nNuestro Ser\nEntrega Todas Tus Tristezas\nEn El Nombre De Jesus\nY Abundante Vida Hoy\nTendrás En El  (Coro)"
   },
   {
-    "titulo": "SALMO 16:1",
-    "letra": "Guardame Oh Dios, Porque En Ti He Confiado\nOh, Alma Mia, Dijiste Jehová\n// Tu Eres Mi Señor, Tu Eres Mi Señor\nNo Hay Para Mi Bien Fuera Ti //"
+    "titulo": "En La Presencia De Dios En La Presencia De Dios",
+    "letra": "Se Quita Todo Dolor\nSe Quita Todo Temor\nEn La Presencia De Dios\n// Un Día Estaré\nPara Siempre Aleluya\nEn La Presencia De Dios //\nEn La Presencia De Dios\nSu Rostro Puedo Mirar\nSu Mano Puedo Estrechar\nEn La Presencia De Dios\n// Un Día Estaré\nPara Siempre Aleluya\nEn La Presencia De Dios //"
   },
   {
-    "titulo": "SALMO 38",
-    "letra": "Te Alabaran Oh Jehová Todos Los Reyes\nTodos Los Reyes La Tierra\nPorque Han Oído Los Dichos Tu Boca\nY Cantaran Los Caminos Jehová\n// Porque La Gloria Jehová Es Grande\nPorque Jehová Es Excelso En Sus Caminos\nPorque Jehová Atiende Al Humilde\nMas Mira Lejos Al Altivo //"
+    "titulo": "Cristo A Mi Vida Llego Cristo A Mi Vida Llego",
+    "letra": "Y La Transformo Toda\nCristo A Mi Vida Le Dio\nUna Nueva Esperanza\nCristo El Quiere Venir\nY Morar En Tu Alma\n// Amigo, Brindale Todo Tu Ser\nY Feliz Tu Seras //\nCristo Te Quiere Salvar\nComo Lo Hizo Conmigo\nSu Paz El Te Quiere Dar\nY Llenarte De Gozo\nY Así Podrás Alabarle\nCon Toda Tu Alma\n// Amigo, Brindale Todo Tu Ser\nY Feliz Tu Seras //"
   },
   {
-    "titulo": "HAY MUCHO POR QUE VIVIR",
-    "letra": "// Hay Mucho Por Que Vivir\nCristo Tiene Mucho Que Darte //\n// Te La Paz, Te El Amor\nTe La Felicidad //\n// Si Lo Pruebas Todo\nY Todo Te Falla Prueba Cristo //\nEl Es Tu Amigo Fiel\nEstará Contigo Hasta El Final\n// Si Lo Pruebas Todo Y Todo Te Falla //\n¡ Prueba Cristo !"
+    "titulo": "Con Mis Labios Y Mi Vida Con Mis Labios Y Mi Vida",
+    "letra": "Te Alabo Señor, Te Alabo Señor\nCon Mis Labios Y Mi Vida\nTe Alabo, Bendito Señor\nPorque Tu Has Sido\n/// Precioso Para Mi ///\nPorque Tu Has Sido\nPreciosos Para Mi\nTe Alabo, Bendito Señor"
   },
   {
-    "titulo": "SALMO 34",
-    "letra": "// Mirad Cuan Bueno Y Cuan Delicioso Es //\nHabitar Los Hermanos Juntos En Armoní\nPorque Allí Enví Jehová\nBendición Y Vida Eterna\nPorque Allí Enví Jehová Bendición"
+    "titulo": "Haz Tu Cual La Mujer Haz Tu Cual La Mujer",
+    "letra": "Que Fue Y Toco\nEl Borde Del Vestido De Jesus\nVirtud Salió De El Y Ella Sano\nY Si Le Tocas Tu Sanaras También"
   },
   {
-    "titulo": "ANDO CON MI CRISTO",
-    "letra": "Ando Con Mi Cristo\nPor La Mañana Al Despertar\nAndo Con Mi Cristo\nPor La Tarde Al Conversar\nAndo Con Mi Cristo\nPor La Noche Al Descansar\nMano Mano Con Mi Cristo\nYo Quiero Andar\nMano Mano Con Mi Cristo\nYo Quiero Andar"
+    "titulo": "Tomado De La Mano /// Tomado De La Mano",
+    "letra": "Yo Voy Con El///\nA Donde El Va\n// Si Jesus Me Dice \" Amigo\nDeja Todo Y Ven Conmigo \"\nYo Iré A Donde El Vaya Le Seguiré//"
   },
   {
-    "titulo": "SALMO 150",
-    "letra": "//Todo Lo Que Respire Alabe Jehová //\n\nAlabad Nuestro Dios En Su Santuario,\nEn La Hermosura Su Cetro\nPor Sus Proezas Alabadle El\nAlabadle Por La Grandeza Su Nombre.\nCon El Sonido Bocina\nSalterio Y Arpa La Vez Cantar\nAlabadle, Con El Sonar Panderos\nCon El Canto La Danza,\nCantar Con Gozo Al Señor\nAlabadle, Con Cuerdas, Flautas Y ímbalos\nJubilo Resonantes, Es Un Lenguaje\n//Todo Lo Que Respire Alabe Jehová //\n--én"
+    "titulo": "Rosa De Saron // Le Amo, Le Amo, Le Amo",
+    "letra": "Es La Rosa De Saron Para Mi\nLe Amo, Le Amo, Le Amo\nY Algún Día Su Rostro Veré //\nPerfecta Paz\nTienen Los Que Aman A Cristo\nPerfecta Paz\nTienen Los Que Aman A Dios"
   },
   {
-    "titulo": "PUES TU GLORIOSO",
-    "letra": "Pues Tu Glorioso Eres Señor\nY Tu Nombre Es Digno Alabar\nHaz Mi Corazón Puro Y Santo Ante Ti\nYo Te Adoro Con Todo Mi Corazón\nYo Te Adoro Señor Con Todo Mi Ser\nY Con Salmos Te Alabare\nYo Te Adoro Señor Con Todo Mi Ser\nTodo El í Te Alabare"
+    "titulo": "Estoy Confiando Estoy Confiando, Señor En Ti",
+    "letra": "Tu Eres, Oh Señor, Tan Fiel A Mi\nNunca Me Has Dejado\nAunque Débil Soy\nEstoy Confiando, Señor En Ti"
   },
   {
-    "titulo": "SUMÉRGEME",
-    "letra": "Cansado del camino, sediento Tí.\nUn desierto he cruzado,\nsin fuerzas he quedado, vengo Tí.\nLuché como un soldado, y veces sufrí,\ny aunque la lucha he ganado,\nmi armadura he desgastado, vengo Tí.\nSumérgeme en el río Tu Espíritu.\nNecesito refrescar este seco corazón\nsediento Tí.\nSumérgeme en el río Tu Espíritu.\nNecesito refrescar este seco corazón\nsediento Tí. Sumérgeme."
+    "titulo": "Hay Momentos // Hay Momentos",
+    "letra": "Que Las Palabras No Alcanzan\nPara Decirte Lo Que Siento\nQuerido Salvador //\n// Te Agradezco\nPor Todo Lo Que Has Hecho\nPor Todo Lo Que Haces\nY Todo Lo Que Harás //"
   },
   {
-    "titulo": "DULCE REFUGIO",
-    "letra": "Dulce Refugio, en la tormenta,\nes Jesucristo el salvador\nel me alienta y alimenta\ncon su palabra y su amor\nVengo reposar en el, el es mi amigo fiel\nuna poderosa y fresca unción\nllenara mi corazón\nDulce refugio en la tormenta\nes Jesucristo el Salvador"
+    "titulo": "Seguirte Solo A Ti Señor /// Seguirte Solo A Ti Señor ///",
+    "letra": "Y No Mirar Atrás\n// Seguir Tu Caminar, Señor\nSeguir Sin Desmayar, Señor\nPostrado Ante Tu Altar, Señor\nY No Mirar Atrás //\n/// Amarte Solo A Ti Señor ///\nY No Mirar Atrás\n// Seguir Tu Caminar Señor\nSeguir Sin Desmayar, Señor\nPostrado Ante Tu Altar, Señor\nY No Mirar Atrás //"
   },
   {
-    "titulo": "QUIERO DECIRTE UNA VEZ MAS",
-    "letra": "Quiero decirte una vez más\ncuánto te amo\nquiero decirte una vez más\ncuánto te amo\nMi corazón , no puede callar\nante tu presencia, ante tu presencia\npoderoso Dios\nTe exalto mi Rey, Te amo mi Dios\n//No puedo callar ante tu presencia//"
+    "titulo": "Saturame Señor //// Saturame Señor",
+    "letra": "Con Tu Espíritu ////\n// Y Dejame Sentir\nEl Fuego De Tu Amor\nAquí En Mi Corazón\nOh Dios //"
   },
   {
-    "titulo": "VERDADERO ADORADOR",
-    "letra": "Yo quiero ser oh Señor,\nUn verdadero adorador;\nEn espíritu y verdad\nyo quiero ser Señor\nLlena mi corazón con tu espíritu\nQue tu alabanza siempre fluya en mi\nLlena mi corazón con tu grande amor;\nQuiero ser adorador"
+    "titulo": "Amar La Gente De Nuestros Tiempos",
+    "letra": "No Sabe Lo Que Es El Amor\nSe Vive, Perdiendo El Tiempo\nBuscando Y Sin Encontrar\n(Coro)\nAmar, Es Entregarse\nEn Alma Y Cuerpo\nA La Humanidad\nVivir, Siempre Sirviendo\nSin Que Tu Esperes\nAlgo Para Ti\nEn Cristo Yo He Encontrado\nUn Mensaje De Amor Y De Paz\nLa Muerte Del Crucificado\nEs Un Ejemplo A La Humanidad(Coro)"
   },
   {
-    "titulo": "QUIERO CONOCERTE",
-    "letra": "Quiero decirte que te amo,\nDecirte que te adoro;\nque eres mi amor, Señor\nQuiero postrarme en tu presencia\nLlenarme tu Gozo; oir tu dulce voz, Señor\nQuiero conocerte más oh mi Señor\nQuiero caminar tu lado mi Señor\nQuiero conocerte más oh mi Señor,\nQuiero caminar tu lado mi Señor.\nPara alabarte, para exaltarte;\nPara adorarte mi Señor"
+    "titulo": "El Fuego Cae /// Esta Obra No Va A Parar",
+    "letra": "No Va A Parar ///\nPorque Esta Adentro De Mi Corazón\n(Coro)\n// El Fuego Cae, Cae\nLos Males Salen, Salen\nY Los Creyentes\nAlaban Al Señor //\n/// Esta Alegría No Va A Salir\nNo Va A Salir ///\nPorque Esta Adentro De Mi Corazón\n(Coro)"
   },
   {
-    "titulo": "QUIERO DARTE LO MEJOR DE MI",
-    "letra": "Quiero Darte Lo mejor Mi\nalabanza y adoración\nQue mi canto sea para ti,\nOlor grato adoración.\nQue mi canto sea para ti Señor,\nUn fragante incienso amor;\nQuiero Darte lo mejor mi Señor,\nAlabanza y Adoración."
+    "titulo": "Me Ha Tocado En Pecado Yo Vivía",
+    "letra": "En Tinieblas Y En Error\nMas La Mano De Jesucristo\nMe Toco Y Salvo Yo Soy\n(Coro)\nMe Ha Tocado, Si Me Ha Tocado\nY Ahora Se Que El Salvador\nSana, Salva, Viene Por Mi\nMe Ha Tocado, Cristo El Señor\nDesde Que Encontré Al Maestro\nDesde Que Lavo Mi Ser\nNunca Dejare De Alabarle\nHasta Que Regrese Otra Vez\n(Coro)"
   },
   {
-    "titulo": "NO TEMÁIS",
-    "letra": "No temáis, porque contigo Yo estoy,\nPorque contigo Yo estoy, así dice el Señor\nYo te he redimido y te llamo por nombre,\nHijo mio eres tu;\nCuando pases por el fuego contigo estaré\nY por la llama también;\nTu no, (Jamás) te ahogarás\nTu no, (Jamás) te quemarás;\nPorque contigo yo estoy,\nporque contigo yo estoy"
+    "titulo": "Vine A Adorar A Dios // Vine A Adorar A Dios //",
+    "letra": "Vine A Adorar Su Nombre\nVine A Adorar A Dios"
   },
   {
-    "titulo": "TE ALABARÉ MI BUEN JESÚS",
-    "letra": "Eres Tú la única razón\nmi adoración ¡Oh Jesús!\nEres Tú la esperanza\nque anhelé tener ¡Oh Jesús!\nConfí en Tí, me has ayudado\ntu salvación me has regalado\nHoy Hay gozo en mi corazón\ncon mi canto te alabaré\nTe alabaré, te glorificaré\nTe alabaré mi buen Jesús\nTe alabaré, te glorificaré\nte alabaré mi buen Jesús\nEn todo tiempo te alabaré\nen todo tiempo te adoraré"
+    "titulo": "Si Tu Hablas Con Dios Si Tu Hablas Con Dios",
+    "letra": "Las Cosas Cambiaran, Orando\nCualquier Necesidad\nDios La Responderá, Orando\nDescansad En El Señor\nTus Penas Quitara, Orando\nBendita Oración\nYo Puedo Hablar Con Dios, Orando"
   },
   {
-    "titulo": "BUENO ES ALABAR",
-    "letra": "Bueno es alabar, ¡Oh Señor!, tu nombre,\ndarte honra, gloria y honor por siempre\nbueno as alabarte Jesús\ny gozarme en tu poder\nporque grande eres Tú, grandes son tus obras\nporque grande eres Tú, grande es tu amor\ngrande es tu Gloria"
+    "titulo": "Era La Una De La Madrugada // Era La Una De La Madrugada",
+    "letra": "Y Yo Buscaba El Rostro Del Señor//\n// Señor, Señor Ten Compasión De Mi\nResuelve Mis Problemas\nQue Yo Confio En Ti //"
   },
   {
-    "titulo": "LEVÁNTATE SEÑOR",
-    "letra": "Levántate, Levántate Señor\nLevántate, Levántate Señor\nY caigan tus enemigos\nLos justos se alegraran;\nCantarán con regocijo, has triunfado con poder"
+    "titulo": "Evenezer Evenezer",
+    "letra": "Hasta Aquí Nos Ayudo Jehová\nCon Su Poder\nY Su Gracia Nos Guiara\nNuestra Canción\nPor Los Siglos Durara\nEvenezer\nHasta Aquí Nos Ayudo Jehová"
   },
   {
-    "titulo": "VICTORIOSO GUERRERO",
-    "letra": "Coro:Victorioso Guerrero, es Jesús\nVictorioso en batalla, es Jesús\nVictorioso en la guerra, es Jesús\nY saldrá el Señor, peleará contra naciones\nComo cuando peleó en el í la batalla\nJesús Posará sus pies,\nSobre el Monte los Olivos\nY reinará el Señor, Sobre toda la tierra."
+    "titulo": "Un Cristo Vivo // Un Cristo Vivo",
+    "letra": "Puede Mas Que El Diablo\nPuede Mas Que Todo\nSi Te Sientes Triste\nSi Te Sientes Solo\nVen A Jesucristo\nY El Te Hará Feliz //"
   },
   {
-    "titulo": "LOS JUSTOS SE ALEGRARÁN",
-    "letra": "Levántate Señor y guianos,\nQue en tu presencia fuerza nos darás\nMás los justos se alegraran\nSe gozarán delante Dios\nY saltaremos alegrí ante el Señor\nCantad Salmos su Nombre,\nY exaltad Jehová\nY alegráos delante El."
+    "titulo": "Yo Me Gozo Yo Me Gozo El Lunes",
+    "letra": "Yo Me Gozo El Martes\nYo Me Gozo El Miércoles\nYo Me Gozo El Jueves\nYo Me Gozo El Viernes\nSábado También\nY Al Llegar Domingo\nSigo Con Mi Gozo\nY ¿Sabes Porque?\n// Porque Tengo A Cristo\nQue Me Da La Dicha\nDe Gozarme En El //"
   },
   {
-    "titulo": "FRAGANCIA DE ALABANZA",
-    "letra": "Como una fragancia alabanza, llegue ti;\nLa expresión gozo, que hay en mi ser\nPor tu grande amor\nQue me mostraste Señor,\nEnviando Cristo morir, en el calvario\nEl me perdonó\ny con su sangre lavó\nmi iniquidad y pecado, ahora soy salvo"
+    "titulo": "Que Bonito Es // Que Bonito Es, Que Bonito Es",
+    "letra": "Cantarle Al Señor //\n// Oh Hermano, Vamos A Cantarle\nQue Bonito Es, Que Bonito Es\nCantarle Al Señor //"
   },
   {
-    "titulo": "NO HAY DIOS COMO MI DIOS",
-    "letra": "Coro:No hay Dios, No hay Dios,\nNo hay Dios como mi Dios;\nMaravilloso, Maravilloso\nMaravilloso es nuestro Dios\nComo he expresar\nLa gratitud que hay en mi ser,\nPara Dios, mi Redentor,\nquien me restauró\nYo no era nada, cuando El, me tomó\nY ahora, Yo Soy, un príncipe su pueblo\nUn príncipe su pueblo\nUn príncipe su pueblo"
+    "titulo": "Quien Como Jehová // Quien, Quien, Quien Como Jehová",
+    "letra": "Que Con Su Poder El Mar Abrió //\nOirán Las Naciones Lo Que El Hizo\nTemblaran Cuando\nVean Sus Prodigios\nCon Banderas Cantaran\nY Su Pueblo Le Alabara\nY Dirán, Quien, Quien Como Jehová\n// Cantare Al Señor Por Siempre\nSu Diestra Es Todo Poder //\n// Ha Echado A La Mar\nQuien Los Perseguían\nJinete Y Caballo\nHa Echado A La Mar //\nY Echo A La Mar\nLos Carros De Faraón\nLa, La, La, La . . . . .\n// Mi Padre Es Dios\nY Yo Le Alabo\nMi Padre Es Dios\nY Le Alabare //\n137 Volverán Los Redimidos\n// Ciertamente Volverán Los\nRedimidos De Jehová\nVolverán A Sion Cantando\nY Gozo Perpetuo Habrá\nSobre Sus Cabezas //\nTendrán Gozo Y  Alegría\nY El Dolor Y El Gemido Huirán\nCiertamente Volverán Los Redimidos De Jehová\n. . . . .\n138  Un Hombre De Poder\nConozco Un Hombre De Poder\nUn Hombre De Poder\nUn Hombre De Poder\nY El Me Ayudara A Triunfar\nMe Ayudara A Vencer\nSu Nombre Es Jesus\n// Es Fuerte Mas Que El Viento\nSu Nombre Es Sin Igual\nY Nunca Me Deja Su Amor\nEn El Puedo Yo Confiar //\n139 Tu Misericordia\nTu Misericordia\nEs Mas Grande Que La Tierra\nTu Misericordia\nEs Mas Grande Que La Mar\nTu Misericordia\nEs Mas Grande Que El Sol\nLa Luna Y Las Estrellas\nTu Misericordia Señor\nTu Misericordia Me Ha Tocado A Mi\nTu Misericordia Me Enseño A Vivir\nTu Misericordia\nMe Mostró El Camino\nQue Cristo Trazo Para Mi"
   },
   {
-    "titulo": "CANTEMOS A JESUS",
-    "letra": "Cantemos Jesús,Cantemos Jesús\nSeñor toda creación, Dios mi corazón\nCantemos Jesús, Cantemos Jesús\nVictorioso mas que vencedor,\nRey sobre toda nación\n// Digno Loor, digno loor\nRey mi corazón, Rey mi corazón //"
+    "titulo": "Mira Cual Amor // Mira Cual Amor Nos Ha Dado",
+    "letra": "El Padre Que Seamos Llamados\nLos Hijos De Dios //\n// Por Eso El Mundo\nYa No Nos Conoce\nPorque A El Tampoco Le Conoció //\n141 Jehová Es Mi Pastor\n/// Jehová Es Mi Pastor ///\nY Nada Me Faltara\n/// Ungiste Mi Cabeza Con Aceite///\nY Nada Me Faltara\n/// Mi Copa Esta Rebosando ///\nY Nada Me Faltara\n142 Venimos Ante Ti Señor\n// Venimos Ante Ti Señor\nCon Corazones Sinceros\nLlenos De Alabanza\nY De Adoración //\n// Porque Tu Eres Rey De Reyes\nY Señor De Señores\nTu Eres Digno\nQue Todos Te Adoren //\n143 Salmo 121\nAlzare Mi Ojos A Los Montes\nDe Donde Vendrá Mi Socorro\nMi Socorro Viene De Jehová\nQuien Hizo Los Cielos Y La Tierra\nPor Un Momento Sera Su Ira\nSu Favor Dura Toda La Vida\nPor La Noche Sera El Lloro\nPor La Mañana Vendrá La Alegría\n144 Salmo 16:1\nGuardame Oh Dios, Porque En Ti He Confiado\nOh, Alma Mia, Dijiste A Jehová\n// Tu Eres Mi Señor, Tu Eres Mi Señor\nNo Hay Para Mi  Bien Fuera De Ti //\n145 Salmo 38\nTe Alabaran Oh Jehová Todos Los Reyes\nTodos Los Reyes De La Tierra\nPorque Han Oído Los Dichos De Tu Boca\nY Cantaran De Los Caminos De Jehová\n// Porque La Gloria De Jehová Es Grande\nPorque Jehová Es Excelso En Sus Caminos\nPorque Jehová Atiende Al Humilde\nMas Mira De Lejos Al Altivo //\n146  Hay Mucho Por Que Vivir\n// Hay Mucho Por Que Vivir\nCristo Tiene Mucho Que Darte //\n// Te Da La Paz, Te Da El Amor\nTe Da La Felicidad //\n// Si Lo Pruebas Todo\nY Todo Te Falla Prueba A Cristo //\nEl Es Tu Amigo Fiel\nEstará Contigo Hasta El Final\n// Si Lo Pruebas Todo Y Todo Te Falla //\n¡ Prueba A Cristo !\n147 Salmo 34\n// Mirad Cuan Bueno Y Cuan Delicioso Es //\nHabitar Los Hermanos Juntos En Armonía\nPorque Allí Envía Jehová\nBendición Y Vida Eterna\nPorque Allí Envía Jehová Bendición\n148 Ando Con Mi Cristo\nAndo Con Mi Cristo\nPor La Mañana Al Despertar\nAndo Con Mi Cristo\nPor La Tarde Al Conversar\nAndo Con Mi Cristo\nPor La Noche Al Descansar\nMano A Mano Con Mi Cristo\nYo Quiero Andar\nMano A Mano Con Mi Cristo\nYo Quiero Andar\n149  Salmo 150\n//Todo Lo Que Respire Alabe A Jehová //\nAlabad A Nuestro Dios En Su Santuario,\nEn La Hermosura De Su Cetro\nPor Sus Proezas Alabadle   A El\nAlabadle Por La Grandeza De Su Nombre.\nCon El Sonido De Bocina\nSalterio Y Arpa A  La   Vez Cantar\nAlabadle, Con El Sonar De Panderos\nCon El Canto De La Danza,\nCantar Con Gozo Al Señor\nAlabadle, Con Cuerdas, Flautas Y Címbalos\nDe Jubilo Resonantes, Es Un Lenguaje\n//Todo Lo Que Respire Alabe A Jehová //\nA-a-amén\n150 Pues Tu Glorioso\nPues Tu Glorioso Eres Señor\nY Tu Nombre Es Digno De Alabar\nHaz Mi Corazón Puro Y Santo Ante Ti\nYo Te Adoro Con Todo Mi Corazón\nYo Te Adoro Señor Con Todo Mi Ser\nY Con Salmos Te Alabare\nYo Te Adoro Señor Con Todo Mi Ser\nTodo El Día Te Alabare\n151 Yo Te Amo\nYo Te Amo, Yo Te Amo\nYo Confio En Ti,  Yo Confio En Ti\nYo Te Amo, Yo Te Amo\nEn La Roca Me Refugiare"
   },
   {
-    "titulo": "NO VOLVAMOS ATRÁS",
-    "letra": "// Dios no nos trajo hasta aquí\npara volver atrás\nnos trajo aquí poseer la tierra que nos dió //\nAunque el gigante se encuentre allá,\nyo nunca temeré\nnos trajo aquí poseer la tierra que nos dió\nnos trajo aquí poseer la tierra que nos dió"
+    "titulo": "Sumérgeme Cansado del camino, sediento de Tí.",
+    "letra": "Un desierto he cruzado,\nsin fuerzas he quedado, vengo a Tí.\nLuché como un soldado, y a veces sufrí,\ny aunque la lucha he ganado,\nmi armadura he desgastado, vengo a Tí.\nSumérgeme en el río de Tu Espíritu.\nNecesito refrescar este seco corazón\nsediento de Tí.\nSumérgeme en el río de Tu Espíritu.\nNecesito refrescar este seco corazón\nsediento de Tí. Sumérgeme."
   },
   {
-    "titulo": "TE EXALTAMOS",
-    "letra": "Te exaltamos sobre un trono alabanza\nTe exaltamos Oh Señor\nNuestras Alabanza subirán\nDelante tu trono Oh Señor\nHonor, Fragante, ti, Señor\nHonor Y alabanza por siempre daré\nAl que esta sentado sobre el trono mi Dios\nMajestuosamente Reinas, sin igual tu eres\npoderoso Dios\nte proclamaré, te exaltaré\ntu eres el Rey sobre mi Corazón\nTe exaltamos sobre un trono alabanza\nTe exaltamos Oh Señor\nNuestras Alabanza subirán\nDelante tu trono Oh Señor"
+    "titulo": "Dulce Refugio Dulce Refugio, en la tormenta,",
+    "letra": "es Jesucristo el salvador\nel me alienta y alimenta\ncon su palabra y su amor\nVengo a reposar en el, el es mi amigo fiel\nuna poderosa y fresca unción\nllenara mi corazón\nDulce refugio en la tormenta\nes Jesucristo el Salvador"
   },
   {
-    "titulo": "ME GOZARÉ",
-    "letra": "// Me Gozaré, me alegraré y cantaré al Señor\nPorque han llegado las bodas,\ndel cordero Dios //\nY su esposa se le ha concedido\nque se vista lino fino\nLino limpio y resplandeciente,\npara recibir al Rey"
+    "titulo": "Quiero Decirte Una Vez Mas Quiero decirte una vez más",
+    "letra": "cuánto te amo\nquiero decirte una vez más\ncuánto te amo\nMi corazón , no puede callar\nante tu presencia, ante tu presencia\npoderoso Dios\nTe exalto mi Rey, Te amo mi Dios\n//No puedo callar ante tu presencia//"
   },
   {
-    "titulo": "RESTAURARAS EL SANTO LUGAR",
-    "letra": "Restauraras el Santo Lugar\ny pondrás ahí tu habitación.\nTe mostrarás poderoso Dios\nen tu amor me regocijo hoy\nLo dilatado tu imperio y tu santa paz\nlos confines abarcará\ny la creación entera nunca jamas gemirá\ntus hijos se manifestaran\nSomos Lugar Santísimo, somos tu habitación\nuna nueva generación\nQue tu Gloria postrera llene la Iglesia hoy\ny venga tu reino Señor"
+    "titulo": "Verdadero Adorador Yo quiero ser oh Señor,",
+    "letra": "Un verdadero adorador;\nEn espíritu y verdad\nyo quiero ser Señor\nLlena mi corazón con tu espíritu\nQue tu alabanza siempre fluya en mi\nLlena mi corazón con tu grande amor;\nQuiero ser adorador"
   },
   {
-    "titulo": "EL ES MI REY",
-    "letra": "El es mi Rey, mi Salvador\nEl es Señor mi corazón\nEl Es Jesus, mi Redentor\nEl es el Cordero mi Salvación\n//Y Reina Eternamente y para siempre//\n//Venga nosotros tu reino\nhágase siempre tu voluntad//\nJesucristo, tuyo es el reino\npara ti la gloria\nJesucristo tuyo el poder\npara ti la honra\nHosanna, aleluya\nvenga tu reino Señor\nHosanna, aleluya\nHágase tu voluntad"
+    "titulo": "Quiero Conocerte Quiero decirte que te amo,",
+    "letra": "Decirte que te adoro;\nque eres mi amor, Señor\nQuiero postrarme en tu presencia\nLlenarme de tu Gozo; oir tu dulce voz, Señor\nQuiero conocerte más oh mi Señor\nQuiero caminar a tu lado mi Señor\nQuiero conocerte más oh mi Señor,\nQuiero caminar a tu lado mi Señor.\nPara alabarte, para exaltarte;\nPara adorarte mi Señor"
   },
   {
-    "titulo": "PORQUE TU DIOS ES AMOR",
-    "letra": "Porque tu Dios es amor,\ntu puedes, puedes amar\nPorque Jesus es la luz tu puedes perdonar\nDame Señor tu perfecto amor\nquiero permanecer en ti\nDerrama Jesus tu luz, Señor\nPorque tu eres amor"
+    "titulo": "Quiero Darte Lo Mejor de Mi Quiero Darte Lo mejor de Mi",
+    "letra": "alabanza y adoración\nQue mi canto sea para ti,\nOlor grato de adoración.\nQue mi canto sea para ti Señor,\nUn fragante incienso de amor;\nQuiero Darte lo mejor de mi Señor,\nAlabanza y Adoración."
   },
   {
-    "titulo": "CLAMARÉ A MI SEÑOR",
-    "letra": "Clamaré mi Señor,\nporque Él es digno loor\nmis enemigos me salvara,\nclamaré mi Señor\n//Jesus Vivé, Bendita Sea la Roca\nEl Dios mi Salvación sea exaltado //"
+    "titulo": "Alabad a Jehová (Salmo 136) Alabad a Jehová porque El es bueno",
+    "letra": "Para siempre es su misericordia\nAlabad al Dios de los dioses\nAlabad al Señor de Señores\nAlabad al Rey de reyes\nAlabad al Dios de los cielos\nPorque para siempre. . .\nPara siempre. . .Para siempre. . .\nEs su misericordia"
   },
   {
-    "titulo": "MAS LA SENDA",
-    "letra": "Mas la senda del justo\nes como la luz la aurora\nQue va en aumento\nMas la senda del justo\nes como la luz la aurora\nque va en aumento, que va en aumento,\nhasta que el í perfecto es"
+    "titulo": "No Temáis No temáis, porque contigo Yo estoy,",
+    "letra": "Porque contigo Yo estoy, así dice el Señor\nYo te he redimido y te llamo por nombre,\nHijo mio eres tu;\nCuando pases por el fuego contigo estaré\nY por la llama también;\nTu no, (Jamás) te ahogarás\nTu no, (Jamás) te quemarás;\nPorque contigo yo estoy,\nporque contigo yo estoy"
   },
   {
-    "titulo": "EL REINA CON PODER",
-    "letra": "Al Señor sea la majestad\nEl Reina con Poder\nAlgo que quiero hacer por siempre\nes habitar en tu presencia\ny contemplar tu hermosura\ny conocerte en tu gloria"
+    "titulo": "Te Alabaré mi buen Jesús Eres Tú la única razón",
+    "letra": "de mi adoración ¡Oh Jesús!\nEres Tú la esperanza\nque anhelé tener ¡Oh Jesús!\nConfíe en Tí, me has ayudado\ntu salvación me has regalado\nHoy Hay gozo en mi corazón\ncon mi canto te alabaré\nTe alabaré, te glorificaré\nTe alabaré mi buen Jesús\nTe alabaré, te glorificaré\nte alabaré mi buen Jesús\nEn todo tiempo te alabaré\nen todo tiempo te adoraré"
   },
   {
-    "titulo": "CRISTO ES MI SEÑOR",
-    "letra": "Cristo es mi Señor, no me temor\ndeclararle al mundo entero su gran poder\nen mi vida permitir que él se deje ver\n\nCristo es mi Señor, no me temor\ndemostrar con mis acciones\nque él puede reinar\nen la vida cualquiera que se quiera entregar\n\nJesucristo, no me detendré\ndoblar mi rodilla y mi ser ante tu majestad\nJesucristo, te confesaré\ncon mis labios declararé que tú eres Señor"
+    "titulo": "Bueno Es Alabar Bueno es alabar, ¡Oh Señor!, tu nombre,",
+    "letra": "darte honra, gloria y honor por siempre\nbueno as alabarte Jesús\ny gozarme en tu poder\nporque grande eres Tú, grandes son tus obras\nporque grande eres Tú, grande es tu amor\ngrande es tu Gloria"
   },
   {
-    "titulo": "CRISTO, HEME AQUÍ",
-    "letra": "// Cristo, heme aquí, hoy me quiero entregar\npara hacer tu voluntad: guí, Señor //\nOh mi Cristo, éjame besar tus pies\ndejame ti beber agua eterna\npues ella me restaurará y me purificará\ny así podré escuchar tu corazón, Señor"
+    "titulo": "Levántate Señor Levántate, Levántate Señor",
+    "letra": "Levántate, Levántate Señor\nY caigan tus enemigos\nLos justos se alegraran;\nCantarán con regocijo, has triunfado con poder"
   },
   {
-    "titulo": "DÍA A DÍA",
-    "letra": "//í í, te anhelo mas\ní í mas te buscare\nporque tu has sido tan bueno\nporque tu has sido tan bello//\nTe necesito mas que mi vida\nTe necesito mas que mi ser\nTe necesito mas y mas cada í\nQuiero vivir bajo tu amor"
+    "titulo": "Tu Jehová Eres Mi Escudo Coro:Más tu Jehová eres mi escudo",
+    "letra": "mi gloria y el que levanta mi cabeza\nYo me acosté y dormí\nDesperté y Jehová me sustentaba\nNo temeré a diez millares de gentes,\nQue pusieren sitio contra mi\nJehová cuanto han crecido mis enemigos\nMuchos se levantan contra mí\nMuchos son los que dicen de mí\nNo hay para él salvación en Dios"
   },
   {
-    "titulo": "MIL GRACIAS",
-    "letra": "Mil Gracias yo te doy Señor\nMil gracias mi corazón\nMil Gracias por que has enviado\nJesús por mí\nY Hoy el ébil diga fuerte soy,\nEl pobre diga rico soy\nPor lo que Dios ha hecho por mí y en mí"
+    "titulo": "Victorioso Guerrero Coro:Victorioso Guerrero, es Jesús",
+    "letra": "Victorioso en batalla, es Jesús\nVictorioso en la guerra, es Jesús\nY saldrá el Señor, peleará contra naciones\nComo cuando peleó en el día de la batalla\nJesús Posará sus pies,\nSobre el Monte de los Olivos\nY reinará el Señor, Sobre toda la tierra."
+  },
+  {
+    "titulo": "Los Justos Se Alegrarán Levántate Señor y guianos,",
+    "letra": "Que en tu presencia fuerza nos darás\nMás los justos se alegraran\nSe gozarán delante de Dios\nY saltaremos de alegría ante el Señor\nCantad Salmos a su Nombre,\nY exaltad a Jehová\nY alegráos delante de El."
+  },
+  {
+    "titulo": "Fragancia De Alabanza Como una fragancia de alabanza, llegue a ti;",
+    "letra": "La expresión de gozo, que hay en mi ser\nPor tu grande amor\nQue me mostraste Señor,\nEnviando a Cristo a morir, en el calvario\nEl me perdonó\ny con su sangre lavó\nmi iniquidad y pecado, ahora soy salvo"
+  },
+  {
+    "titulo": "No Hay Dios Como Mi Dios Coro:No hay Dios, No hay Dios,",
+    "letra": "No hay Dios como mi Dios;\nMaravilloso, Maravilloso\nMaravilloso es nuestro Dios\nComo he de expresar\nLa gratitud que hay en mi ser,\nPara Dios, mi Redentor,\nquien me restauró\nYo no era nada, cuando El, me tomó\nY ahora, Yo Soy, un príncipe de su pueblo\nUn príncipe de su pueblo\nUn príncipe de su pueblo"
+  },
+  {
+    "titulo": "Cantemos a Jesus Cantemos a Jesús,Cantemos a Jesús",
+    "letra": "Señor de toda creación, Dios de mi corazón\nCantemos a Jesús, Cantemos a Jesús\nVictorioso mas que vencedor,\nRey sobre toda nación\n// Digno de Loor,    digno de loor\nRey de mi corazón,    Rey de mi corazón //"
+  },
+  {
+    "titulo": "No Volvamos Atrás // Dios no nos trajo hasta aquí",
+    "letra": "para volver atrás\nnos trajo aquí a poseer la tierra que nos dió //\nAunque el gigante se encuentre allá,\nyo nunca temeré\nnos trajo aquí a poseer la tierra que nos dió\nnos trajo aquí a poseer la tierra que nos dió"
+  },
+  {
+    "titulo": "Te exaltamos Te exaltamos sobre un trono de alabanza",
+    "letra": "Te exaltamos Oh Señor\nNuestras Alabanza subirán\nDelante de tu trono Oh Señor\nHonor, Fragante, A ti, Señor\nHonor Y alabanza por siempre daré\nAl que esta sentado sobre el trono de mi Dios\nMajestuosamente Reinas, sin igual tu eres\npoderoso Dios\nte proclamaré, te exaltaré\ntu eres el Rey sobre mi Corazón\nTe exaltamos sobre un trono de alabanza\nTe exaltamos Oh Señor\nNuestras Alabanza subirán\nDelante de tu trono Oh Señor"
+  },
+  {
+    "titulo": "Me Gozaré //  Me Gozaré, me alegraré y cantaré al Señor",
+    "letra": "Porque han  llegado las bodas,\ndel cordero de Dios  //\nY a su esposa se le ha concedido\nque se vista de lino fino\nLino limpio y resplandeciente,\npara recibir al Rey"
+  },
+  {
+    "titulo": "Restauraras El Santo Lugar Restauraras el Santo Lugar",
+    "letra": "y pondrás ahí tu habitación.\nTe mostrarás poderoso Dios\nen tu amor me regocijo hoy\nLo dilatado de tu imperio y tu santa paz\nlos confines abarcará\ny la creación entera nunca jamas gemirá\ntus hijos se manifestaran\nSomos Lugar Santísimo, somos tu habitación\nuna nueva generación\nQue tu Gloria postrera llene la Iglesia de hoy\ny venga tu reino Señor"
+  },
+  {
+    "titulo": "El Es Mi Rey El es mi Rey, mi Salvador",
+    "letra": "El es Señor de mi corazón\nEl Es Jesus, mi Redentor\nEl es el Cordero de mi Salvación\n//Y Reina Eternamente y para siempre//\n//Venga a nosotros tu reino\nhágase siempre tu voluntad//\nJesucristo, tuyo es el reino\npara ti la gloria\nJesucristo tuyo el poder\npara ti la honra\nHosanna, aleluya\nvenga tu reino Señor\nHosanna, aleluya\nHágase tu voluntad"
+  },
+  {
+    "titulo": "Porque Tu Dios Es Amor Porque tu Dios es amor,",
+    "letra": "tu puedes, puedes amar\nPorque Jesus es la luz  tu puedes perdonar\nDame Señor de tu perfecto amor\nquiero permanecer en ti\nDerrama Jesus de tu luz, Señor\nPorque tu eres amor"
+  },
+  {
+    "titulo": "Clamaré a mi Señor Clamaré  a  mi  Señor,",
+    "letra": "porque Él es digno de loor\nDe mis enemigos me salvara,\nclamaré a mi Señor\n//Jesus Vivé, Bendita Sea la Roca\nEl Dios de mi Salvación sea exaltado //"
+  },
+  {
+    "titulo": "Mas La Senda Mas la senda del justo",
+    "letra": "es como la luz de la aurora\nQue va en aumento\nMas la senda del justo\nes como la luz de la aurora\nque va en aumento, que va en aumento,\nhasta que el día perfecto es"
+  },
+  {
+    "titulo": "El Reina Con Poder Al Señor sea la majestad",
+    "letra": "El Reina con Poder\nAlgo que quiero hacer por siempre\nes habitar en tu presencia\ny contemplar tu hermosura\ny conocerte en tu gloria"
+  },
+  {
+    "titulo": "Cristo Es Mi Señor",
+    "letra": "Cristo es mi Señor,       no me da temor\ndeclararle al mundo entero de su gran poder\nen mi vida permitir que él se deje ver\nCristo es mi Señor,       no me da temor\ndemostrar con mis acciones\nque él puede reinar\nen la vida de cualquiera que se quiera entregar\nJesucristo,        no me detendré\nde doblar mi rodilla y mi ser ante tu majestad\nJesucristo,       te confesaré\ncon mis labios declararé  que tú eres Señor"
+  },
+  {
+    "titulo": "Cristo, Heme Aquí // Cristo, heme aquí, hoy me quiero entregar",
+    "letra": "para hacer tu voluntad: guíame, Señor //\nOh mi Cristo,   déjame besar tus pies\ndejame de ti beber agua eterna\npues ella me restaurará y me purificará\ny así podré escuchar tu corazón, Señor"
+  },
+  {
+    "titulo": "Día a Día //Día a día, te anhelo mas",
+    "letra": "día a día mas te buscare\nporque tu has sido tan bueno\nporque tu has sido tan bello//\nTe necesito mas que a mi vida\nTe necesito mas que a mi ser\nTe necesito mas y mas cada día\nQuiero vivir bajo tu amor"
+  },
+  {
+    "titulo": "Mil Gracias Mil Gracias yo te doy Señor",
+    "letra": "Mil gracias de mi corazón\nMil Gracias por que has enviado\na Jesús por mí\nY Hoy el débil diga fuerte soy,\nEl pobre diga rico soy\nPor lo que Dios ha hecho por mí y en mí"
   }
 ]
