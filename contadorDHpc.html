@@ -3440,6 +3440,105 @@ function eliminarLogo() {
   actualizarIconoLogo();
 }
 
+
+// ==========================================
+// Cargar canciones desde canciones.json
+// ==========================================
+let canciones = [];
+
+async function cargarCanciones() {
+  try {
+    const resp = await fetch("canciones.json", {
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store"
+      }
+    });
+
+    if (!resp.ok) {
+      console.error("Error al cargar canciones.json:", resp.status);
+      return;
+    }
+
+    canciones = await resp.json();
+    console.log("Canciones cargadas:", canciones);
+
+  } catch (err) {
+    console.error("Error leyendo canciones.json:", err);
+  }
+}
+
+// Ejecutar al inicio
+cargarCanciones();
+
+
+  
+function activarModoCanciones() {
+
+  // Cambiar placeholder
+  document.getElementById("q").placeholder = "Buscar canción...";
+
+  // Cambiar icono del encabezado izquierda
+  document.querySelector("#izq i")?.classList.remove("fa-book-open");
+  document.querySelector("#izq i")?.classList.add("fa-music");
+
+  // Cambiar combo a lista de canciones
+  const combo = document.getElementById("combo-libros");
+  combo.innerHTML = '<option value="">Selecciona una canción...</option>';
+
+  // Llenar combo con títulos
+  canciones.forEach((c, i) => {
+    const op = document.createElement("option");
+    op.value = i;
+    op.textContent = c.titulo;
+    combo.appendChild(op);
+  });
+
+  // Cuando selecciona una canción → cargar sus párrafos
+  combo.onchange = () => {
+    if (combo.value === "") return;
+    mostrarCancion(parseInt(combo.value));
+  };
+
+  // Limpiar resultados de Biblia
+  document.getElementById("r").innerHTML = "";
+}
+
+
+
+  function mostrarCancion(idx) {
+  const c = canciones[idx];
+  if (!c) return;
+
+  const cont = document.getElementById("r");
+  cont.innerHTML = "";
+
+  const partes = c.letra.split(/\n\s*\n/);
+
+  partes.forEach((p, slide) => {
+    const div = document.createElement("div");
+    div.className = "resultado-cancion";
+    div.style.padding = "12px";
+    div.style.border = "1px solid #ccc";
+    div.style.borderRadius = "8px";
+    div.style.marginBottom = "10px";
+    div.style.cursor = "pointer";
+    div.style.background = "#f8f8f8";
+
+    div.innerHTML = `
+      <div style="font-weight:bold;color:#0066cc">${c.titulo} — Slide ${slide+1}</div>
+      <div style="white-space:pre-wrap;margin-top:6px">${p}</div>
+    `;
+
+    // Proyectar slide
+    div.onclick = () => {
+      actualizarVentanaBiblia(c.titulo, p);  
+    };
+
+    cont.appendChild(div);
+  });
+}
+
   
 
   
@@ -3497,25 +3596,35 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 
+// ===============================
 // BOTÓN: CANCIONES
+// ===============================
 document.getElementById("btnCanciones").addEventListener("click", () => {
+  // → Esperar a que canciones.json esté cargado
+  if (canciones.length === 0) {
+    await cargarCanciones();
+  }
+
+  // 1. Cambiamos el modo
+  window.modoProyeccion = "canciones"; // ← muy importante
+
+  // 2. Ocultar subtitulo
   document.getElementById("subtitulo").style.display = "none";
+
+  // 3. Mostrar el panel principal
   document.querySelector(".panel").style.display = "flex";
 
-  // Mostrar contenedor de canciones
-  document.getElementById("canciones-container").style.display = "flex";
+  // 4. Mostramos el container (es el MISMO de Biblia)
+  document.getElementById("biblia-container").style.display = "flex";
 
-  // Ocultar Biblia para evitar conflictos
-  document.getElementById("biblia-container").style.display = "none";
-
-  // Ocultar controles que no pertenecen aquí
+  // 5. Ocultar cosas propias de asistencia/calendario
   tablaArriba.style.display = "none";
   document.querySelector('button[onclick="verMesActual()"]').style.display = "none";
   document.querySelector('button[onclick="verHoy()"]').style.display = "none";
   document.getElementById("selectMes").style.display = "none";
   document.querySelector('button[onclick="proyectar()"]').style.display = "none";
 
-  // Mostrar solo los botones necesarios para proyectar canciones
+  // 6. Mostrar controles de proyección
   document.getElementById("pantallaSelect").style.display = "inline-flex";
   document.getElementById("btnTema").style.display = "inline-flex";
   document.getElementById("btnLimpiarTexto").style.display = "inline-flex";
@@ -3523,9 +3632,11 @@ document.getElementById("btnCanciones").addEventListener("click", () => {
   document.getElementById("btnEnVivo").style.display = "inline-flex";
   document.getElementById("btnParar").style.display = "inline-flex";
 
-  // Logo opcional
   document.getElementById("btnLogo")?.classList.remove("hidden-btn");
   document.getElementById("btnConfigLogo")?.classList.remove("hidden-btn");
+
+  // 7. REEMPLAZAR búsqueda y resultados por panel canciones
+  activarModoCanciones();
 });
 
   
@@ -3570,6 +3681,7 @@ document.getElementById("btnCanciones").addEventListener("click", () => {
 </script>
 </body>
 </html>
+
 
 
 
