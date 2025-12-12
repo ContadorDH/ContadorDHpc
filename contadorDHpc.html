@@ -1855,6 +1855,9 @@ function buscar() {
 // ==========================
 // Autocompletado inline (ghost) para #q
 // ==========================
+// ==========================
+// Autocompletado inline (ghost) para #q
+// ==========================
 (function() {
   const input = document.getElementById("q");
   const ghostTyped = document.getElementById("ghost-typed");
@@ -1863,8 +1866,10 @@ function buscar() {
 
   if (!input) return;
 
-  // Buscar la mejor coincidencia exacta empezando por lo escrito
-  function mejorCoincidencia(texto) {
+  // ================================================
+  // 🔍 COINCIDENCIA PARA BIBLIA
+  // ================================================
+  function mejorCoincidenciaBiblia(texto) {
     const q = texto.toLowerCase().trim();
     if (!q) return null;
 
@@ -1885,7 +1890,43 @@ function buscar() {
     return best;
   }
 
-  // Actualiza el ghost
+  // ================================================
+  // 🎵 COINCIDENCIA PARA CANCIONES
+  // ================================================
+  function mejorCoincidenciaCanciones(texto) {
+    const q = texto.toLowerCase().trim();
+    if (!q) return null;
+
+    let best = null;
+
+    for (let c of canciones) {
+      const lower = c.titulo.toLowerCase();
+
+      if (lower.startsWith(q)) {
+        best = c.titulo;
+        break;
+      }
+
+      if (!best && lower.includes(q)) {
+        best = c.titulo;
+      }
+    }
+    return best;
+  }
+
+  // ================================================
+  // Seleccionar modo
+  // ================================================
+  function mejorCoincidencia(texto) {
+    if (window.modoProyeccion === "canciones") {
+      return mejorCoincidenciaCanciones(texto);
+    }
+    return mejorCoincidenciaBiblia(texto);
+  }
+
+  // ================================================
+  // Actualiza ghost + predictivo
+  // ================================================
   function actualizarGhost() {
     const val = input.value || "";
     const caretAtEnd =
@@ -1893,6 +1934,7 @@ function buscar() {
       input.selectionStart === val.length;
 
     const match = mejorCoincidencia(val);
+
     if (!match || !val || !caretAtEnd) {
       ghostTyped.textContent = "";
       ghostRest.textContent = "";
@@ -1917,14 +1959,18 @@ function buscar() {
       ghostRest.textContent = "";
     }
 
-    // Mostrar predictivo dropdown
-    predictivo.innerHTML = `<div onclick="document.getElementById('q').value='${match}';buscar();">
-      ${match}
-    </div>`;
+    // Dropdown predictivo
+    predictivo.innerHTML = `
+      <div onclick="document.getElementById('q').value='${match}';buscar();">
+        ${match}
+      </div>
+    `;
     predictivo.style.display = "block";
   }
 
+  // ================================================
   // Aceptar sugerencia
+  // ================================================
   function aceptarGhost() {
     const typed = input.value || "";
     const match = mejorCoincidencia(typed);
@@ -1943,7 +1989,7 @@ function buscar() {
   // INPUT LISTENER
   input.addEventListener("input", actualizarGhost);
 
-  // Teclas especiales
+  // TECLAS
   input.addEventListener("keydown", (e) => {
     if (e.key === "Tab" || e.key === "ArrowRight") {
       const caretAtEnd =
@@ -3714,6 +3760,7 @@ document.getElementById("btnCanciones").addEventListener("click", async () => {
 </script>
 </body>
 </html>
+
 
 
 
