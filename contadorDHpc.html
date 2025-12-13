@@ -1665,8 +1665,12 @@ document.getElementById("lista-libros").innerHTML = "";
     });
   });
 
+// Mostrar status SOLO si estamos en modo Biblia
+if (window.modoProyeccion === "biblia") {
   document.getElementById("status").innerHTML =
     `✔ Biblia lista (${contador.toLocaleString()} versículos)`;
+}
+
 }
 
 // =============================
@@ -3660,6 +3664,13 @@ async function cargarCanciones() {
   } catch (err) {
     console.error("Error leyendo canciones.json:", err);
   }
+
+  // Mostrar status SOLO si estamos en modo Canciones
+if (window.modoProyeccion === "canciones") {
+  document.getElementById("status").innerHTML =
+    `✔ Canciones cargadas (${canciones.length})`;
+}
+
 }
 
 // Ejecutar al inicio
@@ -3707,9 +3718,16 @@ if (r) {
     };
     combo.style.display = "block";
   }
+// Refrescar status al entrar en modo Biblia
+if (typeof biblia === "object") {
+  const total = Object.keys(biblia).length;
+  if (total) {
+    document.getElementById("status").innerHTML =
+      `✔ Biblia lista (${total.toLocaleString()} versículos)`;
+  }
+}
 
-  // Asegurarnos de que el predictivo (ghost) sepa que estamos en Biblia
-  // (la función mejorCoincidencia que te doy abajo usa window.modoProyeccion)
+  
 }
 
 
@@ -3750,6 +3768,11 @@ function activarModoCanciones() {
 
   // Limpiar resultados de Biblia
   document.getElementById("r").innerHTML = "";
+
+  // Refrescar status al entrar en modo Canciones
+document.getElementById("status").innerHTML =
+  `✔ Canciones cargadas (${canciones.length})`;
+
 }
 
 
@@ -4055,6 +4078,7 @@ document.getElementById("btnBiblia").addEventListener("click", () => {
 </script>
 </body>
 </html>
+
 
 
 
