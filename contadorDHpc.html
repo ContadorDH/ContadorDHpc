@@ -3413,6 +3413,18 @@ async function proyectar() {
 
   ventanaProyeccion = window.open("", "proyeccion", features);
 
+  // 🔥 FORZAR MAXIMIZADO REAL (sin afectar nada más)
+try {
+  ventanaProyeccion.moveTo(scr ? scr.left : 0, scr ? scr.top : 0);
+  ventanaProyeccion.resizeTo(
+    scr ? scr.width : screen.availWidth,
+    scr ? scr.height : screen.availHeight
+  );
+} catch (e) {
+  console.warn("No se pudo forzar maximizado:", e);
+}
+
+
   const headersSinTotal = headers.slice(inicio, fin);
   const valoresSinTotal = valores.slice(inicio, fin);
 
@@ -3956,6 +3968,7 @@ document.getElementById("btnBiblia").addEventListener("click", () => {
 </script>
 </body>
 </html>
+
 
 
 
