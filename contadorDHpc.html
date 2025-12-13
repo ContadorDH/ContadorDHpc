@@ -3747,6 +3747,10 @@ function activarModoCanciones() {
   const cont = document.getElementById("r");
   cont.innerHTML = "";
 
+  // 🔹 Reset de navegación al cargar nueva canción
+  window.cancionSlideActual = -1;
+  window.cancionSlideConfirmada = false;
+
   let texto = c.letra;
 
   // ❌ QUITAR "1.  TÍTULO" DE LA PRIMERA LÍNEA
@@ -3754,7 +3758,7 @@ function activarModoCanciones() {
 
   const partes = texto.split(/\n\s*\n/);
 
-  partes.forEach((p) => {
+  partes.forEach((p, index) => {
     const div = document.createElement("div");
     div.className = "resultado-cancion";
     div.style.padding = "12px";
@@ -3769,25 +3773,84 @@ function activarModoCanciones() {
       <div style="white-space:pre-wrap;margin-top:6px">${p}</div>
     `;
 
-    // ❌ SIN TÍTULO ABAJO
-  div.onclick = () => {
-  // 1. Preview local (IGUAL que Biblia)
-  renderPantallaLocal("preview-texto", "", p);
-
-  // 2. Si está en vivo, actualiza la pantalla real
-  if (ventanaProyeccion && !ventanaProyeccion.closed) {
-    actualizarVentanaBiblia("", p);
-  }
-};
+    // ✅ CLICK CONTROLADO (preview → proyección)
+    div.onclick = () => {
+      manejarSlideCancion(p, index);
+    };
 
     cont.appendChild(div);
   });
 }
 
+function manejarSlideCancion(texto, index) {
+
+  // 1️⃣ Preview SIEMPRE
+  renderPantallaLocal("preview-texto", "", texto);
+
+  // Si es otra diapositiva → resetear confirmación
+  if (window.cancionSlideActual !== index) {
+    window.cancionSlideActual = index;
+    window.cancionSlideConfirmada = false;
+    return;
+  }
+
+  // 2️⃣ Segunda acción → proyectar
+  if (!window.cancionSlideConfirmada) {
+    window.cancionSlideConfirmada = true;
+
+    if (ventanaProyeccion && !ventanaProyeccion.closed) {
+      actualizarVentanaBiblia("", texto);
+    }
+  }
+}
+
+
+ document.addEventListener("keydown", (e) => {
+
+  // Solo en modo canciones
+  if (window.modoProyeccion !== "canciones") return;
+
+  const slides = document.querySelectorAll("#r .resultado-cancion");
+  if (!slides.length) return;
+
+  // Flecha abajo
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    let next = window.cancionSlideActual + 1;
+    if (next >= slides.length) next = slides.length - 1;
+    slides[next].click();
+  }
+
+  // Flecha arriba
+  if (e.key === "ArrowUp") {
+    e.preventDefault();
+    let prev = window.cancionSlideActual - 1;
+    if (prev < 0) prev = 0;
+    slides[prev].click();
+  }
+});
+
+
+function moverSlideCancion(dir, slides) {
+
+  let nuevo = window.cancionSlideActual + dir;
+
+  if (nuevo < 0) nuevo = 0;
+  if (nuevo >= slides.length) nuevo = slides.length - 1;
+
+  const slide = slides[nuevo];
+  if (!slide) return;
+
+  slide.scrollIntoView({ behavior: "smooth", block: "center" });
+
+  const texto = slide.innerText;
+
+  manejarSlideCancion(texto, nuevo);
+}
+
 
 
   
-
   
 document.addEventListener("DOMContentLoaded", () => {
   detectarPantallas();
@@ -3963,4 +4026,5 @@ document.getElementById("btnBiblia").addEventListener("click", () => {
 </script>
 </body>
 </html>
+
 
