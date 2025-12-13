@@ -3740,7 +3740,7 @@ function activarModoCanciones() {
 
 
 
- function mostrarCancion(idx) {
+function mostrarCancion(idx) {
   const c = canciones[idx];
   if (!c) return;
 
@@ -3768,12 +3768,14 @@ function activarModoCanciones() {
     div.style.cursor = "pointer";
     div.style.background = "#f8f8f8";
 
-    // ❌ SOLO LETRA (SIN TÍTULO)
+    // ✅ GUARDAR TEXTO ORIGINAL (NO MODIFICADO)
+    div.dataset.texto = p;
+
     div.innerHTML = `
       <div style="white-space:pre-wrap;margin-top:6px">${p}</div>
     `;
 
-    // ✅ CLICK CONTROLADO (preview → proyección)
+    // CLICK CONTROLADO (preview → proyección)
     div.onclick = () => {
       manejarSlideCancion(p, index);
     };
@@ -3804,9 +3806,6 @@ function manejarSlideCancion(texto, index) {
   }
 }
 
-
-
-
 document.addEventListener("keydown", (e) => {
 
   // Solo en modo canciones
@@ -3818,12 +3817,12 @@ document.addEventListener("keydown", (e) => {
   // Flecha abajo
   if (e.key === "ArrowDown") {
     e.preventDefault();
+
     let next = window.cancionSlideActual + 1;
     if (next >= slides.length) next = slides.length - 1;
 
-    const texto = slides[next].innerText;
+    const texto = slides[next].dataset.texto;
 
-    // 🔥 Forzar coincidencia para proyectar en un toque
     window.cancionSlideActual = next;
     window.cancionSlideConfirmada = false;
 
@@ -3833,21 +3832,18 @@ document.addEventListener("keydown", (e) => {
   // Flecha arriba
   if (e.key === "ArrowUp") {
     e.preventDefault();
+
     let prev = window.cancionSlideActual - 1;
     if (prev < 0) prev = 0;
 
-    const texto = slides[prev].innerText;
+    const texto = slides[prev].dataset.texto;
 
-    // 🔥 Forzar coincidencia para proyectar en un toque
     window.cancionSlideActual = prev;
     window.cancionSlideConfirmada = false;
 
     manejarSlideCancion(texto, prev);
   }
 });
-
-
-
 
 function moverSlideCancion(dir, slides) {
 
@@ -3861,7 +3857,7 @@ function moverSlideCancion(dir, slides) {
 
   slide.scrollIntoView({ behavior: "smooth", block: "center" });
 
-  const texto = slide.innerText;
+  const texto = slide.dataset.texto;
 
   manejarSlideCancion(texto, nuevo);
 }
@@ -4044,6 +4040,7 @@ document.getElementById("btnBiblia").addEventListener("click", () => {
 </script>
 </body>
 </html>
+
 
 
 
