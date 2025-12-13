@@ -2122,8 +2122,8 @@ function actualizarEspejoLocal() {
   contenedor.style.overflow = "hidden";
   contenedor.style.padding = "0";
 
+  // ❗ NO borrar el preview si la ventana no está
   if (!ventanaProyeccion || ventanaProyeccion.closed) {
-    contenedor.innerHTML = "";
     return;
   }
 
@@ -2153,7 +2153,6 @@ function actualizarEspejoLocal() {
     contenedor.appendChild(iframe);
   }
 
-  // SIN límites, sin max-height (cortaba la derecha y abajo)
   iframe.style.width = realW + "px";
   iframe.style.height = realH + "px";
   iframe.style.maxWidth = "unset";
@@ -2163,16 +2162,14 @@ function actualizarEspejoLocal() {
   try {
     const htmlCompleto = ventanaProyeccion.document.documentElement.outerHTML;
     if (iframe.srcdoc !== htmlCompleto) iframe.srcdoc = htmlCompleto;
-  } catch(e) {}
+  } catch (e) {}
 
   const offsetX = (miniW - realW * escala) / 2;
   const offsetY = (miniH - realH * escala) / 2;
 
-  // 👇👇 SOLO ESTO SE AGREGA (2 líneas)
   iframe.style.left = offsetX + "px";
-  iframe.style.top = (offsetY - 2) + "px";  // levanta 2px para evitar corte abajo
-  iframe.style.bottom = "0";                // evita recorte inferior
-  // 👆👆 SOLO ESTAS LÍNEAS
+  iframe.style.top = (offsetY - 2) + "px";
+  iframe.style.bottom = "0";
 
   iframe.style.transform = `scale(${escala})`;
   iframe.style.willChange = "transform";
@@ -3895,6 +3892,7 @@ document.getElementById("btnBiblia").addEventListener("click", () => {
 </script>
 </body>
 </html>
+
 
 
 
