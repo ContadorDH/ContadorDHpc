@@ -1250,7 +1250,7 @@ body.tema-oscuro .resultados-biblia .resaltado,
   <!-- BOTÓN CARGAR ASISTENCIA -->
   <button id="btnCargarAsistencia"
           style="background:none;border:none;color:white;font-size:18px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;">
-    Cargar Asistencia
+    Asistencia
   </button>
 
   <!-- BOTÓN BIBLIA -->
@@ -1290,7 +1290,7 @@ body.tema-oscuro .resultados-biblia .resaltado,
     <div id="input-wrap" style="position:relative;">
 
       <!-- INPUT REAL -->
-      <input type="text" id="q" placeholder="Buscar cita bíblica."
+      <input type="text" id="q" placeholder="Buscar cita bíblica..."
              autocomplete="off"
              style="padding:10px;font-size:16px;width:100%;border-radius:8px;
                     border:2px solid #aac;font-family:'Segoe UI',sans-serif;
@@ -3673,7 +3673,7 @@ function activarModoBiblia() {
 
   // limpiar input/resultados
   const q = document.getElementById("q");
-  if (q) { q.value = ""; q.placeholder = "Juan 3:16 | Salmos 23 | amor"; }
+  if (q) { q.value = ""; q.placeholder = "Buscar cita bíblica."; }
 
  const r = document.getElementById("r");
 if (r) {
@@ -4055,6 +4055,7 @@ document.getElementById("btnBiblia").addEventListener("click", () => {
 </script>
 </body>
 </html>
+
 
 
 
