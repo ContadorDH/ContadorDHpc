@@ -3631,8 +3631,12 @@ function activarModoBiblia() {
   const q = document.getElementById("q");
   if (q) { q.value = ""; q.placeholder = "Juan 3:16 | Salmos 23 | amor"; }
 
-  const r = document.getElementById("r");
-  if (r) r.innerHTML = "";
+ const r = document.getElementById("r");
+if (r) {
+  r.innerHTML = "";
+  r.style.whiteSpace = "pre-wrap";
+}
+
 
   // icono de la izquierda (volver a libro)
   const icon = document.querySelector("#izq i");
@@ -3884,6 +3888,7 @@ document.getElementById("btnBiblia").addEventListener("click", () => {
 </script>
 </body>
 </html>
+
 
 
 
