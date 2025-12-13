@@ -2728,7 +2728,10 @@ document.getElementById("pantallaSelect").addEventListener("change", async () =>
 function actualizarVentanaBiblia(ref, texto) {
   if (!ventanaProyeccion || ventanaProyeccion.closed) return;
 
-  const textoFinal = `${texto} <span class="cita-mini">${ref}</span>`;
+  const textoFinal = ref
+  ? `${texto} <span class="cita-mini">${ref}</span>`
+  : texto;
+
   const vars = {
     fondo: getComputedStyle(document.body).getPropertyValue("--fondo").trim(),
     acento: getComputedStyle(document.body).getPropertyValue("--acento").trim(),
@@ -2814,7 +2817,10 @@ function renderPantallaLocal(contenedor, ref, texto) {
   if (!el) return;
 
   // Formatear igual que la proyección real
-  const textoFinal = `${texto} <span class="cita-mini">${ref}</span>`;
+ const textoFinal = ref
+  ? `${texto} <span class="cita-mini">${ref}</span>`
+  : texto;
+
 
   el.innerHTML = `
     <div class="biblia-wrapper-local">
@@ -3901,6 +3907,7 @@ document.getElementById("btnBiblia").addEventListener("click", () => {
 </script>
 </body>
 </html>
+
 
 
 
