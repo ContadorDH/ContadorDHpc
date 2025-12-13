@@ -3681,19 +3681,10 @@ let canciones = [];
 
 async function cargarCanciones() {
   try {
-    const resp = await fetch("canciones.json", {
-      headers: { "Cache-Control": "no-store" }
-    });
-
-    const base = resp.ok ? await resp.json() : [];
-    const extra = JSON.parse(localStorage.getItem("cancionesExtra") || "[]");
-
-    canciones = [...base, ...extra];
+    canciones = await window.apiCanciones.leer();
     console.log("Canciones cargadas:", canciones);
-
-  } catch (err) {
-    console.error("Error leyendo canciones:", err);
-    canciones = JSON.parse(localStorage.getItem("cancionesExtra") || "[]");
+  } catch (e) {
+    console.error("Error cargando canciones:", e);
   }
 
   if (window.modoProyeccion === "canciones") {
@@ -3707,7 +3698,7 @@ async function cargarCanciones() {
 cargarCanciones();
 
 
-function guardarNuevaCancion() {
+async function guardarNuevaCancion() {
   const titulo = document.getElementById("nuevaTitulo").value.trim();
   const letra = document.getElementById("nuevaLetra").value.trim();
 
@@ -3716,22 +3707,15 @@ function guardarNuevaCancion() {
     return;
   }
 
-  const nueva = { titulo, letra };
+  canciones.push({ titulo, letra });
 
-  const extras = JSON.parse(localStorage.getItem("cancionesExtra") || "[]");
-  extras.push(nueva);
-  localStorage.setItem("cancionesExtra", JSON.stringify(extras));
-
-  canciones.push(nueva);
+  await window.apiCanciones.guardar(canciones);
 
   cerrarModalAgregarCancion();
-
-  if (window.modoProyeccion === "canciones") {
-    activarModoCanciones();
-  }
+  activarModoCanciones();
 
   document.getElementById("status").innerHTML =
-    `✔ Canción agregada (${canciones.length})`;
+    `✔ Canciones cargadas (${canciones.length})`;
 }
 
 
@@ -4145,6 +4129,7 @@ document.getElementById("btnBiblia").addEventListener("click", () => {
 </script>
 </body>
 </html>
+
 
 
 
