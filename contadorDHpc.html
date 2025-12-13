@@ -1290,7 +1290,7 @@ body.tema-oscuro .resultados-biblia .resaltado,
     <div id="input-wrap" style="position:relative;">
 
       <!-- INPUT REAL -->
-      <input type="text" id="q" placeholder="Juan 3:16 | Salmos 23 | amor"
+      <input type="text" id="q" placeholder="Buscar cita bíblica."
              autocomplete="off"
              style="padding:10px;font-size:16px;width:100%;border-radius:8px;
                     border:2px solid #aac;font-family:'Segoe UI',sans-serif;
@@ -3702,6 +3702,12 @@ if (r) {
   
 function activarModoCanciones() {
 
+  // 🔹 CAMBIAR MODO LÓGICO
+  window.modoProyeccion = "canciones";
+
+  // 🔹 CERRAR ESTADO DE BIBLIA (libros / capítulos)
+  cerrarCapitulos();
+
   // Cambiar placeholder
   document.getElementById("q").placeholder = "Buscar canción...";
 
@@ -3730,6 +3736,7 @@ function activarModoCanciones() {
   // Limpiar resultados de Biblia
   document.getElementById("r").innerHTML = "";
 }
+
 
 
 
@@ -3956,3 +3963,4 @@ document.getElementById("btnBiblia").addEventListener("click", () => {
 </script>
 </body>
 </html>
+
