@@ -3704,7 +3704,7 @@ function activarModoCanciones() {
 
 
 
-  function mostrarCancion(idx) {
+ function mostrarCancion(idx) {
   const c = canciones[idx];
   if (!c) return;
 
@@ -3723,19 +3723,20 @@ function activarModoCanciones() {
     div.style.cursor = "pointer";
     div.style.background = "#f8f8f8";
 
+    // ❌ SIN TÍTULO EN LA DIAPOSITIVA
     div.innerHTML = `
-      <div style="font-weight:bold;color:#0066cc">${c.titulo} — Slide ${slide+1}</div>
       <div style="white-space:pre-wrap;margin-top:6px">${p}</div>
     `;
 
-    // Proyectar slide
+    // ❌ SIN TÍTULO ABAJO EN PROYECCIÓN
     div.onclick = () => {
-      actualizarVentanaBiblia(c.titulo, p);  
+      actualizarVentanaBiblia("", p);
     };
 
     cont.appendChild(div);
   });
 }
+
 
   
 
@@ -3888,6 +3889,7 @@ document.getElementById("btnBiblia").addEventListener("click", () => {
 </script>
 </body>
 </html>
+
 
 
 
