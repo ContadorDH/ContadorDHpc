@@ -2042,20 +2042,43 @@ function actualizarGhost() {
   // ================================================
   // Aceptar sugerencia
   // ================================================
-  function aceptarGhost() {
-    const typed = input.value || "";
-    const match = mejorCoincidencia(typed);
+ function aceptarGhost() {
+  const typed = input.value || "";
+  const match = mejorCoincidencia(typed);
 
-    if (!match) return false;
+  if (!match) return false;
 
+  // ==========================
+  // 🎵 MODO CANCIONES
+  // ==========================
+  if (window.modoProyeccion === "canciones") {
+    if (match.tipo === "titulo") {
+      const sugerencia = match.valor;
+      if (sugerencia.toLowerCase().startsWith(typed.toLowerCase())) {
+        input.value = sugerencia;
+        input.setSelectionRange(input.value.length, input.value.length);
+        actualizarGhost();
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // ==========================
+  // 📖 MODO BIBLIA (igual que antes)
+  // ==========================
+  if (typeof match === "string") {
     if (match.toLowerCase().startsWith(typed.toLowerCase())) {
       input.value = match;
       input.setSelectionRange(input.value.length, input.value.length);
       actualizarGhost();
       return true;
     }
-    return false;
   }
+
+  return false;
+}
+
 
   // INPUT LISTENER
   input.addEventListener("input", actualizarGhost);
@@ -3933,6 +3956,7 @@ document.getElementById("btnBiblia").addEventListener("click", () => {
 </script>
 </body>
 </html>
+
 
 
 
