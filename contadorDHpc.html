@@ -3682,36 +3682,60 @@ let canciones = [];
 async function cargarCanciones() {
   try {
     const resp = await fetch("canciones.json", {
-      headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "no-store"
-      }
+      headers: { "Cache-Control": "no-store" }
     });
 
-    if (!resp.ok) {
-      console.error("Error al cargar canciones.json:", resp.status);
-      return;
-    }
+    const base = resp.ok ? await resp.json() : [];
+    const extra = JSON.parse(localStorage.getItem("cancionesExtra") || "[]");
 
-    canciones = await resp.json();
+    canciones = [...base, ...extra];
     console.log("Canciones cargadas:", canciones);
 
   } catch (err) {
-    console.error("Error leyendo canciones.json:", err);
+    console.error("Error leyendo canciones:", err);
+    canciones = JSON.parse(localStorage.getItem("cancionesExtra") || "[]");
   }
 
-  // Mostrar status SOLO si estamos en modo Canciones
-if (window.modoProyeccion === "canciones") {
-  document.getElementById("status").innerHTML =
-    `✔ Canciones cargadas (${canciones.length})`;
+  if (window.modoProyeccion === "canciones") {
+    document.getElementById("status").innerHTML =
+      `✔ Canciones cargadas (${canciones.length})`;
+  }
 }
 
-}
 
 // Ejecutar al inicio
 cargarCanciones();
 
 
+function guardarNuevaCancion() {
+  const titulo = document.getElementById("nuevaTitulo").value.trim();
+  const letra = document.getElementById("nuevaLetra").value.trim();
+
+  if (!titulo || !letra) {
+    alert("Completa título y letra");
+    return;
+  }
+
+  const nueva = { titulo, letra };
+
+  const extras = JSON.parse(localStorage.getItem("cancionesExtra") || "[]");
+  extras.push(nueva);
+  localStorage.setItem("cancionesExtra", JSON.stringify(extras));
+
+  canciones.push(nueva);
+
+  cerrarModalAgregarCancion();
+
+  if (window.modoProyeccion === "canciones") {
+    activarModoCanciones();
+  }
+
+  document.getElementById("status").innerHTML =
+    `✔ Canción agregada (${canciones.length})`;
+}
+
+
+  
 
 function activarModoBiblia() {
   // modo lógico
@@ -3944,39 +3968,6 @@ function cerrarModalAgregarCancion() {
   document.getElementById("modalAgregarCancion").style.display = "none";
 }
 
-async function guardarNuevaCancion() {
-  const titulo = document.getElementById("nuevaTitulo").value.trim();
-  const letra = document.getElementById("nuevaLetra").value.trim();
-
-  if (!titulo || !letra) {
-    alert("Completa título y letra");
-    return;
-  }
-
-  const resp = await fetch("guardar_cancion.php", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ titulo, letra })
-  });
-
-  if (!resp.ok) {
-    alert("Error guardando canción");
-    return;
-  }
-
-  const nuevaLista = await resp.json();
-
-  canciones = nuevaLista; // 🔥 refresca memoria
-  cerrarModalAgregarCancion();
-
-  // 🔄 Refrescar combo inmediatamente
-  if (window.modoProyeccion === "canciones") {
-    activarModoCanciones();
-  }
-
-  document.getElementById("status").innerHTML =
-    `✔ Canciones cargadas (${canciones.length})`;
-}
 
   
   
@@ -4154,6 +4145,7 @@ document.getElementById("btnBiblia").addEventListener("click", () => {
 </script>
 </body>
 </html>
+
 
 
 
