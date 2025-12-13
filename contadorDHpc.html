@@ -3711,9 +3711,14 @@ function activarModoCanciones() {
   const cont = document.getElementById("r");
   cont.innerHTML = "";
 
-  const partes = c.letra.split(/\n\s*\n/);
+  let texto = c.letra;
 
-  partes.forEach((p, slide) => {
+  // ❌ QUITAR "1.  TÍTULO" DE LA PRIMERA LÍNEA
+  texto = texto.replace(/^\s*\d+\.\s*[^\n]+\n/, "");
+
+  const partes = texto.split(/\n\s*\n/);
+
+  partes.forEach((p) => {
     const div = document.createElement("div");
     div.className = "resultado-cancion";
     div.style.padding = "12px";
@@ -3723,12 +3728,12 @@ function activarModoCanciones() {
     div.style.cursor = "pointer";
     div.style.background = "#f8f8f8";
 
-    // ❌ SIN TÍTULO EN LA DIAPOSITIVA
+    // ❌ SOLO LETRA (SIN TÍTULO)
     div.innerHTML = `
       <div style="white-space:pre-wrap;margin-top:6px">${p}</div>
     `;
 
-    // ❌ SIN TÍTULO ABAJO EN PROYECCIÓN
+    // ❌ SIN TÍTULO ABAJO
     div.onclick = () => {
       actualizarVentanaBiblia("", p);
     };
@@ -3736,6 +3741,7 @@ function activarModoCanciones() {
     cont.appendChild(div);
   });
 }
+
 
 
   
@@ -3889,6 +3895,7 @@ document.getElementById("btnBiblia").addEventListener("click", () => {
 </script>
 </body>
 </html>
+
 
 
 
