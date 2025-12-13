@@ -3789,10 +3789,13 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("biblia-container").style.display = "flex";
   tablaArriba.style.display = "none";
 
-  // 🔥🔥🔥 INICIO BIBLIA POR DEFECTO 🔥🔥🔥
-  window.modoProyeccion = "biblia";
-
+  // 🔥🔥🔥 BOTONES DE BIBLIA AL INICIAR (MISMA LÓGICA) 🔥🔥🔥
   document.querySelector(".panel").style.display = "flex";
+
+  document.querySelector('button[onclick="verMesActual()"]').style.display = "none";
+  document.querySelector('button[onclick="verHoy()"]').style.display = "none";
+  document.getElementById("selectMes").style.display = "none";
+  document.querySelector('button[onclick="proyectar()"]').style.display = "none";
 
   document.getElementById("pantallaSelect").style.display = "inline-flex";
   document.getElementById("btnTema").style.display = "inline-flex";
@@ -3803,9 +3806,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("btnLogo")?.classList.remove("hidden-btn");
   document.getElementById("btnConfigLogo")?.classList.remove("hidden-btn");
-
-  activarModoBiblia();
-  // 🔥🔥🔥 FIN BIBLIA POR DEFECTO 🔥🔥🔥
+  // 🔥🔥🔥 FIN BOTONES BIBLIA AL INICIAR 🔥🔥🔥
 
 
   // BOTÓN: CARGAR ASISTENCIA
@@ -3833,46 +3834,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 
-  // ===============================
-  // BOTÓN: CANCIONES
-  // ===============================
-  document.getElementById("btnCanciones").addEventListener("click", async () => {
-    if (canciones.length === 0) {
-      await cargarCanciones();
-    }
-
-    window.modoProyeccion = "canciones";
-
-    document.getElementById("subtitulo").style.display = "none";
-    document.querySelector(".panel").style.display = "flex";
-    document.getElementById("biblia-container").style.display = "flex";
-
-    tablaArriba.style.display = "none";
-    document.querySelector('button[onclick="verMesActual()"]').style.display = "none";
-    document.querySelector('button[onclick="verHoy()"]').style.display = "none";
-    document.getElementById("selectMes").style.display = "none";
-    document.querySelector('button[onclick="proyectar()"]').style.display = "none";
-
-    document.getElementById("pantallaSelect").style.display = "inline-flex";
-    document.getElementById("btnTema").style.display = "inline-flex";
-    document.getElementById("btnLimpiarTexto").style.display = "inline-flex";
-    document.getElementById("btnFondoBiblia").style.display = "inline-flex";
-    document.getElementById("btnEnVivo").style.display = "inline-flex";
-    document.getElementById("btnParar").style.display = "inline-flex";
-
-    document.getElementById("btnLogo")?.classList.remove("hidden-btn");
-    document.getElementById("btnConfigLogo")?.classList.remove("hidden-btn");
-
-    activarModoCanciones();
-  });
-
-
-  // ===============================
   // BOTÓN: BIBLIA
-  // ===============================
   document.getElementById("btnBiblia").addEventListener("click", () => {
-    window.modoProyeccion = "biblia";
-
     document.getElementById("subtitulo").style.display = "none";
     document.querySelector(".panel").style.display = "flex";
     document.getElementById("biblia-container").style.display = "flex";
@@ -3892,8 +3855,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("btnLogo")?.classList.remove("hidden-btn");
     document.getElementById("btnConfigLogo")?.classList.remove("hidden-btn");
-
-    activarModoBiblia();
   });
 
 
@@ -3908,6 +3869,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
