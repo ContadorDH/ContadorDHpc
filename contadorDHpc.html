@@ -3734,9 +3734,15 @@ function activarModoCanciones() {
     `;
 
     // ❌ SIN TÍTULO ABAJO
-    div.onclick = () => {
-      actualizarVentanaBiblia("", p);
-    };
+  div.onclick = () => {
+  // 1. Preview local (IGUAL que Biblia)
+  renderPantallaLocal("preview-texto", "", p);
+
+  // 2. Si está en vivo, actualiza la pantalla real
+  if (ventanaProyeccion && !ventanaProyeccion.closed) {
+    actualizarVentanaBiblia("", p);
+  }
+};
 
     cont.appendChild(div);
   });
@@ -3895,5 +3901,6 @@ document.getElementById("btnBiblia").addEventListener("click", () => {
 </script>
 </body>
 </html>
+
 
 
