@@ -3782,19 +3782,12 @@ function activarModoCanciones() {
   });
 }
 
-function manejarSlideCancion(texto, index, soloPreview = false) {
+function manejarSlideCancion(texto, index) {
 
   // 1️⃣ Preview SIEMPRE
   renderPantallaLocal("preview-texto", "", texto);
 
-  // 👉 Si viene desde teclado → SOLO preview
-  if (soloPreview) {
-    window.cancionSlideActual = index;
-    window.cancionSlideConfirmada = false;
-    return;
-  }
-
-  // Cambio de slide → resetear confirmación
+  // Si es otra diapositiva → resetear confirmación
   if (window.cancionSlideActual !== index) {
     window.cancionSlideActual = index;
     window.cancionSlideConfirmada = false;
@@ -3813,30 +3806,46 @@ function manejarSlideCancion(texto, index, soloPreview = false) {
 
 
 
+
 document.addEventListener("keydown", (e) => {
 
+  // Solo en modo canciones
   if (window.modoProyeccion !== "canciones") return;
 
   const slides = document.querySelectorAll("#r .resultado-cancion");
   if (!slides.length) return;
 
-  let nextIndex = window.cancionSlideActual;
-
+  // Flecha abajo
   if (e.key === "ArrowDown") {
     e.preventDefault();
-    nextIndex = Math.min(nextIndex + 1, slides.length - 1);
+    let next = window.cancionSlideActual + 1;
+    if (next >= slides.length) next = slides.length - 1;
+
+    const texto = slides[next].innerText;
+
+    // 🔥 Forzar coincidencia para proyectar en un toque
+    window.cancionSlideActual = next;
+    window.cancionSlideConfirmada = false;
+
+    manejarSlideCancion(texto, next);
   }
 
+  // Flecha arriba
   if (e.key === "ArrowUp") {
     e.preventDefault();
-    nextIndex = Math.max(nextIndex - 1, 0);
+    let prev = window.cancionSlideActual - 1;
+    if (prev < 0) prev = 0;
+
+    const texto = slides[prev].innerText;
+
+    // 🔥 Forzar coincidencia para proyectar en un toque
+    window.cancionSlideActual = prev;
+    window.cancionSlideConfirmada = false;
+
+    manejarSlideCancion(texto, prev);
   }
-
-  if (nextIndex === window.cancionSlideActual) return;
-
-  const texto = slides[nextIndex].innerText;
-  manejarSlideCancion(texto, nextIndex, true);
 });
+
 
 
 
@@ -4035,6 +4044,7 @@ document.getElementById("btnBiblia").addEventListener("click", () => {
 </script>
 </body>
 </html>
+
 
 
 
