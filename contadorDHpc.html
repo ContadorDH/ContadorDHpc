@@ -3758,6 +3758,7 @@ function activarModoCanciones() {
 
   
 
+  
 document.addEventListener("DOMContentLoaded", () => {
   detectarPantallas();
   const tablaArriba = document.getElementById("tabla");
@@ -3789,14 +3790,58 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("biblia-container").style.display = "flex";
   tablaArriba.style.display = "none";
 
-  // 🔥🔥🔥 BOTONES DE BIBLIA AL INICIAR (MISMA LÓGICA) 🔥🔥🔥
+  // BOTÓN: CARGAR ASISTENCIA
+  document.getElementById("btnCargarAsistencia").addEventListener("click", () => {
+    document.getElementById("subtitulo").style.display = "flex";
+    document.querySelector(".panel").style.display = "flex";
+    document.getElementById("biblia-container").style.display = "none";
+    tablaArriba.style.display = "table";
+    cargarAlIniciar();
+    // Mostrar todos los botones al entrar a asistencia
+    document.querySelector('button[onclick="verMesActual()"]').style.display = "inline-flex";
+    document.querySelector('button[onclick="verHoy()"]').style.display = "inline-flex";
+    document.getElementById("selectMes").style.display = "inline-flex";
+    document.querySelector('button[onclick="proyectar()"]').style.display = "inline-flex";
+    document.getElementById("pantallaSelect").style.display = "inline-flex";
+    document.getElementById("btnTema").style.display = "inline-flex";
+    document.getElementById("btnLimpiarTexto").style.display = "none";
+    document.getElementById("btnFondoBiblia").style.display = "none";
+     document.getElementById("btnEnVivo").style.display = "none";
+     document.getElementById("btnParar").style.display = "none";
+     document.getElementById("btnLogo")?.classList.add("hidden-btn");
+     document.getElementById("btnConfigLogo")?.classList.add("hidden-btn");
+  });
+
+
+// ===============================
+// BOTÓN: CANCIONES
+// ===============================
+document.getElementById("btnCanciones").addEventListener("click", async () => {
+  if (canciones.length === 0) {
+    await cargarCanciones();
+  }
+
+
+  // 1. Cambiamos el modo
+  window.modoProyeccion = "canciones"; // ← muy importante
+
+  // 2. Ocultar subtitulo
+  document.getElementById("subtitulo").style.display = "none";
+
+  // 3. Mostrar el panel principal
   document.querySelector(".panel").style.display = "flex";
 
+  // 4. Mostramos el container (es el MISMO de Biblia)
+  document.getElementById("biblia-container").style.display = "flex";
+
+  // 5. Ocultar cosas propias de asistencia/calendario
+  tablaArriba.style.display = "none";
   document.querySelector('button[onclick="verMesActual()"]').style.display = "none";
   document.querySelector('button[onclick="verHoy()"]').style.display = "none";
   document.getElementById("selectMes").style.display = "none";
   document.querySelector('button[onclick="proyectar()"]').style.display = "none";
 
+  // 6. Mostrar controles de proyección
   document.getElementById("pantallaSelect").style.display = "inline-flex";
   document.getElementById("btnTema").style.display = "inline-flex";
   document.getElementById("btnLimpiarTexto").style.display = "inline-flex";
@@ -3806,60 +3851,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("btnLogo")?.classList.remove("hidden-btn");
   document.getElementById("btnConfigLogo")?.classList.remove("hidden-btn");
-  // 🔥🔥🔥 FIN BOTONES BIBLIA AL INICIAR 🔥🔥🔥
+
+  // 7. REEMPLAZAR búsqueda y resultados por panel canciones
+  activarModoCanciones();
+});
+
+  
+
+ // BOTÓN: BIBLIA
+document.getElementById("btnBiblia").addEventListener("click", () => {
+
+  // 🔥 CAMBIAR DE MODO (ESTO ERA LO QUE FALTABA)
+  window.modoProyeccion = "biblia";
+
+  // Mostrar secciones propias de Biblia
+  document.getElementById("subtitulo").style.display = "none";
+  document.querySelector(".panel").style.display = "flex";
+  document.getElementById("biblia-container").style.display = "flex";
+  tablaArriba.style.display = "none";
+
+  // Ocultar botones que no van en Biblia
+  document.querySelector('button[onclick="verMesActual()"]').style.display = "none";
+  document.querySelector('button[onclick="verHoy()"]').style.display = "none";
+  document.getElementById("selectMes").style.display = "none";
+  document.querySelector('button[onclick="proyectar()"]').style.display = "none";
+
+  // Mostrar controles de Biblia
+  document.getElementById("pantallaSelect").style.display = "inline-flex";
+  document.getElementById("btnTema").style.display = "inline-flex";
+  document.getElementById("btnLimpiarTexto").style.display = "inline-flex";
+  document.getElementById("btnFondoBiblia").style.display = "inline-flex";
+  document.getElementById("btnEnVivo").style.display = "inline-flex";
+  document.getElementById("btnParar").style.display = "inline-flex";
+
+  document.getElementById("btnLogo")?.classList.remove("hidden-btn");
+  document.getElementById("btnConfigLogo")?.classList.remove("hidden-btn");
+
+  // 🔥 Restaurar interfaz normal de Biblia
+  activarModoBiblia(); 
+});
 
 
-  // BOTÓN: CARGAR ASISTENCIA
-  document.getElementById("btnCargarAsistencia").addEventListener("click", () => {
-    document.getElementById("subtitulo").style.display = "flex";
-    document.querySelector(".panel").style.display = "flex";
-    document.getElementById("biblia-container").style.display = "none";
-    tablaArriba.style.display = "table";
-    cargarAlIniciar();
-
-    document.querySelector('button[onclick="verMesActual()"]').style.display = "inline-flex";
-    document.querySelector('button[onclick="verHoy()"]').style.display = "inline-flex";
-    document.getElementById("selectMes").style.display = "inline-flex";
-    document.querySelector('button[onclick="proyectar()"]').style.display = "inline-flex";
-    document.getElementById("pantallaSelect").style.display = "inline-flex";
-    document.getElementById("btnTema").style.display = "inline-flex";
-
-    document.getElementById("btnLimpiarTexto").style.display = "none";
-    document.getElementById("btnFondoBiblia").style.display = "none";
-    document.getElementById("btnEnVivo").style.display = "none";
-    document.getElementById("btnParar").style.display = "none";
-
-    document.getElementById("btnLogo")?.classList.add("hidden-btn");
-    document.getElementById("btnConfigLogo")?.classList.add("hidden-btn");
-  });
-
-
-  // BOTÓN: BIBLIA
-  document.getElementById("btnBiblia").addEventListener("click", () => {
-    document.getElementById("subtitulo").style.display = "none";
-    document.querySelector(".panel").style.display = "flex";
-    document.getElementById("biblia-container").style.display = "flex";
-    tablaArriba.style.display = "none";
-
-    document.querySelector('button[onclick="verMesActual()"]').style.display = "none";
-    document.querySelector('button[onclick="verHoy()"]').style.display = "none";
-    document.getElementById("selectMes").style.display = "none";
-    document.querySelector('button[onclick="proyectar()"]').style.display = "none";
-
-    document.getElementById("pantallaSelect").style.display = "inline-flex";
-    document.getElementById("btnTema").style.display = "inline-flex";
-    document.getElementById("btnLimpiarTexto").style.display = "inline-flex";
-    document.getElementById("btnFondoBiblia").style.display = "inline-flex";
-    document.getElementById("btnEnVivo").style.display = "inline-flex";
-    document.getElementById("btnParar").style.display = "inline-flex";
-
-    document.getElementById("btnLogo")?.classList.remove("hidden-btn");
-    document.getElementById("btnConfigLogo")?.classList.remove("hidden-btn");
-  });
 
 
   // Ejecutar al cargar la página
   actualizarIconoLogo();
+
+
 });
 
 
@@ -3869,9 +3907,6 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
-
-
-
 
 
 
