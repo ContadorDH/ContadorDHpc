@@ -2423,29 +2423,42 @@ function actualizarIndicadorEnVivo() {
   
 
 // ====== BOTÓN EN VIVO (modificado solo al final) ======
+// ====== BOTÓN EN VIVO (ajustado para Biblia y Canciones) ======
 document.getElementById("btnEnVivo").addEventListener("click", async () => {
   const previewEl = document.getElementById("preview-texto");
   const ref = previewEl?.dataset.ref || "";
   const texto = previewEl?.dataset.texto || "";
 
-  if (ref && texto) {
+  // ✅ SI HAY TEXTO (Biblia o Canción) → PROYECTAR
+  if (texto) {
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       await abrirVentanaBiblia(ref, texto);
     } else {
       actualizarVentanaBiblia(ref, texto);
     }
-  } else {
+  } 
+  // ⬇️ SIN TEXTO → SOLO FONDO
+  else {
     console.log("Sin texto → proyectando solo el fondo personalizado");
+
     if (!ventanaProyeccion || ventanaProyeccion.closed) {
       await abrirVentanaBiblia("", "");
     }
+
     if (ventanaProyeccion && !ventanaProyeccion.closed) {
       const caja = ventanaProyeccion.document.getElementById("textoAutoFit");
       if (caja) caja.textContent = "";
     }
+
     const preview = document.getElementById("preview-biblia");
     const fondoPreview = preview ? getComputedStyle(preview).backgroundImage : "";
-    if (fondoPreview && fondoPreview !== "none" && ventanaProyeccion && !ventanaProyeccion.closed) {
+
+    if (
+      fondoPreview &&
+      fondoPreview !== "none" &&
+      ventanaProyeccion &&
+      !ventanaProyeccion.closed
+    ) {
       try {
         const body = ventanaProyeccion.document.body;
         body.style.backgroundImage = fondoPreview;
@@ -2458,16 +2471,18 @@ document.getElementById("btnEnVivo").addEventListener("click", async () => {
     }
   }
 
+  // Guardar estado actual
   if (ventanaProyeccion && !ventanaProyeccion.closed) {
     ventanaProyeccion.referenciaActual = ref;
     ventanaProyeccion.textoActual = texto;
   }
 
   actualizarEspejoLocal();
-  actualizarIndicadorEnVivo(); // ← AÑADIDO AQUÍ
+  actualizarIndicadorEnVivo();
 
   console.log("EN VIVO activado → fondo proyectado (con o sin texto)");
 });
+
 
 
 
@@ -4040,6 +4055,7 @@ document.getElementById("btnBiblia").addEventListener("click", () => {
 </script>
 </body>
 </html>
+
 
 
 
