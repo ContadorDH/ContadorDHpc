@@ -2114,6 +2114,9 @@ function cerrarCapitulos() {
   lista.innerHTML = "";
 }
 
+  let ultimoHTMLProyectado = "";
+
+
 function actualizarEspejoLocal() {
   const contenedor = document.getElementById("proyeccion-texto");
   if (!contenedor) return;
@@ -2122,13 +2125,26 @@ function actualizarEspejoLocal() {
   contenedor.style.overflow = "hidden";
   contenedor.style.padding = "0";
 
-  // ❗ NO borrar el preview si la ventana no está
-  if (!ventanaProyeccion || ventanaProyeccion.closed) {
-    return;
+  let htmlFuente = "";
+
+  // 🔴 SI LA VENTANA REAL EXISTE → COPIARLA
+  if (ventanaProyeccion && !ventanaProyeccion.closed) {
+    try {
+      htmlFuente = ventanaProyeccion.document.documentElement.outerHTML;
+      ultimoHTMLProyectado = htmlFuente; // 💾 guardar copia
+    } catch (e) {}
   }
 
-  const realW = ventanaProyeccion.innerWidth || 1280;
-  const realH = ventanaProyeccion.innerHeight || 720;
+  // 🟡 SI NO EXISTE → USAR ÚLTIMO HTML
+  if (!htmlFuente && ultimoHTMLProyectado) {
+    htmlFuente = ultimoHTMLProyectado;
+  }
+
+  // ⚠️ Si no hay nada que mostrar, salir
+  if (!htmlFuente) return;
+
+  const realW = ventanaProyeccion?.innerWidth || 1280;
+  const realH = ventanaProyeccion?.innerHeight || 720;
   const miniW = contenedor.clientWidth || 100;
   const miniH = contenedor.clientHeight || 100;
 
@@ -2159,10 +2175,9 @@ function actualizarEspejoLocal() {
   iframe.style.maxHeight = "unset";
   iframe.style.overflow = "visible";
 
-  try {
-    const htmlCompleto = ventanaProyeccion.document.documentElement.outerHTML;
-    if (iframe.srcdoc !== htmlCompleto) iframe.srcdoc = htmlCompleto;
-  } catch (e) {}
+  if (iframe.srcdoc !== htmlFuente) {
+    iframe.srcdoc = htmlFuente;
+  }
 
   const offsetX = (miniW - realW * escala) / 2;
   const offsetY = (miniH - realH * escala) / 2;
@@ -2176,6 +2191,7 @@ function actualizarEspejoLocal() {
 
   contenedor.style.backgroundImage = "none";
 }
+
 
 
 
@@ -3892,6 +3908,7 @@ document.getElementById("btnBiblia").addEventListener("click", () => {
 </script>
 </body>
 </html>
+
 
 
 
