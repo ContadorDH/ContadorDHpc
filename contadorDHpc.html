@@ -2114,9 +2114,6 @@ function cerrarCapitulos() {
   lista.innerHTML = "";
 }
 
-  let ultimoHTMLProyectado = "";
-
-
 function actualizarEspejoLocal() {
   const contenedor = document.getElementById("proyeccion-texto");
   if (!contenedor) return;
@@ -2125,26 +2122,13 @@ function actualizarEspejoLocal() {
   contenedor.style.overflow = "hidden";
   contenedor.style.padding = "0";
 
-  let htmlFuente = "";
-
-  // 🔴 SI LA VENTANA REAL EXISTE → COPIARLA
-  if (ventanaProyeccion && !ventanaProyeccion.closed) {
-    try {
-      htmlFuente = ventanaProyeccion.document.documentElement.outerHTML;
-      ultimoHTMLProyectado = htmlFuente; // 💾 guardar copia
-    } catch (e) {}
+  if (!ventanaProyeccion || ventanaProyeccion.closed) {
+    contenedor.innerHTML = "";
+    return;
   }
 
-  // 🟡 SI NO EXISTE → USAR ÚLTIMO HTML
-  if (!htmlFuente && ultimoHTMLProyectado) {
-    htmlFuente = ultimoHTMLProyectado;
-  }
-
-  // ⚠️ Si no hay nada que mostrar, salir
-  if (!htmlFuente) return;
-
-  const realW = ventanaProyeccion?.innerWidth || 1280;
-  const realH = ventanaProyeccion?.innerHeight || 720;
+  const realW = ventanaProyeccion.innerWidth || 1280;
+  const realH = ventanaProyeccion.innerHeight || 720;
   const miniW = contenedor.clientWidth || 100;
   const miniH = contenedor.clientHeight || 100;
 
@@ -2169,29 +2153,32 @@ function actualizarEspejoLocal() {
     contenedor.appendChild(iframe);
   }
 
+  // SIN límites, sin max-height (cortaba la derecha y abajo)
   iframe.style.width = realW + "px";
   iframe.style.height = realH + "px";
   iframe.style.maxWidth = "unset";
   iframe.style.maxHeight = "unset";
   iframe.style.overflow = "visible";
 
-  if (iframe.srcdoc !== htmlFuente) {
-    iframe.srcdoc = htmlFuente;
-  }
+  try {
+    const htmlCompleto = ventanaProyeccion.document.documentElement.outerHTML;
+    if (iframe.srcdoc !== htmlCompleto) iframe.srcdoc = htmlCompleto;
+  } catch(e) {}
 
   const offsetX = (miniW - realW * escala) / 2;
   const offsetY = (miniH - realH * escala) / 2;
 
+  // 👇👇 SOLO ESTO SE AGREGA (2 líneas)
   iframe.style.left = offsetX + "px";
-  iframe.style.top = (offsetY - 2) + "px";
-  iframe.style.bottom = "0";
+  iframe.style.top = (offsetY - 2) + "px";  // levanta 2px para evitar corte abajo
+  iframe.style.bottom = "0";                // evita recorte inferior
+  // 👆👆 SOLO ESTAS LÍNEAS
 
   iframe.style.transform = `scale(${escala})`;
   iframe.style.willChange = "transform";
 
   contenedor.style.backgroundImage = "none";
 }
-
 
 
 
@@ -3908,40 +3895,5 @@ document.getElementById("btnBiblia").addEventListener("click", () => {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
