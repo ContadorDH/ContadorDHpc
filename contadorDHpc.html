@@ -3784,11 +3784,37 @@ document.addEventListener("DOMContentLoaded", () => {
   // FIN de la carga del fondo
   // ==========================================
 
-  // Ocultar ambas secciones al iniciar
-  document.getElementById("subtitulo").style.display = "none";
-  document.querySelector(".panel").style.display = "flex";
-  document.getElementById("biblia-container").style.display = "flex";
-  tablaArriba.style.display = "none";
+ // ===============================
+// INICIAR APP EN MODO BIBLIA
+// ===============================
+window.modoProyeccion = "biblia";
+
+// Mostrar secciones propias de Biblia
+document.getElementById("subtitulo").style.display = "none";
+document.querySelector(".panel").style.display = "flex";
+document.getElementById("biblia-container").style.display = "flex";
+tablaArriba.style.display = "none";
+
+// Ocultar botones que no van en Biblia
+document.querySelector('button[onclick="verMesActual()"]').style.display = "none";
+document.querySelector('button[onclick="verHoy()"]').style.display = "none";
+document.getElementById("selectMes").style.display = "none";
+document.querySelector('button[onclick="proyectar()"]').style.display = "none";
+
+// Mostrar controles de Biblia
+document.getElementById("pantallaSelect").style.display = "inline-flex";
+document.getElementById("btnTema").style.display = "inline-flex";
+document.getElementById("btnLimpiarTexto").style.display = "inline-flex";
+document.getElementById("btnFondoBiblia").style.display = "inline-flex";
+document.getElementById("btnEnVivo").style.display = "inline-flex";
+document.getElementById("btnParar").style.display = "inline-flex";
+
+document.getElementById("btnLogo")?.classList.remove("hidden-btn");
+document.getElementById("btnConfigLogo")?.classList.remove("hidden-btn");
+
+// Restaurar interfaz Biblia
+activarModoBiblia();
+
 
   // BOTÓN: CARGAR ASISTENCIA
   document.getElementById("btnCargarAsistencia").addEventListener("click", () => {
@@ -3907,6 +3933,7 @@ document.getElementById("btnBiblia").addEventListener("click", () => {
 </script>
 </body>
 </html>
+
 
 
 
