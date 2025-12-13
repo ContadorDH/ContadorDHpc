@@ -1321,6 +1321,13 @@ body.tema-oscuro .resultados-biblia .resaltado,
     Buscar
   </button>
 
+  <button onclick="abrirModalAgregarCancion()"
+          title="Agregar canción"
+          style="width:52px;background:#28a745;color:white;
+                 border:none;border-radius:8px;font-size:18px">
+    <i class="fa fa-plus"></i>
+  </button>
+
   <div id="status" class="ok" 
        style="font-size:12px;text-align:center;color:#0066cc;margin-top:6px;">
     Cargando Biblia completa...
@@ -1572,6 +1579,34 @@ line-height:2;z-index:99;">
   </div>
 </div>
 
+<div id="modalAgregarCancion" style="
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.6);
+  z-index:9999;align-items:center;justify-content:center">
+
+  <div style="background:white;padding:20px;border-radius:12px;width:90%;max-width:420px">
+    <h3 style="margin-top:0">Agregar nueva canción</h3>
+
+    <input id="nuevaTitulo" placeholder="Título"
+           style="width:100%;padding:8px;margin-bottom:8px">
+
+    <textarea id="nuevaLetra" placeholder="Letra (separa estrofas con línea en blanco)"
+              rows="6"
+              style="width:100%;padding:8px"></textarea>
+
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button onclick="guardarNuevaCancion()"
+              style="flex:1;background:#28a745;color:white;border:none;padding:10px;border-radius:8px">
+        Guardar
+      </button>
+
+      <button onclick="cerrarModalAgregarCancion()"
+              style="flex:1;background:#ccc;border:none;padding:10px;border-radius:8px">
+        Cancelar
+      </button>
+    </div>
+  </div>
+</div>
 
 
 
@@ -3901,6 +3936,47 @@ function moverSlideCancion(dir, slides) {
 }
 
 
+function abrirModalAgregarCancion() {
+  document.getElementById("modalAgregarCancion").style.display = "flex";
+}
+
+function cerrarModalAgregarCancion() {
+  document.getElementById("modalAgregarCancion").style.display = "none";
+}
+
+async function guardarNuevaCancion() {
+  const titulo = document.getElementById("nuevaTitulo").value.trim();
+  const letra = document.getElementById("nuevaLetra").value.trim();
+
+  if (!titulo || !letra) {
+    alert("Completa título y letra");
+    return;
+  }
+
+  const resp = await fetch("guardar_cancion.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ titulo, letra })
+  });
+
+  if (!resp.ok) {
+    alert("Error guardando canción");
+    return;
+  }
+
+  const nuevaLista = await resp.json();
+
+  canciones = nuevaLista; // 🔥 refresca memoria
+  cerrarModalAgregarCancion();
+
+  // 🔄 Refrescar combo inmediatamente
+  if (window.modoProyeccion === "canciones") {
+    activarModoCanciones();
+  }
+
+  document.getElementById("status").innerHTML =
+    `✔ Canciones cargadas (${canciones.length})`;
+}
 
   
   
@@ -4078,6 +4154,7 @@ document.getElementById("btnBiblia").addEventListener("click", () => {
 </script>
 </body>
 </html>
+
 
 
 
