@@ -1321,13 +1321,6 @@ body.tema-oscuro .resultados-biblia .resaltado,
     Buscar
   </button>
 
-  <button onclick="abrirModalAgregarCancion()"
-          title="Agregar canción"
-          style="width:52px;background:#28a745;color:white;
-                 border:none;border-radius:8px;font-size:18px">
-    <i class="fa fa-plus"></i>
-  </button>
-
   <div id="status" class="ok" 
        style="font-size:12px;text-align:center;color:#0066cc;margin-top:6px;">
     Cargando Biblia completa...
@@ -1579,34 +1572,6 @@ line-height:2;z-index:99;">
   </div>
 </div>
 
-<div id="modalAgregarCancion" style="
-  display:none;position:fixed;inset:0;
-  background:rgba(0,0,0,0.6);
-  z-index:9999;align-items:center;justify-content:center">
-
-  <div style="background:white;padding:20px;border-radius:12px;width:90%;max-width:420px">
-    <h3 style="margin-top:0">Agregar nueva canción</h3>
-
-    <input id="nuevaTitulo" placeholder="Título"
-           style="width:100%;padding:8px;margin-bottom:8px">
-
-    <textarea id="nuevaLetra" placeholder="Letra (separa estrofas con línea en blanco)"
-              rows="6"
-              style="width:100%;padding:8px"></textarea>
-
-    <div style="display:flex;gap:8px;margin-top:12px">
-      <button onclick="guardarNuevaCancion()"
-              style="flex:1;background:#28a745;color:white;border:none;padding:10px;border-radius:8px">
-        Guardar
-      </button>
-
-      <button onclick="cerrarModalAgregarCancion()"
-              style="flex:1;background:#ccc;border:none;padding:10px;border-radius:8px">
-        Cancelar
-      </button>
-    </div>
-  </div>
-</div>
 
 
 
@@ -1700,12 +1665,8 @@ document.getElementById("lista-libros").innerHTML = "";
     });
   });
 
-// Mostrar status SOLO si estamos en modo Biblia
-if (window.modoProyeccion === "biblia") {
   document.getElementById("status").innerHTML =
     `✔ Biblia lista (${contador.toLocaleString()} versículos)`;
-}
-
 }
 
 // =============================
@@ -3681,45 +3642,30 @@ let canciones = [];
 
 async function cargarCanciones() {
   try {
-    canciones = await window.apiCanciones.leer();
-    console.log("Canciones cargadas:", canciones);
-  } catch (e) {
-    console.error("Error cargando canciones:", e);
-  }
+    const resp = await fetch("canciones.json", {
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store"
+      }
+    });
 
-  if (window.modoProyeccion === "canciones") {
-    document.getElementById("status").innerHTML =
-      `✔ Canciones cargadas (${canciones.length})`;
+    if (!resp.ok) {
+      console.error("Error al cargar canciones.json:", resp.status);
+      return;
+    }
+
+    canciones = await resp.json();
+    console.log("Canciones cargadas:", canciones);
+
+  } catch (err) {
+    console.error("Error leyendo canciones.json:", err);
   }
 }
-
 
 // Ejecutar al inicio
 cargarCanciones();
 
 
-async function guardarNuevaCancion() {
-  const titulo = document.getElementById("nuevaTitulo").value.trim();
-  const letra = document.getElementById("nuevaLetra").value.trim();
-
-  if (!titulo || !letra) {
-    alert("Completa título y letra");
-    return;
-  }
-
-  canciones.push({ titulo, letra });
-
-  await window.apiCanciones.guardar(canciones);
-
-  cerrarModalAgregarCancion();
-  activarModoCanciones();
-
-  document.getElementById("status").innerHTML =
-    `✔ Canciones cargadas (${canciones.length})`;
-}
-
-
-  
 
 function activarModoBiblia() {
   // modo lógico
@@ -3761,16 +3707,9 @@ if (r) {
     };
     combo.style.display = "block";
   }
-// Refrescar status al entrar en modo Biblia
-if (typeof biblia === "object") {
-  const total = Object.keys(biblia).length;
-  if (total) {
-    document.getElementById("status").innerHTML =
-      `✔ Biblia lista (${total.toLocaleString()} versículos)`;
-  }
-}
 
-  
+  // Asegurarnos de que el predictivo (ghost) sepa que estamos en Biblia
+  // (la función mejorCoincidencia que te doy abajo usa window.modoProyeccion)
 }
 
 
@@ -3811,11 +3750,6 @@ function activarModoCanciones() {
 
   // Limpiar resultados de Biblia
   document.getElementById("r").innerHTML = "";
-
-  // Refrescar status al entrar en modo Canciones
-document.getElementById("status").innerHTML =
-  `✔ Canciones cargadas (${canciones.length})`;
-
 }
 
 
@@ -3943,14 +3877,6 @@ function moverSlideCancion(dir, slides) {
   manejarSlideCancion(texto, nuevo);
 }
 
-
-function abrirModalAgregarCancion() {
-  document.getElementById("modalAgregarCancion").style.display = "flex";
-}
-
-function cerrarModalAgregarCancion() {
-  document.getElementById("modalAgregarCancion").style.display = "none";
-}
 
 
   
@@ -4129,11 +4055,6 @@ document.getElementById("btnBiblia").addEventListener("click", () => {
 </script>
 </body>
 </html>
-
-
-
-
-
 
 
 
