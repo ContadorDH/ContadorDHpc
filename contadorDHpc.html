@@ -1321,6 +1321,21 @@ body.tema-oscuro .resultados-biblia .resaltado,
     Buscar
   </button>
 
+  <button onclick="abrirModalAgregarCancion()"
+        title="Agregar canción"
+        style="width:52px;background:#28a745;color:white;
+               border:none;border-radius:8px;font-size:18px">
+  <i class="fa fa-plus"></i>
+</button>
+
+<button onclick="editarCancionSeleccionada()"
+        title="Editar canción"
+        style="width:52px;background:#ffc107;color:black;
+               border:none;border-radius:8px;font-size:18px;margin-left:6px">
+  <i class="fa fa-edit"></i>
+</button>
+
+
   <div id="status" class="ok" 
        style="font-size:12px;text-align:center;color:#0066cc;margin-top:6px;">
     Cargando Biblia completa...
@@ -3754,8 +3769,79 @@ function activarModoCanciones() {
 
 
 
+function abrirModalAgregarCancion() {
+  document.getElementById("modalAgregarCancion").style.display = "flex";
+}
+
+function cerrarModalAgregarCancion() {
+  document.getElementById("modalAgregarCancion").style.display = "none";
+}
+
+
+
+  function editarCancionSeleccionada() {
+
+  if (window.modoProyeccion !== "canciones") {
+    alert("Solo puedes editar canciones en modo canciones");
+    return;
+  }
+
+  const idx = window.cancionSeleccionadaIndex;
+
+  if (idx === null || !canciones[idx]) {
+    alert("Selecciona o busca una canción primero");
+    return;
+  }
+
+  const c = canciones[idx];
+
+  // Abrir modal en modo edición
+  abrirModalAgregarCancion(true);
+
+  // Cargar datos
+  document.getElementById("nuevaTitulo").value = c.titulo;
+  document.getElementById("nuevaLetra").value = c.letra;
+
+  // Marcar índice en el modal
+  document.getElementById("modalAgregarCancion")
+    .setAttribute("data-edit-index", idx);
+}
+
+
+async function guardarNuevaCancion() {
+  const titulo = document.getElementById("nuevaTitulo").value.trim();
+  const letra = document.getElementById("nuevaLetra").value.trim();
+
+  if (!titulo || !letra) {
+    alert("Completa título y letra");
+    return;
+  }
+
+  const modal = document.getElementById("modalAgregarCancion");
+  const editIndex = modal.getAttribute("data-edit-index");
+
+  if (editIndex !== null) {
+    // ✏️ EDITAR
+    canciones[editIndex] = { titulo, letra };
+    modal.removeAttribute("data-edit-index");
+  } else {
+    // ➕ AGREGAR
+    canciones.push({ titulo, letra });
+  }
+
+  await window.apiCanciones.guardar(canciones);
+
+  cerrarModalAgregarCancion();
+  activarModoCanciones();
+
+  document.getElementById("status").innerHTML =
+    `✔ Canciones cargadas (${canciones.length})`;
+}
+
+  
 
 function mostrarCancion(idx) {
+   window.cancionSeleccionadaIndex = idx; // 👈 CLAVE
   const c = canciones[idx];
   if (!c) return;
 
@@ -4055,6 +4141,7 @@ document.getElementById("btnBiblia").addEventListener("click", () => {
 </script>
 </body>
 </html>
+
 
 
 
